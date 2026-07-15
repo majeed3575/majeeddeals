@@ -1,54 +1,14 @@
 {
-  "updated_at": "2026-06-11T06:00:00+00:00",
+  "updated_at": "2026-07-15T04:30:26+00:00",
   "source": "https://www.amazon.sa/gp/goldbox",
-  "count": 6,
+  "count": 1,
   "deals": [
     {
       "asin": "B0BNKVGB2J",
-      "title": "سماعات رأس لاسلكية بخاصية إلغاء الضوضاء النشطة",
+      "title": "منتج تجريبي موثّق — عرض أمازون السعودية",
       "image": "https://m.media-amazon.com/images/I/61u48FEs0rL._AC_SL1500_.jpg",
       "discount_percent": 45,
       "original_price": 399,
-      "category": "الإلكترونيات"
-    },
-    {
-      "asin": "B09XS7JWHH",
-      "title": "ساعة ذكية بشاشة أموليد ومقاومة للماء",
-      "image": "https://m.media-amazon.com/images/I/71pC4iCDgEL._AC_SL1500_.jpg",
-      "discount_percent": 62,
-      "original_price": 549,
-      "category": "الإلكترونيات"
-    },
-    {
-      "asin": "B08N5WRWNW",
-      "title": "مقلاة هوائية رقمية سعة 5.5 لتر",
-      "image": "https://m.media-amazon.com/images/I/71+8uTMDRFL._AC_SL1500_.jpg",
-      "discount_percent": 38,
-      "original_price": 329,
-      "category": "المنزل"
-    },
-    {
-      "asin": "B07XJ8C8F5",
-      "title": "مكنسة كهربائية لاسلكية خفيفة الوزن",
-      "image": "https://m.media-amazon.com/images/I/61o4-7HJ1uL._AC_SL1500_.jpg",
-      "discount_percent": 55,
-      "original_price": 799,
-      "category": "المنزل"
-    },
-    {
-      "asin": "B09G9FPHY6",
-      "title": "حقيبة ظهر عصرية مقاومة للماء بمنفذ USB",
-      "image": "https://m.media-amazon.com/images/I/71xb2xkN5qL._AC_SL1500_.jpg",
-      "discount_percent": 70,
-      "original_price": 199,
-      "category": "الموضة"
-    },
-    {
-      "asin": "B08PZHYWJS",
-      "title": "شاحن سريع 65 واط بثلاثة منافذ",
-      "image": "https://m.media-amazon.com/images/I/61bX2AoGj2L._AC_SL1500_.jpg",
-      "discount_percent": 50,
-      "original_price": 149,
       "category": "الإلكترونيات"
     }
   ]
