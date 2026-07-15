@@ -39,7 +39,8 @@ jobs:
         run: |
           git config user.name "deals-bot"
           git config user.email "actions@github.com"
-          git add deals.json posted_deals.json
+          git add deals.json
+          if [ -f posted_deals.json ]; then git add posted_deals.json; fi
           if git diff --cached --quiet; then
             echo "No changes - skipping commit."
           else
