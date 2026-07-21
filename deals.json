@@ -1,15 +1,55 @@
 {
-  "updated_at": "2026-07-21T11:24:52+00:00",
-  "source": "https://www.amazon.sa/gp/goldbox",
-  "count": 1,
+  "updated_at": "2026-07-21T04:18:12+00:00",
+  "source": "manual",
+  "count": 6,
   "deals": [
     {
-      "asin": "B0BNKVGB2J",
-      "title": "منتج تجريبي موثّق — عرض أمازون السعودية",
-      "image": "https://m.media-amazon.com/images/I/61u48FEs0rL._AC_SL1500_.jpg",
-      "discount_percent": 45,
-      "original_price": 399,
+      "asin": "B0DL5FT193",
+      "title": "شاحن UGREEN بقوة 200 واط بـ8 منافذ وتقنية GaN للشحن السريع",
+      "image": "https://m.media-amazon.com/images/I/51PpIM8WXVL._AC_UF894,1000_QL80_FMwebp_.jpg",
+      "discount_percent": 32,
+      "original_price": 379,
       "category": "الإلكترونيات"
+    },
+    {
+      "asin": "B08FJ678YK",
+      "title": "جهاز تنقية الهواء ليفويت Core 200S الذكي للمنزل",
+      "image": "https://m.media-amazon.com/images/I/61YVFzh9kLL._AC_UF1000,1000_QL80_FMwebp_.jpg",
+      "discount_percent": 24,
+      "original_price": 500,
+      "category": "المنزل"
+    },
+    {
+      "asin": "B07ZG5NTPJ",
+      "title": "ميزان يوفي eufy الذكي C1 بتقنية بلوتوث وتحليل مكونات الجسم",
+      "image": "https://m.media-amazon.com/images/I/617LH20BD5L._AC_SF1050,1050_QL80_.jpg",
+      "discount_percent": 23,
+      "original_price": 89,
+      "category": "المنزل"
+    },
+    {
+      "asin": "B0D53RXMB1",
+      "title": "جهاز تتبع UGREEN FineTrack بتقنية بلوتوث للحقائب والجوازات",
+      "image": "https://m.media-amazon.com/images/I/61eiRrdySeL._AC_SX679_.jpg",
+      "discount_percent": 20,
+      "original_price": 69,
+      "category": "الإلكترونيات"
+    },
+    {
+      "asin": "B08GHC8429",
+      "title": "مظلة Showay واقية من الشمس والأشعة فوق البنفسجية لزجاج السيارة",
+      "image": "https://m.media-amazon.com/images/I/41PbD+yb4OL._AC_SF1050,1050_QL80_.jpg",
+      "discount_percent": 11,
+      "original_price": 20,
+      "category": "الموضة"
+    },
+    {
+      "asin": "B0DBVFNMQG",
+      "title": "ماكينة صنع الثلج Flvzog لسطح الطاولة ذاتية التنظيف",
+      "image": "https://m.media-amazon.com/images/I/61dfrgeOOrL._AC_UF350,350_QL80_FMwebp_.jpg",
+      "discount_percent": 10,
+      "original_price": 269,
+      "category": "المنزل"
     }
   ]
 }
