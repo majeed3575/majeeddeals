@@ -6,340 +6,127 @@
 <title>صائد الخصومات السعودية</title>
 <style>
   :root{
-    --green-950:#022c22; --green-900:#064e3b; --green-700:#047857; --green-300:#6ee7b7;
-    --amber:#fbbf24; --amber-light:#fcd34d; --red:#dc2626;
-    --bg:#fafaf9; --card:#ffffff; --line:#e7e5e4; --ink:#1c1917; --muted:#78716c;
+    --ink:#1e293b; --muted:#64748b; --line:rgba(255,255,255,.6);
+    --accent:#0ea5e9; --accent-d:#0284c7; --gold:#f59e0b; --red:#ef4444;
+    --glass:rgba(255,255,255,.55); --glass-strong:rgba(255,255,255,.72);
+    --shadow:0 8px 32px rgba(31,41,55,.12);
   }
   *{margin:0;padding:0;box-sizing:border-box}
   body{
     font-family:'Tajawal','Segoe UI',Tahoma,system-ui,sans-serif;
-    background:var(--bg); color:var(--ink); min-height:100vh;
+    color:var(--ink); min-height:100vh; position:relative; overflow-x:hidden;
+    background:linear-gradient(135deg,#eef2f7 0%,#e6ecf5 40%,#f1f5f9 100%);
   }
+  body::before,body::after{
+    content:""; position:fixed; border-radius:50%; filter:blur(80px); z-index:0; opacity:.5;
+  }
+  body::before{ width:420px;height:420px; background:#7dd3fc; top:-120px; right:-100px; }
+  body::after{ width:380px;height:380px; background:#fcd34d; bottom:-120px; left:-80px; }
   img{max-width:100%; max-height:100%; object-fit:contain}
   a{text-decoration:none; color:inherit}
   button{font-family:inherit; cursor:pointer; border:none; background:none}
+  main,header,footer{position:relative; z-index:1}
 
-  /* ===== Header ===== */
-  header{position:sticky; top:0; z-index:40; background:var(--green-950); color:#fff;
-    box-shadow:0 4px 14px rgba(0,0,0,.25)}
-  .hwrap{max-width:1100px; margin:0 auto; padding:12px 16px; display:flex; flex-direction:column; gap:10px}
+  .glass{
+    background:var(--glass);
+    backdrop-filter:blur(18px) saturate(160%);
+    -webkit-backdrop-filter:blur(18px) saturate(160%);
+    border:1px solid var(--line);
+    box-shadow:var(--shadow);
+  }
+
+  header{position:sticky; top:0; z-index:40; padding:10px 16px 0}
+  .hwrap{
+    max-width:1100px; margin:0 auto; padding:14px 18px; border-radius:22px;
+    display:flex; flex-direction:column; gap:12px;
+    background:var(--glass-strong);
+    backdrop-filter:blur(20px) saturate(180%);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);
+    border:1px solid var(--line); box-shadow:var(--shadow);
+  }
   .hrow{display:flex; align-items:center; justify-content:space-between; gap:16px}
   .brand{display:flex; align-items:center; gap:10px}
-  .logo{background:var(--amber); color:var(--green-950); border-radius:14px; width:44px; height:44px;
-    display:flex; align-items:center; justify-content:center; font-size:22px}
-  .brand h1{font-size:19px; font-weight:900; line-height:1.2}
-  .live{color:var(--green-300); font-size:11.5px; display:flex; align-items:center; gap:6px; margin-top:2px}
+  .logo{
+    width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+    font-size:22px; color:#fff;
+    background:linear-gradient(135deg,var(--accent),var(--accent-d));
+    box-shadow:0 6px 16px rgba(14,165,233,.35);
+  }
+  .brand h1{font-size:18px; font-weight:900; letter-spacing:-.3px}
+  .live{color:var(--accent-d); font-size:11px; margin-top:3px; display:flex; align-items:center; gap:6px}
   .dot{position:relative; width:8px; height:8px}
-  .dot::before,.dot::after{content:''; position:absolute; inset:0; border-radius:50%; background:#4ade80}
-  .dot::before{animation:ping 1.4s cubic-bezier(0,0,.2,1) infinite}
+  .dot::before,.dot::after{content:''; position:absolute; inset:0; border-radius:50%; background:#22c55e}
+  .dot::before{animation:ping 1.5s cubic-bezier(0,0,.2,1) infinite}
   @keyframes ping{75%,100%{transform:scale(2.4); opacity:0}}
   .search{position:relative; width:100%}
-  .search input{width:100%; border-radius:12px; background:rgba(255,255,255,.1);
-    border:1px solid rgba(255,255,255,.2); padding:9px 38px 9px 12px; color:#fff; font-size:14px; outline:none}
-  .search input::placeholder{color:#d6d3d1}
-  .search input:focus{box-shadow:0 0 0 2px var(--amber)}
-  .search .icon{position:absolute; top:50%; right:12px; transform:translateY(-50%); opacity:.6; font-size:14px}
-  .desk-search{max-width:300px; display:none}
+  .search input{
+    width:100%; border-radius:14px; padding:10px 40px 10px 14px; font-size:14px;
+    background:rgba(255,255,255,.6); border:1px solid var(--line); color:var(--ink); outline:none;
+    transition:.2s;
+  }
+  .search input::placeholder{color:#94a3b8}
+  .search input:focus{background:#fff; box-shadow:0 0 0 3px rgba(14,165,233,.25)}
+  .search .icon{position:absolute; top:50%; right:13px; transform:translateY(-50%); opacity:.5; font-size:15px}
+  .desk-search{max-width:320px; display:none}
   @media(min-width:640px){ .desk-search{display:block} .mob-search{display:none} }
-  nav{display:flex; gap:8px; overflow-x:auto; padding-bottom:4px}
-  nav button{white-space:nowrap; border-radius:999px; padding:7px 18px; font-size:13.5px; font-weight:700;
-    background:rgba(255,255,255,.1); color:#d1fae5; transition:background .2s}
-  nav button:hover{background:rgba(255,255,255,.2)}
-  nav button.active{background:var(--amber); color:var(--green-950)}
+  nav{display:flex; gap:8px; overflow-x:auto; padding-bottom:2px}
+  nav button{
+    white-space:nowrap; border-radius:999px; padding:7px 18px; font-size:13px; font-weight:700;
+    background:rgba(255,255,255,.5); border:1px solid var(--line); color:var(--muted); transition:.2s;
+  }
+  nav button:hover{background:rgba(255,255,255,.8)}
+  nav button.active{
+    background:linear-gradient(135deg,var(--accent),var(--accent-d)); color:#fff; border-color:transparent;
+    box-shadow:0 4px 12px rgba(14,165,233,.35);
+  }
 
   main{max-width:1100px; margin:0 auto; padding:0 16px 64px}
 
-  /* ===== Hero ===== */
-  .hero{position:relative; margin-top:24px; border-radius:24px; overflow:hidden;
-    background:linear-gradient(135deg,var(--green-900),var(--green-950)); color:#fff;
-    box-shadow:0 16px 40px rgba(2,44,34,.3)}
-  .slide{display:none; align-items:center; gap:24px; padding:32px}
+  .hero{
+    position:relative; margin-top:20px; border-radius:26px; overflow:hidden; min-height:230px;
+    background:linear-gradient(135deg,rgba(14,165,233,.16),rgba(245,158,11,.14));
+    backdrop-filter:blur(16px) saturate(160%); -webkit-backdrop-filter:blur(16px) saturate(160%);
+    border:1px solid var(--line); box-shadow:var(--shadow);
+  }
+  .slide{display:none; align-items:center; gap:24px; padding:30px}
   .slide.on{display:flex; animation:fade .6s}
-  @keyframes fade{from{opacity:0}to{opacity:1}}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
   .slide .txt{flex:1; min-width:0}
-  .badge-hot{display:inline-flex; align-items:center; gap:5px; background:var(--red); color:#fff;
-    font-size:13px; font-weight:900; border-radius:999px; padding:5px 14px; animation:pulse 1.6s infinite}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
-  .slide h2{margin-top:12px; font-size:clamp(18px,3.5vw,28px); font-weight:900; line-height:1.4;
+  .badge-hot{
+    display:inline-flex; align-items:center; gap:5px; color:#fff; font-size:12.5px; font-weight:900;
+    border-radius:999px; padding:6px 14px;
+    background:linear-gradient(135deg,#fb7185,var(--red)); box-shadow:0 4px 12px rgba(239,68,68,.35);
+  }
+  .slide h2{margin-top:12px; font-size:clamp(19px,3.4vw,28px); font-weight:900; line-height:1.45; color:var(--ink);
     display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
-  .slide .price{margin-top:10px; font-size:14px; color:#a7f3d0; display:flex; flex-wrap:wrap; gap:10px; align-items:center}
-  .strike{text-decoration:line-through; opacity:.7}
-  .reveal{color:var(--amber-light); font-weight:800}
-  .slide .pic{width:150px; height:150px; flex-shrink:0; background:#fff; border-radius:18px; padding:10px;
-    display:flex; align-items:center; justify-content:center}
-  @media(max-width:560px){ .slide{padding:20px; gap:14px} .slide .pic{width:96px; height:96px} }
-  .arrow{position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,.3); color:#fff;
-    width:34px; height:34px; border-radius:50%; font-size:16px; transition:background .2s}
-  .arrow:hover{background:rgba(0,0,0,.55)}
-  .arrow.next{left:10px} .arrow.prev{right:10px}
-  .dots{position:absolute; bottom:12px; right:0; left:0; display:flex; justify-content:center; gap:8px}
-  .dots button{height:6px; width:8px; border-radius:999px; background:rgba(255,255,255,.4); transition:all .25s}
-  .dots button.on{width:24px; background:var(--amber)}
+  .slide .price{margin-top:10px; font-size:14px; display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+  .strike{text-decoration:line-through; color:#94a3b8}
+  .reveal{color:var(--accent-d); font-weight:800}
+  .slide .pic{
+    width:160px;height:160px;flex-shrink:0;border-radius:20px;padding:12px;display:flex;align-items:center;justify-content:center;
+    background:rgba(255,255,255,.7); border:1px solid var(--line);
+    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  }
+  @media(max-width:560px){ .slide{padding:20px;gap:14px} .slide .pic{width:104px;height:104px} }
+  .arrow{
+    position:absolute; top:50%; transform:translateY(-50%); width:38px;height:38px;border-radius:50%;
+    font-size:18px; color:var(--ink); display:flex; align-items:center; justify-content:center;
+    background:rgba(255,255,255,.6); border:1px solid var(--line);
+    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); transition:.2s;
+  }
+  .arrow:hover{background:#fff}
+  .arrow.next{left:12px} .arrow.prev{right:12px}
+  .dots{position:absolute; bottom:14px; right:0; left:0; display:flex; justify-content:center; gap:8px}
+  .dots button{height:6px;width:8px;border-radius:999px;background:rgba(30,41,59,.25);transition:.25s}
+  .dots button.on{width:24px; background:var(--accent)}
 
-  /* ===== Grid ===== */
-  .grid-head{display:flex; align-items:center; justify-content:space-between; margin:32px 0 16px; flex-wrap:wrap; gap:8px}
-  .grid-head h2{font-size:19px; font-weight:900; color:var(--green-950)}
+  .gh{margin:30px 0 14px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px}
+  .gh h2{font-size:19px; font-weight:900; color:var(--ink)}
   .stamp{font-size:11.5px; color:var(--muted)}
-  .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px}
+  .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:16px}
   @media(min-width:640px){.grid{grid-template-columns:repeat(3,1fr)}}
   @media(min-width:960px){.grid{grid-template-columns:repeat(4,1fr)}}
-  .card{display:block; background:var(--card); border:1px solid var(--line); border-radius:18px;
-    overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,.05); transition:transform .2s, box-shadow .2s}
-  .card:hover{transform:translateY(-3px); box-shadow:0 14px 30px rgba(0,0,0,.12)}
-  .card .pic{position:relative; height:160px; display:flex; align-items:center; justify-content:center; padding:12px; background:#fff}
-  .badge-disc{position:absolute; top:8px; right:8px; background:var(--red); color:#fff; font-size:11.5px;
-    font-weight:900; border-radius:999px; padding:4px 10px; animation:pulse 1.6s infinite;
-    box-shadow:0 3px 8px rgba(220,38,38,.4)}
-  .card .body{padding:12px}
-  .card h3{font-size:13.5px; font-weight:700; line-height:1.45; min-height:2.9em;
-    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
-  .card .old{margin-top:6px; font-size:11.5px; color:var(--muted)}
-  .cta{margin-top:10px; display:flex; align-items:center; justify-content:center; gap:6px; width:100%;
-    background:var(--amber); color:var(--green-950); font-size:12.5px; font-weight:900;
-    border-radius:12px; padding:9px 6px; transition:background .2s}
-  .card:hover .cta{background:var(--amber-light)}
-  .empty{text-align:center; padding:64px 16px; color:var(--muted)}
-
-  /* ===== Footer ===== */
-  footer{background:var(--green-950); color:#d1fae5; margin-top:48px}
-  .fwrap{max-width:760px; margin:0 auto; padding:32px 16px; text-align:center}
-  .fwrap .t{font-weight:800; margin-bottom:10px}
-  .fwrap p{font-size:11.5px; line-height:1.9; color:var(--green-300)}
-  .fwrap .c{margin-top:10px; font-size:10.5px; opacity:.6}
-
-  /* ===== Overlays ===== */
-  .overlay{position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center; padding:16px}
-  .overlay.modal{background:rgba(0,0,0,.6); backdrop-filter:blur(3px)}
-  .modal-box{background:#fff; border-radius:24px; max-width:420px; width:100%; padding:28px; text-align:center;
-    position:relative; box-shadow:0 24px 60px rgba(0,0,0,.35); animation:pop .25s}
-  @keyframes pop{from{transform:scale(.92); opacity:0}to{transform:scale(1); opacity:1}}
-  .modal-box .close{position:absolute; top:12px; left:12px; color:#a8a29e; font-size:18px}
-  .modal-box h3{margin-top:12px; font-size:20px; font-weight:900; color:var(--green-950)}
-  .modal-box .sub{margin-top:8px; font-size:13px; color:var(--muted);
-    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
-  .modal-box .go{margin-top:18px; display:flex; align-items:center; justify-content:center; gap:8px; width:100%;
-    background:var(--green-700); color:#fff; font-weight:900; border-radius:14px; padding:13px; font-size:15px}
-  .modal-box .go:hover{background:var(--green-900)}
-  .modal-box .skip{margin-top:10px; font-size:11.5px; color:#a8a29e}
-  .overlay.redirect{background:rgba(2,44,34,.96); flex-direction:column; color:#fff; text-align:center}
-  .spinner{width:54px; height:54px; border:4px solid var(--amber); border-top-color:transparent;
-    border-radius:50%; animation:spin .8s linear infinite}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .overlay.redirect .t1{margin-top:20px; font-size:18px; font-weight:900}
-  .overlay.redirect .t2{margin-top:6px; font-size:13px; color:var(--green-300)}
-  .hidden{display:none !important}
-</style>
-</head>
-<body>
-
-<header>
-  <div class="hwrap">
-    <div class="hrow">
-      <div class="brand">
-        <div class="logo">📡</div>
-        <div>
-          <h1>صائد الخصومات السعودية</h1>
-          <div class="live"><span class="dot"></span> رصد مباشر لعروض أمازون السعودية</div>
-        </div>
-      </div>
-      <div class="search desk-search">
-        <span class="icon">🔍</span>
-        <input id="q1" type="text" placeholder="ابحث عن منتج…">
-      </div>
-    </div>
-    <div class="search mob-search">
-      <span class="icon">🔍</span>
-      <input id="q2" type="text" placeholder="ابحث عن منتج…">
-    </div>
-    <nav id="tabs" aria-label="تصنيفات العروض"></nav>
-  </div>
-</header>
-
-<main>
-  <section class="hero" id="hero" aria-label="أقوى العروض"></section>
-
-  <section aria-label="جميع العروض">
-    <div class="grid-head">
-      <h2 id="gridTitle">🏷️ عروض اليوم</h2>
-      <span class="stamp" id="stamp"></span>
-    </div>
-    <div class="grid" id="grid"></div>
-    <div class="empty hidden" id="empty">🔍 لا توجد نتائج مطابقة. جرّب كلمة بحث أخرى أو غيّر التصنيف.</div>
-  </section>
-</main>
-
-<footer>
-  <div class="fwrap">
-    <div class="t">🛡️ صائد الخصومات السعودية</div>
-    <p>إفصاح: بصفتنا مشاركين في برنامج أمازون أسوشيتس (Amazon Associates)، نحصل على عمولة من عمليات
-    الشراء المؤهلة التي تتم عبر الروابط في هذا الموقع دون أي تكلفة إضافية عليك. الأسعار ونسب الخصم
-    المعروضة هي كما رُصدت وقت آخر تحديث وقد تتغير على متجر أمازون — السعر النهائي المعتمد هو الظاهر
-    على Amazon.sa لحظة الشراء.</p>
-    <div class="c" id="year"></div>
-  </div>
-</footer>
-
-<!-- Exit-intent modal -->
-<div class="overlay modal hidden" id="exitModal" role="dialog" aria-modal="true">
-  <div class="modal-box">
-    <button class="close" onclick="closeModal()">✕</button>
-    <span class="badge-hot">🔥 انتظر لحظة!</span>
-    <h3 id="modalTitle"></h3>
-    <div class="sub" id="modalSub"></div>
-    <a class="go" id="modalGo" href="#">⚡ اعرض العرض على أمازون</a>
-    <button class="skip" onclick="closeModal()">لا شكراً، سأكمل التصفح</button>
-  </div>
-</div>
-
-<!-- Redirect overlay -->
-<div class="overlay redirect hidden" id="redirect">
-  <div class="spinner"></div>
-  <div class="t1">جاري التحقق من توفر العرض…</div>
-  <div class="t2">سيتم تحويلك بأمان إلى Amazon.sa خلال لحظات</div>
-</div>
-
-<script>
-/* ================= الإعدادات والبيانات ================= */
-const AFFILIATE_TAG = "faraj733-21";
-const link = asin => `https://www.amazon.sa/dp/${asin}/?tag=${AFFILIATE_TAG}`;
-const CATEGORIES = ["الكل","الإلكترونيات","المنزل","الموضة"];
-
-const DATA = {
-  updated_at: "2026-06-11T06:00:00Z",
-  deals: [
-    {asin:"B0BNKVGB2J", title:"سماعات رأس لاسلكية بخاصية إلغاء الضوضاء النشطة", image:"https://m.media-amazon.com/images/I/61u48FEs0rL._AC_SL1500_.jpg", discount_percent:45, original_price:399, category:"الإلكترونيات"},
-    {asin:"B09XS7JWHH", title:"ساعة ذكية بشاشة أموليد ومقاومة للماء", image:"https://m.media-amazon.com/images/I/71pC4iCDgEL._AC_SL1500_.jpg", discount_percent:62, original_price:549, category:"الإلكترونيات"},
-    {asin:"B08N5WRWNW", title:"مقلاة هوائية رقمية سعة 5.5 لتر", image:"https://m.media-amazon.com/images/I/71+8uTMDRFL._AC_SL1500_.jpg", discount_percent:38, original_price:329, category:"المنزل"},
-    {asin:"B07XJ8C8F5", title:"مكنسة كهربائية لاسلكية خفيفة الوزن", image:"https://m.media-amazon.com/images/I/61o4-7HJ1uL._AC_SL1500_.jpg", discount_percent:55, original_price:799, category:"المنزل"},
-    {asin:"B09G9FPHY6", title:"حقيبة ظهر عصرية مقاومة للماء بمنفذ USB", image:"https://m.media-amazon.com/images/I/71xb2xkN5qL._AC_SL1500_.jpg", discount_percent:70, original_price:199, category:"الموضة"},
-    {asin:"B08PZHYWJS", title:"شاحن سريع 65 واط بثلاثة منافذ", image:"https://m.media-amazon.com/images/I/61bX2AoGj2L._AC_SL1500_.jpg", discount_percent:50, original_price:149, category:"الإلكترونيات"}
-  ]
-};
-
-let deals = DATA.deals, category = "الكل", query = "", heroIdx = 0, exitShown = false;
-
-/* في الإنتاج: تحميل deals.json الحي إن وُجد */
-fetch("deals.json", {cache:"no-store"})
-  .then(r => r.ok ? r.json() : Promise.reject())
-  .then(d => { if (Array.isArray(d.deals) && d.deals.length) { deals = d.deals; renderAll(d.updated_at); } })
-  .catch(() => {});
-
-const fmt = n => new Intl.NumberFormat("ar-SA",{maximumFractionDigits:0}).format(n);
-const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-
-/* ================= التبويبات ================= */
-function renderTabs(){
-  document.getElementById("tabs").innerHTML = CATEGORIES.map(c =>
-    `<button class="${c===category?'active':''}" onclick="setCat('${c}')">${c}</button>`).join("");
-}
-function setCat(c){ category = c; renderTabs(); renderGrid(); }
-
-/* ================= الكاروسيل ================= */
-function topDeals(){ return [...deals].sort((a,b)=>b.discount_percent-a.discount_percent).slice(0,3); }
-
-function renderHero(){
-  const top = topDeals();
-  document.getElementById("hero").innerHTML = top.map((d,i)=>`
-    <a class="slide ${i===heroIdx?'on':''}" href="${link(d.asin)}" target="_blank" rel="noopener noreferrer"
-       onclick="return go(event,'${d.asin}')">
-      <div class="txt">
-        <span class="badge-hot">🔥 خصم ${d.discount_percent}٪ لفترة محدودة</span>
-        <h2>${esc(d.title)}</h2>
-        <div class="price">
-          <span class="strike">${fmt(d.original_price)} ر.س</span>
-          <span class="reveal">⚡ اضغط لعرض السعر الحالي على أمازون</span>
-        </div>
-      </div>
-      <div class="pic"><img src="${d.image}" alt="${esc(d.title)}" loading="lazy"
-        onerror="this.parentElement.innerHTML='🛍️'"></div>
-    </a>`).join("") + `
-    <button class="arrow prev" aria-label="السابق" onclick="step(-1)">›</button>
-    <button class="arrow next" aria-label="التالي" onclick="step(1)">‹</button>
-    <div class="dots">${top.map((_,i)=>
-      `<button class="${i===heroIdx?'on':''}" aria-label="شريحة ${i+1}" onclick="jump(${i})"></button>`).join("")}</div>`;
-}
-function step(d){ const n = topDeals().length; heroIdx = (heroIdx + d + n) % n; renderHero(); }
-function jump(i){ heroIdx = i; renderHero(); }
-setInterval(()=>{ if(topDeals().length > 1) step(1); }, 5000);
-
-/* سحب باللمس */
-let tx = null;
-document.getElementById("hero").addEventListener("touchstart", e => tx = e.touches[0].clientX, {passive:true});
-document.getElementById("hero").addEventListener("touchend", e => {
-  if (tx === null) return;
-  const dx = e.changedTouches[0].clientX - tx;
-  if (Math.abs(dx) > 40) step(dx < 0 ? 1 : -1);
-  tx = null;
-}, {passive:true});
-
-/* ================= الشبكة ================= */
-function renderGrid(){
-  const list = deals.filter(d =>
-    (category === "الكل" || d.category === category) &&
-    (!query.trim() || d.title.includes(query.trim())));
-  document.getElementById("gridTitle").textContent =
-    "🏷️ عروض اليوم" + (category !== "الكل" ? " · " + category : "");
-  document.getElementById("empty").classList.toggle("hidden", list.length > 0);
-  document.getElementById("grid").innerHTML = list.map(d => `
-    <article>
-      <a class="card" href="${link(d.asin)}" target="_blank" rel="noopener noreferrer"
-         onclick="return go(event,'${d.asin}')">
-        <div class="pic">
-          <img src="${d.image}" alt="${esc(d.title)}" loading="lazy"
-            onerror="this.parentElement.querySelector('img')?.remove(); this.parentElement.insertAdjacentHTML('afterbegin','<div style=font-size:42px>🛍️</div>')">
-          <span class="badge-disc">${d.discount_percent}٪-</span>
-        </div>
-        <div class="body">
-          <h3>${esc(d.title)}</h3>
-          <div class="old">السعر قبل الخصم: <span class="strike">${fmt(d.original_price)} ر.س</span></div>
-          <span class="cta">🏷️ اضغط لعرض السعر الحالي ↗</span>
-        </div>
-      </a>
-    </article>`).join("");
-}
-
-/* البحث */
-function onSearch(v){ query = v; document.getElementById("q1").value = v; document.getElementById("q2").value = v; renderGrid(); }
-document.getElementById("q1").addEventListener("input", e => onSearch(e.target.value));
-document.getElementById("q2").addEventListener("input", e => onSearch(e.target.value));
-
-/* ================= التحويل ================= */
-function go(e, asin){
-  e.preventDefault();
-  document.getElementById("redirect").classList.remove("hidden");
-  setTimeout(()=>{
-    window.open(link(asin), "_blank", "noopener,noreferrer");
-    document.getElementById("redirect").classList.add("hidden");
-  }, 1000);
-  return false;
-}
-
-/* ================= Exit-Intent ================= */
-const store = {
-  get(k){ try { return localStorage.getItem(k); } catch { return null; } },
-  set(k,v){ try { localStorage.setItem(k,v); } catch {} }
-};
-document.addEventListener("mouseout", e => {
-  if (e.clientY > 0 || exitShown || store.get("exit_modal_shown") === "1") return;
-  exitShown = true; store.set("exit_modal_shown","1");
-  const best = topDeals()[0]; if (!best) return;
-  document.getElementById("modalTitle").textContent = `لا تفوّت أقوى عرض الآن بخصم ${best.discount_percent}٪`;
-  document.getElementById("modalSub").textContent = best.title;
-  const goBtn = document.getElementById("modalGo");
-  goBtn.href = link(best.asin);
-  goBtn.onclick = ev => { closeModal(); return go(ev, best.asin); };
-  document.getElementById("exitModal").classList.remove("hidden");
-});
-function closeModal(){ document.getElementById("exitModal").classList.add("hidden"); }
-
-/* ================= الإقلاع ================= */
-function renderAll(updatedAt){
-  renderTabs(); renderHero(); renderGrid();
-  document.getElementById("stamp").textContent =
-    "⏱️ آخر تحديث: " + new Date(updatedAt || DATA.updated_at).toLocaleString("ar-SA");
-}
-document.getElementById("year").textContent = "© " + new Date().getFullYear() + " جميع الحقوق محفوظة";
-renderAll();
-</script>
-</body>
-</html>
+  .card{
+    display:block; border-radius:20px; overflow:hidden; transition:transform .25s, box-shadow .25s;
+    background:var(--glass-strong);
+    backdrop-filter:blur(14px) saturate(160%);
