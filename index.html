@@ -3,193 +3,175 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ffffff">
 <title>صائد الخصومات السعودية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#1e293b; --muted:#64748b; --line:rgba(255,255,255,.6);
-    --accent:#0ea5e9; --accent-d:#0284c7; --gold:#f59e0b; --red:#ef4444;
-    --glass:rgba(255,255,255,.55); --glass-strong:rgba(255,255,255,.72);
-    --shadow:0 8px 32px rgba(31,41,55,.12);
+    --ink:#0f172a; --muted:#64748b; --soft:#94a3b8;
+    --line:#e9edf2; --bg:#f7f8fa; --card:#ffffff;
+    --accent:#2563eb; --accent-d:#1d4ed8; --hot:#e11d48; --ok:#059669;
+    --r:16px; --shadow:0 1px 2px rgba(15,23,42,.04);
+    --shadow-h:0 10px 30px rgba(15,23,42,.10);
   }
   *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
   body{
-    font-family:'Tajawal','Segoe UI',Tahoma,system-ui,sans-serif;
-    color:var(--ink); min-height:100vh; position:relative; overflow-x:hidden;
-    background:linear-gradient(135deg,#eef2f7 0%,#e6ecf5 40%,#f1f5f9 100%);
+    font-family:'Tajawal',system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif;
+    color:var(--ink); background:var(--bg); min-height:100vh; line-height:1.5;
+    -webkit-font-smoothing:antialiased;
   }
-  body::before,body::after{
-    content:""; position:fixed; border-radius:50%; filter:blur(80px); z-index:0; opacity:.5;
-  }
-  body::before{ width:420px;height:420px; background:#7dd3fc; top:-120px; right:-100px; }
-  body::after{ width:380px;height:380px; background:#fcd34d; bottom:-120px; left:-80px; }
-  img{max-width:100%; max-height:100%; object-fit:contain}
+  img{max-width:100%; max-height:100%; object-fit:contain; display:block}
   a{text-decoration:none; color:inherit}
-  button{font-family:inherit; cursor:pointer; border:none; background:none}
-  main,header,footer{position:relative; z-index:1}
+  button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit}
+  ::selection{background:rgba(37,99,235,.15)}
 
-  .glass{
-    background:var(--glass);
-    backdrop-filter:blur(18px) saturate(160%);
-    -webkit-backdrop-filter:blur(18px) saturate(160%);
-    border:1px solid var(--line);
-    box-shadow:var(--shadow);
+  /* ===== Header ===== */
+  header{
+    position:sticky; top:0; z-index:40; background:rgba(255,255,255,.85);
+    backdrop-filter:saturate(160%) blur(8px); -webkit-backdrop-filter:saturate(160%) blur(8px);
+    border-bottom:1px solid var(--line);
   }
-
-  header{position:sticky; top:0; z-index:40; padding:10px 16px 0}
-  .hwrap{
-    max-width:1100px; margin:0 auto; padding:14px 18px; border-radius:22px;
-    display:flex; flex-direction:column; gap:12px;
-    background:var(--glass-strong);
-    backdrop-filter:blur(20px) saturate(180%);
-    -webkit-backdrop-filter:blur(20px) saturate(180%);
-    border:1px solid var(--line); box-shadow:var(--shadow);
-  }
-  .hrow{display:flex; align-items:center; justify-content:space-between; gap:16px}
-  .brand{display:flex; align-items:center; gap:10px}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 18px}
+  .hrow{display:flex; align-items:center; gap:16px; padding:13px 0}
+  .brand{display:flex; align-items:center; gap:11px; flex-shrink:0}
   .logo{
-    width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;
-    font-size:22px; color:#fff;
-    background:linear-gradient(135deg,var(--accent),var(--accent-d));
-    box-shadow:0 6px 16px rgba(14,165,233,.35);
+    width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+    font-size:19px; background:var(--ink); color:#fff;
   }
-  .brand h1{font-size:18px; font-weight:900; letter-spacing:-.3px}
-  .live{color:var(--accent-d); font-size:11px; margin-top:3px; display:flex; align-items:center; gap:6px}
-  .dot{position:relative; width:8px; height:8px}
-  .dot::before,.dot::after{content:''; position:absolute; inset:0; border-radius:50%; background:#22c55e}
-  .dot::before{animation:ping 1.5s cubic-bezier(0,0,.2,1) infinite}
-  @keyframes ping{75%,100%{transform:scale(2.4); opacity:0}}
-  .search{position:relative; width:100%}
+  .brand h1{font-size:16.5px; font-weight:900; letter-spacing:-.3px; line-height:1.2}
+  .brand .sub{font-size:11px; color:var(--muted); display:flex; align-items:center; gap:5px; margin-top:2px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--ok);position:relative}
+  .dot::after{content:'';position:absolute;inset:0;border-radius:50%;background:var(--ok);animation:ping 1.8s cubic-bezier(0,0,.2,1) infinite}
+  @keyframes ping{75%,100%{transform:scale(2.6);opacity:0}}
+  .search{position:relative; margin-inline-start:auto; width:100%; max-width:300px}
   .search input{
-    width:100%; border-radius:14px; padding:10px 40px 10px 14px; font-size:14px;
-    background:rgba(255,255,255,.6); border:1px solid var(--line); color:var(--ink); outline:none;
-    transition:.2s;
+    width:100%; border-radius:11px; padding:9px 38px 9px 12px; font-size:14px;
+    background:var(--bg); border:1px solid var(--line); color:var(--ink); outline:none; transition:.15s;
   }
-  .search input::placeholder{color:#94a3b8}
-  .search input:focus{background:#fff; box-shadow:0 0 0 3px rgba(14,165,233,.25)}
-  .search .icon{position:absolute; top:50%; right:13px; transform:translateY(-50%); opacity:.5; font-size:15px}
-  .desk-search{max-width:320px; display:none}
-  @media(min-width:640px){ .desk-search{display:block} .mob-search{display:none} }
-  nav{display:flex; gap:8px; overflow-x:auto; padding-bottom:2px}
+  .search input::placeholder{color:var(--soft)}
+  .search input:focus{background:#fff; border-color:var(--accent); box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+  .search .ic{position:absolute; top:50%; right:12px; transform:translateY(-50%); color:var(--soft); font-size:14px}
+  .mob-search{display:none; padding:0 0 12px}
+  @media(max-width:620px){
+    .desk-search{display:none}
+    .mob-search{display:block}
+    .mob-search .search{max-width:none}
+  }
+  nav{display:flex; gap:8px; overflow-x:auto; padding:2px 0 12px; scrollbar-width:none}
+  nav::-webkit-scrollbar{display:none}
   nav button{
-    white-space:nowrap; border-radius:999px; padding:7px 18px; font-size:13px; font-weight:700;
-    background:rgba(255,255,255,.5); border:1px solid var(--line); color:var(--muted); transition:.2s;
+    white-space:nowrap; border-radius:999px; padding:7px 15px; font-size:13px; font-weight:700;
+    background:#fff; border:1px solid var(--line); color:var(--muted); transition:.15s;
   }
-  nav button:hover{background:rgba(255,255,255,.8)}
-  nav button.active{
-    background:linear-gradient(135deg,var(--accent),var(--accent-d)); color:#fff; border-color:transparent;
-    box-shadow:0 4px 12px rgba(14,165,233,.35);
-  }
+  nav button:hover{border-color:var(--soft); color:var(--ink)}
+  nav button.active{background:var(--ink); color:#fff; border-color:var(--ink)}
 
-  main{max-width:1100px; margin:0 auto; padding:0 16px 64px}
+  main{max-width:1120px; margin:0 auto; padding:0 18px 72px}
 
+  /* ===== Hero ===== */
   .hero{
-    position:relative; margin-top:20px; border-radius:26px; overflow:hidden; min-height:230px;
-    background:linear-gradient(135deg,rgba(14,165,233,.16),rgba(245,158,11,.14));
-    backdrop-filter:blur(16px) saturate(160%); -webkit-backdrop-filter:blur(16px) saturate(160%);
-    border:1px solid var(--line); box-shadow:var(--shadow);
+    margin-top:20px; border:1px solid var(--line); border-radius:20px; overflow:hidden;
+    background:var(--card); box-shadow:var(--shadow); position:relative;
   }
-  .slide{display:none; align-items:center; gap:24px; padding:30px}
-  .slide.on{display:flex; animation:fade .6s}
-  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-  .slide .txt{flex:1; min-width:0}
-  .badge-hot{
-    display:inline-flex; align-items:center; gap:5px; color:#fff; font-size:12.5px; font-weight:900;
-    border-radius:999px; padding:6px 14px;
-    background:linear-gradient(135deg,#fb7185,var(--red)); box-shadow:0 4px 12px rgba(239,68,68,.35);
-  }
-  .slide h2{margin-top:12px; font-size:clamp(19px,3.4vw,28px); font-weight:900; line-height:1.45; color:var(--ink);
-    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
-  .slide .price{margin-top:10px; font-size:14px; display:flex; flex-wrap:wrap; gap:10px; align-items:center}
-  .strike{text-decoration:line-through; color:#94a3b8}
-  .reveal{color:var(--accent-d); font-weight:800}
+  .slide{display:none; grid-template-columns:1fr 190px; gap:22px; padding:26px 28px; align-items:center}
+  .slide.on{display:grid; animation:fade .45s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
   .slide .pic{
-    width:160px;height:160px;flex-shrink:0;border-radius:20px;padding:12px;display:flex;align-items:center;justify-content:center;
-    background:rgba(255,255,255,.7); border:1px solid var(--line);
-    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+    height:170px; border-radius:14px; background:var(--bg); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; padding:12px; order:2;
   }
-  @media(max-width:560px){ .slide{padding:20px;gap:14px} .slide .pic{width:104px;height:104px} }
-  .arrow{
-    position:absolute; top:50%; transform:translateY(-50%); width:38px;height:38px;border-radius:50%;
-    font-size:18px; color:var(--ink); display:flex; align-items:center; justify-content:center;
-    background:rgba(255,255,255,.6); border:1px solid var(--line);
-    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); transition:.2s;
+  .slide .txt{min-width:0; order:1}
+  .tag-hot{
+    display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:800; color:var(--hot);
+    background:rgba(225,29,72,.08); border-radius:999px; padding:5px 12px;
   }
-  .arrow:hover{background:#fff}
-  .arrow.next{left:12px} .arrow.prev{right:12px}
-  .dots{position:absolute; bottom:14px; right:0; left:0; display:flex; justify-content:center; gap:8px}
-  .dots button{height:6px;width:8px;border-radius:999px;background:rgba(30,41,59,.25);transition:.25s}
-  .dots button.on{width:24px; background:var(--accent)}
+  .slide h2{
+    margin-top:12px; font-size:clamp(18px,3vw,25px); font-weight:900; line-height:1.4; letter-spacing:-.3px;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+  }
+  .slide .cmp{margin-top:14px}
+  .slide .go{margin-top:16px; display:inline-flex; width:auto; padding-inline:22px}
+  @media(max-width:620px){
+    .slide, .slide.on{grid-template-columns:1fr; gap:14px; padding:20px}
+    .slide .pic{height:150px; order:1} .slide .txt{order:2}
+    .slide .go{width:100%; justify-content:center}
+  }
+  .dots{position:absolute; bottom:12px; left:0; right:0; display:flex; justify-content:center; gap:7px}
+  .dots button{height:6px; width:6px; border-radius:999px; background:#cbd5e1; transition:.25s}
+  .dots button.on{width:22px; background:var(--accent)}
 
-  .gh{margin:30px 0 14px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px}
-  .gh h2{font-size:19px; font-weight:900; color:var(--ink)}
-  .stamp{font-size:11.5px; color:var(--muted)}
-  .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:16px}
-  @media(min-width:640px){.grid{grid-template-columns:repeat(3,1fr)}}
-  @media(min-width:960px){.grid{grid-template-columns:repeat(4,1fr)}}
+  /* ===== Grid ===== */
+  .gh{margin:32px 0 16px; display:flex; align-items:baseline; justify-content:space-between; gap:10px; flex-wrap:wrap}
+  .gh h2{font-size:19px; font-weight:900; letter-spacing:-.3px}
+  .stamp{font-size:11.5px; color:var(--soft)}
+  .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px}
+  @media(min-width:620px){.grid{grid-template-columns:repeat(3,1fr); gap:16px}}
+  @media(min-width:940px){.grid{grid-template-columns:repeat(4,1fr)}}
   .card{
-    display:block; border-radius:20px; overflow:hidden; transition:transform .25s, box-shadow .25s;
-    background:var(--glass-strong);
-    backdrop-filter:blur(14px) saturate(160%); -webkit-backdrop-filter:blur(14px) saturate(160%);
-    border:1px solid var(--line); box-shadow:var(--shadow);
+    display:flex; flex-direction:column; height:100%; border:1px solid var(--line); border-radius:var(--r);
+    overflow:hidden; background:var(--card); box-shadow:var(--shadow); transition:transform .2s, box-shadow .2s, border-color .2s;
   }
-  .card:hover{transform:translateY(-4px); box-shadow:0 16px 40px rgba(31,41,55,.18)}
-  .card .pic{position:relative; height:160px; display:flex; align-items:center; justify-content:center; padding:14px;
-    background:rgba(255,255,255,.5)}
-  .badge-disc{
-    position:absolute; top:10px; right:10px; color:#fff; font-size:11.5px; font-weight:900;
-    border-radius:999px; padding:4px 11px;
-    background:linear-gradient(135deg,#fb7185,var(--red)); box-shadow:0 4px 10px rgba(239,68,68,.4);
+  .card:hover{transform:translateY(-3px); box-shadow:var(--shadow-h); border-color:#dbe1ea}
+  .card .pic{position:relative; height:158px; display:flex; align-items:center; justify-content:center; padding:16px; background:#fff; border-bottom:1px solid var(--line)}
+  .badge{
+    position:absolute; top:10px; right:10px; font-size:12px; font-weight:900; color:#fff;
+    background:var(--hot); border-radius:8px; padding:3px 9px; letter-spacing:-.2px;
   }
-  .card .body{padding:14px}
-  .card h3{font-size:13.5px; font-weight:700; line-height:1.6; min-height:2.9em;
-    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
-  .card .old{margin-top:7px; font-size:11.5px; color:var(--muted)}
+  .card .body{padding:13px 14px 14px; display:flex; flex-direction:column; flex:1}
+  .card h3{
+    font-size:13.5px; font-weight:700; line-height:1.55; min-height:2.9em; color:var(--ink);
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+  }
+  /* ===== Comparison block ===== */
+  .cmp{margin-top:11px; border:1px solid var(--line); border-radius:11px; overflow:hidden; font-size:12.5px}
+  .cmp-row{display:flex; align-items:center; justify-content:space-between; gap:8px; padding:7px 10px}
+  .cmp-row + .cmp-row{border-top:1px solid var(--line)}
+  .cmp-row .k{color:var(--muted); font-weight:500}
+  .cmp-row .v{font-weight:800; white-space:nowrap}
+  .cmp-row.amazon .v{color:var(--ok)}
+  .cmp-row .v s{color:var(--soft); font-weight:600}
   .cta{
-    margin-top:11px; display:flex; align-items:center; justify-content:center; gap:6px; width:100%;
-    color:#fff; font-size:12.5px; font-weight:900; border-radius:13px; padding:10px 6px; transition:.2s;
-    background:linear-gradient(135deg,var(--accent),var(--accent-d)); box-shadow:0 6px 16px rgba(14,165,233,.32);
+    margin-top:12px; display:flex; align-items:center; justify-content:center; gap:7px; width:100%;
+    color:#fff; font-size:13px; font-weight:800; border-radius:11px; padding:11px 8px; transition:.15s;
+    background:var(--accent);
   }
-  .card:hover .cta{filter:brightness(1.08)}
-  .empty{text-align:center; padding:64px 16px; color:var(--muted)}
+  .card:hover .cta{background:var(--accent-d)}
+  .empty{text-align:center; padding:72px 16px; color:var(--muted); font-size:14px}
 
-  footer{margin-top:40px; padding:0 16px 24px}
-  .fwrap{
-    max-width:800px; margin:0 auto; padding:26px 20px; border-radius:22px; text-align:center;
-    background:var(--glass); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
-    border:1px solid var(--line); box-shadow:var(--shadow);
-  }
-  .fwrap .t{font-weight:900; margin-bottom:10px; color:var(--ink)}
+  /* ===== Footer ===== */
+  footer{border-top:1px solid var(--line); background:#fff}
+  .fwrap{max-width:820px; margin:0 auto; padding:28px 18px; text-align:center}
+  .fwrap .ft{font-weight:900; margin-bottom:10px; display:flex; align-items:center; justify-content:center; gap:8px}
   .fwrap p{font-size:11.5px; line-height:2; color:var(--muted)}
-  .fwrap .c{margin-top:12px; font-size:10.5px; color:#94a3b8}
+  .fwrap .cc{margin-top:14px; font-size:10.5px; color:var(--soft)}
 
-  .overlay{position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center; padding:16px}
-  .overlay.modal{background:rgba(30,41,59,.28); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px)}
-  .modal-box{
-    max-width:420px; width:100%; padding:28px; text-align:center; position:relative; border-radius:26px;
-    background:var(--glass-strong); backdrop-filter:blur(24px) saturate(180%); -webkit-backdrop-filter:blur(24px) saturate(180%);
-    border:1px solid var(--line); box-shadow:0 24px 60px rgba(31,41,55,.25); animation:pop .28s;
+  /* ===== Overlays ===== */
+  .overlay{position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center; padding:18px}
+  .overlay.modal{background:rgba(15,23,42,.4)}
+  .box{
+    max-width:400px; width:100%; padding:26px; text-align:center; position:relative; border-radius:20px;
+    background:#fff; box-shadow:0 24px 60px rgba(15,23,42,.28); animation:pop .25s ease;
   }
-  @keyframes pop{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
-  .modal-box .close{position:absolute; top:14px; left:14px; color:#94a3b8; font-size:18px}
-  .modal-box h3{margin-top:12px; font-size:20px; font-weight:900; color:var(--ink)}
-  .modal-box .sub{margin-top:8px; font-size:13px; color:var(--muted);
+  @keyframes pop{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}
+  .box .x{position:absolute; top:13px; left:14px; color:var(--soft); font-size:17px}
+  .box .tag-hot{margin:0 auto}
+  .box h3{margin-top:13px; font-size:19px; font-weight:900; letter-spacing:-.3px}
+  .box .s{margin-top:8px; font-size:13px; color:var(--muted);
     display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
-  .modal-box .go{
+  .go{
     margin-top:18px; display:flex; align-items:center; justify-content:center; gap:8px; width:100%;
-    color:#fff; font-weight:900; border-radius:15px; padding:13px; font-size:15px;
-    background:linear-gradient(135deg,var(--accent),var(--accent-d)); box-shadow:0 8px 20px rgba(14,165,233,.4);
+    color:#fff; font-weight:800; border-radius:12px; padding:13px; font-size:15px; background:var(--accent); transition:.15s;
   }
-  .modal-box .go:hover{filter:brightness(1.08)}
-  .modal-box .skip{margin-top:12px; font-size:11.5px; color:#94a3b8}
-  .overlay.redirect{background:rgba(241,245,249,.7); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); flex-direction:column; text-align:center}
-  .rbox{
-    padding:34px 40px; border-radius:26px;
-    background:var(--glass-strong); border:1px solid var(--line); box-shadow:var(--shadow);
-    backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
-  }
-  .spinner{width:54px;height:54px;border:4px solid rgba(14,165,233,.25);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto}
+  .go:hover{background:var(--accent-d)}
+  .box .skip{margin-top:11px; font-size:12px; color:var(--soft)}
+  .overlay.redirect{background:rgba(247,248,250,.82); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px)}
+  .rbox{background:#fff; border:1px solid var(--line); border-radius:20px; padding:32px 40px; text-align:center; box-shadow:var(--shadow-h)}
+  .spin{width:48px;height:48px;border:4px solid #e2e8f0;border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto}
   @keyframes spin{to{transform:rotate(360deg)}}
-  .rbox .t1{margin-top:20px; font-size:17px; font-weight:900; color:var(--ink)}
+  .rbox .t1{margin-top:18px; font-size:16px; font-weight:900}
   .rbox .t2{margin-top:6px; font-size:12.5px; color:var(--muted)}
   .hidden{display:none !important}
 </style>
@@ -197,30 +179,32 @@
 <body>
 
 <header>
-  <div class="hwrap">
+  <div class="wrap">
     <div class="hrow">
       <div class="brand">
         <div class="logo">🏷️</div>
         <div>
           <h1>صائد الخصومات السعودية</h1>
-          <div class="live"><span class="dot"></span> رصد مباشر لعروض أمازون السعودية</div>
+          <div class="sub"><span class="dot"></span> رصد عروض أمازون السعودية</div>
         </div>
       </div>
       <div class="search desk-search">
-        <span class="icon">🔍</span>
-        <input id="q1" type="text" placeholder="ابحث عن منتج…">
+        <span class="ic">🔍</span>
+        <input id="q1" type="text" placeholder="ابحث عن منتج…" aria-label="بحث">
       </div>
     </div>
-    <div class="search mob-search">
-      <span class="icon">🔍</span>
-      <input id="q2" type="text" placeholder="ابحث عن منتج…">
+    <div class="mob-search">
+      <div class="search">
+        <span class="ic">🔍</span>
+        <input id="q2" type="text" placeholder="ابحث عن منتج…" aria-label="بحث">
+      </div>
     </div>
     <nav id="tabs" aria-label="تصنيفات العروض"></nav>
   </div>
 </header>
 
 <main>
-  <section class="hero" id="hero" aria-label="أقوى العروض"></section>
+  <section class="hero hidden" id="hero" aria-label="أبرز العروض"></section>
 
   <section aria-label="جميع العروض">
     <div class="gh">
@@ -228,113 +212,129 @@
       <span class="stamp" id="stamp"></span>
     </div>
     <div class="grid" id="grid"></div>
-    <div class="empty hidden" id="empty">🔍 لا توجد نتائج مطابقة. جرّب كلمة بحث أخرى أو غيّر التصنيف.</div>
+    <div class="empty hidden" id="empty">🔍 لا توجد نتائج مطابقة — جرّب كلمة أخرى أو غيّر التصنيف.</div>
   </section>
 </main>
 
 <footer>
   <div class="fwrap">
-    <div class="t">🏷️ صائد الخصومات السعودية</div>
+    <div class="ft">🏷️ صائد الخصومات السعودية</div>
     <p>إفصاح: بصفتنا مشاركين في برنامج أمازون أسوشيتس (Amazon Associates)، نحصل على عمولة من عمليات
-    الشراء المؤهلة التي تتم عبر الروابط في هذا الموقع دون أي تكلفة إضافية عليك. الأسعار ونسب الخصم
-    المعروضة هي كما رُصدت وقت آخر تحديث وقد تتغير على متجر أمازون — السعر النهائي المعتمد هو الظاهر
-    على Amazon.sa لحظة الشراء.</p>
-    <div class="c" id="year"></div>
+    الشراء المؤهلة عبر الروابط في هذا الموقع دون أي تكلفة إضافية عليك. الأسعار ونسب الخصم كما رُصدت
+    وقت آخر تحديث وقد تتغيّر — السعر النهائي المعتمد هو الظاهر على Amazon.sa لحظة الشراء.</p>
+    <div class="cc" id="year"></div>
   </div>
 </footer>
 
+<!-- Exit-intent modal -->
 <div class="overlay modal hidden" id="exitModal" role="dialog" aria-modal="true">
-  <div class="modal-box">
-    <button class="close" onclick="closeModal()">✕</button>
-    <span class="badge-hot">🔥 انتظر لحظة!</span>
+  <div class="box">
+    <button class="x" onclick="closeModal()" aria-label="إغلاق">✕</button>
+    <span class="tag-hot">🔥 انتظر لحظة</span>
     <h3 id="modalTitle"></h3>
-    <div class="sub" id="modalSub"></div>
-    <a class="go" id="modalGo" href="#">⚡ اعرض العرض على أمازون</a>
+    <div class="s" id="modalSub"></div>
+    <a class="go" id="modalGo" href="#">اعرض العرض على أمازون ↗</a>
     <button class="skip" onclick="closeModal()">لا شكراً، سأكمل التصفح</button>
   </div>
 </div>
 
+<!-- Redirect overlay (compliance: neutral wording only) -->
 <div class="overlay redirect hidden" id="redirect">
   <div class="rbox">
-    <div class="spinner"></div>
+    <div class="spin"></div>
     <div class="t1">جاري التحقق من توفر العرض…</div>
     <div class="t2">سيتم تحويلك بأمان إلى Amazon.sa خلال لحظات</div>
   </div>
 </div>
 
 <script>
+/* ================= الإعدادات ================= */
 const AFFILIATE_TAG = "faraj733-21";
 const link = asin => `https://www.amazon.sa/dp/${asin}/?tag=${AFFILIATE_TAG}`;
 const CATEGORIES = ["الكل","الإلكترونيات","المنزل","الموضة"];
 
+/* بيانات احتياطية (تطابق العروض الحقيقية) — تظهر فقط إذا تعذّر تحميل deals.json الحي. */
 const DATA = {
-  updated_at: "2026-06-11T06:00:00Z",
+  updated_at: "2026-07-21T04:18:12+00:00",
   deals: [
-    {asin:"B0BNKVGB2J", title:"سماعات رأس لاسلكية بخاصية إلغاء الضوضاء النشطة", image:"https://m.media-amazon.com/images/I/61u48FEs0rL._AC_SL1500_.jpg", discount_percent:45, original_price:399, category:"الإلكترونيات"},
-    {asin:"B09XS7JWHH", title:"ساعة ذكية بشاشة أموليد ومقاومة للماء", image:"https://m.media-amazon.com/images/I/71pC4iCDgEL._AC_SL1500_.jpg", discount_percent:62, original_price:549, category:"الإلكترونيات"},
-    {asin:"B08N5WRWNW", title:"مقلاة هوائية رقمية سعة 5.5 لتر", image:"https://m.media-amazon.com/images/I/71+8uTMDRFL._AC_SL1500_.jpg", discount_percent:38, original_price:329, category:"المنزل"},
-    {asin:"B07XJ8C8F5", title:"مكنسة كهربائية لاسلكية خفيفة الوزن", image:"https://m.media-amazon.com/images/I/61o4-7HJ1uL._AC_SL1500_.jpg", discount_percent:55, original_price:799, category:"المنزل"},
-    {asin:"B09G9FPHY6", title:"حقيبة ظهر عصرية مقاومة للماء بمنفذ USB", image:"https://m.media-amazon.com/images/I/71xb2xkN5qL._AC_SL1500_.jpg", discount_percent:70, original_price:199, category:"الموضة"},
-    {asin:"B08PZHYWJS", title:"شاحن سريع 65 واط بثلاثة منافذ", image:"https://m.media-amazon.com/images/I/61bX2AoGj2L._AC_SL1500_.jpg", discount_percent:50, original_price:149, category:"الإلكترونيات"}
+    {asin:"B0DL5FT193", title:"شاحن UGREEN بقوة 200 واط بـ8 منافذ وتقنية GaN للشحن السريع", image:"https://m.media-amazon.com/images/I/51PpIM8WXVL._AC_UF894,1000_QL80_FMwebp_.jpg", discount_percent:32, original_price:379, category:"الإلكترونيات"},
+    {asin:"B08FJ678YK", title:"جهاز تنقية الهواء ليفويت Core 200S الذكي للمنزل", image:"https://m.media-amazon.com/images/I/61YVFzh9kLL._AC_UF1000,1000_QL80_FMwebp_.jpg", discount_percent:24, original_price:500, category:"المنزل"},
+    {asin:"B07ZG5NTPJ", title:"ميزان يوفي eufy الذكي C1 بتقنية بلوتوث وتحليل مكونات الجسم", image:"https://m.media-amazon.com/images/I/617LH20BD5L._AC_SF1050,1050_QL80_.jpg", discount_percent:23, original_price:89, category:"المنزل"},
+    {asin:"B0D53RXMB1", title:"جهاز تتبع UGREEN FineTrack بتقنية بلوتوث للحقائب والجوازات", image:"https://m.media-amazon.com/images/I/61eiRrdySeL._AC_SX679_.jpg", discount_percent:20, original_price:69, category:"الإلكترونيات"},
+    {asin:"B08GHC8429", title:"مظلة Showay واقية من الشمس والأشعة فوق البنفسجية لزجاج السيارة", image:"https://m.media-amazon.com/images/I/41PbD+yb4OL._AC_SF1050,1050_QL80_.jpg", discount_percent:11, original_price:20, category:"الموضة"},
+    {asin:"B0DBVFNMQG", title:"ماكينة صنع الثلج Flvzog لسطح الطاولة ذاتية التنظيف", image:"https://m.media-amazon.com/images/I/61dfrgeOOrL._AC_UF350,350_QL80_FMwebp_.jpg", discount_percent:10, original_price:269, category:"المنزل"}
   ]
 };
 
 let deals = DATA.deals, category = "الكل", query = "", heroIdx = 0, exitShown = false;
 
+/* تحميل العروض الحيّة إن وُجدت */
 fetch("deals.json", {cache:"no-store"})
   .then(r => r.ok ? r.json() : Promise.reject())
   .then(d => { if (Array.isArray(d.deals) && d.deals.length) { deals = d.deals; renderAll(d.updated_at); } })
   .catch(() => {});
 
 const fmt = n => new Intl.NumberFormat("ar-SA",{maximumFractionDigits:0}).format(n);
-const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
+/* سطر أمازون قبل الخصم + نسبة الخصم */
+function cmpBlock(d){
+  return `<div class="cmp">
+    <div class="cmp-row amazon"><span class="k">أمازون قبل الخصم</span><span class="v"><s>${fmt(d.original_price)} ر.س</s> · خصم ${d.discount_percent}٪</span></div>
+  </div>`;
+}
+
+/* ================= التبويبات ================= */
 function renderTabs(){
   document.getElementById("tabs").innerHTML = CATEGORIES.map(c =>
     `<button class="${c===category?'active':''}" onclick="setCat('${c}')">${c}</button>`).join("");
 }
 function setCat(c){ category = c; renderTabs(); renderGrid(); }
 
+/* ================= الهيرو ================= */
 function topDeals(){ return [...deals].sort((a,b)=>b.discount_percent-a.discount_percent).slice(0,3); }
 
 function renderHero(){
   const top = topDeals();
-  document.getElementById("hero").innerHTML = top.map((d,i)=>`
+  const hero = document.getElementById("hero");
+  if (!top.length){ hero.classList.add("hidden"); return; }
+  hero.classList.remove("hidden");
+  hero.innerHTML = top.map((d,i)=>`
     <a class="slide ${i===heroIdx?'on':''}" href="${link(d.asin)}" target="_blank" rel="noopener noreferrer"
        onclick="return go(event,'${d.asin}')">
       <div class="txt">
-        <span class="badge-hot">🔥 خصم ${d.discount_percent}٪ لفترة محدودة</span>
+        <span class="tag-hot">🔥 خصم ${d.discount_percent}٪ · أبرز العروض</span>
         <h2>${esc(d.title)}</h2>
-        <div class="price">
-          <span class="strike">${fmt(d.original_price)} ر.س</span>
-          <span class="reveal">⚡ اضغط لعرض السعر الحالي على أمازون</span>
-        </div>
+        ${cmpBlock(d)}
+        <span class="go">اعرض السعر الحالي على أمازون ↗</span>
       </div>
       <div class="pic"><img src="${d.image}" alt="${esc(d.title)}" loading="lazy"
         onerror="this.parentElement.innerHTML='🛍️'"></div>
     </a>`).join("") + `
-    <button class="arrow prev" aria-label="السابق" onclick="step(-1)">›</button>
-    <button class="arrow next" aria-label="التالي" onclick="step(1)">‹</button>
     <div class="dots">${top.map((_,i)=>
       `<button class="${i===heroIdx?'on':''}" aria-label="شريحة ${i+1}" onclick="jump(${i})"></button>`).join("")}</div>`;
 }
-function step(d){ const n = topDeals().length; heroIdx = (heroIdx + d + n) % n; renderHero(); }
+function step(d){ const n = topDeals().length; if(!n) return; heroIdx = (heroIdx + d + n) % n; renderHero(); }
 function jump(i){ heroIdx = i; renderHero(); }
-setInterval(()=>{ if(topDeals().length > 1) step(1); }, 5000);
+setInterval(()=>{ if(topDeals().length > 1) step(1); }, 5500);
 
+/* سحب باللمس على الهيرو */
 let tx = null;
-document.getElementById("hero").addEventListener("touchstart", e => tx = e.touches[0].clientX, {passive:true});
-document.getElementById("hero").addEventListener("touchend", e => {
+const heroEl = document.getElementById("hero");
+heroEl.addEventListener("touchstart", e => tx = e.touches[0].clientX, {passive:true});
+heroEl.addEventListener("touchend", e => {
   if (tx === null) return;
   const dx = e.changedTouches[0].clientX - tx;
   if (Math.abs(dx) > 40) step(dx < 0 ? 1 : -1);
   tx = null;
 }, {passive:true});
 
+/* ================= الشبكة ================= */
 function renderGrid(){
+  const q = query.trim();
   const list = deals.filter(d =>
     (category === "الكل" || d.category === category) &&
-    (!query.trim() || d.title.includes(query.trim())));
+    (!q || d.title.includes(q)));
   document.getElementById("gridTitle").textContent =
     "🏷️ عروض اليوم" + (category !== "الكل" ? " · " + category : "");
   document.getElementById("empty").classList.toggle("hidden", list.length > 0);
@@ -344,41 +344,49 @@ function renderGrid(){
          onclick="return go(event,'${d.asin}')">
         <div class="pic">
           <img src="${d.image}" alt="${esc(d.title)}" loading="lazy"
-            onerror="this.parentElement.querySelector('img')?.remove(); this.parentElement.insertAdjacentHTML('afterbegin','<div style=font-size:42px>🛍️</div>')">
-          <span class="badge-disc">${d.discount_percent}٪-</span>
+            onerror="this.replaceWith(Object.assign(document.createElement('div'),{textContent:'🛍️',style:'font-size:42px'}))">
+          <span class="badge">${d.discount_percent}٪-</span>
         </div>
         <div class="body">
           <h3>${esc(d.title)}</h3>
-          <div class="old">السعر قبل الخصم: <span class="strike">${fmt(d.original_price)} ر.س</span></div>
-          <span class="cta">🏷️ اضغط لعرض السعر الحالي ↗</span>
+          ${cmpBlock(d)}
+          <span class="cta">اعرض السعر الحالي على أمازون ↗</span>
         </div>
       </a>
     </article>`).join("");
 }
 
-function onSearch(v){ query = v; document.getElementById("q1").value = v; document.getElementById("q2").value = v; renderGrid(); }
+/* البحث */
+function onSearch(v){ query = v; const q1=document.getElementById("q1"),q2=document.getElementById("q2"); if(q1.value!==v)q1.value=v; if(q2.value!==v)q2.value=v; renderGrid(); }
 document.getElementById("q1").addEventListener("input", e => onSearch(e.target.value));
 document.getElementById("q2").addEventListener("input", e => onSearch(e.target.value));
 
+/* ================= التحويل (إصلاح حجب النوافذ) ================= */
 function go(e, asin){
   e.preventDefault();
+  const url = link(asin);
+  /* نفتح التبويب داخل إيماءة المستخدم مباشرة حتى لا تحجبه المتصفحات، ثم نوجّهه بعد لحظة */
+  let win = null;
+  try { win = window.open("about:blank", "_blank"); if (win) win.opener = null; } catch (_) {}
   document.getElementById("redirect").classList.remove("hidden");
   setTimeout(()=>{
-    window.open(link(asin), "_blank", "noopener,noreferrer");
+    if (win && !win.closed) { win.location.replace(url); }
+    else { window.location.href = url; }   /* احتياط: نفس التبويب */
     document.getElementById("redirect").classList.add("hidden");
-  }, 1000);
+  }, 900);
   return false;
 }
 
+/* ================= Exit-Intent ================= */
 const store = {
   get(k){ try { return localStorage.getItem(k); } catch { return null; } },
   set(k,v){ try { localStorage.setItem(k,v); } catch {} }
 };
 document.addEventListener("mouseout", e => {
   if (e.clientY > 0 || exitShown || store.get("exit_modal_shown") === "1") return;
-  exitShown = true; store.set("exit_modal_shown","1");
   const best = topDeals()[0]; if (!best) return;
-  document.getElementById("modalTitle").textContent = `لا تفوّت أقوى عرض الآن بخصم ${best.discount_percent}٪`;
+  exitShown = true; store.set("exit_modal_shown","1");
+  document.getElementById("modalTitle").textContent = `لا تفوّت أقوى عرض بخصم ${best.discount_percent}٪`;
   document.getElementById("modalSub").textContent = best.title;
   const goBtn = document.getElementById("modalGo");
   goBtn.href = link(best.asin);
@@ -387,12 +395,13 @@ document.addEventListener("mouseout", e => {
 });
 function closeModal(){ document.getElementById("exitModal").classList.add("hidden"); }
 
+/* ================= الإقلاع ================= */
 function renderAll(updatedAt){
   renderTabs(); renderHero(); renderGrid();
   document.getElementById("stamp").textContent =
     "⏱️ آخر تحديث: " + new Date(updatedAt || DATA.updated_at).toLocaleString("ar-SA");
 }
-document.getElementById("year").textContent = "© " + new Date().getFullYear() + " جميع الحقوق محفوظة";
+document.getElementById("year").textContent = "© " + new Date().getFullYear() + " صائد الخصومات السعودية";
 renderAll();
 </script>
 </body>
