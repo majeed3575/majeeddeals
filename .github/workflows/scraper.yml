@@ -34,6 +34,10 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHANNEL_USERNAME: ${{ secrets.TELEGRAM_CHANNEL_USERNAME }}
+          # Amazon Creators API (البديل الرسمي لـ PA-API) — يكفي إضافة هذين السرّين لتفعيل التحديث الحيّ.
+          # باقي الإعدادات لها قيم افتراضية جاهزة للسعودية داخل الكود.
+          CREATORS_CLIENT_ID: ${{ secrets.CREATORS_CLIENT_ID }}
+          CREATORS_CLIENT_SECRET: ${{ secrets.CREATORS_CLIENT_SECRET }}
 
       - name: Commit & push (if changed)
         run: |
@@ -41,6 +45,7 @@ jobs:
           git config user.email "actions@github.com"
           git add deals.json
           if [ -f posted_deals.json ]; then git add posted_deals.json; fi
+          if [ -f asins.json ]; then git add asins.json; fi
           if git diff --cached --quiet; then
             echo "No changes - skipping commit."
           else
