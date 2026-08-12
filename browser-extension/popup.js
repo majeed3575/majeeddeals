@@ -534,6 +534,18 @@ $("downloadAsins").addEventListener("click", async () => {
   downloadJson("asins.json", JSON.stringify(asins, null, 2));
   showStatus("✓ تم تنزيل asins.json.", "ok");
 });
+$("downloadAli").addEventListener("click", async () => {
+  const products = (await getList())
+    .filter((item) => itemStore(item) === "aliexpress" && item.product_id)
+    .map((item) => ({
+      product_id: item.product_id,
+      url: item.url,
+      category: item.category
+    }));
+  if (!products.length) return showStatus("لا توجد منتجات AliExpress حاليًا.", "error");
+  downloadJson("aliexpress_products.json", JSON.stringify({ products }, null, 2));
+  showStatus("✓ تم تنزيل قائمة متابعة AliExpress.", "ok");
+});
 $("copyJson").addEventListener("click", async () => {
   const list = await getList();
   if (!list.length) return showStatus("لا توجد منتجات للنسخ.", "error");
