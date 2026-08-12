@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>AliExpress — أوفرلي</title>
+  <style>
+    :root{color-scheme:dark;--bg:#07100f;--card:#10211f;--mint:#80d4ca;--text:#f3fbfa;--muted:#9bb5b1;--line:#29423f}
+    *{box-sizing:border-box}body{min-height:100vh;margin:0;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% 0,#14322e 0,transparent 42%),var(--bg);color:var(--text);font-family:Tahoma,"Segoe UI",sans-serif}
+    main{width:min(520px,100%);padding:34px;border:1px solid var(--line);border-radius:28px;background:linear-gradient(145deg,rgba(18,39,36,.98),rgba(8,20,18,.98));box-shadow:0 25px 70px rgba(0,0,0,.35);text-align:center}
+    img{width:82px;height:82px;object-fit:contain;border-radius:24px;background:var(--mint)}
+    h1{margin:20px 0 10px;font-size:25px}p{margin:0;color:var(--muted);line-height:1.9}a{display:inline-flex;margin-top:22px;padding:12px 22px;border-radius:999px;background:var(--mint);color:#06110f;font-weight:800;text-decoration:none}
+    .status{margin:18px 0 0;padding:12px;border:1px solid var(--line);border-radius:14px;color:var(--mint);background:rgba(128,212,202,.07)}
+  </style>
+</head>
+<body>
+  <main>
+    <img src="assets/overly-icon.png" alt="أوفرلي">
+    <h1>تم الرجوع إلى أوفرلي</h1>
+    <p>استقبل الموقع رجوع AliExpress بأمان. لا تُحفظ رموز التفويض أو المفاتيح في هذه الصفحة العامة.</p>
+    <div id="status" class="status">يمكنك إغلاق هذه الصفحة والعودة إلى إعداد التطبيق.</div>
+    <a href="./">العودة إلى أوفرلي</a>
+  </main>
+  <script>
+    (() => {
+      const params = new URLSearchParams(location.search);
+      const returned = params.has("code") || params.has("state") || params.has("error");
+      if (returned) {
+        history.replaceState(null, "", location.pathname);
+        document.getElementById("status").textContent = "اكتملت العودة من AliExpress، وتم تنظيف معلومات الرابط الحساسة.";
+      }
+    })();
+  </script>
+</body>
+</html>

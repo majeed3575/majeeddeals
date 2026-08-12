@@ -10,14 +10,16 @@
 ملاحظة تشغيلية مهمة:
 صفحة عروض أمازون تعتمد بكثافة على JavaScript وقد تحجب الطلبات الآلية.
 السكربت يحاول 3 مسارات استخراج (JSON مضمّن → بطاقات data-asin → روابط /dp/)
-وفي حال فشلها جميعاً يضمن الـ failsafe ملفاً صالحاً دائماً.
+وفي حال فشلها جميعاً يُبقي ملف العروض الحالي بلا مسح أو استبدال.
 البديل الرسمي والأكثر استقراراً هو Amazon Creators API (خلَف PA-API المتوقفة منذ مايو 2026).
 عند ضبط مفاتيح Creators API (كـ GitHub Secrets) يتحوّل السكربت تلقائياً للتحديث الحيّ عبرها.
+كما يدعم AliExpress Affiliates API عند إضافة مفاتيحه وقائمة المنتجات المتابَعة.
 """
 
 from __future__ import annotations
 
 import json
+import hashlib
 import os
 import random
 import re
@@ -75,6 +77,32 @@ WATCHLIST_PATH = Path(__file__).resolve().parent / "asins.json"
 # مُفعَّل تلقائياً فقط عند وجود المفتاحين — وإلا يعود السكربت للجمع من HTML.
 CREATORS_ENABLED = bool(CREATORS_CLIENT_ID and CREATORS_CLIENT_SECRET)
 
+# ----------------------------------------------------------------------------
+# إعدادات AliExpress Affiliates API
+# ----------------------------------------------------------------------------
+# لا تُكتب المفاتيح في المستودع؛ تُمرّر من GitHub Actions Secrets فقط.
+# نستخدم بوابة HTTPS مباشرة، ونوقّع الطلبات محلياً بخوارزمية Open Platform.
+ALIEXPRESS_APP_KEY = os.environ.get("ALIEXPRESS_APP_KEY", "").strip()
+ALIEXPRESS_APP_SECRET = os.environ.get("ALIEXPRESS_APP_SECRET", "").strip()
+ALIEXPRESS_TRACKING_ID = os.environ.get("ALIEXPRESS_TRACKING_ID", "").strip()
+ALIEXPRESS_API_ENDPOINT = (
+    os.environ.get("ALIEXPRESS_API_ENDPOINT") or "https://api-sg.aliexpress.com/sync"
+).strip()
+ALIEXPRESS_TARGET_CURRENCY = (
+    os.environ.get("ALIEXPRESS_TARGET_CURRENCY") or "SAR"
+).strip().upper()
+ALIEXPRESS_TARGET_LANGUAGE = (
+    os.environ.get("ALIEXPRESS_TARGET_LANGUAGE") or "AR"
+).strip().upper()
+ALIEXPRESS_SHIP_TO_COUNTRY = (
+    os.environ.get("ALIEXPRESS_SHIP_TO_COUNTRY") or "SA"
+).strip().upper()
+ALIEXPRESS_WATCHLIST_PATH = Path(__file__).resolve().parent / "aliexpress_products.json"
+ALIEXPRESS_ENABLED = bool(
+    ALIEXPRESS_APP_KEY and ALIEXPRESS_APP_SECRET and ALIEXPRESS_TRACKING_ID
+)
+ALIEXPRESS_ID_RE = re.compile(r"(?<!\d)(\d{6,20})(?!\d)")
+
 ASIN_RE = re.compile(r"^[A-Z0-9]{10}$")
 DP_LINK_RE = re.compile(r"/dp/([A-Z0-9]{10})")
 DISCOUNT_RE = re.compile(r"(\d{1,2})\s*%")
@@ -103,20 +131,6 @@ def build_headers() -> dict:
         "Cache-Control": "no-cache",
     }
 
-
-# ----------------------------------------------------------------------------
-# الـ Failsafe: ASIN موثّق للاختبار يضمن ألا يخرج الملف فارغاً أبداً
-# ----------------------------------------------------------------------------
-FALLBACK_DEALS = [
-    {
-        "asin": "B0BNKVGB2J",
-        "title": "منتج تجريبي موثّق — عرض أمازون السعودية",
-        "image": "https://m.media-amazon.com/images/I/61u48FEs0rL._AC_SL1500_.jpg",
-        "discount_percent": 45,
-        "original_price": 399,
-        "category": "الإلكترونيات",
-    }
-]
 
 # تصنيف تقريبي بالكلمات المفتاحية (عربي/إنجليزي)
 CATEGORY_KEYWORDS = {
@@ -182,6 +196,7 @@ def sanitize(raw: dict) -> dict | None:
         return None
 
     return {
+        "store": "amazon",
         "asin": asin,
         "title": title,
         "image": image,
@@ -523,18 +538,341 @@ def scrape_creators() -> list[dict]:
 
 
 # ----------------------------------------------------------------------------
-# الكتابة الآمنة مع الـ Failsafe
+# مسار AliExpress Affiliates API
+# ----------------------------------------------------------------------------
+def _ali_product_id(value: object) -> str:
+    """يستخرج رقم منتج AliExpress من رقم أو رابط."""
+    match = ALIEXPRESS_ID_RE.search(str(value or ""))
+    return match.group(1) if match else ""
+
+
+def load_aliexpress_watchlist() -> list[dict]:
+    """يقرأ قائمة منتجات AliExpress، ويبذرها من deals.json إن كانت فارغة.
+
+    الصيغ المقبولة داخل aliexpress_products.json:
+    - رابط أو رقم منتج كنص.
+    - كائن يحوي product_id أو url، وتصنيفاً اختيارياً.
+    """
+    try:
+        data = json.loads(ALIEXPRESS_WATCHLIST_PATH.read_text(encoding="utf-8"))
+        entries = data if isinstance(data, list) else data.get("products", [])
+    except (FileNotFoundError, json.JSONDecodeError):
+        entries = []
+
+    if not entries:
+        entries = [
+            {
+                "product_id": deal.get("product_id"),
+                "url": deal.get("url"),
+                "category": deal.get("category"),
+            }
+            for deal in load_existing_deals()
+            if str(deal.get("store", "")).lower() == "aliexpress"
+        ]
+        if entries:
+            ALIEXPRESS_WATCHLIST_PATH.write_text(
+                json.dumps({"products": entries}, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            print(
+                f"[aliexpress] بُذرت aliexpress_products.json بـ {len(entries)} منتج"
+            )
+
+    clean: list[dict] = []
+    seen: set[str] = set()
+    for entry in entries if isinstance(entries, list) else []:
+        if isinstance(entry, dict):
+            product_id = _ali_product_id(entry.get("product_id") or entry.get("url"))
+            category = entry.get("category")
+        else:
+            product_id = _ali_product_id(entry)
+            category = None
+        if not product_id or product_id in seen:
+            continue
+        seen.add(product_id)
+        clean.append(
+            {
+                "product_id": product_id,
+                "url": f"https://www.aliexpress.com/item/{product_id}.html",
+                "category": category if category in CATEGORY_KEYWORDS else None,
+            }
+        )
+    return clean
+
+
+def _ali_sign(parameters: dict[str, object]) -> str:
+    """توقيع Open Platform: MD5(secret + sorted key/value + secret)."""
+    canonical = "".join(
+        f"{key}{parameters[key]}"
+        for key in sorted(parameters)
+        if parameters[key] is not None
+    )
+    value = f"{ALIEXPRESS_APP_SECRET}{canonical}{ALIEXPRESS_APP_SECRET}"
+    return hashlib.md5(value.encode("utf-8")).hexdigest().upper()
+
+
+def aliexpress_api_call(method: str, parameters: dict) -> dict | None:
+    """ينفّذ نداءً موقّعاً عبر HTTPS ولا يسجل المفاتيح أو التوقيع في السجل."""
+    application = {
+        key: str(value)
+        for key, value in parameters.items()
+        if value is not None and value != ""
+    }
+    system = {
+        "app_key": ALIEXPRESS_APP_KEY,
+        "format": "json",
+        "method": method,
+        "sign_method": "md5",
+        "timestamp": str(int(time.time() * 1000)),
+        "v": "2.0",
+    }
+    sign_input = {**system, **application}
+    system["sign"] = _ali_sign(sign_input)
+
+    try:
+        response = requests.post(
+            ALIEXPRESS_API_ENDPOINT,
+            params=system,
+            data=application,
+            headers={"Accept": "application/json", "User-Agent": "OverlyDeals/1.0"},
+            timeout=REQUEST_TIMEOUT,
+        )
+        if response.status_code != 200:
+            print(f"[aliexpress] {method} HTTP {response.status_code}")
+            return None
+        payload = response.json()
+    except (requests.RequestException, ValueError) as exc:
+        print(f"[aliexpress] فشل {method}: {exc}")
+        return None
+
+    if "error_response" in payload:
+        error = payload.get("error_response") or {}
+        print(
+            "[aliexpress] رفض النداء "
+            f"{method}: {error.get('code')} — {error.get('msg') or error.get('sub_msg')}"
+        )
+        return None
+
+    response_key = method.replace(".", "_") + "_response"
+    envelope = payload.get(response_key) or {}
+    result = envelope.get("resp_result") or {}
+    if str(result.get("resp_code")) not in {"200", "200.0"}:
+        print(
+            f"[aliexpress] {method} resp_code={result.get('resp_code')} "
+            f"— {result.get('resp_msg', 'استجابة غير ناجحة')}"
+        )
+        return None
+    value = result.get("result")
+    return value if isinstance(value, dict) else {}
+
+
+def _ali_list(value: object, child_key: str) -> list[dict]:
+    """يفك حاويات AliExpress التي قد تعيد كائناً واحداً أو قائمة."""
+    if not isinstance(value, dict):
+        return []
+    items = value.get(child_key, [])
+    if isinstance(items, dict):
+        return [items]
+    return [item for item in items if isinstance(item, dict)] if isinstance(items, list) else []
+
+
+def _ali_number(value: object) -> float:
+    text = str(value or "").replace(",", "")
+    match = re.search(r"\d+(?:\.\d+)?", text)
+    return float(match.group(0)) if match else 0.0
+
+
+def _ali_discount(value: object) -> int:
+    match = re.search(r"\d{1,2}", str(value or ""))
+    return int(match.group(0)) if match else 0
+
+
+def sanitize_aliexpress(raw: dict) -> dict | None:
+    """يحوّل منتج AliExpress إلى مخطط الموقع، مع رفض العملات غير السعودية."""
+    product_id = _ali_product_id(raw.get("product_id"))
+    title = re.sub(r"\s+", " ", str(raw.get("title", "")).strip())[:140]
+    image = str(raw.get("image", "")).strip()
+    url = str(raw.get("url", "")).strip()
+    currency = str(raw.get("currency", "")).strip().upper()
+
+    if not product_id or len(title) < 8 or not image.startswith("https://"):
+        return None
+    if not url.startswith("https://"):
+        return None
+    if currency and currency != ALIEXPRESS_TARGET_CURRENCY:
+        print(
+            f"[aliexpress] تجاهل {product_id}: العملة {currency} وليست "
+            f"{ALIEXPRESS_TARGET_CURRENCY}"
+        )
+        return None
+
+    original = _ali_number(raw.get("original_price"))
+    current = _ali_number(raw.get("sale_price"))
+    discount = _ali_discount(raw.get("discount_percent"))
+    if not original and current > 0 and 5 <= discount <= 95:
+        original = current / (1 - discount / 100)
+    if not discount and original > current > 0:
+        discount = round((original - current) / original * 100)
+    if original <= 0 or not (5 <= discount <= 95):
+        return None
+
+    category = raw.get("category")
+    return {
+        "store": "aliexpress",
+        "product_id": product_id,
+        "url": url,
+        "title": title,
+        "image": image,
+        "discount_percent": int(discount),
+        "original_price": round(original, 2),
+        "category": category if category in CATEGORY_KEYWORDS else classify(title),
+    }
+
+
+def aliexpress_generate_links(source_urls: list[str]) -> dict[str, str]:
+    """يولّد روابط العمولة الرسمية ويعيد {الرابط الأصلي: رابط العمولة}."""
+    if not source_urls:
+        return {}
+    result = aliexpress_api_call(
+        "aliexpress.affiliate.link.generate",
+        {
+            "promotion_link_type": 0,
+            "source_values": ",".join(source_urls),
+            "tracking_id": ALIEXPRESS_TRACKING_ID,
+        },
+    )
+    links = _ali_list((result or {}).get("promotion_links"), "promotion_link")
+    mapped: dict[str, str] = {}
+    for item in links:
+        source = str(item.get("source_value", ""))
+        promotion = str(item.get("promotion_link", ""))
+        if not promotion.startswith("https://"):
+            continue
+        if source.startswith("https://"):
+            mapped[source] = promotion
+        product_id = _ali_product_id(source)
+        if product_id:
+            mapped[product_id] = promotion
+    return mapped
+
+
+def scrape_aliexpress() -> list[dict]:
+    """يحدّث المنتجات المختارة عبر Affiliates API ويولّد روابط عمولة رسمية."""
+    watchlist = load_aliexpress_watchlist()
+    if not watchlist:
+        print("[aliexpress] قائمة المتابعة فارغة — أضف روابط إلى aliexpress_products.json")
+        return []
+
+    categories = {item["product_id"]: item.get("category") for item in watchlist}
+    product_ids = [item["product_id"] for item in watchlist]
+    raw_products: list[dict] = []
+    fields = ",".join(
+        [
+            "product_id",
+            "product_title",
+            "product_main_image_url",
+            "product_detail_url",
+            "target_original_price",
+            "target_original_price_currency",
+            "target_sale_price",
+            "target_sale_price_currency",
+            "discount",
+            "promotion_link",
+        ]
+    )
+
+    for start in range(0, len(product_ids), 20):
+        batch = product_ids[start:start + 20]
+        result = aliexpress_api_call(
+            "aliexpress.affiliate.productdetail.get",
+            {
+                "country": ALIEXPRESS_SHIP_TO_COUNTRY,
+                "fields": fields,
+                "product_ids": ",".join(batch),
+                "target_currency": ALIEXPRESS_TARGET_CURRENCY,
+                "target_language": ALIEXPRESS_TARGET_LANGUAGE,
+                "tracking_id": ALIEXPRESS_TRACKING_ID,
+            },
+        )
+        products = _ali_list((result or {}).get("products"), "product")
+        raw_products.extend(products)
+        print(f"[aliexpress] الدفعة {start // 20 + 1}: {len(products)} منتج")
+        time.sleep(1)
+
+    source_urls = []
+    for product in raw_products:
+        product_id = _ali_product_id(product.get("product_id"))
+        source_urls.append(
+            str(product.get("product_detail_url") or "").strip()
+            or f"https://www.aliexpress.com/item/{product_id}.html"
+        )
+    link_map = aliexpress_generate_links(source_urls)
+
+    clean: list[dict] = []
+    seen: set[str] = set()
+    for product, source_url in zip(raw_products, source_urls):
+        product_id = _ali_product_id(product.get("product_id"))
+        promotion_link = str(product.get("promotion_link") or "").strip()
+        affiliate_url = (
+            promotion_link
+            if promotion_link.startswith("https://")
+            else link_map.get(source_url) or link_map.get(product_id, "")
+        )
+        deal = sanitize_aliexpress(
+            {
+                "product_id": product_id,
+                "title": product.get("product_title"),
+                "image": product.get("product_main_image_url"),
+                "url": affiliate_url,
+                "original_price": product.get("target_original_price") or product.get("original_price"),
+                "sale_price": product.get("target_sale_price") or product.get("sale_price"),
+                "currency": product.get("target_original_price_currency")
+                or product.get("target_sale_price_currency"),
+                "discount_percent": product.get("discount"),
+                "category": categories.get(product_id),
+            }
+        )
+        if deal and product_id not in seen:
+            seen.add(product_id)
+            clean.append(deal)
+
+    clean.sort(key=lambda deal: deal["discount_percent"], reverse=True)
+    print(f"[aliexpress] {len(clean)} عرض صالح برابط عمولة رسمي")
+    return clean[:MAX_DEALS]
+
+
+def _deal_key(deal: dict) -> str:
+    if str(deal.get("store", "amazon")).lower() == "aliexpress":
+        return f"aliexpress:{_ali_product_id(deal.get('product_id'))}"
+    return f"amazon:{str(deal.get('asin', '')).strip().upper()}"
+
+
+def merge_deals(existing: list[dict], updates: list[dict]) -> list[dict]:
+    """دمج تصاعدي: التحديث يستبدل نظيره ولا يحذف أي منتج قديم تلقائياً."""
+    merged = [dict(deal) for deal in existing if isinstance(deal, dict)]
+    indexes = {_deal_key(deal): index for index, deal in enumerate(merged) if _deal_key(deal)}
+    for deal in updates:
+        key = _deal_key(deal)
+        if not key or key.endswith(":"):
+            continue
+        if key in indexes:
+            merged[indexes[key]] = deal
+        else:
+            indexes[key] = len(merged)
+            merged.append(deal)
+    merged.sort(key=lambda deal: int(deal.get("discount_percent", 0)), reverse=True)
+    return merged[: MAX_DEALS * 2]
+
+
+# ----------------------------------------------------------------------------
+# الكتابة الآمنة
 # ----------------------------------------------------------------------------
 def write_output(deals: list[dict], source: str = DEALS_URL) -> None:
-    # الـ failsafe يُستخدم فقط عند غياب أي عروض حقيقية (تشغيلة أولى بلا ملف)،
-    # ولا يُحقن إطلاقاً داخل عروض حقيقية حتى لا يظهر "منتج تجريبي" على الموقع الحي.
-    merged = deals or list(FALLBACK_DEALS)
-
     payload = {
         "updated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "source": source,
-        "count": len(merged),
-        "deals": merged,
+        "count": len(deals),
+        "deals": deals,
     }
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -546,7 +884,7 @@ def write_output(deals: list[dict], source: str = DEALS_URL) -> None:
     # تحقق نهائي قبل الاستبدال
     json.loads(tmp.read_text(encoding="utf-8"))
     tmp.replace(OUTPUT_PATH)
-    print(f"[write] {len(merged)} deals -> {OUTPUT_PATH}")
+    print(f"[write] {len(deals)} deals -> {OUTPUT_PATH}")
 
 
 # ----------------------------------------------------------------------------
@@ -665,7 +1003,12 @@ def post_deals_to_telegram(deals: list[dict]) -> None:
         return
 
     state = load_posted_state()
-    eligible = [d for d in deals if d["discount_percent"] >= MIN_DISCOUNT_TO_POST]
+    # قالب تيليجرام الحالي خاص بأمازون؛ لا ننشر AliExpress قبل إعداد قالب مستقل.
+    eligible = [
+        d for d in deals
+        if str(d.get("store", "amazon")).lower() == "amazon"
+        and d["discount_percent"] >= MIN_DISCOUNT_TO_POST
+    ]
     print(f"[telegram] {len(eligible)} deals meet the {MIN_DISCOUNT_TO_POST}% threshold")
 
     posted = 0
@@ -686,28 +1029,40 @@ def post_deals_to_telegram(deals: list[dict]) -> None:
 
 
 def main() -> int:
+    existing = load_existing_deals()
+
     # عند توفّر مفاتيح Creators API نستخدم التحديث الحيّ الرسمي، وإلا نعود للجمع من HTML.
     if CREATORS_ENABLED:
         print("[main] مفاتيح Creators API متوفرة — تحديث حيّ للأسعار عبر الواجهة الرسمية")
-        deals = scrape_creators()
-        source = f"creators-api:{CREATORS_MARKETPLACE}"
+        amazon_updates = scrape_creators()
+        amazon_source = f"creators-api:{CREATORS_MARKETPLACE}"
     else:
         print("[main] لا توجد مفاتيح Creators API — الجمع من HTML (قد يكون محجوباً من أمازون)")
-        deals = scrape()
-        source = DEALS_URL
+        amazon_updates = scrape()
+        amazon_source = DEALS_URL
+
+    if ALIEXPRESS_ENABLED:
+        print("[main] مفاتيح AliExpress متوفرة — تحديث المنتجات وروابط العمولة الرسمية")
+        aliexpress_updates = scrape_aliexpress()
+        aliexpress_source = "aliexpress-affiliates-api"
+    else:
+        print("[main] مفاتيح AliExpress غير مكتملة — إبقاء منتجات AliExpress الحالية")
+        aliexpress_updates = []
+        aliexpress_source = ""
+
+    updates = amazon_updates + aliexpress_updates
 
     # حماية التنسيق اليدوي: إذا رجع الجمع فاضياً وملف العروض موجود أصلاً،
     # لا نلمسه إطلاقاً — حتى لا تُمسح العروض المضافة يدوياً في كل تشغيلة.
-    if not deals and OUTPUT_PATH.exists():
+    if not updates and OUTPUT_PATH.exists():
         print("[main] لا عروض جديدة — إبقاء deals.json الحالي كما هو (حماية العروض اليدوية)")
         return 0
 
-    if not deals:
-        print("[main] لا عروض ولا ملف سابق — سيُستخدم الـ failsafe")
-    write_output(deals, source)
+    merged = merge_deals(existing, updates)
+    source = "+".join(part for part in [amazon_source if amazon_updates else "", aliexpress_source if aliexpress_updates else ""] if part) or "manual"
+    write_output(merged, source)
 
-    # النشر للعروض الحقيقية فقط — لا يُنشر "المنتج التجريبي" (failsafe) على القناة إطلاقاً
-    post_deals_to_telegram(deals)
+    post_deals_to_telegram(updates)
     return 0
 
 

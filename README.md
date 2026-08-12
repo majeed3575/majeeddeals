@@ -20,6 +20,8 @@
 ├── assets/         ← هوية أوفرلي الداكنة الشفافة + أيقونة التبويب
 ├── deals.json      ← بيانات المنتجات المعروضة (المصدر الوحيد للعروض)
 ├── asins.json      ← قائمة متابعة الـ ASIN (تُبذر تلقائياً، يستخدمها Creators API عند التفعيل)
+├── aliexpress_products.json ← قائمة روابط/أرقام منتجات AliExpress التي يحدّثها API
+├── aliexpress-callback.html ← صفحة الرجوع المسجلة في تطبيق AliExpress
 ├── scraper.py      ← روبوت بايثون: تحديث حيّ عبر Creators API أو جمع HTML + نشر تيليجرام
 ├── .github/workflows/scraper.yml  ← تشغيل الروبوت كل 30 دقيقة عبر GitHub Actions
 ├── browser-extension/   ← إضافة Brave/Chrome لاستخراج بيانات المنتجات
@@ -120,6 +122,42 @@ GitHub → المستودع → **Settings** → **Secrets and variables** → *
 منتج AliExpress يستخدم البنية نفسها مع `"store": "aliexpress"`، ويستبدل `asin` بـ
 `product_id` ويضيف `url` من نطاق `aliexpress.com` أو `aliexpress.us`. الواجهة تتعرف على
 المتجر تلقائياً وتعرض الشارة والرابط المناسبين.
+
+## ربط AliExpress Affiliates API
+
+تم تجهيز الربط الخلفي الآمن. صفحة الرجوع المسجلة في بوابة AliExpress هي:
+
+`https://majeed3575.github.io/majeeddeals/aliexpress-callback.html`
+
+بعد إنشاء التطبيق والموافقة عليه، أضف القيم التالية في GitHub من:
+**Settings → Secrets and variables → Actions → New repository secret**:
+
+- `ALIEXPRESS_APP_KEY`
+- `ALIEXPRESS_APP_SECRET`
+- `ALIEXPRESS_TRACKING_ID`
+
+لا تضع هذه القيم في `index.html` أو `deals.json` أو إضافة المتصفح. عند توفر الأسرار الثلاثة
+يُفعّل المسار تلقائياً، ويستخدم بوابة HTTPS الرسمية، ويجلب السعر والخصم بعملة SAR، ويولّد رابط
+العمولة الرسمي ثم يدمج المنتج مع عروض Amazon دون حذف العروض القديمة.
+
+### قائمة المتابعة
+
+أضف المنتجات المراد تحديثها إلى `aliexpress_products.json` بإحدى الصيغتين:
+
+```json
+{
+  "products": [
+    "https://www.aliexpress.com/item/1005000000000000.html",
+    {
+      "product_id": "1005000000000001",
+      "category": "الإلكترونيات"
+    }
+  ]
+}
+```
+
+إذا كان الملف فارغاً ووجد الروبوت منتجات AliExpress داخل `deals.json`، يبذر قائمة المتابعة
+منها تلقائياً. لا يُنشر أي منتج لا يعيد له API رابط عمولة رسمي وسعراً وخصماً صالحين.
 
 ## تيليجرام (جاهز لكنه غير مفعّل)
 
