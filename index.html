@@ -765,8 +765,8 @@
     const AFFILIATE_TAG = "faraj733-21";
     function hydrateBrandAssets() {
       Promise.all([
-        fetch("assets/overly-logo.b64", {cache:"force-cache"}).then(response => response.ok ? response.text() : Promise.reject()),
-        fetch("assets/overly-icon.b64", {cache:"force-cache"}).then(response => response.ok ? response.text() : Promise.reject())
+        fetch("assets/overly-logo.txt", {cache:"force-cache"}).then(response => response.ok ? response.text() : Promise.reject()),
+        fetch("assets/overly-icon.txt", {cache:"force-cache"}).then(response => response.ok ? response.text() : Promise.reject())
       ]).then(([logo, icon]) => {
         const logoSource = `data:image/png;base64,${logo.trim()}`;
         document.querySelectorAll(".brand-logo,.intro-logo,.footer-logo").forEach(image => { image.src = logoSource; });
