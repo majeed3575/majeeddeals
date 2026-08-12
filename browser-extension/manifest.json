@@ -1,13 +1,19 @@
 {
   "manifest_version": 3,
-  "name": "overly - مدير المنتجات",
-  "version": "4.0.0",
-  "description": "أداة عربية لاستخراج ومراجعة منتجات Amazon.sa وAliExpress وتصدير deals.json.",
+  "name": "Overly Product Studio",
+  "version": "5.0.0",
+  "description": "استخراج ومراجعة ومزامنة ونشر منتجات Amazon.sa وAliExpress إلى موقع Overly.",
   "permissions": ["activeTab", "scripting", "storage"],
-  "host_permissions": ["*://*.amazon.sa/*", "*://*.aliexpress.com/*", "*://*.aliexpress.us/*"],
+  "host_permissions": [
+    "*://*.amazon.sa/*",
+    "*://*.aliexpress.com/*",
+    "*://*.aliexpress.us/*",
+    "https://api.github.com/*",
+    "https://raw.githubusercontent.com/*"
+  ],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "overly"
+    "default_title": "Overly Product Studio"
   },
   "icons": {
     "48": "icon48.png",

@@ -3,248 +3,311 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>مدير منتجات overly</title>
+  <title>Overly Product Studio</title>
   <style>
     :root {
-      --ink: #172033;
-      --muted: #667085;
-      --line: #e5e7eb;
-      --soft: #f8fafc;
-      --blue: #4fa79f;
-      --blue-dark: #367f79;
-      --green: #047857;
-      --red: #b42318;
-      --amber: #b45309;
+      color-scheme: dark;
+      --bg: #07100f;
+      --surface: #0c1817;
+      --surface-2: #112220;
+      --surface-3: #172b29;
+      --mint: #79cbc2;
+      --mint-2: #a5e3dc;
+      --mint-dark: #377f78;
+      --text: #f4fbfa;
+      --muted: #9cb5b2;
+      --line: rgba(151, 209, 202, .16);
+      --green: #65d6a6;
+      --amber: #f3c969;
+      --red: #ff8585;
+      --blue: #82bfff;
+      --shadow: 0 18px 55px rgba(0, 0, 0, .32);
     }
 
     * { box-sizing: border-box; }
+    html { background: var(--bg); }
     body {
-      width: 430px;
+      width: 460px;
       max-height: 600px;
       margin: 0;
       overflow-y: auto;
-      background: #fff;
-      color: var(--ink);
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% -10%, rgba(121, 203, 194, .18), transparent 30%),
+        linear-gradient(180deg, #081311 0%, #07100f 100%);
       font-family: Tahoma, "Segoe UI", sans-serif;
       font-size: 13px;
     }
 
-    header {
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { border: 2px solid transparent; border-radius: 99px; background: #29423f; background-clip: padding-box; }
+
+    .topbar {
       position: sticky;
       top: 0;
-      z-index: 5;
+      z-index: 20;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
-      padding: 14px 16px;
-      color: #fff;
-      background: #07100f;
-      border-bottom: 3px solid #78c9c1;
+      gap: 12px;
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(7, 16, 15, .92);
+      backdrop-filter: blur(18px);
     }
-    header h1 { margin: 0; font-size: 16px; }
-    header p { margin: 3px 0 0; color: #cbd5e1; font-size: 11px; }
-    .count {
-      min-width: 42px;
-      padding: 7px 9px;
-      border-radius: 999px;
-      color: #07100f;
-      background: #78c9c1;
-      font-weight: 800;
-      text-align: center;
-    }
+    .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .brand img { width: 38px; height: 38px; border-radius: 12px; object-fit: contain; background: var(--mint); box-shadow: 0 8px 24px rgba(121, 203, 194, .2); }
+    .brand h1 { margin: 0; font-size: 16px; letter-spacing: .2px; }
+    .brand p { margin: 3px 0 0; color: var(--muted); font-size: 10px; }
+    .version { padding: 5px 8px; border: 1px solid var(--line); border-radius: 999px; color: var(--mint-2); background: rgba(121, 203, 194, .08); font-size: 10px; font-weight: 800; }
 
     main { padding: 12px; }
-    .panel {
-      margin-bottom: 11px;
-      padding: 12px;
-      border: 1px solid var(--line);
-      border-radius: 13px;
-      background: #fff;
-      box-shadow: 0 2px 9px rgba(15, 23, 42, .04);
+    .hero-status {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 7px;
+      margin-bottom: 10px;
     }
-    .panel h2 { margin: 0 0 10px; font-size: 14px; }
-    .hidden { display: none !important; }
+    .metric { padding: 9px 7px; border: 1px solid var(--line); border-radius: 12px; background: rgba(17, 34, 32, .78); text-align: center; }
+    .metric strong { display: block; color: var(--mint-2); font-size: 17px; line-height: 1; }
+    .metric span { display: block; margin-top: 5px; color: var(--muted); font-size: 9px; }
 
     .notice {
       margin-bottom: 10px;
-      padding: 9px 11px;
-      border-radius: 9px;
-      background: #eff6ff;
-      color: #1e40af;
-      line-height: 1.55;
+      padding: 10px 12px;
+      border: 1px solid rgba(130, 191, 255, .2);
+      border-radius: 12px;
+      color: #bddcff;
+      background: rgba(49, 113, 171, .13);
+      line-height: 1.6;
     }
-    .notice.warn { background: #fffbeb; color: var(--amber); }
-    .notice.error { background: #fef3f2; color: var(--red); }
-    .notice.ok { background: #ecfdf3; color: var(--green); }
+    .notice.warn { border-color: rgba(243, 201, 105, .23); color: var(--amber); background: rgba(164, 113, 24, .13); }
+    .notice.error { border-color: rgba(255, 133, 133, .24); color: var(--red); background: rgba(163, 48, 48, .13); }
+    .notice.ok { border-color: rgba(101, 214, 166, .23); color: var(--green); background: rgba(36, 130, 91, .13); }
+    .hidden { display: none !important; }
 
-    label { display: block; margin: 8px 0 4px; color: #344054; font-weight: 700; }
+    .panel, details {
+      margin-bottom: 10px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: linear-gradient(145deg, rgba(17, 34, 32, .96), rgba(11, 25, 23, .96));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .panel { padding: 12px; }
+    .panel h2 { margin: 0 0 10px; font-size: 14px; }
+    summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 12px;
+      color: var(--text);
+      font-weight: 800;
+      cursor: pointer;
+      list-style: none;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: "⌄"; color: var(--mint); font-size: 18px; transition: transform .2s ease; }
+    details[open] summary::after { transform: rotate(180deg); }
+    .details-body { padding: 0 12px 12px; border-top: 1px solid var(--line); }
+
+    label { display: block; margin: 9px 0 5px; color: #c9dad8; font-size: 11px; font-weight: 800; }
     input, textarea, select {
       width: 100%;
-      border: 1px solid #d0d5dd;
-      border-radius: 8px;
-      background: #fff;
-      color: var(--ink);
+      border: 1px solid #27413e;
+      border-radius: 10px;
+      color: var(--text);
+      background: #081412;
       font: inherit;
       outline: none;
     }
-    input, select { height: 36px; padding: 0 9px; }
-    textarea { min-height: 63px; padding: 8px 9px; resize: vertical; }
-    input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px #dbeafe; }
-    input[readonly] { background: var(--soft); color: var(--muted); }
+    input, select { height: 38px; padding: 0 10px; }
+    textarea { min-height: 66px; padding: 9px 10px; resize: vertical; }
+    input:focus, textarea:focus, select:focus { border-color: var(--mint); box-shadow: 0 0 0 3px rgba(121, 203, 194, .12); }
+    input[readonly] { color: var(--muted); background: #0c1817; }
     .ltr { direction: ltr; text-align: left; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 7px; }
-    .hint { margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.45; }
+    .hint { margin-top: 5px; color: var(--muted); font-size: 10px; line-height: 1.55; }
+    .security-note { margin-top: 8px; padding: 9px; border-radius: 10px; color: #bcd3d0; background: rgba(121, 203, 194, .07); font-size: 10px; line-height: 1.6; }
 
-    button, .button-label {
+    button {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 5px;
-      min-height: 36px;
+      gap: 6px;
+      min-height: 37px;
       padding: 8px 10px;
       border: 0;
-      border-radius: 9px;
+      border-radius: 10px;
       font: inherit;
       font-weight: 800;
       cursor: pointer;
-      text-decoration: none;
+      transition: transform .15s ease, filter .15s ease, opacity .15s ease;
     }
-    button:disabled { opacity: .55; cursor: not-allowed; }
-    .primary { width: 100%; margin-top: 10px; background: var(--blue); color: #fff; }
-    .primary:hover { background: var(--blue-dark); }
-    .secondary { background: #eef2ff; color: #3730a3; }
-    .success { background: #ecfdf3; color: var(--green); }
-    .danger { background: #fef3f2; color: var(--red); }
-    .ghost { background: #f2f4f7; color: #344054; }
+    button:hover { filter: brightness(1.08); transform: translateY(-1px); }
+    button:disabled { opacity: .45; cursor: wait; transform: none; }
+    .primary { width: 100%; margin-top: 10px; color: #04100e; background: linear-gradient(135deg, var(--mint-2), var(--mint)); box-shadow: 0 8px 22px rgba(121, 203, 194, .14); }
+    .secondary { color: #cfe7ff; background: rgba(74, 137, 201, .18); }
+    .success { color: #c9f9e4; background: rgba(50, 156, 112, .18); }
+    .danger { color: #ffd0d0; background: rgba(171, 61, 61, .18); }
+    .ghost { color: #d1e0de; background: rgba(136, 164, 160, .11); }
     .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
     .actions .wide { grid-column: 1 / -1; }
+    .button-row { display: flex; gap: 7px; margin-top: 9px; }
+    .button-row button { flex: 1; }
+
+    .publish-card { padding: 11px; border: 1px solid rgba(121, 203, 194, .22); border-radius: 13px; background: rgba(121, 203, 194, .055); }
+    .publish-title { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+    .publish-title strong { font-size: 13px; }
+    .sync-time { color: var(--muted); font-size: 9px; }
+    .publish-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 9px; }
+    .publish-grid .wide { grid-column: 1 / -1; }
 
     .list-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
     .list-head h2 { margin: 0; }
     #items { display: grid; gap: 7px; }
     .item {
       display: grid;
-      grid-template-columns: 44px 1fr auto;
+      grid-template-columns: 48px 1fr auto;
       align-items: center;
       gap: 8px;
-      padding: 7px;
+      padding: 8px;
       border: 1px solid var(--line);
-      border-radius: 9px;
-      background: var(--soft);
+      border-radius: 12px;
+      background: rgba(5, 15, 13, .55);
     }
-    .item img { width: 44px; height: 44px; border-radius: 7px; object-fit: contain; background: #fff; }
-    .item-title { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 700; }
-    .item-meta { margin-top: 3px; color: var(--muted); font-size: 10px; }
-    .item-buttons { display: flex; gap: 4px; }
-    .item-buttons button { min-height: 29px; padding: 4px 7px; font-size: 11px; }
-    .empty { padding: 16px 8px; color: var(--muted); background: var(--soft); border-radius: 9px; text-align: center; }
+    .item.invalid { border-color: rgba(255, 133, 133, .35); }
+    .item img { width: 48px; height: 48px; border-radius: 9px; object-fit: contain; background: #fff; }
+    .item-title { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 800; }
+    .item-meta { margin-top: 4px; color: var(--muted); font-size: 9px; line-height: 1.4; }
+    .badge { display: inline-block; margin-inline-start: 4px; padding: 2px 5px; border-radius: 99px; font-size: 8px; font-weight: 800; }
+    .badge.live { color: var(--green); background: rgba(101, 214, 166, .12); }
+    .badge.local { color: var(--amber); background: rgba(243, 201, 105, .12); }
+    .badge.changed { color: var(--blue); background: rgba(130, 191, 255, .12); }
+    .badge.bad { color: var(--red); background: rgba(255, 133, 133, .12); }
+    .item-buttons { display: flex; flex-direction: column; gap: 4px; }
+    .item-buttons button { min-height: 27px; padding: 4px 7px; font-size: 10px; }
+    .empty { padding: 18px 9px; color: var(--muted); border: 1px dashed #28423f; border-radius: 11px; text-align: center; line-height: 1.7; }
 
-    #jsonOutput {
-      min-height: 150px;
-      margin-top: 9px;
-      direction: ltr;
-      text-align: left;
-      color: #d1fae5;
-      background: #0f172a;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 10px;
-    }
-    footer { padding: 0 12px 13px; color: var(--muted); font-size: 10px; text-align: center; line-height: 1.5; }
+    #jsonOutput { min-height: 145px; margin-top: 9px; direction: ltr; text-align: left; color: #bff3dc; background: #040b0a; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10px; }
+    footer { padding: 0 15px 14px; color: #78918e; font-size: 9px; text-align: center; line-height: 1.6; }
   </style>
 </head>
 <body>
-  <header>
-    <div>
-      <h1>overly · مدير المنتجات</h1>
-      <p>Amazon + AliExpress · تجهيز ملفات الموقع</p>
+  <header class="topbar">
+    <div class="brand">
+      <img src="icon128.png" alt="">
+      <div>
+        <h1>Overly Product Studio</h1>
+        <p>إدارة Amazon + AliExpress ونشر الموقع</p>
+      </div>
     </div>
-    <div class="count"><span id="count">0</span> منتج</div>
+    <span class="version">V5</span>
   </header>
 
   <main>
+    <section class="hero-status" aria-label="ملخص المنتجات">
+      <div class="metric"><strong id="count">0</strong><span>الإجمالي</span></div>
+      <div class="metric"><strong id="amazonCount">0</strong><span>Amazon</span></div>
+      <div class="metric"><strong id="aliCount">0</strong><span>AliExpress</span></div>
+      <div class="metric"><strong id="issueCount">0</strong><span>تحتاج مراجعة</span></div>
+    </section>
+
     <div id="status" class="notice">⏳ جاري قراءة صفحة المنتج الحالية…</div>
 
-    <section id="editor" class="panel hidden">
-      <h2 id="editorTitle">إضافة المنتج الحالي</h2>
-
-      <div class="grid-3">
-        <div>
-          <label for="store">المتجر</label>
-          <select id="store">
-            <option value="amazon">Amazon</option>
-            <option value="aliexpress">AliExpress</option>
-          </select>
+    <details id="editor" class="hidden" open>
+      <summary><span id="editorTitle">مراجعة المنتج الحالي</span></summary>
+      <div class="details-body">
+        <div class="grid-3">
+          <div>
+            <label for="store">المتجر</label>
+            <select id="store"><option value="amazon">Amazon</option><option value="aliexpress">AliExpress</option></select>
+          </div>
+          <div>
+            <label for="asin">رقم المنتج</label>
+            <input id="asin" class="ltr" readonly>
+          </div>
+          <div>
+            <label for="category">التصنيف</label>
+            <select id="category"><option value="الإلكترونيات">الإلكترونيات</option><option value="المنزل">المنزل</option><option value="الموضة">الموضة</option></select>
+          </div>
         </div>
-        <div>
-          <label for="asin">رقم المنتج</label>
-          <input id="asin" class="ltr" readonly>
+        <label for="productUrl">رابط صفحة المنتج</label>
+        <input id="productUrl" class="ltr" type="url" readonly>
+        <label for="title">اسم المنتج</label>
+        <textarea id="title" maxlength="140"></textarea>
+        <label for="image">رابط الصورة</label>
+        <input id="image" class="ltr" type="url" placeholder="https://…">
+        <div class="grid-3">
+          <div><label for="dealPrice">السعر الحالي</label><input id="dealPrice" type="number" min="0" step="0.01" inputmode="decimal"></div>
+          <div><label for="originalPrice">قبل الخصم</label><input id="originalPrice" type="number" min="0" step="0.01" inputmode="decimal"></div>
+          <div><label for="discount">الخصم ٪</label><input id="discount" type="number" min="5" max="95" inputmode="numeric"></div>
         </div>
-        <div>
-          <label for="category">التصنيف</label>
-          <select id="category">
-            <option value="الإلكترونيات">الإلكترونيات</option>
-            <option value="المنزل">المنزل</option>
-            <option value="الموضة">الموضة</option>
-          </select>
-        </div>
+        <div class="hint">السعر الحالي لحساب الخصم فقط ولا يُنشر. لا تحفظ المنتج قبل مراجعة السعر والخصم الظاهرين في المتجر.</div>
+        <button id="saveProduct" class="primary">＋ إضافة المنتج إلى القائمة</button>
       </div>
-
-      <label for="productUrl">رابط صفحة المنتج</label>
-      <input id="productUrl" class="ltr" type="url" readonly>
-
-      <label for="title">اسم المنتج</label>
-      <textarea id="title" maxlength="140"></textarea>
-
-      <label for="image">رابط الصورة</label>
-      <input id="image" class="ltr" type="url" placeholder="https://…">
-
-      <div class="grid-3">
-        <div>
-          <label for="dealPrice">السعر الحالي</label>
-          <input id="dealPrice" type="number" min="0" step="0.01" inputmode="decimal">
-        </div>
-        <div>
-          <label for="originalPrice">قبل الخصم</label>
-          <input id="originalPrice" type="number" min="0" step="0.01" inputmode="decimal">
-        </div>
-        <div>
-          <label for="discount">الخصم ٪</label>
-          <input id="discount" type="number" min="5" max="95" inputmode="numeric">
-        </div>
-      </div>
-      <div class="hint">السعر الحالي يُستخدم لحساب الخصم فقط ولا يُحفظ في الموقع. راجع القيم قبل الإضافة.</div>
-
-      <button id="saveProduct" class="primary">➕ إضافة المنتج إلى القائمة</button>
-    </section>
+    </details>
 
     <section class="panel">
       <div class="list-head">
-        <h2>المنتجات المحفوظة</h2>
-        <button id="clearAll" class="danger" type="button">إفراغ الكل</button>
+        <h2>قائمة المنتجات</h2>
+        <button id="clearAll" class="danger" type="button">إفراغ المحلية</button>
       </div>
       <div id="items"><div class="empty">لا توجد منتجات بعد.</div></div>
     </section>
 
     <section class="panel">
-      <h2>الاستيراد والتصدير</h2>
-      <div class="actions">
-        <button id="importButton" class="ghost">📥 استيراد deals.json</button>
+      <h2>النشر والمزامنة</h2>
+      <div class="publish-card">
+        <div class="publish-title">
+          <strong>الموقع المباشر</strong>
+          <span id="syncTime" class="sync-time">لم تتم المزامنة</span>
+        </div>
+        <div class="hint">المزامنة تجلب الموجود في الموقع. النشر يدمج قائمتك معه ولا يمسح المنتجات القديمة.</div>
+        <div class="publish-grid">
+          <button id="syncGithub" class="secondary">↻ مزامنة الموقع</button>
+          <button id="testGithub" class="ghost">✓ اختبار الاتصال</button>
+          <button id="publishDirect" class="primary wide">🚀 نشر آمن إلى GitHub</button>
+        </div>
+      </div>
+      <div class="actions" style="margin-top:8px">
+        <button id="copyJson" class="ghost">نسخ JSON</button>
+        <button id="downloadDeals" class="ghost">تنزيل deals.json</button>
+        <button id="importButton" class="ghost">استيراد ملف</button>
         <input id="importFile" class="hidden" type="file" accept="application/json,.json">
-        <button id="downloadDeals" class="success">⬇️ تنزيل deals.json</button>
-        <button id="downloadAsins" class="secondary">⬇️ تنزيل asins.json</button>
-        <button id="copyJson" class="secondary">📋 نسخ JSON</button>
-        <button id="publishGithub" class="primary wide">🚀 نسخ الملف وفتح GitHub للتحديث</button>
+        <button id="downloadAsins" class="ghost">تنزيل ASINs</button>
+        <button id="publishGithub" class="secondary wide">الطريقة اليدوية عبر GitHub</button>
       </div>
       <textarea id="jsonOutput" class="hidden" readonly></textarea>
     </section>
+
+    <details id="githubSettings">
+      <summary><span>إعداد النشر المباشر</span></summary>
+      <div class="details-body">
+        <div class="grid-2">
+          <div><label for="githubOwner">حساب GitHub</label><input id="githubOwner" class="ltr" value="majeed3575"></div>
+          <div><label for="githubRepo">المستودع</label><input id="githubRepo" class="ltr" value="majeeddeals"></div>
+        </div>
+        <div class="grid-2">
+          <div><label for="githubBranch">الفرع</label><input id="githubBranch" class="ltr" value="main"></div>
+          <div><label for="githubPath">ملف المنتجات</label><input id="githubPath" class="ltr" value="deals.json"></div>
+        </div>
+        <label for="githubToken">GitHub Fine-grained token</label>
+        <input id="githubToken" class="ltr" type="password" autocomplete="off" placeholder="الصق مفتاحًا جديدًا أو اتركه فارغًا للإبقاء على المحفوظ">
+        <div id="tokenState" class="hint">لا يوجد مفتاح محفوظ بعد.</div>
+        <div class="security-note">أنشئ مفتاحًا مخصصًا لهذا المستودع فقط بصلاحية <b>Contents: Read and write</b>. يُحفظ داخل متصفحك محليًا ولا يدخل في deals.json. لا ترسله في المحادثة.</div>
+        <div class="button-row">
+          <button id="saveGithub" class="success">حفظ الإعدادات</button>
+          <button id="forgetToken" class="danger">نسيان المفتاح</button>
+        </div>
+      </div>
+    </details>
   </main>
 
-  <footer>
-    الأداة لا تنشر أسعارًا من عندها؛ أنت تراجع بيانات Amazon أو AliExpress قبل الحفظ. لا تُحذف إفصاحات العمولة من الموقع.
-  </footer>
-
+  <footer>Overly لا يخترع أسعارًا أو خصومات. راجع بيانات المتجر قبل النشر، وحافظ على إفصاح روابط العمولة في الموقع.</footer>
   <script src="popup.js"></script>
 </body>
 </html>
