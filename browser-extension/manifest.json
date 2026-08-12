@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "overly - مدير المنتجات",
+  "version": "4.0.0",
+  "description": "أداة عربية لاستخراج ومراجعة منتجات Amazon.sa وAliExpress وتصدير deals.json.",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "host_permissions": ["*://*.amazon.sa/*", "*://*.aliexpress.com/*", "*://*.aliexpress.us/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "overly"
+  },
+  "icons": {
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
+}

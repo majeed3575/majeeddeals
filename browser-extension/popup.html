@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>مدير منتجات overly</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #667085;
+      --line: #e5e7eb;
+      --soft: #f8fafc;
+      --blue: #4fa79f;
+      --blue-dark: #367f79;
+      --green: #047857;
+      --red: #b42318;
+      --amber: #b45309;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      width: 430px;
+      max-height: 600px;
+      margin: 0;
+      overflow-y: auto;
+      background: #fff;
+      color: var(--ink);
+      font-family: Tahoma, "Segoe UI", sans-serif;
+      font-size: 13px;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 14px 16px;
+      color: #fff;
+      background: #07100f;
+      border-bottom: 3px solid #78c9c1;
+    }
+    header h1 { margin: 0; font-size: 16px; }
+    header p { margin: 3px 0 0; color: #cbd5e1; font-size: 11px; }
+    .count {
+      min-width: 42px;
+      padding: 7px 9px;
+      border-radius: 999px;
+      color: #07100f;
+      background: #78c9c1;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    main { padding: 12px; }
+    .panel {
+      margin-bottom: 11px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: #fff;
+      box-shadow: 0 2px 9px rgba(15, 23, 42, .04);
+    }
+    .panel h2 { margin: 0 0 10px; font-size: 14px; }
+    .hidden { display: none !important; }
+
+    .notice {
+      margin-bottom: 10px;
+      padding: 9px 11px;
+      border-radius: 9px;
+      background: #eff6ff;
+      color: #1e40af;
+      line-height: 1.55;
+    }
+    .notice.warn { background: #fffbeb; color: var(--amber); }
+    .notice.error { background: #fef3f2; color: var(--red); }
+    .notice.ok { background: #ecfdf3; color: var(--green); }
+
+    label { display: block; margin: 8px 0 4px; color: #344054; font-weight: 700; }
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid #d0d5dd;
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
+      outline: none;
+    }
+    input, select { height: 36px; padding: 0 9px; }
+    textarea { min-height: 63px; padding: 8px 9px; resize: vertical; }
+    input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px #dbeafe; }
+    input[readonly] { background: var(--soft); color: var(--muted); }
+    .ltr { direction: ltr; text-align: left; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 7px; }
+    .hint { margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.45; }
+
+    button, .button-label {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      min-height: 36px;
+      padding: 8px 10px;
+      border: 0;
+      border-radius: 9px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    button:disabled { opacity: .55; cursor: not-allowed; }
+    .primary { width: 100%; margin-top: 10px; background: var(--blue); color: #fff; }
+    .primary:hover { background: var(--blue-dark); }
+    .secondary { background: #eef2ff; color: #3730a3; }
+    .success { background: #ecfdf3; color: var(--green); }
+    .danger { background: #fef3f2; color: var(--red); }
+    .ghost { background: #f2f4f7; color: #344054; }
+    .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+    .actions .wide { grid-column: 1 / -1; }
+
+    .list-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .list-head h2 { margin: 0; }
+    #items { display: grid; gap: 7px; }
+    .item {
+      display: grid;
+      grid-template-columns: 44px 1fr auto;
+      align-items: center;
+      gap: 8px;
+      padding: 7px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: var(--soft);
+    }
+    .item img { width: 44px; height: 44px; border-radius: 7px; object-fit: contain; background: #fff; }
+    .item-title { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 700; }
+    .item-meta { margin-top: 3px; color: var(--muted); font-size: 10px; }
+    .item-buttons { display: flex; gap: 4px; }
+    .item-buttons button { min-height: 29px; padding: 4px 7px; font-size: 11px; }
+    .empty { padding: 16px 8px; color: var(--muted); background: var(--soft); border-radius: 9px; text-align: center; }
+
+    #jsonOutput {
+      min-height: 150px;
+      margin-top: 9px;
+      direction: ltr;
+      text-align: left;
+      color: #d1fae5;
+      background: #0f172a;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+    }
+    footer { padding: 0 12px 13px; color: var(--muted); font-size: 10px; text-align: center; line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>overly · مدير المنتجات</h1>
+      <p>Amazon + AliExpress · تجهيز ملفات الموقع</p>
+    </div>
+    <div class="count"><span id="count">0</span> منتج</div>
+  </header>
+
+  <main>
+    <div id="status" class="notice">⏳ جاري قراءة صفحة المنتج الحالية…</div>
+
+    <section id="editor" class="panel hidden">
+      <h2 id="editorTitle">إضافة المنتج الحالي</h2>
+
+      <div class="grid-3">
+        <div>
+          <label for="store">المتجر</label>
+          <select id="store">
+            <option value="amazon">Amazon</option>
+            <option value="aliexpress">AliExpress</option>
+          </select>
+        </div>
+        <div>
+          <label for="asin">رقم المنتج</label>
+          <input id="asin" class="ltr" readonly>
+        </div>
+        <div>
+          <label for="category">التصنيف</label>
+          <select id="category">
+            <option value="الإلكترونيات">الإلكترونيات</option>
+            <option value="المنزل">المنزل</option>
+            <option value="الموضة">الموضة</option>
+          </select>
+        </div>
+      </div>
+
+      <label for="productUrl">رابط صفحة المنتج</label>
+      <input id="productUrl" class="ltr" type="url" readonly>
+
+      <label for="title">اسم المنتج</label>
+      <textarea id="title" maxlength="140"></textarea>
+
+      <label for="image">رابط الصورة</label>
+      <input id="image" class="ltr" type="url" placeholder="https://…">
+
+      <div class="grid-3">
+        <div>
+          <label for="dealPrice">السعر الحالي</label>
+          <input id="dealPrice" type="number" min="0" step="0.01" inputmode="decimal">
+        </div>
+        <div>
+          <label for="originalPrice">قبل الخصم</label>
+          <input id="originalPrice" type="number" min="0" step="0.01" inputmode="decimal">
+        </div>
+        <div>
+          <label for="discount">الخصم ٪</label>
+          <input id="discount" type="number" min="5" max="95" inputmode="numeric">
+        </div>
+      </div>
+      <div class="hint">السعر الحالي يُستخدم لحساب الخصم فقط ولا يُحفظ في الموقع. راجع القيم قبل الإضافة.</div>
+
+      <button id="saveProduct" class="primary">➕ إضافة المنتج إلى القائمة</button>
+    </section>
+
+    <section class="panel">
+      <div class="list-head">
+        <h2>المنتجات المحفوظة</h2>
+        <button id="clearAll" class="danger" type="button">إفراغ الكل</button>
+      </div>
+      <div id="items"><div class="empty">لا توجد منتجات بعد.</div></div>
+    </section>
+
+    <section class="panel">
+      <h2>الاستيراد والتصدير</h2>
+      <div class="actions">
+        <button id="importButton" class="ghost">📥 استيراد deals.json</button>
+        <input id="importFile" class="hidden" type="file" accept="application/json,.json">
+        <button id="downloadDeals" class="success">⬇️ تنزيل deals.json</button>
+        <button id="downloadAsins" class="secondary">⬇️ تنزيل asins.json</button>
+        <button id="copyJson" class="secondary">📋 نسخ JSON</button>
+        <button id="publishGithub" class="primary wide">🚀 نسخ الملف وفتح GitHub للتحديث</button>
+      </div>
+      <textarea id="jsonOutput" class="hidden" readonly></textarea>
+    </section>
+  </main>
+
+  <footer>
+    الأداة لا تنشر أسعارًا من عندها؛ أنت تراجع بيانات Amazon أو AliExpress قبل الحفظ. لا تُحذف إفصاحات العمولة من الموقع.
+  </footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>
