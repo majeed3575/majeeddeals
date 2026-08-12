@@ -5,6 +5,7 @@
   "deals": [
     {
       "asin": "B0DL5FT193",
+      "store": "amazon",
       "title": "شاحن UGREEN بقوة 200 واط بـ8 منافذ وتقنية GaN للشحن السريع",
       "image": "https://m.media-amazon.com/images/I/51PpIM8WXVL._AC_UF894,1000_QL80_FMwebp_.jpg",
       "discount_percent": 32,
@@ -13,6 +14,7 @@
     },
     {
       "asin": "B08FJ678YK",
+      "store": "amazon",
       "title": "جهاز تنقية الهواء ليفويت Core 200S الذكي للمنزل",
       "image": "https://m.media-amazon.com/images/I/61YVFzh9kLL._AC_UF1000,1000_QL80_FMwebp_.jpg",
       "discount_percent": 24,
@@ -21,6 +23,7 @@
     },
     {
       "asin": "B07ZG5NTPJ",
+      "store": "amazon",
       "title": "ميزان يوفي eufy الذكي C1 بتقنية بلوتوث وتحليل مكونات الجسم",
       "image": "https://m.media-amazon.com/images/I/617LH20BD5L._AC_SF1050,1050_QL80_.jpg",
       "discount_percent": 23,
@@ -29,6 +32,7 @@
     },
     {
       "asin": "B0D53RXMB1",
+      "store": "amazon",
       "title": "جهاز تتبع UGREEN FineTrack بتقنية بلوتوث للحقائب والجوازات",
       "image": "https://m.media-amazon.com/images/I/61eiRrdySeL._AC_SX679_.jpg",
       "discount_percent": 20,
@@ -37,6 +41,7 @@
     },
     {
       "asin": "B08GHC8429",
+      "store": "amazon",
       "title": "مظلة Showay واقية من الشمس والأشعة فوق البنفسجية لزجاج السيارة",
       "image": "https://m.media-amazon.com/images/I/41PbD+yb4OL._AC_SF1050,1050_QL80_.jpg",
       "discount_percent": 11,
@@ -45,6 +50,7 @@
     },
     {
       "asin": "B0DBVFNMQG",
+      "store": "amazon",
       "title": "ماكينة صنع الثلج Flvzog لسطح الطاولة ذاتية التنظيف",
       "image": "https://m.media-amazon.com/images/I/61dfrgeOOrL._AC_UF350,350_QL80_FMwebp_.jpg",
       "discount_percent": 10,
