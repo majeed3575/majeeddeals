@@ -1,408 +1,1094 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#ffffff">
-<title>صائد الخصومات السعودية</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --ink:#0f172a; --muted:#64748b; --soft:#94a3b8;
-    --line:#e9edf2; --bg:#f7f8fa; --card:#ffffff;
-    --accent:#2563eb; --accent-d:#1d4ed8; --hot:#e11d48; --ok:#059669;
-    --r:16px; --shadow:0 1px 2px rgba(15,23,42,.04);
-    --shadow-h:0 10px 30px rgba(15,23,42,.10);
-  }
-  *{margin:0;padding:0;box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{
-    font-family:'Tajawal',system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif;
-    color:var(--ink); background:var(--bg); min-height:100vh; line-height:1.5;
-    -webkit-font-smoothing:antialiased;
-  }
-  img{max-width:100%; max-height:100%; object-fit:contain; display:block}
-  a{text-decoration:none; color:inherit}
-  button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit}
-  ::selection{background:rgba(37,99,235,.15)}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#050807">
+  <meta name="description" content="أوفرلي — overly، عروض مختارة من أمازون السعودية مع روابط تسويق بالعمولة.">
+  <title>أوفرلي | overly</title>
+  <link rel="icon" type="image/png" href="assets/overly-icon.png">
+  <link rel="apple-touch-icon" href="assets/overly-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #040807;
+      --bg-soft: #09110f;
+      --panel: rgba(16, 26, 24, .78);
+      --panel-solid: #0f1716;
+      --panel-strong: #172320;
+      --ink: #f5f5f7;
+      --muted: #a1a1aa;
+      --dim: #707078;
+      --line: rgba(255, 255, 255, .09);
+      --line-strong: rgba(255, 255, 255, .16);
+      --blue: #78c9c1;
+      --blue-strong: #4fa79f;
+      --cyan: #a8efe8;
+      --violet: #8dd8d1;
+      --violet-strong: #367f79;
+      --green: #30d158;
+      --red: #ff375f;
+      --amber: #ff9f0a;
+      --shadow: 0 24px 80px rgba(0, 0, 0, .4);
+      --radius-xl: 32px;
+      --radius-lg: 24px;
+      --radius-md: 18px;
+      --glass: saturate(180%) blur(22px);
+    }
 
-  /* ===== Header ===== */
-  header{
-    position:sticky; top:0; z-index:40; background:rgba(255,255,255,.85);
-    backdrop-filter:saturate(160%) blur(8px); -webkit-backdrop-filter:saturate(160%) blur(8px);
-    border-bottom:1px solid var(--line);
-  }
-  .wrap{max-width:1120px; margin:0 auto; padding:0 18px}
-  .hrow{display:flex; align-items:center; gap:16px; padding:13px 0}
-  .brand{display:flex; align-items:center; gap:11px; flex-shrink:0}
-  .logo{
-    width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;
-    font-size:19px; background:var(--ink); color:#fff;
-  }
-  .brand h1{font-size:16.5px; font-weight:900; letter-spacing:-.3px; line-height:1.2}
-  .brand .sub{font-size:11px; color:var(--muted); display:flex; align-items:center; gap:5px; margin-top:2px}
-  .dot{width:7px;height:7px;border-radius:50%;background:var(--ok);position:relative}
-  .dot::after{content:'';position:absolute;inset:0;border-radius:50%;background:var(--ok);animation:ping 1.8s cubic-bezier(0,0,.2,1) infinite}
-  @keyframes ping{75%,100%{transform:scale(2.6);opacity:0}}
-  .search{position:relative; margin-inline-start:auto; width:100%; max-width:300px}
-  .search input{
-    width:100%; border-radius:11px; padding:9px 38px 9px 12px; font-size:14px;
-    background:var(--bg); border:1px solid var(--line); color:var(--ink); outline:none; transition:.15s;
-  }
-  .search input::placeholder{color:var(--soft)}
-  .search input:focus{background:#fff; border-color:var(--accent); box-shadow:0 0 0 3px rgba(37,99,235,.12)}
-  .search .ic{position:absolute; top:50%; right:12px; transform:translateY(-50%); color:var(--soft); font-size:14px}
-  .mob-search{display:none; padding:0 0 12px}
-  @media(max-width:620px){
-    .desk-search{display:none}
-    .mob-search{display:block}
-    .mob-search .search{max-width:none}
-  }
-  nav{display:flex; gap:8px; overflow-x:auto; padding:2px 0 12px; scrollbar-width:none}
-  nav::-webkit-scrollbar{display:none}
-  nav button{
-    white-space:nowrap; border-radius:999px; padding:7px 15px; font-size:13px; font-weight:700;
-    background:#fff; border:1px solid var(--line); color:var(--muted); transition:.15s;
-  }
-  nav button:hover{border-color:var(--soft); color:var(--ink)}
-  nav button.active{background:var(--ink); color:#fff; border-color:var(--ink)}
+    html[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f5f5f7;
+      --bg-soft: #ebebef;
+      --panel: rgba(255, 255, 255, .76);
+      --panel-solid: #fff;
+      --panel-strong: #f5f5f7;
+      --ink: #1d1d1f;
+      --muted: #6e6e73;
+      --dim: #929299;
+      --line: rgba(0, 0, 0, .08);
+      --line-strong: rgba(0, 0, 0, .14);
+      --shadow: 0 24px 80px rgba(0, 0, 0, .12);
+    }
 
-  main{max-width:1120px; margin:0 auto; padding:0 18px 72px}
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 88% -10%, rgba(120, 201, 193, .2), transparent 30rem),
+        radial-gradient(circle at -10% 28%, rgba(79, 167, 159, .12), transparent 27rem),
+        var(--bg);
+      color: var(--ink);
+      font-family: "Tajawal", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color .3s ease, color .3s ease;
+    }
 
-  /* ===== Hero ===== */
-  .hero{
-    margin-top:20px; border:1px solid var(--line); border-radius:20px; overflow:hidden;
-    background:var(--card); box-shadow:var(--shadow); position:relative;
-  }
-  .slide{display:none; grid-template-columns:1fr 190px; gap:22px; padding:26px 28px; align-items:center}
-  .slide.on{display:grid; animation:fade .45s ease}
-  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-  .slide .pic{
-    height:170px; border-radius:14px; background:var(--bg); border:1px solid var(--line);
-    display:flex; align-items:center; justify-content:center; padding:12px; order:2;
-  }
-  .slide .txt{min-width:0; order:1}
-  .tag-hot{
-    display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:800; color:var(--hot);
-    background:rgba(225,29,72,.08); border-radius:999px; padding:5px 12px;
-  }
-  .slide h2{
-    margin-top:12px; font-size:clamp(18px,3vw,25px); font-weight:900; line-height:1.4; letter-spacing:-.3px;
-    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
-  }
-  .slide .cmp{margin-top:14px}
-  .slide .go{margin-top:16px; display:inline-flex; width:auto; padding-inline:22px}
-  @media(max-width:620px){
-    .slide, .slide.on{grid-template-columns:1fr; gap:14px; padding:20px}
-    .slide .pic{height:150px; order:1} .slide .txt{order:2}
-    .slide .go{width:100%; justify-content:center}
-  }
-  .dots{position:absolute; bottom:12px; left:0; right:0; display:flex; justify-content:center; gap:7px}
-  .dots button{height:6px; width:6px; border-radius:999px; background:#cbd5e1; transition:.25s}
-  .dots button.on{width:22px; background:var(--accent)}
+    a { color: inherit; text-decoration: none; }
+    button, input, select { color: inherit; font: inherit; }
+    button { border: 0; cursor: pointer; }
+    img { display: block; max-width: 100%; }
+    ::selection { color: #04100e; background: rgba(120, 201, 193, .78); }
+    .hidden { display: none !important; }
+    .shell { width: min(1180px, calc(100% - 36px)); margin-inline: auto; }
+    .scroll-progress { position: fixed; z-index: 100; top: 0; right: 0; width: 0; height: 2px; background: linear-gradient(90deg, var(--violet-strong), var(--blue), var(--cyan)); box-shadow: 0 0 18px rgba(120,201,193,.72); pointer-events: none; }
 
-  /* ===== Grid ===== */
-  .gh{margin:32px 0 16px; display:flex; align-items:baseline; justify-content:space-between; gap:10px; flex-wrap:wrap}
-  .gh h2{font-size:19px; font-weight:900; letter-spacing:-.3px}
-  .stamp{font-size:11.5px; color:var(--soft)}
-  .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px}
-  @media(min-width:620px){.grid{grid-template-columns:repeat(3,1fr); gap:16px}}
-  @media(min-width:940px){.grid{grid-template-columns:repeat(4,1fr)}}
-  .card{
-    display:flex; flex-direction:column; height:100%; border:1px solid var(--line); border-radius:var(--r);
-    overflow:hidden; background:var(--card); box-shadow:var(--shadow); transition:transform .2s, box-shadow .2s, border-color .2s;
-  }
-  .card:hover{transform:translateY(-3px); box-shadow:var(--shadow-h); border-color:#dbe1ea}
-  .card .pic{position:relative; height:158px; display:flex; align-items:center; justify-content:center; padding:16px; background:#fff; border-bottom:1px solid var(--line)}
-  .badge{
-    position:absolute; top:10px; right:10px; font-size:12px; font-weight:900; color:#fff;
-    background:var(--hot); border-radius:8px; padding:3px 9px; letter-spacing:-.2px;
-  }
-  .card .body{padding:13px 14px 14px; display:flex; flex-direction:column; flex:1}
-  .card h3{
-    font-size:13.5px; font-weight:700; line-height:1.55; min-height:2.9em; color:var(--ink);
-    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
-  }
-  /* ===== Comparison block ===== */
-  .cmp{margin-top:11px; border:1px solid var(--line); border-radius:11px; overflow:hidden; font-size:12.5px}
-  .cmp-row{display:flex; align-items:center; justify-content:space-between; gap:8px; padding:7px 10px}
-  .cmp-row + .cmp-row{border-top:1px solid var(--line)}
-  .cmp-row .k{color:var(--muted); font-weight:500}
-  .cmp-row .v{font-weight:800; white-space:nowrap}
-  .cmp-row.amazon .v{color:var(--ok)}
-  .cmp-row .v s{color:var(--soft); font-weight:600}
-  .cta{
-    margin-top:12px; display:flex; align-items:center; justify-content:center; gap:7px; width:100%;
-    color:#fff; font-size:13px; font-weight:800; border-radius:11px; padding:11px 8px; transition:.15s;
-    background:var(--accent);
-  }
-  .card:hover .cta{background:var(--accent-d)}
-  .empty{text-align:center; padding:72px 16px; color:var(--muted); font-size:14px}
+    .ambient {
+      position: fixed;
+      z-index: -1;
+      width: 34rem;
+      height: 34rem;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(110px);
+      opacity: .17;
+    }
+    .ambient.one { top: 10rem; right: -18rem; background: var(--blue); }
+    .ambient.two { top: 45rem; left: -20rem; background: var(--violet); }
 
-  /* ===== Footer ===== */
-  footer{border-top:1px solid var(--line); background:#fff}
-  .fwrap{max-width:820px; margin:0 auto; padding:28px 18px; text-align:center}
-  .fwrap .ft{font-weight:900; margin-bottom:10px; display:flex; align-items:center; justify-content:center; gap:8px}
-  .fwrap p{font-size:11.5px; line-height:2; color:var(--muted)}
-  .fwrap .cc{margin-top:14px; font-size:10.5px; color:var(--soft)}
+    /* Navigation */
+    .site-header {
+      position: sticky;
+      top: 12px;
+      z-index: 40;
+      border: 0;
+      background: transparent;
+    }
+    .site-header > .shell {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 23px;
+      background: color-mix(in srgb, var(--panel-solid) 75%, transparent);
+      box-shadow: 0 18px 55px rgba(0,0,0,.25), inset 0 1px rgba(255,255,255,.06);
+      backdrop-filter: var(--glass);
+      -webkit-backdrop-filter: var(--glass);
+      transition: border-color .25s ease, box-shadow .25s ease, background .25s ease;
+    }
+    .site-header.compact > .shell { border-color: var(--line-strong); background: color-mix(in srgb, var(--panel-solid) 88%, transparent); box-shadow: 0 20px 65px rgba(0,0,0,.35), inset 0 1px rgba(255,255,255,.07); }
+    .nav-row { display: flex; align-items: center; gap: 14px; min-height: 66px; padding: 0 11px; transition: min-height .25s ease; }
+    .site-header.compact .nav-row { min-height: 58px; }
+    .brand { display: flex; align-items: center; min-width: 0; }
+    .brand-plate {
+      display: grid;
+      place-items: center;
+      width: 132px;
+      height: 52px;
+      padding: 4px 9px;
+      overflow: hidden;
+      border: 1px solid rgba(120,201,193,.2);
+      border-radius: 16px;
+      background: radial-gradient(circle at 70% 10%, rgba(120,201,193,.12), transparent 55%), #050a09;
+      box-shadow: inset 0 1px rgba(255,255,255,.06), 0 12px 35px rgba(40,124,116,.14);
+    }
+    .brand-logo { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 5px 13px rgba(53,176,164,.2)); }
+    .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 5px rgba(48,209,88,.1); }
+    .desktop-nav { display: flex; align-items: center; gap: 3px; margin-inline: auto; padding: 4px; border: 1px solid var(--line); border-radius: 999px; background: rgba(255,255,255,.025); }
+    .desktop-nav a { padding: 7px 13px; border-radius: 999px; color: var(--muted); font-size: 10px; font-weight: 600; transition: color .2s ease, background .2s ease; }
+    .desktop-nav a:hover { color: var(--ink); background: rgba(255,255,255,.06); }
+    .nav-actions { display: flex; align-items: center; gap: 8px; }
+    .icon-button, .filter-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--panel);
+      backdrop-filter: var(--glass);
+      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+    }
+    .icon-button { width: 40px; font-size: 16px; }
+    .filter-button { gap: 7px; padding: 0 15px; font-size: 12px; font-weight: 700; }
+    .icon-button:hover, .filter-button:hover { transform: translateY(-1px); border-color: var(--line-strong); background: var(--panel-strong); }
+    .chevron { display: inline-block; color: var(--muted); transition: transform .25s ease; }
+    .filter-button[aria-expanded="true"] .chevron { transform: rotate(180deg); }
 
-  /* ===== Overlays ===== */
-  .overlay{position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center; padding:18px}
-  .overlay.modal{background:rgba(15,23,42,.4)}
-  .box{
-    max-width:400px; width:100%; padding:26px; text-align:center; position:relative; border-radius:20px;
-    background:#fff; box-shadow:0 24px 60px rgba(15,23,42,.28); animation:pop .25s ease;
-  }
-  @keyframes pop{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}
-  .box .x{position:absolute; top:13px; left:14px; color:var(--soft); font-size:17px}
-  .box .tag-hot{margin:0 auto}
-  .box h3{margin-top:13px; font-size:19px; font-weight:900; letter-spacing:-.3px}
-  .box .s{margin-top:8px; font-size:13px; color:var(--muted);
-    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
-  .go{
-    margin-top:18px; display:flex; align-items:center; justify-content:center; gap:8px; width:100%;
-    color:#fff; font-weight:800; border-radius:12px; padding:13px; font-size:15px; background:var(--accent); transition:.15s;
-  }
-  .go:hover{background:var(--accent-d)}
-  .box .skip{margin-top:11px; font-size:12px; color:var(--soft)}
-  .overlay.redirect{background:rgba(247,248,250,.82); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px)}
-  .rbox{background:#fff; border:1px solid var(--line); border-radius:20px; padding:32px 40px; text-align:center; box-shadow:var(--shadow-h)}
-  .spin{width:48px;height:48px;border:4px solid #e2e8f0;border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .rbox .t1{margin-top:18px; font-size:16px; font-weight:900}
-  .rbox .t2{margin-top:6px; font-size:12.5px; color:var(--muted)}
-  .hidden{display:none !important}
-</style>
+    /* Dropdown controls */
+    .filters-drawer {
+      display: grid;
+      grid-template-rows: 0fr;
+      border-top: 0 solid transparent;
+      transition: grid-template-rows .35s cubic-bezier(.2,.8,.2,1), border-color .25s ease;
+    }
+    .filters-drawer.open { grid-template-rows: 1fr; border-top: 1px solid var(--line); }
+    .filters-inner { overflow: hidden; }
+    .filter-grid { display: grid; grid-template-columns: minmax(240px, 1.7fr) 1fr 1fr; gap: 10px; padding: 14px 11px 17px; }
+    .field { position: relative; }
+    .field .field-icon { position: absolute; top: 50%; right: 15px; z-index: 1; transform: translateY(-50%); color: var(--dim); pointer-events: none; }
+    .field input, .field select {
+      width: 100%;
+      height: 48px;
+      outline: none;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: var(--panel-solid);
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    .field input { padding: 0 43px 0 15px; }
+    .field select { padding: 0 15px; cursor: pointer; appearance: auto; }
+    .field input::placeholder { color: var(--dim); }
+    .field input:focus, .field select:focus { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(120,201,193,.13); }
+
+    main { padding: 46px 0 94px; scroll-margin-top: 96px; }
+    #dealsTitle, #whyOverly { scroll-margin-top: 105px; }
+
+    .intro {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.08fr .92fr;
+      align-items: center;
+      gap: clamp(36px, 7vw, 94px);
+      min-height: 520px;
+      padding: 54px clamp(10px, 3vw, 34px) 68px;
+    }
+    .intro-copy { position: relative; z-index: 2; }
+    .intro-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      background: var(--panel);
+      font-size: 10px;
+      backdrop-filter: var(--glass);
+    }
+    .brand-stage {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 390px;
+      overflow: hidden;
+      border: 1px solid rgba(120,201,193,.16);
+      border-radius: 42px;
+      background:
+        radial-gradient(circle at 64% 28%, rgba(120,201,193,.19), transparent 34%),
+        linear-gradient(150deg, rgba(21,37,34,.88), rgba(4,8,7,.94));
+      box-shadow: inset 0 1px rgba(255,255,255,.07), 0 42px 100px rgba(0,0,0,.34);
+      isolation: isolate;
+    }
+    .brand-stage::before { position: absolute; inset: 22px; border: 1px solid rgba(255,255,255,.055); border-radius: 31px; content: ""; }
+    .brand-stage::after { position: absolute; width: 300px; height: 300px; border: 1px solid rgba(120,201,193,.13); border-radius: 50%; content: ""; animation: stage-ring 8s linear infinite; }
+    @keyframes stage-ring { 50% { transform: scale(1.09) rotate(180deg); opacity: .58; } to { transform: rotate(360deg); } }
+    .intro-logo-plate {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      width: min(390px, 86%);
+      padding: 24px 28px;
+    }
+    .intro-logo { width: 100%; height: auto; filter: drop-shadow(0 18px 40px rgba(76,197,185,.28)); }
+    .stage-chip { position: absolute; z-index: 3; display: inline-flex; align-items: center; gap: 7px; min-height: 34px; padding: 0 12px; border: 1px solid var(--line-strong); border-radius: 999px; color: var(--muted); background: rgba(7,14,13,.72); box-shadow: 0 14px 35px rgba(0,0,0,.24); backdrop-filter: blur(15px); font-size: 9px; }
+    .stage-chip.amazon { top: 28px; right: 28px; }
+    .stage-chip.aliexpress { bottom: 28px; left: 28px; }
+    .stage-chip i { width: 7px; height: 7px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 5px rgba(120,201,193,.09); }
+    .stage-chip.aliexpress i { background: #ff5a43; box-shadow: 0 0 0 5px rgba(255,90,67,.09); }
+    .intro h1 {
+      max-width: 620px;
+      margin-top: 20px;
+      font-size: clamp(46px, 6.8vw, 86px);
+      font-weight: 900;
+      line-height: .98;
+      letter-spacing: -3.8px;
+      text-wrap: balance;
+    }
+    .intro h1 span { color: var(--blue); }
+    .intro p { max-width: 540px; margin-top: 22px; color: var(--muted); font-size: clamp(14px, 1.7vw, 18px); line-height: 1.85; }
+    .intro-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+    .intro-proof { display: flex; align-items: center; gap: 22px; margin-top: 34px; padding-top: 23px; border-top: 1px solid var(--line); }
+    .proof-item strong { display: block; font-size: 20px; }
+    .proof-item small { display: block; margin-top: 2px; color: var(--muted); font-size: 9px; }
+    .proof-line { width: 1px; height: 34px; background: var(--line); }
+
+    .market-switch { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin: 0 0 22px; padding: 13px 15px; border: 1px solid var(--line); border-radius: 22px; background: linear-gradient(135deg, var(--panel), transparent); }
+    .market-switch-copy strong { display: block; font-size: 12px; }
+    .market-switch-copy span { display: block; margin-top: 2px; color: var(--muted); font-size: 9px; }
+    .market-tabs { display: flex; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 999px; background: rgba(0,0,0,.12); }
+    .market-tab { min-height: 36px; padding: 0 15px; border-radius: 999px; color: var(--muted); background: transparent; font-size: 10px; font-weight: 700; transition: .2s ease; }
+    .market-tab:hover { color: var(--ink); }
+    .market-tab.active { color: #03100e; background: var(--blue); box-shadow: 0 8px 22px rgba(47,159,149,.18); }
+    .market-tab[data-store="aliexpress"].active { color: #fff; background: #ef533f; box-shadow: 0 8px 22px rgba(239,83,63,.2); }
+    .store-badge { position: absolute; z-index: 2; right: 14px; bottom: 14px; display: inline-flex; align-items: center; gap: 5px; min-height: 28px; padding: 0 9px; border: 1px solid rgba(0,0,0,.07); border-radius: 999px; color: #333; background: rgba(255,255,255,.86); backdrop-filter: blur(12px); font-size: 9px; font-weight: 800; }
+    .store-badge::before { width: 6px; height: 6px; border-radius: 50%; background: #ff9900; content: ""; }
+    .store-badge.aliexpress::before { background: #ef533f; }
+    .empty strong { display: block; margin-bottom: 8px; color: var(--ink); font-size: 18px; }
+    .empty span { display: block; max-width: 520px; margin: auto; line-height: 1.8; }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      min-height: 490px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      background:
+        radial-gradient(circle at 20% 22%, rgba(120,201,193,.24), transparent 34%),
+        radial-gradient(circle at 88% 94%, rgba(54,127,121,.16), transparent 30%),
+        linear-gradient(145deg, var(--panel-strong), var(--panel-solid));
+      box-shadow: var(--shadow);
+      isolation: isolate;
+    }
+    .hero::before {
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      background: linear-gradient(110deg, rgba(255,255,255,.07), transparent 35%);
+      content: "";
+    }
+    .hero-slide { display: none; min-height: 490px; grid-template-columns: 1.05fr .95fr; align-items: center; gap: 40px; padding: 52px 60px; }
+    .hero-slide.active { display: grid; animation: hero-in .55s cubic-bezier(.2,.8,.2,1); }
+    @keyframes hero-in { from { opacity: 0; transform: translateY(12px) scale(.99); } to { opacity: 1; transform: none; } }
+    .hero-copy { position: relative; z-index: 2; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; color: var(--cyan); font-size: 12px; font-weight: 700; }
+    .eyebrow::before { width: 26px; height: 1px; background: currentColor; content: ""; }
+    .hero h2 { max-width: 650px; margin-top: 16px; font-size: clamp(29px, 4.4vw, 52px); font-weight: 800; line-height: 1.22; letter-spacing: -1.5px; text-wrap: balance; }
+    .hero-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-top: 22px; }
+    .hero-discount { color: var(--green); font-size: 17px; font-weight: 800; }
+    .old-price { color: var(--muted); font-size: 13px; }
+    .old-price s { color: var(--dim); }
+    .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 28px; }
+    .primary-link, .secondary-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      border-radius: 999px;
+      padding: 0 22px;
+      font-size: 13px;
+      font-weight: 700;
+      transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
+    }
+    .primary-link { color: #03100e; background: linear-gradient(120deg, var(--cyan), var(--blue)); box-shadow: 0 12px 34px rgba(47,159,149,.24); }
+    .primary-link:hover { transform: translateY(-2px); background: linear-gradient(120deg, #d1fff9, var(--blue)); box-shadow: 0 16px 42px rgba(67,191,179,.3); }
+    .secondary-link { border: 1px solid var(--line); background: rgba(255,255,255,.04); }
+    .secondary-link:hover { background: rgba(255,255,255,.08); }
+    .hero-visual { position: relative; display: grid; place-items: center; min-width: 0; }
+    .hero-orbit {
+      position: absolute;
+      width: min(32vw, 370px);
+      aspect-ratio: 1;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 50%;
+      box-shadow: inset 0 0 80px rgba(120,201,193,.08), 0 0 90px rgba(120,201,193,.08);
+      animation: breathe 5s ease-in-out infinite;
+    }
+    @keyframes breathe { 50% { transform: scale(1.04); opacity: .7; } }
+    .hero-image-stage {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: min(34vw, 390px);
+      aspect-ratio: 1;
+      padding: 38px;
+      border: 1px solid rgba(255,255,255,.13);
+      border-radius: 50%;
+      background: rgba(255,255,255,.93);
+      box-shadow: 0 40px 90px rgba(0,0,0,.35), inset 0 1px #fff;
+      transition: transform .5s cubic-bezier(.2,.8,.2,1), box-shadow .5s ease;
+    }
+    .hero-slide:hover .hero-image-stage { transform: translateY(-7px) rotate(-1deg); box-shadow: 0 52px 110px rgba(0,0,0,.46), inset 0 1px #fff; }
+    .hero-image-stage img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; filter: drop-shadow(0 24px 28px rgba(0,0,0,.2)); }
+    .hero-nav { position: absolute; bottom: 24px; right: 50%; display: flex; align-items: center; gap: 7px; transform: translateX(50%); }
+    .hero-nav button { width: 7px; height: 7px; border-radius: 999px; background: var(--dim); transition: width .25s ease, background .25s ease; }
+    .hero-nav button.active { width: 28px; background: var(--ink); }
+    .hero-arrow { position: absolute; z-index: 5; top: 50%; display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid var(--line-strong); border-radius: 50%; color: var(--ink); background: color-mix(in srgb, var(--panel-solid) 72%, transparent); box-shadow: 0 10px 35px rgba(0,0,0,.25); backdrop-filter: blur(16px); transform: translateY(-50%); opacity: .25; transition: opacity .2s ease, transform .2s ease, background .2s ease; }
+    .hero:hover .hero-arrow { opacity: 1; }
+    .hero-arrow:hover { background: var(--panel-strong); transform: translateY(-50%) scale(1.06); }
+    .hero-arrow.prev { right: 18px; }
+    .hero-arrow.next { left: 18px; }
+    .floating-chip { position: absolute; z-index: 4; display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 0 12px; border: 1px solid rgba(255,255,255,.35); border-radius: 999px; color: #222; background: rgba(255,255,255,.78); box-shadow: 0 16px 35px rgba(0,0,0,.18); backdrop-filter: blur(18px); font-size: 10px; font-weight: 800; }
+    .floating-chip.discount { top: 12%; right: 1%; color: #fff; border-color: rgba(255,255,255,.16); background: linear-gradient(120deg, var(--red), var(--violet-strong)); }
+    .floating-chip.source { bottom: 12%; left: -2%; }
+
+    .trust-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 14px 0 68px; }
+    .trust-item { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 10px; min-height: 68px; padding: 12px 16px; border: 1px solid var(--line); border-radius: 20px; color: var(--muted); background: linear-gradient(135deg, var(--panel), transparent); backdrop-filter: var(--glass); }
+    .trust-icon { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 12px; color: var(--blue); background: rgba(120,201,193,.08); font-size: 15px; }
+    .trust-copy strong { display: block; color: var(--ink); font-size: 12px; }
+    .trust-copy small { display: block; margin-top: 2px; color: var(--muted); font-size: 9px; }
+
+    /* Deals */
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 24px; }
+    .section-head .overline { color: var(--blue); font-size: 12px; font-weight: 700; }
+    .section-head h2 { margin-top: 5px; font-size: clamp(25px, 4vw, 38px); font-weight: 800; letter-spacing: -.8px; }
+    .section-stats { color: var(--muted); font-size: 12px; text-align: left; }
+    .section-stats strong { color: var(--ink); }
+    .category-chips { display: flex; gap: 8px; overflow-x: auto; margin: -8px 0 22px; padding: 8px 0 2px; scrollbar-width: none; }
+    .category-chips::-webkit-scrollbar { display: none; }
+    .category-chip { display: inline-flex; align-items: center; gap: 7px; min-height: 38px; padding: 0 14px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: var(--panel); white-space: nowrap; font-size: 10px; font-weight: 700; transition: transform .2s ease, color .2s ease, border-color .2s ease, background .2s ease; }
+    .category-chip:hover { transform: translateY(-1px); color: var(--ink); border-color: var(--line-strong); }
+    .category-chip.active { color: #03100e; border-color: transparent; background: linear-gradient(120deg, var(--cyan), var(--blue)); box-shadow: 0 8px 24px rgba(47,159,149,.2); }
+    .category-chip b { display: grid; place-items: center; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 999px; background: rgba(255,255,255,.1); font-size: 9px; }
+    .grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 18px; }
+    .product-card {
+      position: relative;
+      grid-column: span 4;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: var(--panel-solid);
+      opacity: 0;
+      transform: translateY(24px) scale(.985);
+      transition: opacity .55s ease, transform .55s cubic-bezier(.2,.8,.2,1), border-color .3s ease, box-shadow .3s ease;
+      transition-delay: var(--reveal-delay, 0ms);
+    }
+    .product-card:nth-child(1) { grid-column: span 7; }
+    .product-card:nth-child(2) { grid-column: span 5; }
+    .product-card:nth-child(6) { display: grid; grid-column: span 12; grid-template-columns: 1.05fr .95fr; }
+    .product-card::before { position: absolute; z-index: 3; top: 0; left: 13%; width: 74%; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.38), transparent); content: ""; pointer-events: none; }
+    .product-card.revealed { opacity: 1; transform: none; }
+    .product-card.revealed:hover { transform: translateY(-7px); border-color: var(--line-strong); box-shadow: var(--shadow); }
+    .product-media { position: relative; display: grid; place-items: center; height: 245px; padding: 28px; overflow: hidden; background: #f5f5f7; }
+    .product-card:nth-child(1) .product-media, .product-card:nth-child(2) .product-media { height: 325px; }
+    .product-card:nth-child(6) .product-media { height: 100%; min-height: 310px; }
+    .product-card:nth-child(6) .product-body { display: flex; flex-direction: column; justify-content: center; padding: 34px; }
+    .product-card:nth-child(1) .product-body h3, .product-card:nth-child(6) .product-body h3 { font-size: 18px; }
+    .product-media::after { position: absolute; inset: auto 0 0; height: 34%; background: linear-gradient(transparent, rgba(0,0,0,.04)); content: ""; }
+    .media-product-link { position: absolute; inset: 0; display: grid; place-items: center; padding: 28px; }
+    .media-product-link img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; transition: transform .45s cubic-bezier(.2,.8,.2,1); }
+    .product-card:hover .media-product-link img { transform: scale(1.045); }
+    .quick-look { position: absolute; z-index: 4; bottom: 14px; left: 50%; display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 14px; border: 1px solid rgba(0,0,0,.1); border-radius: 999px; color: #1d1d1f; background: rgba(255,255,255,.86); box-shadow: 0 12px 30px rgba(0,0,0,.14); backdrop-filter: blur(16px); font-size: 10px; font-weight: 800; opacity: 0; transform: translate(-50%, 10px); transition: opacity .25s ease, transform .25s ease; }
+    .product-card:hover .quick-look, .quick-look:focus-visible { opacity: 1; transform: translate(-50%, 0); }
+    .discount-badge { position: absolute; z-index: 2; top: 14px; right: 14px; padding: 6px 10px; border-radius: 999px; color: #fff; background: rgba(255,55,95,.94); box-shadow: 0 8px 24px rgba(255,55,95,.2); font-size: 12px; font-weight: 800; }
+    .category-tag { position: absolute; z-index: 2; top: 14px; left: 14px; padding: 6px 10px; border: 1px solid rgba(0,0,0,.07); border-radius: 999px; color: #444; background: rgba(255,255,255,.82); backdrop-filter: blur(12px); font-size: 10px; font-weight: 700; }
+    .product-body { padding: 20px; }
+    .product-body h3 { min-height: 3.2em; font-size: 15px; font-weight: 700; line-height: 1.6; display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+    .quick-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 15px; }
+    .quick-meta strong { color: var(--green); font-size: 15px; }
+    .quick-meta span { color: var(--muted); font-size: 11px; }
+    .deal-details { margin-top: 14px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .deal-details summary { display: flex; align-items: center; justify-content: space-between; padding: 11px 0; color: var(--muted); font-size: 11px; list-style: none; cursor: pointer; }
+    .deal-details summary::-webkit-details-marker { display: none; }
+    .deal-details summary::after { color: var(--dim); content: "+"; font-size: 18px; font-weight: 300; transition: transform .2s ease; }
+    .deal-details[open] summary::after { transform: rotate(45deg); }
+    .detail-content { display: grid; gap: 7px; padding: 0 0 12px; animation: detail-in .2s ease; }
+    @keyframes detail-in { from { opacity: 0; transform: translateY(-4px); } }
+    .detail-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 11px; }
+    .detail-row b { color: var(--ink); font-weight: 600; }
+    .card-cta { display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%; min-height: 44px; margin-top: 15px; border-radius: 14px; color: #03100e; background: linear-gradient(120deg, var(--cyan), var(--blue)); font-size: 12px; font-weight: 800; transition: filter .2s ease, transform .2s ease; }
+    .card-cta:hover { filter: brightness(1.12); transform: translateY(-1px); }
+    .empty { padding: 80px 20px; border: 1px dashed var(--line-strong); border-radius: var(--radius-lg); color: var(--muted); text-align: center; }
+
+    /* Editorial Bento */
+    .story { margin-top: 94px; }
+    .story-grid { display: grid; grid-template-columns: 1.25fr .75fr; grid-template-rows: repeat(2, minmax(210px, auto)); gap: 16px; }
+    .story-card { position: relative; overflow: hidden; border: 1px solid var(--line); border-radius: 28px; background: var(--panel-solid); opacity: 0; transform: translateY(22px); transition: opacity .55s ease, transform .55s cubic-bezier(.2,.8,.2,1), border-color .25s ease; }
+    .story-card.revealed { opacity: 1; transform: none; }
+    .story-card:hover { border-color: var(--line-strong); }
+    .story-card.large { grid-row: 1 / 3; min-height: 438px; padding: 38px; background: radial-gradient(circle at 20% 15%, rgba(120,201,193,.23), transparent 40%), radial-gradient(circle at 92% 90%, rgba(54,127,121,.2), transparent 35%), var(--panel-solid); }
+    .story-card.small { display: flex; flex-direction: column; justify-content: flex-end; min-height: 210px; padding: 28px; }
+    .story-number { position: absolute; bottom: -38px; left: -10px; color: rgba(255,255,255,.035); font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 190px; font-weight: 900; line-height: 1; letter-spacing: -14px; }
+    .story-kicker { color: var(--blue); font-size: 10px; font-weight: 700; }
+    .story-card h3 { position: relative; z-index: 1; max-width: 570px; margin-top: 12px; font-size: clamp(24px, 3.8vw, 46px); line-height: 1.2; letter-spacing: -1px; }
+    .story-card.small h3 { font-size: 21px; }
+    .story-card p { position: relative; z-index: 1; max-width: 520px; margin-top: 12px; color: var(--muted); font-size: 12px; line-height: 1.8; }
+    .story-orb { position: absolute; left: 8%; bottom: 8%; width: 155px; aspect-ratio: 1; border: 1px solid rgba(255,255,255,.13); border-radius: 42%; background: linear-gradient(145deg, rgba(168,239,232,.86), rgba(54,127,121,.74)); box-shadow: 0 30px 80px rgba(47,159,149,.24); transform: rotate(14deg); }
+    .story-orb::after { position: absolute; inset: 28%; border: 2px solid rgba(255,255,255,.72); border-radius: 50%; content: ""; }
+
+    .mobile-dock { display: none; }
+
+    footer { border-top: 1px solid var(--line); background: color-mix(in srgb, var(--bg-soft) 72%, transparent); }
+    .footer-inner { display: grid; grid-template-columns: .75fr 1.25fr; gap: 50px; padding: 42px 0; }
+    .footer-brand { font-size: 16px; font-weight: 800; }
+    .footer-logo-plate { display: grid; place-items: center; width: 166px; padding: 9px 13px; border: 1px solid rgba(120,201,193,.16); border-radius: 18px; background: #050a09; }
+    .footer-logo { width: 100%; height: auto; }
+    .footer-brand p { margin-top: 8px; color: var(--muted); font-size: 11px; font-weight: 400; }
+    .disclosure { color: var(--muted); font-size: 11px; line-height: 1.9; }
+    .copyright { margin-top: 13px; color: var(--dim); font-size: 10px; }
+
+    /* Modal + redirect */
+    .overlay { position: fixed; z-index: 80; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(0,0,0,.58); backdrop-filter: blur(18px); }
+    .modal-box, .redirect-box { width: min(420px, 100%); border: 1px solid var(--line-strong); border-radius: 28px; background: var(--panel-solid); box-shadow: 0 40px 110px rgba(0,0,0,.55); animation: modal-in .32s cubic-bezier(.2,.8,.2,1); }
+    @keyframes modal-in { from { opacity: 0; transform: translateY(14px) scale(.97); } }
+    .modal-box { position: relative; padding: 30px; text-align: center; }
+    .close-button { position: absolute; top: 14px; left: 14px; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; color: var(--muted); background: var(--panel-strong); }
+    .modal-icon { display: grid; place-items: center; width: 62px; height: 62px; margin: 0 auto; border-radius: 20px; background: rgba(255,55,95,.1); font-size: 25px; }
+    .modal-box h3 { margin-top: 18px; font-size: 22px; }
+    .modal-box p { margin-top: 8px; color: var(--muted); font-size: 13px; }
+    .modal-box .primary-link { width: 100%; margin-top: 22px; }
+    .skip { margin-top: 12px; color: var(--muted); background: transparent; font-size: 11px; }
+    .redirect-box { padding: 34px; text-align: center; }
+    .spinner { width: 52px; height: 52px; margin: 0 auto; border: 3px solid var(--line-strong); border-top-color: var(--blue); border-radius: 50%; animation: spin .8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .redirect-box h3 { margin-top: 18px; font-size: 18px; }
+    .redirect-box p { margin-top: 6px; color: var(--muted); font-size: 12px; }
+    .quick-view-box { position: relative; width: min(880px, 100%); overflow: hidden; border: 1px solid var(--line-strong); border-radius: 30px; background: var(--panel-solid); box-shadow: 0 40px 120px rgba(0,0,0,.6); animation: modal-in .32s cubic-bezier(.2,.8,.2,1); }
+    .quick-view-grid { display: grid; grid-template-columns: 1fr 1fr; min-height: 480px; }
+    .quick-view-media { display: grid; place-items: center; padding: 45px; background: #f5f5f7; }
+    .quick-view-media img { width: 100%; height: 100%; max-height: 390px; object-fit: contain; mix-blend-mode: multiply; }
+    .quick-view-copy { display: flex; flex-direction: column; justify-content: center; padding: 42px; }
+    .quick-view-copy .category { color: var(--blue); font-size: 10px; font-weight: 700; }
+    .quick-view-copy h3 { margin-top: 12px; font-size: 27px; line-height: 1.45; }
+    .quick-view-copy .saving { margin-top: 18px; color: var(--green); font-size: 20px; font-weight: 800; }
+    .quick-view-copy .before { margin-top: 4px; color: var(--muted); font-size: 11px; }
+    .quick-view-meta { display: grid; gap: 9px; margin-top: 22px; padding: 16px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .quick-view-meta div { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 10px; }
+    .quick-view-meta b { color: var(--ink); }
+    .quick-view-copy .primary-link { margin-top: 22px; }
+
+    @media (max-width: 920px) {
+      .desktop-nav { display: none; }
+      .nav-actions { margin-inline-start: auto; }
+      .intro { grid-template-columns: 1fr; min-height: 0; padding-top: 48px; text-align: center; }
+      .intro-copy { order: 2; }
+      .brand-stage { order: 1; width: min(620px, 100%); min-height: 350px; margin-inline: auto; }
+      .intro h1, .intro p { margin-inline: auto; }
+      .intro-actions, .intro-proof { justify-content: center; }
+      .hero-slide { grid-template-columns: 1fr .8fr; padding: 42px; }
+      .product-card, .product-card:nth-child(1), .product-card:nth-child(2) { grid-column: span 6; }
+      .product-card:nth-child(6) { grid-column: span 12; }
+      .filter-grid { grid-template-columns: 1fr 1fr; }
+      .filter-grid .search-field { grid-column: 1 / -1; }
+      .story-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; }
+      .story-card.large { grid-column: 1 / -1; grid-row: auto; min-height: 380px; }
+    }
+
+    @media (max-width: 640px) {
+      .shell { width: min(100% - 24px, 1180px); }
+      .site-header { top: 8px; }
+      .site-header > .shell { border-radius: 19px; }
+      .nav-row { min-height: 60px; padding: 0 8px; }
+      .brand-plate { width: 105px; height: 46px; padding: 4px 7px; border-radius: 14px; }
+      .filter-button .filter-label { display: none; }
+      .filter-button { width: 40px; padding: 0; }
+      .filter-grid { grid-template-columns: 1fr; }
+      .filter-grid .search-field { grid-column: auto; }
+      main { padding-top: 34px; }
+      .intro { min-height: 0; gap: 30px; padding: 30px 0 46px; }
+      .brand-stage { min-height: 295px; border-radius: 30px; }
+      .brand-stage::before { inset: 14px; border-radius: 22px; }
+      .brand-stage::after { width: 230px; height: 230px; }
+      .intro-logo-plate { width: min(300px, 86%); padding: 18px; }
+      .stage-chip.amazon { top: 20px; right: 20px; }
+      .stage-chip.aliexpress { bottom: 20px; left: 20px; }
+      .intro h1 { font-size: clamp(42px, 14vw, 62px); letter-spacing: -2.4px; }
+      .intro p { font-size: 13px; }
+      .intro-actions .primary-link, .intro-actions .secondary-link { flex: 1; padding-inline: 14px; }
+      .intro-proof { justify-content: space-around; gap: 8px; }
+      .proof-item strong { font-size: 17px; }
+      .market-switch { align-items: stretch; flex-direction: column; padding: 13px; }
+      .market-tabs { display: grid; grid-template-columns: repeat(3, 1fr); }
+      .market-tab { padding: 0 8px; }
+      .hero { min-height: 610px; border-radius: 26px; }
+      .hero-slide, .hero-slide.active { min-height: 610px; grid-template-columns: 1fr; gap: 16px; padding: 28px 22px 55px; }
+      .hero-copy { order: 2; text-align: center; }
+      .eyebrow { justify-content: center; }
+      .hero h2 { margin-inline: auto; font-size: 29px; letter-spacing: -.7px; }
+      .hero-meta, .hero-actions { justify-content: center; }
+      .hero-actions .primary-link { width: 100%; }
+      .hero-visual { order: 1; }
+      .hero-image-stage { width: min(70vw, 285px); padding: 30px; }
+      .hero-orbit { width: min(66vw, 270px); }
+      .hero-arrow { display: none; }
+      .floating-chip { min-height: 30px; padding: 0 9px; font-size: 9px; }
+      .floating-chip.discount { top: 7%; right: -1%; }
+      .floating-chip.source { bottom: 4%; left: -1%; }
+      .trust-strip { grid-template-columns: 1fr; margin-bottom: 42px; }
+      .trust-item { min-height: 48px; }
+      .section-head { align-items: start; }
+      .section-stats { max-width: 115px; }
+      .grid { grid-template-columns: 1fr; gap: 15px; }
+      .product-card, .product-card:nth-child(1), .product-card:nth-child(2), .product-card:nth-child(6) { display: block; grid-column: 1; }
+      .product-card:nth-child(1) .product-media, .product-card:nth-child(2) .product-media, .product-card:nth-child(6) .product-media, .product-media { height: 280px; min-height: 0; }
+      .product-card:nth-child(6) .product-body { display: block; padding: 20px; }
+      .product-card:nth-child(1) .product-body h3, .product-card:nth-child(6) .product-body h3 { font-size: 15px; }
+      .quick-look { opacity: 1; transform: translate(-50%, 0); }
+      .story { margin-top: 68px; }
+      .story-grid { grid-template-columns: 1fr; }
+      .story-card.large, .story-card.small { grid-column: 1; min-height: 260px; padding: 25px; }
+      .story-card.large { min-height: 360px; }
+      .story-orb { width: 110px; }
+      .quick-view-grid { grid-template-columns: 1fr; }
+      .quick-view-box { max-height: calc(100vh - 30px); overflow-y: auto; border-radius: 25px; }
+      .quick-view-media { min-height: 280px; padding: 30px; }
+      .quick-view-copy { padding: 27px; }
+      .quick-view-copy h3 { font-size: 21px; }
+      .mobile-dock { position: fixed; z-index: 55; right: 50%; bottom: max(12px, env(safe-area-inset-bottom)); display: grid; grid-template-columns: repeat(3, 1fr); width: min(300px, calc(100% - 34px)); min-height: 58px; padding: 6px; border: 1px solid var(--line-strong); border-radius: 21px; background: color-mix(in srgb, var(--panel-solid) 83%, transparent); box-shadow: 0 20px 60px rgba(0,0,0,.48); backdrop-filter: var(--glass); transform: translateX(50%); }
+      .mobile-dock a, .mobile-dock button { display: grid; place-items: center; gap: 1px; border-radius: 15px; color: var(--muted); background: transparent; font-size: 9px; font-weight: 700; }
+      .mobile-dock a span, .mobile-dock button span { color: var(--ink); font-size: 16px; }
+      .mobile-dock a:active, .mobile-dock button:active { background: rgba(255,255,255,.07); }
+      footer { padding-bottom: 86px; }
+      .footer-inner { grid-template-columns: 1fr; gap: 20px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
 </head>
 <body>
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+  <div class="ambient one"></div>
+  <div class="ambient two"></div>
 
-<header>
-  <div class="wrap">
-    <div class="hrow">
-      <div class="brand">
-        <div class="logo">🏷️</div>
+  <header class="site-header">
+    <div class="shell">
+      <div class="nav-row">
+        <a class="brand" href="#top" aria-label="الصفحة الرئيسية">
+          <span class="brand-plate">
+            <img class="brand-logo" src="assets/overly-dark-logo-trimmed.png" alt="أوفرلي">
+          </span>
+        </a>
+
+        <nav class="desktop-nav" aria-label="التنقل الرئيسي">
+          <a href="#top">الرئيسية</a>
+          <a href="#dealsTitle">العروض</a>
+          <a href="#whyOverly">لماذا أوفرلي؟</a>
+        </nav>
+
+        <div class="nav-actions">
+          <button class="icon-button" id="themeToggle" type="button" aria-label="تبديل مظهر الموقع">☀︎</button>
+          <button class="filter-button" id="filterToggle" type="button" aria-label="فتح البحث والفلاتر" aria-expanded="false" aria-controls="filtersDrawer">
+            <span>⌕</span><span class="filter-label">بحث وفلاتر</span><span class="chevron">⌄</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="filters-drawer" id="filtersDrawer">
+        <div class="filters-inner">
+          <div class="filter-grid">
+            <div class="field search-field">
+              <span class="field-icon">⌕</span>
+              <input id="searchInput" type="search" placeholder="ابحث عن شاحن، منزل، حقيبة…" aria-label="ابحث في العروض">
+            </div>
+            <div class="field">
+              <select id="categorySelect" aria-label="اختر التصنيف">
+                <option value="الكل">كل التصنيفات</option>
+                <option value="الإلكترونيات">الإلكترونيات</option>
+                <option value="المنزل">المنزل</option>
+                <option value="الموضة">الموضة</option>
+              </select>
+            </div>
+            <div class="field">
+              <select id="sortSelect" aria-label="ترتيب العروض">
+                <option value="discount">الأعلى خصمًا</option>
+                <option value="price-high">السعر قبل الخصم: الأعلى</option>
+                <option value="price-low">السعر قبل الخصم: الأقل</option>
+                <option value="name">الاسم أبجديًا</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell" id="top">
+    <section class="intro" aria-labelledby="introTitle">
+      <div class="intro-copy">
+        <div class="intro-pill"><span class="live-dot"></span> اختيارات يومية من متاجر موثوقة</div>
+        <h1 id="introTitle">العرض الصح.<br><span>أوفر عليك.</span></h1>
+        <p>أوفرلي يرتّب لك أبرز العروض من أمازون السعودية ومن علي إكسبريس في واجهة واحدة، واضحة وسريعة وبدون ضجيج.</p>
+        <div class="intro-actions">
+          <a class="primary-link" href="#dealsTitle">اكتشف العروض ↓</a>
+          <button class="secondary-link" type="button" onclick="toggleFilters(true)">ابحث عن منتج ⌕</button>
+        </div>
+        <div class="intro-proof" aria-label="ملخص المنصة">
+          <div class="proof-item"><strong id="introDealCount">٠</strong><small>عروض مختارة</small></div>
+          <span class="proof-line"></span>
+          <div class="proof-item"><strong>٢</strong><small>منصات تسوق</small></div>
+          <span class="proof-line"></span>
+          <div class="proof-item"><strong>١٠٠٪</strong><small>تحقق عند المتجر</small></div>
+        </div>
+      </div>
+      <div class="brand-stage" aria-label="هوية أوفرلي">
+        <span class="stage-chip amazon"><i></i> Amazon.sa</span>
+        <div class="intro-logo-plate"><img class="intro-logo" src="assets/overly-dark-logo-trimmed.png" alt="أوفرلي — overly"></div>
+        <span class="stage-chip aliexpress"><i></i> AliExpress</span>
+      </div>
+    </section>
+
+    <section class="hero" id="hero" aria-label="أبرز العروض"></section>
+
+    <div class="trust-strip" aria-label="مزايا الموقع">
+      <div class="trust-item"><span class="trust-icon">✓</span><span class="trust-copy"><strong>بلا مبالغة</strong><small>نسب الخصم كما رُصدت</small></span></div>
+      <div class="trust-item"><span class="trust-icon">⌁</span><span class="trust-copy"><strong>السعر الحالي</strong><small>يُتحقق مباشرة لدى المتجر</small></span></div>
+      <div class="trust-item"><span class="trust-icon">↗</span><span class="trust-copy"><strong>طريق مختصر</strong><small>رابط مباشر إلى صفحة المنتج</small></span></div>
+    </div>
+
+    <section aria-labelledby="dealsTitle">
+      <div class="section-head">
         <div>
-          <h1>صائد الخصومات السعودية</h1>
-          <div class="sub"><span class="dot"></span> رصد عروض أمازون السعودية</div>
+          <div class="overline">اختيارات أوفرلي الحالية</div>
+          <h2 id="dealsTitle">ما يستحق نظرتك</h2>
+        </div>
+        <div class="section-stats"><strong id="resultCount">0</strong> عروض<br><span id="updatedAt"></span></div>
+      </div>
+      <div class="market-switch" aria-label="اختيار منصة التسوق">
+        <div class="market-switch-copy"><strong>تصفّح حسب المتجر</strong><span>الأسعار والتوفر النهائيان لدى المنصة المختارة</span></div>
+        <div class="market-tabs" id="marketTabs">
+          <button class="market-tab active" type="button" data-store="all" onclick="setStore('all')">كل العروض</button>
+          <button class="market-tab" type="button" data-store="amazon" onclick="setStore('amazon')">Amazon</button>
+          <button class="market-tab" type="button" data-store="aliexpress" onclick="setStore('aliexpress')">AliExpress</button>
         </div>
       </div>
-      <div class="search desk-search">
-        <span class="ic">🔍</span>
-        <input id="q1" type="text" placeholder="ابحث عن منتج…" aria-label="بحث">
-      </div>
-    </div>
-    <div class="mob-search">
-      <div class="search">
-        <span class="ic">🔍</span>
-        <input id="q2" type="text" placeholder="ابحث عن منتج…" aria-label="بحث">
-      </div>
-    </div>
-    <nav id="tabs" aria-label="تصنيفات العروض"></nav>
-  </div>
-</header>
+      <div class="category-chips" id="categoryChips" aria-label="تصنيفات المنتجات"></div>
+      <div class="grid" id="dealsGrid"></div>
+      <div class="empty hidden" id="emptyState"><strong id="emptyTitle">لا توجد نتائج مطابقة</strong><span id="emptyDescription">جرّب كلمة أخرى أو غيّر التصنيف.</span></div>
+    </section>
 
-<main>
-  <section class="hero hidden" id="hero" aria-label="أبرز العروض"></section>
-
-  <section aria-label="جميع العروض">
-    <div class="gh">
-      <h2 id="gridTitle">🏷️ عروض اليوم</h2>
-      <span class="stamp" id="stamp"></span>
-    </div>
-    <div class="grid" id="grid"></div>
-    <div class="empty hidden" id="empty">🔍 لا توجد نتائج مطابقة — جرّب كلمة أخرى أو غيّر التصنيف.</div>
-  </section>
-</main>
-
-<footer>
-  <div class="fwrap">
-    <div class="ft">🏷️ صائد الخصومات السعودية</div>
-    <p>إفصاح: بصفتنا مشاركين في برنامج أمازون أسوشيتس (Amazon Associates)، نحصل على عمولة من عمليات
-    الشراء المؤهلة عبر الروابط في هذا الموقع دون أي تكلفة إضافية عليك. الأسعار ونسب الخصم كما رُصدت
-    وقت آخر تحديث وقد تتغيّر — السعر النهائي المعتمد هو الظاهر على Amazon.sa لحظة الشراء.</p>
-    <div class="cc" id="year"></div>
-  </div>
-</footer>
-
-<!-- Exit-intent modal -->
-<div class="overlay modal hidden" id="exitModal" role="dialog" aria-modal="true">
-  <div class="box">
-    <button class="x" onclick="closeModal()" aria-label="إغلاق">✕</button>
-    <span class="tag-hot">🔥 انتظر لحظة</span>
-    <h3 id="modalTitle"></h3>
-    <div class="s" id="modalSub"></div>
-    <a class="go" id="modalGo" href="#">اعرض العرض على أمازون ↗</a>
-    <button class="skip" onclick="closeModal()">لا شكراً، سأكمل التصفح</button>
-  </div>
-</div>
-
-<!-- Redirect overlay (compliance: neutral wording only) -->
-<div class="overlay redirect hidden" id="redirect">
-  <div class="rbox">
-    <div class="spin"></div>
-    <div class="t1">جاري التحقق من توفر العرض…</div>
-    <div class="t2">سيتم تحويلك بأمان إلى Amazon.sa خلال لحظات</div>
-  </div>
-</div>
-
-<script>
-/* ================= الإعدادات ================= */
-const AFFILIATE_TAG = "faraj733-21";
-const link = asin => `https://www.amazon.sa/dp/${asin}/?tag=${AFFILIATE_TAG}`;
-const CATEGORIES = ["الكل","الإلكترونيات","المنزل","الموضة"];
-
-/* بيانات احتياطية (تطابق العروض الحقيقية) — تظهر فقط إذا تعذّر تحميل deals.json الحي. */
-const DATA = {
-  updated_at: "2026-07-21T04:18:12+00:00",
-  deals: [
-    {asin:"B0DL5FT193", title:"شاحن UGREEN بقوة 200 واط بـ8 منافذ وتقنية GaN للشحن السريع", image:"https://m.media-amazon.com/images/I/51PpIM8WXVL._AC_UF894,1000_QL80_FMwebp_.jpg", discount_percent:32, original_price:379, category:"الإلكترونيات"},
-    {asin:"B08FJ678YK", title:"جهاز تنقية الهواء ليفويت Core 200S الذكي للمنزل", image:"https://m.media-amazon.com/images/I/61YVFzh9kLL._AC_UF1000,1000_QL80_FMwebp_.jpg", discount_percent:24, original_price:500, category:"المنزل"},
-    {asin:"B07ZG5NTPJ", title:"ميزان يوفي eufy الذكي C1 بتقنية بلوتوث وتحليل مكونات الجسم", image:"https://m.media-amazon.com/images/I/617LH20BD5L._AC_SF1050,1050_QL80_.jpg", discount_percent:23, original_price:89, category:"المنزل"},
-    {asin:"B0D53RXMB1", title:"جهاز تتبع UGREEN FineTrack بتقنية بلوتوث للحقائب والجوازات", image:"https://m.media-amazon.com/images/I/61eiRrdySeL._AC_SX679_.jpg", discount_percent:20, original_price:69, category:"الإلكترونيات"},
-    {asin:"B08GHC8429", title:"مظلة Showay واقية من الشمس والأشعة فوق البنفسجية لزجاج السيارة", image:"https://m.media-amazon.com/images/I/41PbD+yb4OL._AC_SF1050,1050_QL80_.jpg", discount_percent:11, original_price:20, category:"الموضة"},
-    {asin:"B0DBVFNMQG", title:"ماكينة صنع الثلج Flvzog لسطح الطاولة ذاتية التنظيف", image:"https://m.media-amazon.com/images/I/61dfrgeOOrL._AC_UF350,350_QL80_FMwebp_.jpg", discount_percent:10, original_price:269, category:"المنزل"}
-  ]
-};
-
-let deals = DATA.deals, category = "الكل", query = "", heroIdx = 0, exitShown = false;
-
-/* تحميل العروض الحيّة إن وُجدت */
-fetch("deals.json", {cache:"no-store"})
-  .then(r => r.ok ? r.json() : Promise.reject())
-  .then(d => { if (Array.isArray(d.deals) && d.deals.length) { deals = d.deals; renderAll(d.updated_at); } })
-  .catch(() => {});
-
-const fmt = n => new Intl.NumberFormat("ar-SA",{maximumFractionDigits:0}).format(n);
-const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-
-/* سطر أمازون قبل الخصم + نسبة الخصم */
-function cmpBlock(d){
-  return `<div class="cmp">
-    <div class="cmp-row amazon"><span class="k">أمازون قبل الخصم</span><span class="v"><s>${fmt(d.original_price)} ر.س</s> · خصم ${d.discount_percent}٪</span></div>
-  </div>`;
-}
-
-/* ================= التبويبات ================= */
-function renderTabs(){
-  document.getElementById("tabs").innerHTML = CATEGORIES.map(c =>
-    `<button class="${c===category?'active':''}" onclick="setCat('${c}')">${c}</button>`).join("");
-}
-function setCat(c){ category = c; renderTabs(); renderGrid(); }
-
-/* ================= الهيرو ================= */
-function topDeals(){ return [...deals].sort((a,b)=>b.discount_percent-a.discount_percent).slice(0,3); }
-
-function renderHero(){
-  const top = topDeals();
-  const hero = document.getElementById("hero");
-  if (!top.length){ hero.classList.add("hidden"); return; }
-  hero.classList.remove("hidden");
-  hero.innerHTML = top.map((d,i)=>`
-    <a class="slide ${i===heroIdx?'on':''}" href="${link(d.asin)}" target="_blank" rel="noopener noreferrer"
-       onclick="return go(event,'${d.asin}')">
-      <div class="txt">
-        <span class="tag-hot">🔥 خصم ${d.discount_percent}٪ · أبرز العروض</span>
-        <h2>${esc(d.title)}</h2>
-        ${cmpBlock(d)}
-        <span class="go">اعرض السعر الحالي على أمازون ↗</span>
-      </div>
-      <div class="pic"><img src="${d.image}" alt="${esc(d.title)}" loading="lazy"
-        onerror="this.parentElement.innerHTML='🛍️'"></div>
-    </a>`).join("") + `
-    <div class="dots">${top.map((_,i)=>
-      `<button class="${i===heroIdx?'on':''}" aria-label="شريحة ${i+1}" onclick="jump(${i})"></button>`).join("")}</div>`;
-}
-function step(d){ const n = topDeals().length; if(!n) return; heroIdx = (heroIdx + d + n) % n; renderHero(); }
-function jump(i){ heroIdx = i; renderHero(); }
-setInterval(()=>{ if(topDeals().length > 1) step(1); }, 5500);
-
-/* سحب باللمس على الهيرو */
-let tx = null;
-const heroEl = document.getElementById("hero");
-heroEl.addEventListener("touchstart", e => tx = e.touches[0].clientX, {passive:true});
-heroEl.addEventListener("touchend", e => {
-  if (tx === null) return;
-  const dx = e.changedTouches[0].clientX - tx;
-  if (Math.abs(dx) > 40) step(dx < 0 ? 1 : -1);
-  tx = null;
-}, {passive:true});
-
-/* ================= الشبكة ================= */
-function renderGrid(){
-  const q = query.trim();
-  const list = deals.filter(d =>
-    (category === "الكل" || d.category === category) &&
-    (!q || d.title.includes(q)));
-  document.getElementById("gridTitle").textContent =
-    "🏷️ عروض اليوم" + (category !== "الكل" ? " · " + category : "");
-  document.getElementById("empty").classList.toggle("hidden", list.length > 0);
-  document.getElementById("grid").innerHTML = list.map(d => `
-    <article>
-      <a class="card" href="${link(d.asin)}" target="_blank" rel="noopener noreferrer"
-         onclick="return go(event,'${d.asin}')">
-        <div class="pic">
-          <img src="${d.image}" alt="${esc(d.title)}" loading="lazy"
-            onerror="this.replaceWith(Object.assign(document.createElement('div'),{textContent:'🛍️',style:'font-size:42px'}))">
-          <span class="badge">${d.discount_percent}٪-</span>
+    <section class="story" id="whyOverly" aria-labelledby="whyTitle">
+      <div class="section-head">
+        <div>
+          <div class="overline">فلسفة أوفرلي</div>
+          <h2 id="whyTitle">أقل ضجيجًا. أوضح قرارًا.</h2>
         </div>
-        <div class="body">
-          <h3>${esc(d.title)}</h3>
-          ${cmpBlock(d)}
-          <span class="cta">اعرض السعر الحالي على أمازون ↗</span>
+      </div>
+      <div class="story-grid">
+        <article class="story-card large">
+          <div class="story-kicker">اختيار واعٍ</div>
+          <h3>لا نعرض كل شيء.<br>نعرض ما يستحق نظرتك.</h3>
+          <p>تجربة مصممة حول الوضوح: منتج، خصم مرصود، ورابط مباشر للتحقق من السعر الحالي لدى المتجر.</p>
+          <div class="story-number">01</div>
+          <div class="story-orb" aria-hidden="true"></div>
+        </article>
+        <article class="story-card small">
+          <div class="story-kicker">وضوح السعر</div>
+          <h3>المتجر هو المرجع النهائي.</h3>
+          <p>السعر والتوفر المعتمدان هما الظاهران على Amazon.sa أو AliExpress لحظة الشراء.</p>
+        </article>
+        <article class="story-card small">
+          <div class="story-kicker">شفافية</div>
+          <h3>الإفصاح جزء من التجربة.</h3>
+          <p>روابط العمولة موضحة، ولا تضيف أي تكلفة على المشتري.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo-plate"><img class="footer-logo" src="assets/overly-dark-logo-trimmed.png" alt="أوفرلي"></div>
+        <p>العروض أوضح. الاختيار أسرع.</p>
+      </div>
+      <div class="disclosure">
+        إفصاح: بصفتنا مشاركين في برنامج أمازون أسوشيتس (Amazon Associates)، نحصل على عمولة من عمليات الشراء المؤهلة عبر روابط أمازون دون تكلفة إضافية عليك. وقد تتضمن الصفحة روابط تسويق بالعمولة لمتاجر أخرى مثل AliExpress. الأسعار ونسب الخصم كما رُصدت وقت آخر تحديث وقد تتغيّر — السعر النهائي المعتمد هو الظاهر لدى المتجر لحظة الشراء.
+        <div class="copyright" id="copyright"></div>
+      </div>
+    </div>
+  </footer>
+
+  <nav class="mobile-dock" aria-label="التنقل السريع">
+    <a href="#top"><span>⌂</span>الرئيسية</a>
+    <a href="#dealsTitle"><span>◇</span>العروض</a>
+    <button id="mobileSearchButton" type="button"><span>⌕</span>بحث</button>
+  </nav>
+
+  <div class="overlay hidden" id="exitModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-box">
+      <button class="close-button" id="closeModal" type="button" aria-label="إغلاق">×</button>
+      <div class="modal-icon">🔥</div>
+      <h3 id="modalTitle"></h3>
+      <p id="modalDescription"></p>
+      <a class="primary-link" id="modalLink" href="#">اعرض العرض لدى المتجر ↗</a>
+      <button class="skip" id="skipModal" type="button">لا شكرًا، سأكمل التصفح</button>
+    </div>
+  </div>
+
+  <div class="overlay hidden" id="redirect" aria-live="polite">
+    <div class="redirect-box">
+      <div class="spinner"></div>
+      <h3>جاري التحقق من توفر العرض…</h3>
+      <p>سيتم تحويلك بأمان إلى صفحة المنتج لدى المتجر خلال لحظات</p>
+    </div>
+  </div>
+
+  <div class="overlay hidden" id="quickViewModal" role="dialog" aria-modal="true" aria-labelledby="quickTitle">
+    <div class="quick-view-box">
+      <button class="close-button" id="closeQuickView" type="button" aria-label="إغلاق النظرة السريعة">×</button>
+      <div class="quick-view-grid">
+        <div class="quick-view-media"><img id="quickImage" src="" alt=""></div>
+        <div class="quick-view-copy">
+          <div class="category" id="quickCategory"></div>
+          <h3 id="quickTitle"></h3>
+          <div class="saving" id="quickSaving"></div>
+          <div class="before" id="quickBefore"></div>
+          <div class="quick-view-meta">
+            <div><span>رقم المنتج</span><b id="quickAsin" dir="ltr"></b></div>
+            <div><span>السعر والتوفر</span><b id="quickStore">يُتحقق لدى المتجر</b></div>
+          </div>
+          <a class="primary-link" id="quickLink" href="#">اعرض السعر الحالي ↗</a>
         </div>
-      </a>
-    </article>`).join("");
-}
+      </div>
+    </div>
+  </div>
 
-/* البحث */
-function onSearch(v){ query = v; const q1=document.getElementById("q1"),q2=document.getElementById("q2"); if(q1.value!==v)q1.value=v; if(q2.value!==v)q2.value=v; renderGrid(); }
-document.getElementById("q1").addEventListener("input", e => onSearch(e.target.value));
-document.getElementById("q2").addEventListener("input", e => onSearch(e.target.value));
+  <script>
+    const AFFILIATE_TAG = "faraj733-21";
+    function hydrateBrandAssets() {
+      Promise.all([
+        fetch("assets/overly-logo.b64", {cache:"force-cache"}).then(response => response.ok ? response.text() : Promise.reject()),
+        fetch("assets/overly-icon.b64", {cache:"force-cache"}).then(response => response.ok ? response.text() : Promise.reject())
+      ]).then(([logo, icon]) => {
+        const logoSource = `data:image/png;base64,${logo.trim()}`;
+        document.querySelectorAll(".brand-logo,.intro-logo,.footer-logo").forEach(image => { image.src = logoSource; });
+        document.querySelectorAll('link[rel="icon"],link[rel="apple-touch-icon"]').forEach(link => { link.href = `data:image/png;base64,${icon.trim()}`; });
+      }).catch(() => {});
+    }
+    const amazonLink = asin => `https://www.amazon.sa/dp/${asin}/?tag=${AFFILIATE_TAG}`;
+    const storeOf = deal => String(deal.store || "amazon").toLowerCase() === "aliexpress" ? "aliexpress" : "amazon";
+    const dealKey = deal => String(deal.asin || deal.product_id || deal.id || "");
+    const storeMeta = deal => storeOf(deal) === "aliexpress"
+      ? {key:"aliexpress", name:"AliExpress", host:"AliExpress", cta:"اعرض السعر الحالي على AliExpress ↗"}
+      : {key:"amazon", name:"Amazon.sa", host:"Amazon.sa", cta:"اعرض السعر الحالي على أمازون ↗"};
+    const dealLink = deal => {
+      if (storeOf(deal) === "amazon") return amazonLink(deal.asin);
+      const url = String(deal.url || "");
+      return /^https:\/\/([a-z0-9-]+\.)*(aliexpress\.com|aliexpress\.us)\//i.test(url) ? url : "#";
+    };
+    const CATEGORIES = ["الكل", "الإلكترونيات", "المنزل", "الموضة"];
+    const FALLBACK_DATA = {
+      updated_at: "2026-07-21T04:18:12+00:00",
+      deals: [
+        {asin:"B0DL5FT193",title:"شاحن UGREEN بقوة 200 واط بـ8 منافذ وتقنية GaN للشحن السريع",image:"https://m.media-amazon.com/images/I/51PpIM8WXVL._AC_UF894,1000_QL80_FMwebp_.jpg",discount_percent:32,original_price:379,category:"الإلكترونيات"},
+        {asin:"B08FJ678YK",title:"جهاز تنقية الهواء ليفويت Core 200S الذكي للمنزل",image:"https://m.media-amazon.com/images/I/61YVFzh9kLL._AC_UF1000,1000_QL80_FMwebp_.jpg",discount_percent:24,original_price:500,category:"المنزل"},
+        {asin:"B07ZG5NTPJ",title:"ميزان يوفي eufy الذكي C1 بتقنية بلوتوث وتحليل مكونات الجسم",image:"https://m.media-amazon.com/images/I/617LH20BD5L._AC_SF1050,1050_QL80_.jpg",discount_percent:23,original_price:89,category:"المنزل"},
+        {asin:"B0D53RXMB1",title:"جهاز تتبع UGREEN FineTrack بتقنية بلوتوث للحقائب والجوازات",image:"https://m.media-amazon.com/images/I/61eiRrdySeL._AC_SX679_.jpg",discount_percent:20,original_price:69,category:"الإلكترونيات"},
+        {asin:"B08GHC8429",title:"مظلة Showay واقية من الشمس والأشعة فوق البنفسجية لزجاج السيارة",image:"https://m.media-amazon.com/images/I/41PbD+yb4OL._AC_SF1050,1050_QL80_.jpg",discount_percent:11,original_price:20,category:"الموضة"},
+        {asin:"B0DBVFNMQG",title:"ماكينة صنع الثلج Flvzog لسطح الطاولة ذاتية التنظيف",image:"https://m.media-amazon.com/images/I/61dfrgeOOrL._AC_UF350,350_QL80_FMwebp_.jpg",discount_percent:10,original_price:269,category:"المنزل"}
+      ]
+    };
 
-/* ================= التحويل (إصلاح حجب النوافذ) ================= */
-function go(e, asin){
-  e.preventDefault();
-  const url = link(asin);
-  /* نفتح التبويب داخل إيماءة المستخدم مباشرة حتى لا تحجبه المتصفحات، ثم نوجّهه بعد لحظة */
-  let win = null;
-  try { win = window.open("about:blank", "_blank"); if (win) win.opener = null; } catch (_) {}
-  document.getElementById("redirect").classList.remove("hidden");
-  setTimeout(()=>{
-    if (win && !win.closed) { win.location.replace(url); }
-    else { window.location.href = url; }   /* احتياط: نفس التبويب */
-    document.getElementById("redirect").classList.add("hidden");
-  }, 900);
-  return false;
-}
+    let deals = FALLBACK_DATA.deals;
+    let updatedAt = FALLBACK_DATA.updated_at;
+    let category = "الكل";
+    let store = "all";
+    let sortBy = "discount";
+    let query = "";
+    let heroIndex = 0;
+    let exitShown = false;
+    let revealObserver = null;
 
-/* ================= Exit-Intent ================= */
-const store = {
-  get(k){ try { return localStorage.getItem(k); } catch { return null; } },
-  set(k,v){ try { localStorage.setItem(k,v); } catch {} }
-};
-document.addEventListener("mouseout", e => {
-  if (e.clientY > 0 || exitShown || store.get("exit_modal_shown") === "1") return;
-  const best = topDeals()[0]; if (!best) return;
-  exitShown = true; store.set("exit_modal_shown","1");
-  document.getElementById("modalTitle").textContent = `لا تفوّت أقوى عرض بخصم ${best.discount_percent}٪`;
-  document.getElementById("modalSub").textContent = best.title;
-  const goBtn = document.getElementById("modalGo");
-  goBtn.href = link(best.asin);
-  goBtn.onclick = ev => { closeModal(); return go(ev, best.asin); };
-  document.getElementById("exitModal").classList.remove("hidden");
-});
-function closeModal(){ document.getElementById("exitModal").classList.add("hidden"); }
+    const el = id => document.getElementById(id);
+    const formatNumber = value => new Intl.NumberFormat("ar-SA", {maximumFractionDigits: 0}).format(value);
+    const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
+    const topDeals = () => [...deals].sort((a,b) => b.discount_percent - a.discount_percent).slice(0,3);
+    const visibleTopDeals = () => [...deals].filter(deal => store === "all" || storeOf(deal) === store).sort((a,b) => b.discount_percent - a.discount_percent).slice(0,3);
 
-/* ================= الإقلاع ================= */
-function renderAll(updatedAt){
-  renderTabs(); renderHero(); renderGrid();
-  document.getElementById("stamp").textContent =
-    "⏱️ آخر تحديث: " + new Date(updatedAt || DATA.updated_at).toLocaleString("ar-SA");
-}
-document.getElementById("year").textContent = "© " + new Date().getFullYear() + " صائد الخصومات السعودية";
-renderAll();
-</script>
+    const storage = {
+      get(key) { try { return localStorage.getItem(key); } catch (_) { return null; } },
+      set(key, value) { try { localStorage.setItem(key, value); } catch (_) {} }
+    };
+
+    function setTheme(theme) {
+      document.documentElement.dataset.theme = theme;
+      el("themeToggle").textContent = theme === "dark" ? "☀︎" : "◐";
+      el("themeToggle").setAttribute("aria-label", theme === "dark" ? "تفعيل الوضع الفاتح" : "تفعيل الوضع الداكن");
+      document.querySelector('meta[name="theme-color"]').content = theme === "dark" ? "#050807" : "#f5f5f7";
+      storage.set("site_theme", theme);
+    }
+
+    function toggleFilters(force) {
+      const next = typeof force === "boolean" ? force : !el("filtersDrawer").classList.contains("open");
+      el("filtersDrawer").classList.toggle("open", next);
+      el("filterToggle").setAttribute("aria-expanded", String(next));
+      if (next && window.innerWidth < 640) setTimeout(() => el("searchInput").focus(), 320);
+    }
+
+    function renderHero() {
+      const top = visibleTopDeals();
+      const hero = el("hero");
+      if (!top.length) { hero.classList.add("hidden"); return; }
+      if (heroIndex >= top.length) heroIndex = 0;
+      hero.classList.remove("hidden");
+      hero.innerHTML = top.map((deal, index) => {
+        const shop = storeMeta(deal);
+        const key = escapeHtml(dealKey(deal));
+        return `
+        <article class="hero-slide ${index === heroIndex ? "active" : ""}">
+          <div class="hero-copy">
+            <div class="eyebrow">أحد أبرز عروض ${shop.name}</div>
+            <h2>${escapeHtml(deal.title)}</h2>
+            <div class="hero-meta">
+              <span class="hero-discount">خصم ${deal.discount_percent}٪</span>
+              <span class="old-price">${shop.name} قبل الخصم: <s>${formatNumber(deal.original_price)} ر.س</s></span>
+            </div>
+            <div class="hero-actions">
+              <a class="primary-link" href="${dealLink(deal)}" target="_blank" rel="noopener noreferrer" onclick="return go(event,'${key}')">اعرض السعر الحالي ↗</a>
+              <button class="secondary-link" type="button" onclick="document.getElementById('dealsTitle').scrollIntoView()">استعرض كل العروض</button>
+            </div>
+          </div>
+          <div class="hero-visual">
+            <div class="hero-orbit"></div>
+            <div class="hero-image-stage"><img src="${deal.image}" alt="${escapeHtml(deal.title)}" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🛍️',style:'font-size:64px'}))"></div>
+            <span class="floating-chip discount">وفّر ${deal.discount_percent}٪</span>
+            <span class="floating-chip source">${shop.name} ↗</span>
+          </div>
+        </article>
+      `}).join("") + `
+        <button class="hero-arrow prev" type="button" aria-label="العرض السابق" onclick="stepHero(-1)">›</button>
+        <button class="hero-arrow next" type="button" aria-label="العرض التالي" onclick="stepHero(1)">‹</button>
+        <div class="hero-nav">${top.map((_, index) => `<button type="button" class="${index === heroIndex ? "active" : ""}" aria-label="العرض ${index + 1}" onclick="showHero(${index})"></button>`).join("")}</div>`;
+    }
+
+    function showHero(index) { heroIndex = index; renderHero(); }
+    function stepHero(direction) {
+      const count = visibleTopDeals().length;
+      if (!count) return;
+      heroIndex = (heroIndex + direction + count) % count;
+      renderHero();
+    }
+
+    function setCategory(nextCategory) {
+      category = CATEGORIES.includes(nextCategory) ? nextCategory : "الكل";
+      el("categorySelect").value = category;
+      renderCategoryChips();
+      renderGrid();
+    }
+
+    function setStore(nextStore) {
+      store = ["all", "amazon", "aliexpress"].includes(nextStore) ? nextStore : "all";
+      heroIndex = 0;
+      document.querySelectorAll(".market-tab").forEach(button => button.classList.toggle("active", button.dataset.store === store));
+      renderHero();
+      renderCategoryChips();
+      renderGrid();
+    }
+
+    function renderCategoryChips() {
+      el("categoryChips").innerHTML = CATEGORIES.map(item => {
+        const scoped = deals.filter(deal => store === "all" || storeOf(deal) === store);
+        const count = item === "الكل" ? scoped.length : scoped.filter(deal => deal.category === item).length;
+        const label = item === "الكل" ? "الكل" : item;
+        return `<button type="button" class="category-chip ${item === category ? "active" : ""}" onclick="setCategory('${item}')">${label}<b>${formatNumber(count)}</b></button>`;
+      }).join("");
+    }
+
+    function filteredDeals() {
+      const normalizedQuery = query.trim().toLowerCase();
+      const list = deals.filter(deal =>
+        (store === "all" || storeOf(deal) === store) &&
+        (category === "الكل" || deal.category === category) &&
+        (!normalizedQuery || deal.title.toLowerCase().includes(normalizedQuery))
+      );
+      return list.sort((a,b) => {
+        if (sortBy === "price-high") return b.original_price - a.original_price;
+        if (sortBy === "price-low") return a.original_price - b.original_price;
+        if (sortBy === "name") return a.title.localeCompare(b.title, "ar");
+        return b.discount_percent - a.discount_percent;
+      });
+    }
+
+    function setupCardReveal() {
+      if (revealObserver) revealObserver.disconnect();
+      const cards = [...document.querySelectorAll(".product-card, .story-card")];
+      cards.forEach((card, index) => card.style.setProperty("--reveal-delay", `${Math.min(index, 5) * 65}ms`));
+      if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        cards.forEach(card => card.classList.add("revealed"));
+        return;
+      }
+      revealObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("revealed");
+          revealObserver.unobserve(entry.target);
+        });
+      }, {threshold: .12, rootMargin: "0px 0px -30px"});
+      cards.forEach(card => revealObserver.observe(card));
+    }
+
+    function renderGrid() {
+      const list = filteredDeals();
+      el("resultCount").textContent = formatNumber(list.length);
+      el("introDealCount").textContent = formatNumber(deals.length);
+      el("emptyState").classList.toggle("hidden", list.length > 0);
+      if (!list.length) {
+        const aliEmpty = store === "aliexpress" && !deals.some(deal => storeOf(deal) === "aliexpress");
+        el("emptyTitle").textContent = aliEmpty ? "عروض AliExpress قيد الإضافة" : "لا توجد نتائج مطابقة";
+        el("emptyDescription").textContent = aliEmpty
+          ? "جهّزنا المنصة والفلترة والروابط؛ ستظهر هنا العروض الموثقة فور إضافتها، دون منتجات أو أسعار تجريبية."
+          : "جرّب كلمة أخرى أو غيّر التصنيف أو المتجر.";
+      }
+      el("dealsGrid").innerHTML = list.map(deal => {
+        const shop = storeMeta(deal);
+        const key = escapeHtml(dealKey(deal));
+        return `
+        <article class="product-card">
+          <div class="product-media">
+            <a class="media-product-link" href="${dealLink(deal)}" target="_blank" rel="noopener noreferrer" onclick="return go(event,'${key}')" aria-label="${escapeHtml(deal.title)}">
+              <img src="${deal.image}" alt="${escapeHtml(deal.title)}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🛍️',style:'font-size:52px'}))">
+            </a>
+            <span class="discount-badge">-${deal.discount_percent}٪</span>
+            <span class="category-tag">${escapeHtml(deal.category)}</span>
+            <span class="store-badge ${shop.key}">${shop.name}</span>
+            <button class="quick-look" type="button" onclick="openQuickView('${key}')">⌘ نظرة سريعة</button>
+          </div>
+          <div class="product-body">
+            <h3>${escapeHtml(deal.title)}</h3>
+            <div class="quick-meta"><strong>خصم ${deal.discount_percent}٪</strong><span>السعر على ${shop.name}</span></div>
+            <details class="deal-details">
+              <summary>تفاصيل العرض</summary>
+              <div class="detail-content">
+                <div class="detail-row"><span>${shop.name} قبل الخصم</span><b><s>${formatNumber(deal.original_price)} ر.س</s></b></div>
+                <div class="detail-row"><span>رقم المنتج</span><b dir="ltr">${key}</b></div>
+                <div class="detail-row"><span>التوفر والسعر النهائي</span><b>يُتحقق على ${shop.host}</b></div>
+              </div>
+            </details>
+            <a class="card-cta" href="${dealLink(deal)}" target="_blank" rel="noopener noreferrer" onclick="return go(event,'${key}')">${shop.cta}</a>
+          </div>
+        </article>
+      `}).join("");
+      setupCardReveal();
+    }
+
+    function renderTimestamp() {
+      const date = new Date(updatedAt);
+      el("updatedAt").textContent = Number.isNaN(date.getTime()) ? "" : `آخر تحديث ${date.toLocaleDateString("ar-SA")}`;
+    }
+
+    function renderAll() { renderHero(); renderCategoryChips(); renderGrid(); renderTimestamp(); }
+
+    function go(event, key) {
+      event.preventDefault();
+      const deal = deals.find(item => dealKey(item) === String(key));
+      if (!deal) return false;
+      const url = dealLink(deal);
+      if (url === "#") return false;
+      let newWindow = null;
+      try { newWindow = window.open("about:blank", "_blank"); if (newWindow) newWindow.opener = null; } catch (_) {}
+      el("redirect").classList.remove("hidden");
+      setTimeout(() => {
+        if (newWindow && !newWindow.closed) newWindow.location.replace(url);
+        else window.location.href = url;
+        el("redirect").classList.add("hidden");
+      }, 850);
+      return false;
+    }
+
+    function closeExitModal() { el("exitModal").classList.add("hidden"); }
+    function closeQuickView() { el("quickViewModal").classList.add("hidden"); }
+
+    function openQuickView(key) {
+      const deal = deals.find(item => dealKey(item) === String(key));
+      if (!deal) return;
+      const shop = storeMeta(deal);
+      el("quickImage").src = deal.image;
+      el("quickImage").alt = deal.title;
+      el("quickCategory").textContent = deal.category;
+      el("quickTitle").textContent = deal.title;
+      el("quickSaving").textContent = `خصم ${deal.discount_percent}٪`;
+      el("quickBefore").innerHTML = `${shop.name} قبل الخصم: <s>${formatNumber(deal.original_price)} ر.س</s>`;
+      el("quickAsin").textContent = dealKey(deal);
+      el("quickStore").textContent = `يُتحقق على ${shop.host}`;
+      el("quickLink").textContent = shop.cta;
+      el("quickLink").href = dealLink(deal);
+      el("quickLink").onclick = event => { closeQuickView(); return go(event, dealKey(deal)); };
+      el("quickViewModal").classList.remove("hidden");
+    }
+
+    el("themeToggle").addEventListener("click", () => setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark"));
+    el("filterToggle").addEventListener("click", () => toggleFilters());
+    el("searchInput").addEventListener("input", event => { query = event.target.value; renderGrid(); });
+    el("categorySelect").addEventListener("change", event => setCategory(event.target.value));
+    el("sortSelect").addEventListener("change", event => { sortBy = event.target.value; renderGrid(); });
+    el("closeModal").addEventListener("click", closeExitModal);
+    el("skipModal").addEventListener("click", closeExitModal);
+    el("exitModal").addEventListener("click", event => { if (event.target === el("exitModal")) closeExitModal(); });
+    el("closeQuickView").addEventListener("click", closeQuickView);
+    el("quickViewModal").addEventListener("click", event => { if (event.target === el("quickViewModal")) closeQuickView(); });
+    el("mobileSearchButton").addEventListener("click", () => {
+      toggleFilters(true);
+      document.querySelector(".site-header").scrollIntoView({behavior: "smooth", block: "start"});
+      setTimeout(() => el("searchInput").focus(), 420);
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") { closeExitModal(); closeQuickView(); toggleFilters(false); }
+    });
+
+    function updateScrollUI() {
+      const available = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = available > 0 ? Math.min(100, Math.max(0, window.scrollY / available * 100)) : 0;
+      el("scrollProgress").style.width = `${progress}%`;
+      document.querySelector(".site-header").classList.toggle("compact", window.scrollY > 80);
+    }
+    window.addEventListener("scroll", updateScrollUI, {passive: true});
+
+    document.addEventListener("mouseout", event => {
+      if (event.clientY > 0 || exitShown || storage.get("exit_modal_shown") === "1") return;
+      const best = topDeals()[0];
+      if (!best) return;
+      exitShown = true;
+      storage.set("exit_modal_shown", "1");
+      el("modalTitle").textContent = `لا تفوّت أقوى عرض بخصم ${best.discount_percent}٪`;
+      el("modalDescription").textContent = best.title;
+      el("modalLink").textContent = storeMeta(best).cta;
+      el("modalLink").href = dealLink(best);
+      el("modalLink").onclick = event => { closeExitModal(); return go(event, dealKey(best)); };
+      el("exitModal").classList.remove("hidden");
+    });
+
+    setInterval(() => {
+      if (visibleTopDeals().length > 1 && !document.hidden) {
+        heroIndex = (heroIndex + 1) % visibleTopDeals().length;
+        renderHero();
+      }
+    }, 6000);
+
+    fetch("deals.json", {cache: "no-store"})
+      .then(response => response.ok ? response.json() : Promise.reject(new Error("تعذر تحميل البيانات")))
+      .then(data => {
+        if (Array.isArray(data.deals) && data.deals.length) {
+          deals = data.deals;
+          updatedAt = data.updated_at || updatedAt;
+          renderAll();
+        }
+      })
+      .catch(() => {});
+
+    el("copyright").textContent = `© ${new Date().getFullYear()} أوفرلي | overly`;
+    hydrateBrandAssets();
+    setTheme(storage.get("site_theme") || "dark");
+    renderAll();
+    updateScrollUI();
+  </script>
 </body>
 </html>
