@@ -27,6 +27,7 @@ import sys
 import time
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
+from urllib.parse import urlsplit
 
 import requests
 from bs4 import BeautifulSoup
@@ -89,7 +90,7 @@ ALIEXPRESS_API_ENDPOINT = (
     os.environ.get("ALIEXPRESS_API_ENDPOINT") or "https://api-sg.aliexpress.com/sync"
 ).strip()
 ALIEXPRESS_TARGET_CURRENCY = (
-    os.environ.get("ALIEXPRESS_TARGET_CURRENCY") or "SAR"
+    os.environ.get("ALIEXPRESS_TARGET_CURRENCY") or "USD"
 ).strip().upper()
 ALIEXPRESS_TARGET_LANGUAGE = (
     os.environ.get("ALIEXPRESS_TARGET_LANGUAGE") or "AR"
@@ -97,9 +98,25 @@ ALIEXPRESS_TARGET_LANGUAGE = (
 ALIEXPRESS_SHIP_TO_COUNTRY = (
     os.environ.get("ALIEXPRESS_SHIP_TO_COUNTRY") or "SA"
 ).strip().upper()
+ALIEXPRESS_USD_TO_SAR = float(os.environ.get("ALIEXPRESS_USD_TO_SAR") or "3.75")
 ALIEXPRESS_WATCHLIST_PATH = Path(__file__).resolve().parent / "aliexpress_products.json"
 ALIEXPRESS_ENABLED = bool(
     ALIEXPRESS_APP_KEY and ALIEXPRESS_APP_SECRET and ALIEXPRESS_TRACKING_ID
+)
+ALIEXPRESS_AUTO_DISCOVERY = (
+    os.environ.get("ALIEXPRESS_AUTO_DISCOVERY") or "true"
+).strip().lower() in {"1", "true", "yes", "on"}
+ALIEXPRESS_AUTO_LIMIT = max(
+    1, min(20, int(os.environ.get("ALIEXPRESS_AUTO_LIMIT") or "12"))
+)
+ALIEXPRESS_AUTO_MIN_DISCOUNT = max(
+    5, min(95, int(os.environ.get("ALIEXPRESS_AUTO_MIN_DISCOUNT") or "20"))
+)
+ALIEXPRESS_AUTO_MIN_VOLUME = max(
+    0, int(os.environ.get("ALIEXPRESS_AUTO_MIN_VOLUME") or "20")
+)
+ALIEXPRESS_AUTO_MIN_RATING = max(
+    0, min(100, int(os.environ.get("ALIEXPRESS_AUTO_MIN_RATING") or "85"))
 )
 ALIEXPRESS_ID_RE = re.compile(r"(?<!\d)(\d{6,20})(?!\d)")
 
@@ -687,8 +704,23 @@ def _ali_discount(value: object) -> int:
     return int(match.group(0)) if match else 0
 
 
+def _ali_https_url(value: object) -> str:
+    """يقبل روابط AliExpress الرسمية فقط، ويرقّي رابط العمولة من HTTP إلى HTTPS."""
+    url = str(value or "").strip()
+    if url.startswith("http://s.click.aliexpress.com/"):
+        url = "https://" + url.removeprefix("http://")
+    if not url.startswith("https://"):
+        return ""
+    host = (urlsplit(url).hostname or "").lower()
+    if host == "aliexpress.com" or host.endswith(".aliexpress.com"):
+        return url
+    if host == "aliexpress.us" or host.endswith(".aliexpress.us"):
+        return url
+    return ""
+
+
 def sanitize_aliexpress(raw: dict) -> dict | None:
-    """يحوّل منتج AliExpress إلى مخطط الموقع، مع رفض العملات غير السعودية."""
+    """يحوّل منتج AliExpress إلى مخطط الموقع ويعرض سعره قبل الخصم بالريال."""
     product_id = _ali_product_id(raw.get("product_id"))
     title = re.sub(r"\s+", " ", str(raw.get("title", "")).strip())[:140]
     image = str(raw.get("image", "")).strip()
@@ -699,10 +731,9 @@ def sanitize_aliexpress(raw: dict) -> dict | None:
         return None
     if not url.startswith("https://"):
         return None
-    if currency and currency != ALIEXPRESS_TARGET_CURRENCY:
+    if currency and currency not in {"SAR", "USD"}:
         print(
-            f"[aliexpress] تجاهل {product_id}: العملة {currency} وليست "
-            f"{ALIEXPRESS_TARGET_CURRENCY}"
+            f"[aliexpress] تجاهل {product_id}: العملة {currency} غير مدعومة"
         )
         return None
 
@@ -715,6 +746,8 @@ def sanitize_aliexpress(raw: dict) -> dict | None:
         discount = round((original - current) / original * 100)
     if original <= 0 or not (5 <= discount <= 95):
         return None
+    if currency == "USD":
+        original *= ALIEXPRESS_USD_TO_SAR
 
     category = raw.get("category")
     return {
@@ -726,6 +759,7 @@ def sanitize_aliexpress(raw: dict) -> dict | None:
         "discount_percent": int(discount),
         "original_price": round(original, 2),
         "category": category if category in CATEGORY_KEYWORDS else classify(title),
+        **({"auto_discovered": True} if raw.get("auto_discovered") else {}),
     }
 
 
@@ -745,8 +779,8 @@ def aliexpress_generate_links(source_urls: list[str]) -> dict[str, str]:
     mapped: dict[str, str] = {}
     for item in links:
         source = str(item.get("source_value", ""))
-        promotion = str(item.get("promotion_link", ""))
-        if not promotion.startswith("https://"):
+        promotion = _ali_https_url(item.get("promotion_link"))
+        if not promotion:
             continue
         if source.startswith("https://"):
             mapped[source] = promotion
@@ -756,16 +790,12 @@ def aliexpress_generate_links(source_urls: list[str]) -> dict[str, str]:
     return mapped
 
 
-def scrape_aliexpress() -> list[dict]:
-    """يحدّث المنتجات المختارة عبر Affiliates API ويولّد روابط عمولة رسمية."""
-    watchlist = load_aliexpress_watchlist()
-    if not watchlist:
-        print("[aliexpress] قائمة المتابعة فارغة — أضف روابط إلى aliexpress_products.json")
-        return []
+def discover_aliexpress_products() -> list[dict]:
+    """يكتشف تلقائياً منتجات AliExpress الرائجة القابلة للشحن للسعودية.
 
-    categories = {item["product_id"]: item.get("category") for item in watchlist}
-    product_ids = [item["product_id"] for item in watchlist]
-    raw_products: list[dict] = []
+    المصدر هو واجهة AliExpress الرسمية hotproduct.query. النتائج تظل مرشّحة
+    أولية؛ لا تدخل الموقع إلا بعد اجتياز فلاتر الجودة ووجود خصم ورابط عمولة.
+    """
     fields = ",".join(
         [
             "product_id",
@@ -776,28 +806,102 @@ def scrape_aliexpress() -> list[dict]:
             "target_original_price_currency",
             "target_sale_price",
             "target_sale_price_currency",
+            "original_price",
+            "original_price_currency",
+            "sale_price",
+            "sale_price_currency",
             "discount",
             "promotion_link",
+            "evaluate_rate",
+            "lastest_volume",
         ]
     )
+    result = aliexpress_api_call(
+        "aliexpress.affiliate.hotproduct.query",
+        {
+            "fields": fields,
+            "page_no": 1,
+            "page_size": 50,
+            "platform_product_type": "ALL",
+            "sort": "LAST_VOLUME_DESC",
+            "target_currency": ALIEXPRESS_TARGET_CURRENCY,
+            "target_language": ALIEXPRESS_TARGET_LANGUAGE,
+            "tracking_id": ALIEXPRESS_TRACKING_ID,
+            "ship_to_country": ALIEXPRESS_SHIP_TO_COUNTRY,
+        },
+    )
+    products = _ali_list((result or {}).get("products"), "product")
+    accepted: list[dict] = []
+    seen: set[str] = set()
+    for product in products:
+        product_id = _ali_product_id(product.get("product_id"))
+        discount = _ali_discount(product.get("discount"))
+        volume = int(_ali_number(product.get("lastest_volume")))
+        rating = _ali_number(product.get("evaluate_rate"))
+        if not product_id or product_id in seen:
+            continue
+        if discount < ALIEXPRESS_AUTO_MIN_DISCOUNT:
+            continue
+        if volume < ALIEXPRESS_AUTO_MIN_VOLUME:
+            continue
+        if rating and rating < ALIEXPRESS_AUTO_MIN_RATING:
+            continue
+        seen.add(product_id)
+        accepted.append({**product, "auto_discovered": True})
+        if len(accepted) >= ALIEXPRESS_AUTO_LIMIT:
+            break
 
-    for start in range(0, len(product_ids), 20):
-        batch = product_ids[start:start + 20]
-        result = aliexpress_api_call(
-            "aliexpress.affiliate.productdetail.get",
-            {
-                "country": ALIEXPRESS_SHIP_TO_COUNTRY,
-                "fields": fields,
-                "product_ids": ",".join(batch),
-                "target_currency": ALIEXPRESS_TARGET_CURRENCY,
-                "target_language": ALIEXPRESS_TARGET_LANGUAGE,
-                "tracking_id": ALIEXPRESS_TRACKING_ID,
-            },
+    print(
+        f"[aliexpress] اكتشاف آلي: {len(accepted)} من {len(products)} منتج "
+        "اجتاز فلاتر الخصم والمبيعات والتقييم"
+    )
+    return accepted
+
+
+def scrape_aliexpress() -> list[dict]:
+    """يحدّث القائمة المختارة أو يكتشف الرائج آلياً، ثم يولّد روابط عمولة."""
+    watchlist = load_aliexpress_watchlist()
+    categories = {item["product_id"]: item.get("category") for item in watchlist}
+    raw_products: list[dict] = []
+    if watchlist:
+        product_ids = [item["product_id"] for item in watchlist]
+        fields = ",".join(
+            [
+                "product_id",
+                "product_title",
+                "product_main_image_url",
+                "product_detail_url",
+                "target_original_price",
+                "target_original_price_currency",
+                "target_sale_price",
+                "target_sale_price_currency",
+                "discount",
+                "promotion_link",
+            ]
         )
-        products = _ali_list((result or {}).get("products"), "product")
-        raw_products.extend(products)
-        print(f"[aliexpress] الدفعة {start // 20 + 1}: {len(products)} منتج")
-        time.sleep(1)
+        for start in range(0, len(product_ids), 20):
+            batch = product_ids[start:start + 20]
+            result = aliexpress_api_call(
+                "aliexpress.affiliate.productdetail.get",
+                {
+                    "country": ALIEXPRESS_SHIP_TO_COUNTRY,
+                    "fields": fields,
+                    "product_ids": ",".join(batch),
+                    "target_currency": ALIEXPRESS_TARGET_CURRENCY,
+                    "target_language": ALIEXPRESS_TARGET_LANGUAGE,
+                    "tracking_id": ALIEXPRESS_TRACKING_ID,
+                },
+            )
+            products = _ali_list((result or {}).get("products"), "product")
+            raw_products.extend(products)
+            print(f"[aliexpress] الدفعة {start // 20 + 1}: {len(products)} منتج")
+            time.sleep(1)
+    if ALIEXPRESS_AUTO_DISCOVERY:
+        print("[aliexpress] تشغيل الاكتشاف الآلي للرائج")
+        raw_products.extend(discover_aliexpress_products())
+    if not raw_products:
+        print("[aliexpress] قائمة المتابعة فارغة والاكتشاف الآلي متوقف")
+        return []
 
     source_urls = []
     for product in raw_products:
@@ -812,10 +916,10 @@ def scrape_aliexpress() -> list[dict]:
     seen: set[str] = set()
     for product, source_url in zip(raw_products, source_urls):
         product_id = _ali_product_id(product.get("product_id"))
-        promotion_link = str(product.get("promotion_link") or "").strip()
+        promotion_link = _ali_https_url(product.get("promotion_link"))
         affiliate_url = (
             promotion_link
-            if promotion_link.startswith("https://")
+            if promotion_link
             else link_map.get(source_url) or link_map.get(product_id, "")
         )
         deal = sanitize_aliexpress(
@@ -824,12 +928,19 @@ def scrape_aliexpress() -> list[dict]:
                 "title": product.get("product_title"),
                 "image": product.get("product_main_image_url"),
                 "url": affiliate_url,
-                "original_price": product.get("target_original_price") or product.get("original_price"),
-                "sale_price": product.get("target_sale_price") or product.get("sale_price"),
+                "original_price": product.get("target_original_price")
+                or product.get("original_price"),
+                "sale_price": product.get("target_sale_price")
+                or product.get("target_app_sale_price")
+                or product.get("sale_price")
+                or product.get("app_sale_price"),
                 "currency": product.get("target_original_price_currency")
-                or product.get("target_sale_price_currency"),
+                or product.get("target_sale_price_currency")
+                or product.get("original_price_currency")
+                or product.get("sale_price_currency"),
                 "discount_percent": product.get("discount"),
                 "category": categories.get(product_id),
+                "auto_discovered": product.get("auto_discovered"),
             }
         )
         if deal and product_id not in seen:
@@ -848,8 +959,19 @@ def _deal_key(deal: dict) -> str:
 
 
 def merge_deals(existing: list[dict], updates: list[dict]) -> list[dict]:
-    """دمج تصاعدي: التحديث يستبدل نظيره ولا يحذف أي منتج قديم تلقائياً."""
+    """يدمج التحديثات ويحافظ على اليدوي مع تدوير الاكتشاف الآلي القديم."""
     merged = [dict(deal) for deal in existing if isinstance(deal, dict)]
+    fresh_auto_keys = {
+        _deal_key(deal)
+        for deal in updates
+        if deal.get("auto_discovered") and _deal_key(deal)
+    }
+    if fresh_auto_keys:
+        merged = [
+            deal
+            for deal in merged
+            if not deal.get("auto_discovered") or _deal_key(deal) in fresh_auto_keys
+        ]
     indexes = {_deal_key(deal): index for index, deal in enumerate(merged) if _deal_key(deal)}
     for deal in updates:
         key = _deal_key(deal)
