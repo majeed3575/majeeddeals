@@ -1,4 +1,4 @@
-name: Amazon SA Deals Scraper
+name: Overly Deals Updater
 
 on:
   schedule:
@@ -38,6 +38,10 @@ jobs:
           # باقي الإعدادات لها قيم افتراضية جاهزة للسعودية داخل الكود.
           CREATORS_CLIENT_ID: ${{ secrets.CREATORS_CLIENT_ID }}
           CREATORS_CLIENT_SECRET: ${{ secrets.CREATORS_CLIENT_SECRET }}
+          # AliExpress Affiliates API — المفاتيح تبقى داخل GitHub Secrets فقط.
+          ALIEXPRESS_APP_KEY: ${{ secrets.ALIEXPRESS_APP_KEY }}
+          ALIEXPRESS_APP_SECRET: ${{ secrets.ALIEXPRESS_APP_SECRET }}
+          ALIEXPRESS_TRACKING_ID: ${{ secrets.ALIEXPRESS_TRACKING_ID }}
 
       - name: Commit & push (if changed)
         run: |
@@ -46,6 +50,7 @@ jobs:
           git add deals.json
           if [ -f posted_deals.json ]; then git add posted_deals.json; fi
           if [ -f asins.json ]; then git add asins.json; fi
+          if [ -f aliexpress_products.json ]; then git add aliexpress_products.json; fi
           if git diff --cached --quiet; then
             echo "No changes - skipping commit."
           else
