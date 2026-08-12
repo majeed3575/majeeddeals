@@ -763,16 +763,6 @@
 
   <script>
     const AFFILIATE_TAG = "faraj733-21";
-    function hydrateBrandAssets() {
-      Promise.all([
-        fetch("assets/overly-logo.txt", {cache:"force-cache"}).then(response => response.ok ? response.text() : Promise.reject()),
-        fetch("assets/overly-icon.txt", {cache:"force-cache"}).then(response => response.ok ? response.text() : Promise.reject())
-      ]).then(([logo, icon]) => {
-        const logoSource = `data:image/png;base64,${logo.trim()}`;
-        document.querySelectorAll(".brand-logo,.intro-logo,.footer-logo").forEach(image => { image.src = logoSource; });
-        document.querySelectorAll('link[rel="icon"],link[rel="apple-touch-icon"]').forEach(link => { link.href = `data:image/png;base64,${icon.trim()}`; });
-      }).catch(() => {});
-    }
     const amazonLink = asin => `https://www.amazon.sa/dp/${asin}/?tag=${AFFILIATE_TAG}`;
     const storeOf = deal => String(deal.store || "amazon").toLowerCase() === "aliexpress" ? "aliexpress" : "amazon";
     const dealKey = deal => String(deal.asin || deal.product_id || deal.id || "");
@@ -1085,7 +1075,6 @@
       .catch(() => {});
 
     el("copyright").textContent = `© ${new Date().getFullYear()} أوفرلي | overly`;
-    hydrateBrandAssets();
     setTheme(storage.get("site_theme") || "dark");
     renderAll();
     updateScrollUI();
