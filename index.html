@@ -383,6 +383,10 @@
     .category-chip.active { color: #03100e; border-color: transparent; background: linear-gradient(120deg, var(--cyan), var(--blue)); box-shadow: 0 8px 24px rgba(47,159,149,.2); }
     .category-chip b { display: grid; place-items: center; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 999px; background: rgba(255,255,255,.1); font-size: 9px; }
     .grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 18px; }
+    .load-more-wrap { display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 9px; margin-top: 26px; }
+    .load-more-button { min-width: min(100%, 260px); min-height: 48px; padding: 0 24px; border: 1px solid var(--line-strong); border-radius: 16px; color: var(--ink); background: linear-gradient(135deg, var(--panel-solid), var(--panel)); box-shadow: 0 12px 35px rgba(0,0,0,.14); font-size: 12px; font-weight: 800; transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
+    .load-more-button:hover { transform: translateY(-2px); border-color: var(--blue); box-shadow: 0 16px 42px rgba(47,159,149,.16); }
+    .load-more-note { color: var(--muted); font-size: 10px; }
     .product-card {
       position: relative;
       grid-column: span 4;
@@ -555,6 +559,7 @@
       .section-head { align-items: start; }
       .section-stats { max-width: 115px; }
       .grid { grid-template-columns: 1fr; gap: 15px; }
+      .load-more-button { width: 100%; }
       .product-card, .product-card:nth-child(1), .product-card:nth-child(2), .product-card:nth-child(6) { display: block; grid-column: 1; }
       .product-card:nth-child(1) .product-media, .product-card:nth-child(2) .product-media, .product-card:nth-child(6) .product-media, .product-media { height: 280px; min-height: 0; }
       .product-card:nth-child(6) .product-body { display: block; padding: 20px; }
@@ -694,6 +699,10 @@
       </div>
       <div class="category-chips" id="categoryChips" aria-label="تصنيفات المنتجات"></div>
       <div class="grid" id="dealsGrid"></div>
+      <div class="load-more-wrap hidden" id="loadMoreWrap">
+        <button class="load-more-button" id="loadMoreButton" type="button">عرض المزيد من العروض</button>
+        <span class="load-more-note" id="loadMoreNote" aria-live="polite"></span>
+      </div>
       <div class="empty hidden" id="emptyState"><strong id="emptyTitle">لا توجد نتائج مطابقة</strong><span id="emptyDescription">جرّب كلمة أخرى أو غيّر التصنيف.</span></div>
     </section>
 
@@ -819,6 +828,8 @@
     let heroIndex = 0;
     let exitShown = false;
     let revealObserver = null;
+    const GRID_BATCH_SIZE = 24;
+    let visibleLimit = GRID_BATCH_SIZE;
 
     const el = id => document.getElementById(id);
     const formatNumber = value => new Intl.NumberFormat("ar-SA", {maximumFractionDigits: 0}).format(value);
@@ -902,6 +913,7 @@
 
     function setCategory(nextCategory) {
       category = CATEGORIES.includes(nextCategory) ? nextCategory : "الكل";
+      visibleLimit = GRID_BATCH_SIZE;
       el("categorySelect").value = category;
       renderCategoryChips();
       renderGrid();
@@ -909,6 +921,7 @@
 
     function setStore(nextStore) {
       store = ["all", "amazon", "aliexpress"].includes(nextStore) ? nextStore : "all";
+      visibleLimit = GRID_BATCH_SIZE;
       heroIndex = 0;
       document.querySelectorAll(".market-tab").forEach(button => button.classList.toggle("active", button.dataset.store === store));
       renderHero();
@@ -961,6 +974,8 @@
 
     function renderGrid() {
       const list = filteredDeals();
+      const visibleList = list.slice(0, visibleLimit);
+      const remaining = Math.max(0, list.length - visibleList.length);
       el("resultCount").textContent = formatNumber(list.length);
       el("introDealCount").textContent = formatNumber(deals.length);
       el("emptyState").classList.toggle("hidden", list.length > 0);
@@ -971,7 +986,14 @@
           ? "جهّزنا المنصة والفلترة والروابط؛ ستظهر هنا العروض الموثقة فور إضافتها، دون منتجات أو أسعار تجريبية."
           : "جرّب كلمة أخرى أو غيّر التصنيف أو المتجر.";
       }
-      el("dealsGrid").innerHTML = list.map(deal => {
+      el("loadMoreWrap").classList.toggle("hidden", remaining === 0);
+      el("loadMoreButton").textContent = remaining
+        ? `عرض ${formatNumber(Math.min(GRID_BATCH_SIZE, remaining))} عرضًا إضافيًا`
+        : "تم عرض جميع العروض";
+      el("loadMoreNote").textContent = remaining
+        ? `يظهر الآن ${formatNumber(visibleList.length)} من أصل ${formatNumber(list.length)}`
+        : "";
+      el("dealsGrid").innerHTML = visibleList.map(deal => {
         const shop = storeMeta(deal);
         const key = escapeHtml(dealKey(deal));
         return `
@@ -1070,9 +1092,10 @@
 
     el("themeToggle").addEventListener("click", () => setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark"));
     el("filterToggle").addEventListener("click", () => toggleFilters());
-    el("searchInput").addEventListener("input", event => { query = event.target.value; renderGrid(); });
+    el("searchInput").addEventListener("input", event => { query = event.target.value; visibleLimit = GRID_BATCH_SIZE; renderGrid(); });
     el("categorySelect").addEventListener("change", event => setCategory(event.target.value));
-    el("sortSelect").addEventListener("change", event => { sortBy = event.target.value; renderGrid(); });
+    el("sortSelect").addEventListener("change", event => { sortBy = event.target.value; visibleLimit = GRID_BATCH_SIZE; renderGrid(); });
+    el("loadMoreButton").addEventListener("click", () => { visibleLimit += GRID_BATCH_SIZE; renderGrid(); });
     el("closeModal").addEventListener("click", closeExitModal);
     el("skipModal").addEventListener("click", closeExitModal);
     el("exitModal").addEventListener("click", event => { if (event.target === el("exitModal")) closeExitModal(); });
