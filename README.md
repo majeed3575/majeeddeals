@@ -170,7 +170,8 @@ GitHub → المستودع → **Settings** → **Secrets and variables** → *
 }
 ```
 
-إذا وجد الروبوت منتجات AliExpress منشورة سابقاً فإنه يبذر قائمة المتابعة منها تلقائياً.
+قائمة `aliexpress_products.json` مخصّصة لاختيارات المالك اليدوية فقط؛ لا ينسخ الروبوت
+إليها النتائج المكتشفة آلياً، حتى يستطيع تدوير المنتجات القديمة وحذفها عند تغيّر الجودة.
 يمكن تعطيل الاكتشاف الآلي عبر `ALIEXPRESS_AUTO_DISCOVERY=false`، أو الرجوع للبحث العام
 عبر `ALIEXPRESS_FOCUS_DISCOVERY=false`، وتعديل حد المنتجات
 والجودة عبر `ALIEXPRESS_AUTO_LIMIT` و`ALIEXPRESS_AUTO_MIN_DISCOUNT` و
