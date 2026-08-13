@@ -171,6 +171,54 @@ ALIEXPRESS_FOCUS_QUERIES = [
         "angle": "صوت وتقنية", "include": ("wireless earbuds", "bluetooth earbuds", "سماعات لاسلكية", "سماعات بلوتوث"),
     },
     {
+        "topic": "tech", "keywords": "portable bluetooth speaker", "category": "الإلكترونيات",
+        "angle": "صوت محمول", "include": ("bluetooth speaker", "wireless speaker", "مكبر صوت بلوتوث", "سماعة بلوتوث"),
+    },
+    {
+        "topic": "tech", "keywords": "wifi security camera", "category": "الإلكترونيات",
+        "angle": "مراقبة ذكية", "include": ("security camera", "wifi camera", "ip camera", "كاميرا مراقبة"),
+    },
+    {
+        "topic": "tech", "keywords": "mechanical keyboard", "category": "الإلكترونيات",
+        "angle": "لوحة مفاتيح", "include": ("mechanical keyboard", "gaming keyboard", "لوحة مفاتيح ميكانيكية"),
+    },
+    {
+        "topic": "tech", "keywords": "wireless mouse ergonomic", "category": "الإلكترونيات",
+        "angle": "ملحقات الكمبيوتر", "include": ("wireless mouse", "ergonomic mouse", "ماوس لاسلكي", "فأرة لاسلكية"),
+    },
+    {
+        "topic": "tech", "keywords": "smart plug wifi", "category": "الإلكترونيات",
+        "angle": "تحكم ذكي", "include": ("smart plug", "wifi plug", "smart socket", "مقبس ذكي"),
+    },
+    {
+        "topic": "tech", "keywords": "led desk lamp usb", "category": "المنزل",
+        "angle": "مكتب ذكي", "include": ("desk lamp", "table lamp", "مصباح مكتب", "إضاءة مكتب"),
+    },
+    {
+        "topic": "tech", "keywords": "phone gimbal stabilizer", "category": "الإلكترونيات",
+        "angle": "تصوير ثابت", "include": ("phone gimbal", "smartphone gimbal", "gimbal stabilizer", "مثبت هاتف"),
+    },
+    {
+        "topic": "tech", "keywords": "car dash camera", "category": "السيارة",
+        "angle": "كاميرا السيارة", "include": ("dash camera", "dash cam", "dashcam", "كاميرا سيارة"),
+    },
+    {
+        "topic": "tech", "keywords": "car jump starter power bank", "category": "السيارة",
+        "angle": "طوارئ الطاقة", "include": ("jump starter", "car starter", "تشغيل بطارية السيارة", "اشتراك سيارة"),
+    },
+    {
+        "topic": "tech", "keywords": "electric screwdriver cordless", "category": "المنزل",
+        "angle": "أدوات تقنية", "include": ("electric screwdriver", "cordless screwdriver", "مفك كهربائي", "مفك لاسلكي"),
+    },
+    {
+        "topic": "tech", "keywords": "digital laser measure", "category": "المنزل",
+        "angle": "قياس ذكي", "include": ("laser measure", "laser distance", "مقياس ليزر", "قياس ليزر"),
+    },
+    {
+        "topic": "tech", "keywords": "car obd2 scanner bluetooth", "category": "السيارة",
+        "angle": "فحص السيارة", "include": ("obd2 scanner", "obd scanner", "car diagnostic", "فحص السيارة"),
+    },
+    {
         "topic": "life_hack", "keywords": "electric spin scrubber bathroom", "category": "المنزل",
         "angle": "تنظيف ذكي", "include": ("spin scrubber", "bathroom scrubber", "فرشاة تنظيف كهربائية", "فرشاة دوارة"),
     },
@@ -209,6 +257,54 @@ ALIEXPRESS_FOCUS_QUERIES = [
     {
         "topic": "life_hack", "keywords": "foldable electric kettle travel", "category": "السفر",
         "angle": "سفر عملي", "include": ("foldable kettle", "travel kettle", "غلاية قابلة للطي", "غلاية سفر"),
+    },
+    {
+        "topic": "life_hack", "keywords": "handheld vacuum cordless", "category": "المنزل",
+        "angle": "تنظيف سريع", "include": ("handheld vacuum", "cordless vacuum", "مكنسة محمولة", "مكنسة لاسلكية"),
+    },
+    {
+        "topic": "life_hack", "keywords": "vacuum sealer food", "category": "المنزل",
+        "angle": "حفظ الطعام", "include": ("vacuum sealer", "food sealer", "تغليف مفرغ", "حفظ الطعام"),
+    },
+    {
+        "topic": "life_hack", "keywords": "garment steamer handheld", "category": "المنزل",
+        "angle": "عناية سريعة", "include": ("garment steamer", "clothes steamer", "مكواة بخار محمولة", "بخار ملابس"),
+    },
+    {
+        "topic": "life_hack", "keywords": "electric coffee grinder", "category": "المنزل",
+        "angle": "قهوة منزلية", "include": ("coffee grinder", "electric grinder", "مطحنة قهوة", "طاحونة قهوة"),
+    },
+    {
+        "topic": "life_hack", "keywords": "digital kitchen scale", "category": "المنزل",
+        "angle": "مطبخ دقيق", "include": ("kitchen scale", "food scale", "ميزان مطبخ", "ميزان طعام"),
+    },
+    {
+        "topic": "life_hack", "keywords": "portable neck fan", "category": "الإلكترونيات",
+        "angle": "تبريد شخصي", "include": ("neck fan", "wearable fan", "مروحة رقبة", "مروحة محمولة"),
+    },
+    {
+        "topic": "life_hack", "keywords": "mini humidifier usb", "category": "المنزل",
+        "angle": "راحة المنزل", "include": ("mini humidifier", "usb humidifier", "مرطب هواء", "جهاز ترطيب"),
+    },
+    {
+        "topic": "life_hack", "keywords": "camping lantern rechargeable", "category": "السفر",
+        "angle": "رحلات وتخييم", "include": ("camping lantern", "camping light", "مصباح تخييم", "إضاءة رحلات"),
+    },
+    {
+        "topic": "life_hack", "keywords": "packing cubes travel", "category": "السفر",
+        "angle": "تنظيم السفر", "include": ("packing cubes", "travel organizer", "منظم سفر", "حقائب تنظيم"),
+    },
+    {
+        "topic": "life_hack", "keywords": "electric can opener", "category": "المنزل",
+        "angle": "فتح أسهل", "include": ("electric can opener", "automatic can opener", "فتاحة علب كهربائية"),
+    },
+    {
+        "topic": "life_hack", "keywords": "portable espresso maker", "category": "السفر",
+        "angle": "قهوة متنقلة", "include": ("portable espresso", "travel coffee maker", "ماكينة اسبريسو محمولة", "قهوة محمولة"),
+    },
+    {
+        "topic": "life_hack", "keywords": "collapsible laundry basket", "category": "المنزل",
+        "angle": "تنظيم الغسيل", "include": ("laundry basket", "laundry hamper", "سلة غسيل", "سلة ملابس"),
     },
 ]
 ALIEXPRESS_FOCUS_TERMS = {
@@ -953,6 +1049,18 @@ def _ali_click_title(value: object, angle: object) -> str:
         "طوارئ السيارة": "منفاخ إطارات رقمي محمول للسيارة",
         "تنظيم ذكي": "طابعة ملصقات حرارية صغيرة بالبلوتوث",
         "صوت وتقنية": "سماعات أذن لاسلكية بالبلوتوث",
+        "صوت محمول": "مكبر صوت بلوتوث محمول",
+        "مراقبة ذكية": "كاميرا مراقبة ذكية عبر Wi-Fi",
+        "لوحة مفاتيح": "لوحة مفاتيح ميكانيكية للكمبيوتر",
+        "ملحقات الكمبيوتر": "فأرة لاسلكية مريحة للكمبيوتر",
+        "تحكم ذكي": "مقبس ذكي يعمل عبر Wi-Fi",
+        "مكتب ذكي": "مصباح مكتب LED عملي",
+        "تصوير ثابت": "مثبت هاتف Gimbal للتصوير",
+        "كاميرا السيارة": "كاميرا قيادة للسيارة",
+        "طوارئ الطاقة": "جهاز تشغيل بطارية السيارة المحمول",
+        "أدوات تقنية": "مفك كهربائي لاسلكي محمول",
+        "قياس ذكي": "جهاز قياس مسافات بالليزر",
+        "فحص السيارة": "جهاز فحص أعطال السيارة OBD2",
         "تنظيف ذكي": "فرشاة تنظيف كهربائية دوارة متعددة الاستخدامات",
         "مطبخ عملي": "جهاز محمول لإغلاق أكياس الطعام بالحرارة",
         "مطبخ ذكي": "مخفّق حليب كهربائي قابل لإعادة الشحن",
@@ -963,6 +1071,18 @@ def _ali_click_title(value: object, angle: object) -> str:
         "مشروبات سريعة": "خلاط محمول قابل لإعادة الشحن",
         "عناية بالملابس": "مزيل وبر كهربائي قابل لإعادة الشحن",
         "سفر عملي": "غلاية كهربائية قابلة للطي للسفر",
+        "تنظيف سريع": "مكنسة لاسلكية محمولة للتنظيف السريع",
+        "حفظ الطعام": "جهاز تفريغ الهواء وحفظ الطعام",
+        "عناية سريعة": "مكواة بخار محمولة للملابس",
+        "قهوة منزلية": "مطحنة قهوة كهربائية صغيرة",
+        "مطبخ دقيق": "ميزان مطبخ رقمي دقيق",
+        "تبريد شخصي": "مروحة رقبة محمولة قابلة للشحن",
+        "راحة المنزل": "مرطب هواء صغير يعمل عبر USB",
+        "رحلات وتخييم": "مصباح تخييم قابل لإعادة الشحن",
+        "تنظيم السفر": "مجموعة منظمات للحقائب والسفر",
+        "فتح أسهل": "فتاحة علب كهربائية أوتوماتيكية",
+        "قهوة متنقلة": "ماكينة إسبريسو محمولة للسفر",
+        "تنظيم الغسيل": "سلة غسيل قابلة للطي",
     }
     base = labels.get(str(angle or ""))
     if not base:
