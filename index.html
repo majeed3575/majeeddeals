@@ -836,6 +836,14 @@
     const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
     const dealRank = deal => Number(deal.rank_score || 0) || Number(deal.discount_percent || 0) + 48;
     const smartSort = (a,b) => dealRank(b) - dealRank(a) || b.discount_percent - a.discount_percent;
+    const hasDiscount = deal => Number(deal.discount_percent || 0) > 0;
+    const popularityText = deal => Number(deal.sales_volume || 0) >= 1000
+      ? `${formatNumber(deal.sales_volume)} مبيعة`
+      : "منتج رائج";
+    const offerText = deal => hasDiscount(deal) ? `خصم ${deal.discount_percent}٪` : popularityText(deal);
+    const priceContext = (deal, shop) => hasDiscount(deal)
+      ? `${shop.name} قبل الخصم: <s>${formatNumber(deal.original_price)} ر.س</s>`
+      : `السعر الحالي والتوفر يُتحقق منهما على ${shop.name}`;
     const topDeals = () => [...deals].sort(smartSort).slice(0,3);
     const visibleTopDeals = () => {
       const scoped = [...deals].filter(deal => store === "all" || storeOf(deal) === store).sort(smartSort);
@@ -882,8 +890,8 @@
             <div class="eyebrow">أحد أبرز عروض ${shop.name}</div>
             <h2>${escapeHtml(deal.title)}</h2>
             <div class="hero-meta">
-              <span class="hero-discount">خصم ${deal.discount_percent}٪</span>
-              <span class="old-price">${shop.name} قبل الخصم: <s>${formatNumber(deal.original_price)} ر.س</s></span>
+              <span class="hero-discount">${offerText(deal)}</span>
+              <span class="old-price">${priceContext(deal, shop)}</span>
             </div>
             <div class="hero-actions">
               <a class="primary-link" href="${dealLink(deal)}" target="_blank" rel="noopener noreferrer" onclick="return go(event,'${key}')">اعرض السعر الحالي ↗</a>
@@ -893,7 +901,7 @@
           <div class="hero-visual">
             <div class="hero-orbit"></div>
             <div class="hero-image-stage"><img src="${deal.image}" alt="${escapeHtml(deal.title)}" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🛍️',style:'font-size:64px'}))"></div>
-            <span class="floating-chip discount">وفّر ${deal.discount_percent}٪</span>
+            <span class="floating-chip discount">${hasDiscount(deal) ? `وفّر ${deal.discount_percent}٪` : popularityText(deal)}</span>
             <span class="floating-chip source">${shop.name} ↗</span>
           </div>
         </article>
@@ -1002,18 +1010,18 @@
             <a class="media-product-link" href="${dealLink(deal)}" target="_blank" rel="noopener noreferrer" onclick="return go(event,'${key}')" aria-label="${escapeHtml(deal.title)}">
               <img src="${deal.image}" alt="${escapeHtml(deal.title)}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🛍️',style:'font-size:52px'}))">
             </a>
-            <span class="discount-badge">-${deal.discount_percent}٪</span>
+            <span class="discount-badge">${hasDiscount(deal) ? `-${deal.discount_percent}٪` : popularityText(deal)}</span>
             <span class="category-tag">${escapeHtml(deal.angle || deal.category)}</span>
             <span class="store-badge ${shop.key}">${shop.name}</span>
             <button class="quick-look" type="button" onclick="openQuickView('${key}')">⌘ نظرة سريعة</button>
           </div>
           <div class="product-body">
             <h3>${escapeHtml(deal.title)}</h3>
-            <div class="quick-meta"><strong>خصم ${deal.discount_percent}٪</strong><span>السعر على ${shop.name}</span></div>
+            <div class="quick-meta"><strong>${offerText(deal)}</strong><span>السعر على ${shop.name}</span></div>
             <details class="deal-details">
               <summary>تفاصيل العرض</summary>
               <div class="detail-content">
-                <div class="detail-row"><span>${shop.name} قبل الخصم</span><b><s>${formatNumber(deal.original_price)} ر.س</s></b></div>
+                <div class="detail-row"><span>${hasDiscount(deal) ? `${shop.name} قبل الخصم` : "السعر والتوفر"}</span><b>${hasDiscount(deal) ? `<s>${formatNumber(deal.original_price)} ر.س</s>` : `يُتحقق على ${shop.host}`}</b></div>
                 <div class="detail-row"><span>رقم المنتج</span><b dir="ltr">${key}</b></div>
                 <div class="detail-row"><span>التوفر والسعر النهائي</span><b>يُتحقق على ${shop.host}</b></div>
               </div>
@@ -1061,7 +1069,7 @@
       const button = event.currentTarget;
       const url = new URL("https://majeed3575.github.io/majeeddeals/");
       url.searchParams.set("deal", dealKey(deal));
-      const payload = {title: `أوفرلي | ${deal.title}`, text: `${deal.title} — خصم ${deal.discount_percent}٪`, url: url.toString()};
+      const payload = {title: `أوفرلي | ${deal.title}`, text: `${deal.title} — ${offerText(deal)}`, url: url.toString()};
       try {
         if (navigator.share) await navigator.share(payload);
         else {
@@ -1080,8 +1088,8 @@
       el("quickImage").alt = deal.title;
       el("quickCategory").textContent = deal.angle || deal.category;
       el("quickTitle").textContent = deal.title;
-      el("quickSaving").textContent = `خصم ${deal.discount_percent}٪`;
-      el("quickBefore").innerHTML = `${shop.name} قبل الخصم: <s>${formatNumber(deal.original_price)} ر.س</s>`;
+      el("quickSaving").textContent = offerText(deal);
+      el("quickBefore").innerHTML = priceContext(deal, shop);
       el("quickAsin").textContent = dealKey(deal);
       el("quickStore").textContent = `يُتحقق على ${shop.host}`;
       el("quickLink").textContent = shop.cta;
@@ -1125,7 +1133,9 @@
       if (!best) return;
       exitShown = true;
       storage.set("exit_modal_shown", "1");
-      el("modalTitle").textContent = `لا تفوّت أقوى عرض بخصم ${best.discount_percent}٪`;
+      el("modalTitle").textContent = hasDiscount(best)
+        ? `لا تفوّت أقوى عرض بخصم ${best.discount_percent}٪`
+        : "لا تفوّت هذا المنتج الرائج";
       el("modalDescription").textContent = best.title;
       el("modalLink").textContent = storeMeta(best).cta;
       el("modalLink").href = dealLink(best);
