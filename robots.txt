@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://majeed3575.github.io/majeeddeals/sitemap.xml
