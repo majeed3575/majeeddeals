@@ -793,8 +793,9 @@ def aliexpress_generate_links(source_urls: list[str]) -> dict[str, str]:
 def discover_aliexpress_products() -> list[dict]:
     """يكتشف تلقائياً منتجات AliExpress الرائجة القابلة للشحن للسعودية.
 
-    المصدر هو واجهة AliExpress الرسمية hotproduct.query. النتائج تظل مرشّحة
-    أولية؛ لا تدخل الموقع إلا بعد اجتياز فلاتر الجودة ووجود خصم ورابط عمولة.
+    يبدأ بواجهة AliExpress الرسمية hotproduct.query، ثم يستخدم product.query
+    تلقائياً كبديل للتطبيقات التي لا تملك صلاحية الواجهة الأولى. النتائج تظل
+    مرشّحة أولية؛ لا تدخل الموقع إلا بعد اجتياز فلاتر الجودة ووجود خصم ورابط عمولة.
     """
     fields = ",".join(
         [
@@ -816,20 +817,29 @@ def discover_aliexpress_products() -> list[dict]:
             "lastest_volume",
         ]
     )
+    query = {
+        "fields": fields,
+        "page_no": 1,
+        "page_size": 50,
+        "platform_product_type": "ALL",
+        "sort": "LAST_VOLUME_DESC",
+        "target_currency": ALIEXPRESS_TARGET_CURRENCY,
+        "target_language": ALIEXPRESS_TARGET_LANGUAGE,
+        "tracking_id": ALIEXPRESS_TRACKING_ID,
+        "ship_to_country": ALIEXPRESS_SHIP_TO_COUNTRY,
+    }
     result = aliexpress_api_call(
         "aliexpress.affiliate.hotproduct.query",
-        {
-            "fields": fields,
-            "page_no": 1,
-            "page_size": 50,
-            "platform_product_type": "ALL",
-            "sort": "LAST_VOLUME_DESC",
-            "target_currency": ALIEXPRESS_TARGET_CURRENCY,
-            "target_language": ALIEXPRESS_TARGET_LANGUAGE,
-            "tracking_id": ALIEXPRESS_TRACKING_ID,
-            "ship_to_country": ALIEXPRESS_SHIP_TO_COUNTRY,
-        },
+        query,
     )
+    if result is None:
+        # بعض تطبيقات Affiliates API الجديدة لا تُمنح واجهة hotproduct رغم أن
+        # واجهة البحث العامة product.query متاحة للفئة نفسها بلا تفويض مستخدم.
+        print("[aliexpress] تجربة واجهة البحث العامة عن المنتجات")
+        result = aliexpress_api_call(
+            "aliexpress.affiliate.product.query",
+            query,
+        )
     products = _ali_list((result or {}).get("products"), "product")
     accepted: list[dict] = []
     seen: set[str] = set()
