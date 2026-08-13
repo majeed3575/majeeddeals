@@ -593,36 +593,20 @@ def _ali_product_id(value: object) -> str:
 
 
 def load_aliexpress_watchlist() -> list[dict]:
-    """يقرأ قائمة منتجات AliExpress، ويبذرها من deals.json إن كانت فارغة.
+    """يقرأ المنتجات التي اختارها المالك يدوياً فقط.
 
     الصيغ المقبولة داخل aliexpress_products.json:
     - رابط أو رقم منتج كنص.
     - كائن يحوي product_id أو url، وتصنيفاً اختيارياً.
+
+    لا تُنسخ النتائج المكتشفة آلياً من deals.json إلى هذه القائمة؛ وإلا تتحول
+    المنتجات الآلية القديمة إلى اختيارات دائمة ولا يستطيع التدوير حذفها.
     """
     try:
         data = json.loads(ALIEXPRESS_WATCHLIST_PATH.read_text(encoding="utf-8"))
         entries = data if isinstance(data, list) else data.get("products", [])
     except (FileNotFoundError, json.JSONDecodeError):
         entries = []
-
-    if not entries:
-        entries = [
-            {
-                "product_id": deal.get("product_id"),
-                "url": deal.get("url"),
-                "category": deal.get("category"),
-            }
-            for deal in load_existing_deals()
-            if str(deal.get("store", "")).lower() == "aliexpress"
-        ]
-        if entries:
-            ALIEXPRESS_WATCHLIST_PATH.write_text(
-                json.dumps({"products": entries}, ensure_ascii=False, indent=2) + "\n",
-                encoding="utf-8",
-            )
-            print(
-                f"[aliexpress] بُذرت aliexpress_products.json بـ {len(entries)} منتج"
-            )
 
     clean: list[dict] = []
     seen: set[str] = set()
