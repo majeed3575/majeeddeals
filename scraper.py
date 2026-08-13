@@ -108,7 +108,13 @@ ALIEXPRESS_AUTO_DISCOVERY = (
     os.environ.get("ALIEXPRESS_AUTO_DISCOVERY") or "true"
 ).strip().lower() in {"1", "true", "yes", "on"}
 ALIEXPRESS_AUTO_LIMIT = max(
-    1, min(24, int(os.environ.get("ALIEXPRESS_AUTO_LIMIT") or "20"))
+    1, min(60, int(os.environ.get("ALIEXPRESS_AUTO_LIMIT") or "48"))
+)
+ALIEXPRESS_MAX_PER_ANGLE = max(
+    1, min(4, int(os.environ.get("ALIEXPRESS_MAX_PER_ANGLE") or "3"))
+)
+ALIEXPRESS_QUERY_PAGE_SIZE = max(
+    20, min(50, int(os.environ.get("ALIEXPRESS_QUERY_PAGE_SIZE") or "40"))
 )
 ALIEXPRESS_AUTO_MIN_DISCOUNT = max(
     5, min(95, int(os.environ.get("ALIEXPRESS_AUTO_MIN_DISCOUNT") or "20"))
@@ -956,7 +962,34 @@ def _ali_click_title(value: object, angle: object) -> str:
         "عناية بالملابس": "مزيل وبر كهربائي قابل لإعادة الشحن",
         "سفر عملي": "غلاية كهربائية قابلة للطي للسفر",
     }
-    return labels.get(str(angle or "")) or _ali_display_title(raw)
+    base = labels.get(str(angle or ""))
+    if not base:
+        return _ali_display_title(raw)
+
+    # عند عرض أكثر من بديل للفكرة نفسها نُظهر علامة/مواصفة حقيقية من عنوان المصدر
+    # كي لا تبدو البطاقات مكررة، من دون اختراع أي خاصية تسويقية.
+    generic = {
+        "new", "mini", "smart", "wireless", "portable", "electric", "digital",
+        "rechargeable", "automatic", "cordless", "fast", "with", "for", "the",
+        "bluetooth", "usb", "type", "home", "travel", "car", "phone",
+    }
+    details: list[str] = []
+    brands = re.findall(r"\b[A-Z][A-Za-z0-9-]{2,}\b", raw)
+    for brand in brands:
+        if brand.lower() not in generic and not re.fullmatch(r"\d+", brand):
+            details.append(brand[:24])
+            break
+    specs = re.findall(
+        r"(?i)\b(?:\d+(?:\.\d+)?\s?(?:W|V|L|ML|mAh|RPM|dB|inch)|Bluetooth\s?\d(?:\.\d)?|USB-C|Type-C|4K)\b",
+        raw,
+    )
+    for spec in specs:
+        clean_spec = re.sub(r"\s+", "", spec)
+        if clean_spec.lower() not in {item.lower() for item in details}:
+            details.append(clean_spec[:20])
+        if len(details) >= 2:
+            break
+    return f"{base} — {' · '.join(details)}" if details else base
 
 
 def _ali_sale_price_sar(product: dict) -> float:
@@ -1011,7 +1044,11 @@ def _ali_focus_score(product: dict, focus: dict) -> float:
     )
 
 
-def _ali_is_near_duplicate(title: object, selected: list[dict]) -> bool:
+def _ali_is_near_duplicate(
+    title: object,
+    selected: list[dict],
+    angle: str = "",
+) -> bool:
     """يمنع عرض عدة نسخ متشابهة جداً من المنتج نفسه."""
     tokens = _ali_title_tokens(title)
     if len(tokens) < 3:
@@ -1021,13 +1058,17 @@ def _ali_is_near_duplicate(title: object, selected: list[dict]) -> bool:
         if len(other) < 3:
             continue
         overlap = len(tokens & other) / min(len(tokens), len(other))
-        if overlap >= 0.78:
+        same_angle = angle and angle == str(item.get("_overly_angle") or "")
+        # داخل الفكرة نفسها نسمح ببدائل حقيقية، لكن نرفض النسخ شبه المتطابقة.
+        # وبين الأفكار المختلفة نستخدم حداً أعلى حتى لا نحذف منتجين لمجرد تشابه كلمات عامة.
+        threshold = 0.86 if same_angle else 0.94
+        if overlap >= threshold:
             return True
     return False
 
 
 def _ali_balanced_selection(candidates: list[dict], limit: int) -> list[dict]:
-    """اختيار متوازن ومتنوع: أفضل منتج من كل فكرة قبل تكرار الفكرة نفسها."""
+    """اختيار متوازن: نغطي كل فكرة أولاً ثم نضيف أفضل بديلين لها."""
     ranked = sorted(
         candidates,
         key=lambda item: float(item.get("_overly_score", 0)),
@@ -1037,6 +1078,7 @@ def _ali_balanced_selection(candidates: list[dict], limit: int) -> list[dict]:
     quotas = {"tech": tech_quota, "life_hack": limit - tech_quota}
     selected: list[dict] = []
     selected_ids: set[str] = set()
+    angle_counts: dict[str, int] = {}
 
     for topic in ("tech", "life_hack"):
         used_angles: set[str] = set()
@@ -1049,12 +1091,13 @@ def _ali_balanced_selection(candidates: list[dict], limit: int) -> list[dict]:
             angle = str(product.get("_overly_angle") or "")
             if angle and angle in used_angles:
                 continue
-            if _ali_is_near_duplicate(product.get("product_title"), selected):
+            if _ali_is_near_duplicate(product.get("product_title"), selected, angle):
                 continue
             selected.append(product)
             selected_ids.add(product_id)
             if angle:
                 used_angles.add(angle)
+                angle_counts[angle] = angle_counts.get(angle, 0) + 1
 
         # إذا لم تكفِ الأفكار المختلفة، نكمل من أفضل النتائج في المجال نفسه.
         for product in ranked:
@@ -1064,12 +1107,14 @@ def _ali_balanced_selection(candidates: list[dict], limit: int) -> list[dict]:
             if product.get("_overly_topic") != topic or not product_id or product_id in selected_ids:
                 continue
             angle = str(product.get("_overly_angle") or "")
-            if angle and any(str(item.get("_overly_angle") or "") == angle for item in selected):
+            if angle and angle_counts.get(angle, 0) >= ALIEXPRESS_MAX_PER_ANGLE:
                 continue
-            if _ali_is_near_duplicate(product.get("product_title"), selected):
+            if _ali_is_near_duplicate(product.get("product_title"), selected, angle):
                 continue
             selected.append(product)
             selected_ids.add(product_id)
+            if angle:
+                angle_counts[angle] = angle_counts.get(angle, 0) + 1
 
     for product in ranked:
         if len(selected) >= limit:
@@ -1078,12 +1123,14 @@ def _ali_balanced_selection(candidates: list[dict], limit: int) -> list[dict]:
         if not product_id or product_id in selected_ids:
             continue
         angle = str(product.get("_overly_angle") or "")
-        if angle and any(str(item.get("_overly_angle") or "") == angle for item in selected):
+        if angle and angle_counts.get(angle, 0) >= ALIEXPRESS_MAX_PER_ANGLE:
             continue
-        if _ali_is_near_duplicate(product.get("product_title"), selected):
+        if _ali_is_near_duplicate(product.get("product_title"), selected, angle):
             continue
         selected.append(product)
         selected_ids.add(product_id)
+        if angle:
+            angle_counts[angle] = angle_counts.get(angle, 0) + 1
     return selected
 
 
@@ -1116,7 +1163,7 @@ def discover_aliexpress_products() -> list[dict]:
     base_query = {
         "fields": fields,
         "page_no": 1,
-        "page_size": 20,
+        "page_size": ALIEXPRESS_QUERY_PAGE_SIZE,
         "platform_product_type": "ALL",
         "sort": "LAST_VOLUME_DESC",
         "target_currency": ALIEXPRESS_TARGET_CURRENCY,
@@ -1297,7 +1344,7 @@ def scrape_aliexpress() -> list[dict]:
 
     clean.sort(key=lambda deal: deal["discount_percent"], reverse=True)
     print(f"[aliexpress] {len(clean)} عرض صالح برابط عمولة رسمي")
-    return clean[:MAX_DEALS]
+    return clean[:ALIEXPRESS_AUTO_LIMIT]
 
 
 def _deal_key(deal: dict) -> str:
@@ -1338,7 +1385,8 @@ def merge_deals(existing: list[dict], updates: list[dict]) -> list[dict]:
         ),
         reverse=True,
     )
-    return merged[: MAX_DEALS * 2]
+    # 24 خانة احتياطية لأمازون + الحد المستهدف لعروض AliExpress.
+    return merged[: MAX_DEALS + ALIEXPRESS_AUTO_LIMIT]
 
 
 # ----------------------------------------------------------------------------
