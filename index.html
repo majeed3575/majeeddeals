@@ -4,13 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#050807">
-  <meta name="description" content="أوفرلي — overly، عروض مختارة من أمازون السعودية مع روابط تسويق بالعمولة.">
-  <title>أوفرلي | overly</title>
+  <meta name="description" content="أوفرلي يجمع عروض التقنية وLife Hacks المختارة من Amazon السعودية وAliExpress، مرتبة حسب الجودة والطلب مع روابط تسويق بالعمولة.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://majeed3575.github.io/majeeddeals/">
+  <meta property="og:locale" content="ar_SA">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="أوفرلي | Overly">
+  <meta property="og:title" content="أوفرلي | عروض تقنية وLife Hacks مختارة">
+  <meta property="og:description" content="منتجات مفيدة وعروض مختارة من Amazon السعودية وAliExpress، مرتبة لتصل للأفضل بسرعة.">
+  <meta property="og:url" content="https://majeed3575.github.io/majeeddeals/">
+  <meta property="og:image" content="https://majeed3575.github.io/majeeddeals/assets/overly-dark-chroma.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="أوفرلي | عروض تقنية وLife Hacks مختارة">
+  <meta name="twitter:description" content="اختيارات مفيدة من Amazon السعودية وAliExpress، مرتبة حسب الجودة والطلب.">
+  <meta name="twitter:image" content="https://majeed3575.github.io/majeeddeals/assets/overly-dark-chroma.png">
+  <title>أوفرلي | عروض تقنية وLife Hacks من Amazon وAliExpress</title>
   <link rel="icon" type="image/png" href="assets/overly-icon.png">
   <link rel="apple-touch-icon" href="assets/overly-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"WebSite","name":"أوفرلي","alternateName":"Overly","url":"https://majeed3575.github.io/majeeddeals/","inLanguage":"ar-SA","description":"عروض تقنية وLife Hacks مختارة من Amazon السعودية وAliExpress."}
+  </script>
   <style>
     :root {
       color-scheme: dark;
@@ -414,6 +430,10 @@
     .detail-row b { color: var(--ink); font-weight: 600; }
     .card-cta { display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%; min-height: 44px; margin-top: 15px; border-radius: 14px; color: #03100e; background: linear-gradient(120deg, var(--cyan), var(--blue)); font-size: 12px; font-weight: 800; transition: filter .2s ease, transform .2s ease; }
     .card-cta:hover { filter: brightness(1.12); transform: translateY(-1px); }
+    .card-actions { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; margin-top: 15px; }
+    .card-actions .card-cta { margin-top: 0; }
+    .share-button { display: inline-flex; align-items: center; justify-content: center; min-width: 48px; min-height: 44px; padding: 0 12px; border: 1px solid var(--line); border-radius: 14px; color: var(--muted); background: var(--panel-strong); font-size: 16px; transition: color .2s ease, border-color .2s ease, transform .2s ease; }
+    .share-button:hover { color: var(--ink); border-color: var(--line-strong); transform: translateY(-1px); }
     .empty { padding: 80px 20px; border: 1px dashed var(--line-strong); border-radius: var(--radius-lg); color: var(--muted); text-align: center; }
 
     /* Editorial Bento */
@@ -604,10 +624,13 @@
                 <option value="الإلكترونيات">الإلكترونيات</option>
                 <option value="المنزل">المنزل</option>
                 <option value="الموضة">الموضة</option>
+                <option value="السيارة">السيارة</option>
+                <option value="السفر">السفر</option>
               </select>
             </div>
             <div class="field">
               <select id="sortSelect" aria-label="ترتيب العروض">
+                <option value="smart">اختيارات أوفرلي</option>
                 <option value="discount">الأعلى خصمًا</option>
                 <option value="price-high">السعر قبل الخصم: الأعلى</option>
                 <option value="price-low">السعر قبل الخصم: الأقل</option>
@@ -774,7 +797,7 @@
       const url = String(deal.url || "");
       return /^https:\/\/([a-z0-9-]+\.)*(aliexpress\.com|aliexpress\.us)\//i.test(url) ? url : "#";
     };
-    const CATEGORIES = ["الكل", "الإلكترونيات", "المنزل", "الموضة"];
+    const CATEGORIES = ["الكل", "الإلكترونيات", "المنزل", "السيارة", "السفر", "الموضة"];
     const FALLBACK_DATA = {
       updated_at: "2026-07-21T04:18:12+00:00",
       deals: [
@@ -791,7 +814,7 @@
     let updatedAt = FALLBACK_DATA.updated_at;
     let category = "الكل";
     let store = "all";
-    let sortBy = "discount";
+    let sortBy = "smart";
     let query = "";
     let heroIndex = 0;
     let exitShown = false;
@@ -800,8 +823,18 @@
     const el = id => document.getElementById(id);
     const formatNumber = value => new Intl.NumberFormat("ar-SA", {maximumFractionDigits: 0}).format(value);
     const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
-    const topDeals = () => [...deals].sort((a,b) => b.discount_percent - a.discount_percent).slice(0,3);
-    const visibleTopDeals = () => [...deals].filter(deal => store === "all" || storeOf(deal) === store).sort((a,b) => b.discount_percent - a.discount_percent).slice(0,3);
+    const dealRank = deal => Number(deal.rank_score || 0) || Number(deal.discount_percent || 0) + 48;
+    const smartSort = (a,b) => dealRank(b) - dealRank(a) || b.discount_percent - a.discount_percent;
+    const topDeals = () => [...deals].sort(smartSort).slice(0,3);
+    const visibleTopDeals = () => {
+      const scoped = [...deals].filter(deal => store === "all" || storeOf(deal) === store).sort(smartSort);
+      if (store !== "all") return scoped.slice(0,3);
+      const firstAmazon = scoped.find(deal => storeOf(deal) === "amazon");
+      const firstAli = scoped.find(deal => storeOf(deal) === "aliexpress");
+      const mixed = [firstAli, firstAmazon].filter(Boolean);
+      scoped.forEach(deal => { if (mixed.length < 3 && !mixed.includes(deal)) mixed.push(deal); });
+      return mixed.slice(0,3);
+    };
 
     const storage = {
       get(key) { try { return localStorage.getItem(key); } catch (_) { return null; } },
@@ -897,12 +930,13 @@
       const list = deals.filter(deal =>
         (store === "all" || storeOf(deal) === store) &&
         (category === "الكل" || deal.category === category) &&
-        (!normalizedQuery || deal.title.toLowerCase().includes(normalizedQuery))
+        (!normalizedQuery || `${deal.title} ${deal.category} ${deal.angle || ""}`.toLowerCase().includes(normalizedQuery))
       );
       return list.sort((a,b) => {
         if (sortBy === "price-high") return b.original_price - a.original_price;
         if (sortBy === "price-low") return a.original_price - b.original_price;
         if (sortBy === "name") return a.title.localeCompare(b.title, "ar");
+        if (sortBy === "smart") return smartSort(a,b);
         return b.discount_percent - a.discount_percent;
       });
     }
@@ -947,7 +981,7 @@
               <img src="${deal.image}" alt="${escapeHtml(deal.title)}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🛍️',style:'font-size:52px'}))">
             </a>
             <span class="discount-badge">-${deal.discount_percent}٪</span>
-            <span class="category-tag">${escapeHtml(deal.category)}</span>
+            <span class="category-tag">${escapeHtml(deal.angle || deal.category)}</span>
             <span class="store-badge ${shop.key}">${shop.name}</span>
             <button class="quick-look" type="button" onclick="openQuickView('${key}')">⌘ نظرة سريعة</button>
           </div>
@@ -962,7 +996,10 @@
                 <div class="detail-row"><span>التوفر والسعر النهائي</span><b>يُتحقق على ${shop.host}</b></div>
               </div>
             </details>
-            <a class="card-cta" href="${dealLink(deal)}" target="_blank" rel="noopener noreferrer" onclick="return go(event,'${key}')">${shop.cta}</a>
+            <div class="card-actions">
+              <a class="card-cta" href="${dealLink(deal)}" target="_blank" rel="noopener noreferrer" onclick="return go(event,'${key}')">${shop.cta}</a>
+              <button class="share-button" type="button" onclick="shareDeal(event,'${key}')" aria-label="مشاركة ${escapeHtml(deal.title)}" title="مشاركة العرض">↗</button>
+            </div>
           </div>
         </article>
       `}).join("");
@@ -996,13 +1033,30 @@
     function closeExitModal() { el("exitModal").classList.add("hidden"); }
     function closeQuickView() { el("quickViewModal").classList.add("hidden"); }
 
+    async function shareDeal(event, key) {
+      const deal = deals.find(item => dealKey(item) === String(key));
+      if (!deal) return;
+      const button = event.currentTarget;
+      const url = new URL("https://majeed3575.github.io/majeeddeals/");
+      url.searchParams.set("deal", dealKey(deal));
+      const payload = {title: `أوفرلي | ${deal.title}`, text: `${deal.title} — خصم ${deal.discount_percent}٪`, url: url.toString()};
+      try {
+        if (navigator.share) await navigator.share(payload);
+        else {
+          await navigator.clipboard.writeText(payload.url);
+          button.textContent = "✓";
+          setTimeout(() => { button.textContent = "↗"; }, 1500);
+        }
+      } catch (_) {}
+    }
+
     function openQuickView(key) {
       const deal = deals.find(item => dealKey(item) === String(key));
       if (!deal) return;
       const shop = storeMeta(deal);
       el("quickImage").src = deal.image;
       el("quickImage").alt = deal.title;
-      el("quickCategory").textContent = deal.category;
+      el("quickCategory").textContent = deal.angle || deal.category;
       el("quickTitle").textContent = deal.title;
       el("quickSaving").textContent = `خصم ${deal.discount_percent}٪`;
       el("quickBefore").innerHTML = `${shop.name} قبل الخصم: <s>${formatNumber(deal.original_price)} ر.س</s>`;
@@ -1070,6 +1124,10 @@
           deals = data.deals;
           updatedAt = data.updated_at || updatedAt;
           renderAll();
+          const requested = new URLSearchParams(location.search).get("deal");
+          if (requested && deals.some(item => dealKey(item) === requested)) {
+            setTimeout(() => openQuickView(requested), 180);
+          }
         }
       })
       .catch(() => {});
