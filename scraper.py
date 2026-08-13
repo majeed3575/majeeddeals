@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import json
 import hashlib
+import math
 import os
 import random
 import re
@@ -113,11 +114,39 @@ ALIEXPRESS_AUTO_MIN_DISCOUNT = max(
     5, min(95, int(os.environ.get("ALIEXPRESS_AUTO_MIN_DISCOUNT") or "20"))
 )
 ALIEXPRESS_AUTO_MIN_VOLUME = max(
-    0, int(os.environ.get("ALIEXPRESS_AUTO_MIN_VOLUME") or "20")
+    0, int(os.environ.get("ALIEXPRESS_AUTO_MIN_VOLUME") or "50")
 )
 ALIEXPRESS_AUTO_MIN_RATING = max(
-    0, min(100, int(os.environ.get("ALIEXPRESS_AUTO_MIN_RATING") or "85"))
+    0, min(100, int(os.environ.get("ALIEXPRESS_AUTO_MIN_RATING") or "90"))
 )
+# الاكتشاف الموجّه هو الوضع الافتراضي: يمنع امتلاء الموقع بمنتجات عامة عشوائية.
+ALIEXPRESS_FOCUS_DISCOVERY = (
+    os.environ.get("ALIEXPRESS_FOCUS_DISCOVERY") or "true"
+).strip().lower() in {"1", "true", "yes", "on"}
+ALIEXPRESS_FOCUS_QUERIES = [
+    ("tech", "usb c hub", "الإلكترونيات"),
+    ("tech", "wireless charger", "الإلكترونيات"),
+    ("tech", "smart home gadget", "الإلكترونيات"),
+    ("tech", "computer accessories", "الإلكترونيات"),
+    ("life_hack", "home organizer", "المنزل"),
+    ("life_hack", "kitchen gadget", "المنزل"),
+    ("life_hack", "cleaning tool", "المنزل"),
+    ("life_hack", "travel organizer", "المنزل"),
+]
+ALIEXPRESS_FOCUS_TERMS = {
+    "tech": {
+        "usb", "شاحن", "شحن", "لاسلكي", "هاتف", "جوال", "ذكي", "بلوتوث",
+        "كمبيوتر", "حاسوب", "لابتوب", "محول", "محوّل", "كابل", "كيبل",
+        "سماعة", "لوحة", "فأرة", "ماوس", "hub", "charger", "wireless",
+        "computer", "phone", "smart", "bluetooth", "adapter", "cable",
+    },
+    "life_hack": {
+        "منظم", "منظّم", "تنظيم", "تخزين", "مطبخ", "تنظيف", "فرشاة", "حامل",
+        "رف", "صندوق", "أداة", "اداة", "سفر", "حقيبة", "موزع", "قاطع",
+        "organizer", "storage", "kitchen", "cleaning", "brush", "holder",
+        "travel", "gadget", "tool", "rack", "dispenser",
+    },
+}
 ALIEXPRESS_ID_RE = re.compile(r"(?<!\d)(\d{6,20})(?!\d)")
 
 ASIN_RE = re.compile(r"^[A-Z0-9]{10}$")
@@ -790,12 +819,88 @@ def aliexpress_generate_links(source_urls: list[str]) -> dict[str, str]:
     return mapped
 
 
-def discover_aliexpress_products() -> list[dict]:
-    """يكتشف تلقائياً منتجات AliExpress الرائجة القابلة للشحن للسعودية.
+def _ali_title_tokens(title: object) -> set[str]:
+    """كلمات قابلة للمقارنة لمنع نسخ المنتج المتشابهة جداً."""
+    return {
+        token
+        for token in re.findall(r"[a-z0-9\u0600-\u06ff]+", str(title or "").lower())
+        if len(token) >= 3
+    }
 
-    يبدأ بواجهة AliExpress الرسمية hotproduct.query، ثم يستخدم product.query
-    تلقائياً كبديل للتطبيقات التي لا تملك صلاحية الواجهة الأولى. النتائج تظل
-    مرشّحة أولية؛ لا تدخل الموقع إلا بعد اجتياز فلاتر الجودة ووجود خصم ورابط عمولة.
+
+def _ali_focus_score(product: dict, topic: str) -> float:
+    """درجة تجمع الجودة والطلب والخصم ومدى ارتباط العنوان بالمجال."""
+    discount = _ali_discount(product.get("discount"))
+    volume = int(_ali_number(product.get("lastest_volume")))
+    rating = _ali_number(product.get("evaluate_rate"))
+    title_tokens = _ali_title_tokens(product.get("product_title"))
+    relevant = len(title_tokens & ALIEXPRESS_FOCUS_TERMS.get(topic, set()))
+    return round(
+        rating * 0.9
+        + discount * 1.25
+        + min(math.log10(volume + 1) * 22, 88)
+        + min(relevant, 4) * 8,
+        2,
+    )
+
+
+def _ali_is_near_duplicate(title: object, selected: list[dict]) -> bool:
+    """يمنع عرض عدة نسخ متشابهة جداً من المنتج نفسه."""
+    tokens = _ali_title_tokens(title)
+    if len(tokens) < 3:
+        return False
+    for item in selected:
+        other = _ali_title_tokens(item.get("product_title"))
+        if len(other) < 3:
+            continue
+        overlap = len(tokens & other) / min(len(tokens), len(other))
+        if overlap >= 0.78:
+            return True
+    return False
+
+
+def _ali_balanced_selection(candidates: list[dict], limit: int) -> list[dict]:
+    """اختيار متوازن بين التقنية وLife Hacks مع تعبئة أي مقاعد شاغرة."""
+    ranked = sorted(
+        candidates,
+        key=lambda item: float(item.get("_overly_score", 0)),
+        reverse=True,
+    )
+    tech_quota = (limit + 1) // 2
+    quotas = {"tech": tech_quota, "life_hack": limit - tech_quota}
+    selected: list[dict] = []
+    selected_ids: set[str] = set()
+
+    for topic in ("tech", "life_hack"):
+        for product in ranked:
+            if len([item for item in selected if item.get("_overly_topic") == topic]) >= quotas[topic]:
+                break
+            product_id = _ali_product_id(product.get("product_id"))
+            if product.get("_overly_topic") != topic or not product_id or product_id in selected_ids:
+                continue
+            if _ali_is_near_duplicate(product.get("product_title"), selected):
+                continue
+            selected.append(product)
+            selected_ids.add(product_id)
+
+    for product in ranked:
+        if len(selected) >= limit:
+            break
+        product_id = _ali_product_id(product.get("product_id"))
+        if not product_id or product_id in selected_ids:
+            continue
+        if _ali_is_near_duplicate(product.get("product_title"), selected):
+            continue
+        selected.append(product)
+        selected_ids.add(product_id)
+    return selected
+
+
+def discover_aliexpress_products() -> list[dict]:
+    """يكتشف منتجات تقنية وLife Hacks القابلة للشحن للسعودية.
+
+    يستخدم product.query المتاحة للتطبيق، ويبحث بعبارات موضوعية مستقلة ثم يوازن
+    النتائج بين المجالين. لا يدخل الموقع إلا المنتج ذو خصم ومبيعات وتقييم صالح.
     """
     fields = ",".join(
         [
@@ -817,10 +922,10 @@ def discover_aliexpress_products() -> list[dict]:
             "lastest_volume",
         ]
     )
-    query = {
+    base_query = {
         "fields": fields,
         "page_no": 1,
-        "page_size": 50,
+        "page_size": 20,
         "platform_product_type": "ALL",
         "sort": "LAST_VOLUME_DESC",
         "target_currency": ALIEXPRESS_TARGET_CURRENCY,
@@ -828,42 +933,66 @@ def discover_aliexpress_products() -> list[dict]:
         "tracking_id": ALIEXPRESS_TRACKING_ID,
         "ship_to_country": ALIEXPRESS_SHIP_TO_COUNTRY,
     }
-    result = aliexpress_api_call(
-        "aliexpress.affiliate.hotproduct.query",
-        query,
+    discovery_queries = (
+        ALIEXPRESS_FOCUS_QUERIES
+        if ALIEXPRESS_FOCUS_DISCOVERY
+        else [("tech", "", "الإلكترونيات")]
     )
-    if result is None:
-        # بعض تطبيقات Affiliates API الجديدة لا تُمنح واجهة hotproduct رغم أن
-        # واجهة البحث العامة product.query متاحة للفئة نفسها بلا تفويض مستخدم.
-        print("[aliexpress] تجربة واجهة البحث العامة عن المنتجات")
+    candidates_by_id: dict[str, dict] = {}
+    returned_count = 0
+    for topic, keywords, category in discovery_queries:
+        query = dict(base_query)
+        if keywords:
+            query["keywords"] = keywords
         result = aliexpress_api_call(
             "aliexpress.affiliate.product.query",
             query,
         )
-    products = _ali_list((result or {}).get("products"), "product")
-    accepted: list[dict] = []
-    seen: set[str] = set()
-    for product in products:
-        product_id = _ali_product_id(product.get("product_id"))
-        discount = _ali_discount(product.get("discount"))
-        volume = int(_ali_number(product.get("lastest_volume")))
-        rating = _ali_number(product.get("evaluate_rate"))
-        if not product_id or product_id in seen:
-            continue
-        if discount < ALIEXPRESS_AUTO_MIN_DISCOUNT:
-            continue
-        if volume < ALIEXPRESS_AUTO_MIN_VOLUME:
-            continue
-        if rating and rating < ALIEXPRESS_AUTO_MIN_RATING:
-            continue
-        seen.add(product_id)
-        accepted.append({**product, "auto_discovered": True})
-        if len(accepted) >= ALIEXPRESS_AUTO_LIMIT:
-            break
+        products = _ali_list((result or {}).get("products"), "product")
+        returned_count += len(products)
+        accepted_for_query = 0
+        for product in products:
+            product_id = _ali_product_id(product.get("product_id"))
+            discount = _ali_discount(product.get("discount"))
+            volume = int(_ali_number(product.get("lastest_volume")))
+            rating = _ali_number(product.get("evaluate_rate"))
+            if not product_id:
+                continue
+            if discount < ALIEXPRESS_AUTO_MIN_DISCOUNT:
+                continue
+            if volume < ALIEXPRESS_AUTO_MIN_VOLUME:
+                continue
+            # التقييم المفقود لم يعد يمر؛ الأفضل عرض عدد أقل بجودة موثوقة.
+            if rating < ALIEXPRESS_AUTO_MIN_RATING:
+                continue
+            candidate = {
+                **product,
+                "auto_discovered": True,
+                "_overly_topic": topic,
+                "_overly_category": category,
+            }
+            candidate["_overly_score"] = _ali_focus_score(candidate, topic)
+            previous = candidates_by_id.get(product_id)
+            if previous is None or candidate["_overly_score"] > previous["_overly_score"]:
+                candidates_by_id[product_id] = candidate
+            accepted_for_query += 1
+        label = "تقنية" if topic == "tech" else "Life Hacks"
+        print(
+            f"[aliexpress] {label} / {keywords or 'عام'}: "
+            f"{accepted_for_query} من {len(products)} اجتاز الجودة"
+        )
+        time.sleep(0.35)
+
+    accepted = _ali_balanced_selection(
+        list(candidates_by_id.values()),
+        ALIEXPRESS_AUTO_LIMIT,
+    )
+    tech_count = sum(item.get("_overly_topic") == "tech" for item in accepted)
+    life_count = sum(item.get("_overly_topic") == "life_hack" for item in accepted)
 
     print(
-        f"[aliexpress] اكتشاف آلي: {len(accepted)} من {len(products)} منتج "
-        "اجتاز فلاتر الخصم والمبيعات والتقييم"
+        f"[aliexpress] اكتشاف موجّه: {len(accepted)} من {returned_count} نتيجة "
+        f"(تقنية {tech_count}، Life Hacks {life_count})"
     )
     return accepted
 
@@ -949,7 +1078,7 @@ def scrape_aliexpress() -> list[dict]:
                 or product.get("original_price_currency")
                 or product.get("sale_price_currency"),
                 "discount_percent": product.get("discount"),
-                "category": categories.get(product_id),
+                "category": categories.get(product_id) or product.get("_overly_category"),
                 "auto_discovered": product.get("auto_discovered"),
             }
         )
