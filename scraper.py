@@ -114,7 +114,7 @@ ALIEXPRESS_AUTO_MIN_DISCOUNT = max(
     5, min(95, int(os.environ.get("ALIEXPRESS_AUTO_MIN_DISCOUNT") or "20"))
 )
 ALIEXPRESS_AUTO_MIN_VOLUME = max(
-    0, int(os.environ.get("ALIEXPRESS_AUTO_MIN_VOLUME") or "50")
+    0, int(os.environ.get("ALIEXPRESS_AUTO_MIN_VOLUME") or "100")
 )
 ALIEXPRESS_AUTO_MIN_RATING = max(
     0, min(100, int(os.environ.get("ALIEXPRESS_AUTO_MIN_RATING") or "90"))
@@ -124,21 +124,62 @@ ALIEXPRESS_FOCUS_DISCOVERY = (
     os.environ.get("ALIEXPRESS_FOCUS_DISCOVERY") or "true"
 ).strip().lower() in {"1", "true", "yes", "on"}
 ALIEXPRESS_FOCUS_QUERIES = [
-    ("tech", "usb c hub", "الإلكترونيات"),
-    ("tech", "wireless charger", "الإلكترونيات"),
-    ("tech", "smart home gadget", "الإلكترونيات"),
-    ("tech", "computer accessories", "الإلكترونيات"),
-    ("life_hack", "home organizer", "المنزل"),
-    ("life_hack", "kitchen gadget", "المنزل"),
-    ("life_hack", "cleaning tool", "المنزل"),
-    ("life_hack", "travel organizer", "المنزل"),
+    {
+        "topic": "tech", "keywords": "magnetic power bank", "category": "الإلكترونيات",
+        "angle": "شحن متنقل", "include": ("power bank", "بنك طاقة", "باور بانك", "شاحن متنقل"),
+    },
+    {
+        "topic": "tech", "keywords": "wireless lavalier microphone", "category": "الإلكترونيات",
+        "angle": "صناعة المحتوى", "include": ("microphone", "ميكروفون", "مايكروفون", "لافالير"),
+    },
+    {
+        "topic": "tech", "keywords": "smart tag tracker", "category": "الإلكترونيات",
+        "angle": "تتبّع ذكي", "include": ("tracker", "smart tag", "متتبع", "تتبع", "علامة ذكية"),
+    },
+    {
+        "topic": "tech", "keywords": "wireless carplay adapter", "category": "السيارة",
+        "angle": "تقنية السيارة", "include": ("carplay", "كاربلاي", "سيارة", "car play"),
+    },
+    {
+        "topic": "tech", "keywords": "usb c hub 4k", "category": "الإلكترونيات",
+        "angle": "مكتب وتقنية", "include": ("usb c hub", "usb-c hub", "موزع usb", "محول usb", "hub"),
+    },
+    {
+        "topic": "tech", "keywords": "rechargeable motion sensor light", "category": "المنزل",
+        "angle": "منزل ذكي", "include": ("motion sensor", "مستشعر حركة", "استشعار الحركة", "مصباح", "إضاءة"),
+    },
+    {
+        "topic": "life_hack", "keywords": "electric cleaning brush rechargeable", "category": "المنزل",
+        "angle": "تنظيف ذكي", "include": ("cleaning brush", "فرشاة تنظيف", "فرشاة كهربائية", "تنظيف كهربائي"),
+    },
+    {
+        "topic": "life_hack", "keywords": "mini bag sealer rechargeable", "category": "المنزل",
+        "angle": "مطبخ عملي", "include": ("bag sealer", "sealer", "لحام الأكياس", "إغلاق الأكياس", "ختم الأكياس"),
+    },
+    {
+        "topic": "life_hack", "keywords": "vacuum storage bags electric pump", "category": "المنزل",
+        "angle": "توفير مساحة", "include": ("vacuum storage", "أكياس تفريغ", "تفريغ الهواء", "مضخة كهربائية"),
+    },
+    {
+        "topic": "life_hack", "keywords": "compression travel organizer", "category": "السفر",
+        "angle": "سفر أذكى", "include": ("travel organizer", "packing cube", "منظم سفر", "حقيبة ضغط", "مكعبات تعبئة"),
+    },
+    {
+        "topic": "life_hack", "keywords": "automatic soap dispenser rechargeable", "category": "المنزل",
+        "angle": "منزل عملي", "include": ("soap dispenser", "موزع صابون", "صابون أوتوماتيكي", "صابون تلقائي"),
+    },
+    {
+        "topic": "life_hack", "keywords": "cordless air duster rechargeable", "category": "الإلكترونيات",
+        "angle": "تنظيف التقنية", "include": ("air duster", "منفاخ هواء", "هواء مضغوط", "منفضة هواء"),
+    },
 ]
 ALIEXPRESS_FOCUS_TERMS = {
     "tech": {
         "usb", "شاحن", "شحن", "لاسلكي", "هاتف", "جوال", "ذكي", "بلوتوث",
         "كمبيوتر", "حاسوب", "لابتوب", "محول", "محوّل", "كابل", "كيبل",
         "سماعة", "لوحة", "فأرة", "ماوس", "hub", "charger", "wireless",
-        "computer", "phone", "smart", "bluetooth", "adapter", "cable",
+        "computer", "phone", "smart", "bluetooth", "adapter", "cable", "power",
+        "bank", "microphone", "tracker", "carplay", "sensor", "light", "4k",
     },
     "life_hack": {
         "منظم", "منظّم", "تنظيم", "تخزين", "مطبخ", "تنظيف", "فرشاة", "حامل",
@@ -146,6 +187,16 @@ ALIEXPRESS_FOCUS_TERMS = {
         "organizer", "storage", "kitchen", "cleaning", "brush", "holder",
         "travel", "gadget", "tool", "rack", "dispenser",
     },
+}
+# استبعاد الخردة والمنتجات الحساسة أو ضعيفة النية الشرائية حتى لو ظهر لها خصم مرتفع.
+ALIEXPRESS_BLOCK_TERMS = {
+    "حبوب", "دواء", "أدوية", "طبي", "طبية", "أسنان", "تخسيس", "جنس", "بالغين",
+    "سلاح", "سكين", "شفرة", "مصيدة حشرات", "بعوض", "ذباب", "طارد الحشرات",
+    "ملصق", "ستيكر", "حلقة معدنية", "لوحة معدنية", "قطعة غيار", "بديل", "حزام",
+    "تعليقة", "سلسلة مفاتيح", "دمية", "لعبة", "تاتو", "وشم", "غطاء هاتف",
+    "pill", "medicine", "medical", "dental", "weight loss", "adult", "weapon", "knife",
+    "blade", "mosquito", "insect trap", "sticker", "metal plate", "replacement", "spare part",
+    "strap", "keychain", "charm", "doll", "toy", "tattoo", "phone case",
 }
 ALIEXPRESS_ID_RE = re.compile(r"(?<!\d)(\d{6,20})(?!\d)")
 
@@ -191,6 +242,14 @@ CATEGORY_KEYWORDS = {
         "سرير", "وسادة", "إضاءة", "مصباح", "تنظيف", "ثلاجة",
         "kitchen", "vacuum", "blender", "coffee", "fryer", "pillow", "lamp",
         "cleaner", "cookware",
+    ],
+    "السيارة": [
+        "سيارة", "سيارات", "كاربلاي", "مركبة", "carplay", "car", "vehicle",
+        "dashboard", "dashcam",
+    ],
+    "السفر": [
+        "سفر", "رحلات", "أمتعة", "شنطة سفر", "منظم سفر", "travel", "luggage",
+        "packing", "trip",
     ],
     "الموضة": [
         "حقيبة", "حذاء", "قميص", "عباية", "فستان", "نظارة", "عطر", "ساعة يد",
@@ -735,7 +794,7 @@ def _ali_https_url(value: object) -> str:
 def sanitize_aliexpress(raw: dict) -> dict | None:
     """يحوّل منتج AliExpress إلى مخطط الموقع ويعرض سعره قبل الخصم بالريال."""
     product_id = _ali_product_id(raw.get("product_id"))
-    title = re.sub(r"\s+", " ", str(raw.get("title", "")).strip())[:140]
+    title = _ali_display_title(raw.get("title"))
     image = str(raw.get("image", "")).strip()
     url = str(raw.get("url", "")).strip()
     currency = str(raw.get("currency", "")).strip().upper()
@@ -773,6 +832,8 @@ def sanitize_aliexpress(raw: dict) -> dict | None:
         "original_price": round(original, 2),
         "category": category if category in CATEGORY_KEYWORDS else classify(title),
         **({"auto_discovered": True} if raw.get("auto_discovered") else {}),
+        **({"angle": str(raw.get("angle"))[:40]} if raw.get("angle") else {}),
+        **({"rank_score": int(raw.get("rank_score"))} if raw.get("rank_score") else {}),
     }
 
 
@@ -812,18 +873,78 @@ def _ali_title_tokens(title: object) -> set[str]:
     }
 
 
-def _ali_focus_score(product: dict, topic: str) -> float:
-    """درجة تجمع الجودة والطلب والخصم ومدى ارتباط العنوان بالمجال."""
+def _ali_display_title(value: object) -> str:
+    """عنوان صادق ومقروء مشتق من عنوان AliExpress نفسه، بلا عبارات تسويقية زائدة."""
+    title = re.sub(r"\s+", " ", str(value or "")).strip()
+    title = re.sub(
+        r"(?i)\b(?:new|hot sale|best seller|free shipping|dropshipping|202[0-9])\b",
+        " ",
+        title,
+    )
+    title = re.sub(r"^(?:\d+\s*)?(?:قطعة|قطع)\s*[/،,-]?\s*", "", title)
+    parts: list[str] = []
+    for part in re.split(r"[|;،,]+", title):
+        part = re.sub(r"\s+", " ", part).strip(" -–—./")
+        if len(part) < 3 or part.lower() in {item.lower() for item in parts}:
+            continue
+        parts.append(part)
+        if len(" — ".join(parts)) >= 88 or len(parts) >= 3:
+            break
+    compact = " — ".join(parts) if parts else title
+    compact = re.sub(r"\s+", " ", compact).strip()
+    if len(compact) <= 108:
+        return compact
+    return compact[:108].rsplit(" ", 1)[0].rstrip(" -–—،,")
+
+
+def _ali_sale_price_sar(product: dict) -> float:
+    value = _ali_number(
+        product.get("target_sale_price")
+        or product.get("target_app_sale_price")
+        or product.get("sale_price")
+        or product.get("app_sale_price")
+    )
+    currency = str(
+        product.get("target_sale_price_currency")
+        or product.get("sale_price_currency")
+        or ALIEXPRESS_TARGET_CURRENCY
+    ).upper()
+    return value * ALIEXPRESS_USD_TO_SAR if currency == "USD" else value
+
+
+def _ali_matches_focus(product: dict, focus: dict) -> bool:
+    title = str(product.get("product_title") or "").lower()
+
+    def contains(term: object) -> bool:
+        phrase = str(term or "").lower().strip()
+        if not phrase:
+            return False
+        # الكلمات الإنجليزية القصيرة تحتاج حدود كلمة حتى لا تُحجب Toyota بسبب toy مثلاً.
+        if re.fullmatch(r"[a-z0-9 -]+", phrase):
+            return bool(re.search(rf"(?<![a-z0-9]){re.escape(phrase)}(?![a-z0-9])", title))
+        return phrase in title
+
+    if any(contains(term) for term in ALIEXPRESS_BLOCK_TERMS):
+        return False
+    return any(contains(term) for term in focus.get("include", ()))
+
+
+def _ali_focus_score(product: dict, focus: dict) -> float:
+    """درجة نية نقر: صلة واضحة + طلب قوي + تقييم + سعر مناسب، والخصم عامل ثانوي."""
+    topic = str(focus.get("topic") or "tech")
     discount = _ali_discount(product.get("discount"))
     volume = int(_ali_number(product.get("lastest_volume")))
     rating = _ali_number(product.get("evaluate_rate"))
+    price_sar = _ali_sale_price_sar(product)
     title_tokens = _ali_title_tokens(product.get("product_title"))
     relevant = len(title_tokens & ALIEXPRESS_FOCUS_TERMS.get(topic, set()))
+    price_fit = 22 if 35 <= price_sar <= 260 else 14 if 18 <= price_sar <= 450 else 0
     return round(
-        rating * 0.9
-        + discount * 1.25
-        + min(math.log10(volume + 1) * 22, 88)
-        + min(relevant, 4) * 8,
+        rating * 1.05
+        + discount * 0.45
+        + min(math.log10(volume + 1) * 27, 105)
+        + min(relevant, 4) * 9
+        + price_fit,
         2,
     )
 
@@ -844,7 +965,7 @@ def _ali_is_near_duplicate(title: object, selected: list[dict]) -> bool:
 
 
 def _ali_balanced_selection(candidates: list[dict], limit: int) -> list[dict]:
-    """اختيار متوازن بين التقنية وLife Hacks مع تعبئة أي مقاعد شاغرة."""
+    """اختيار متوازن ومتنوع: أفضل منتج من كل فكرة قبل تكرار الفكرة نفسها."""
     ranked = sorted(
         candidates,
         key=lambda item: float(item.get("_overly_score", 0)),
@@ -856,6 +977,24 @@ def _ali_balanced_selection(candidates: list[dict], limit: int) -> list[dict]:
     selected_ids: set[str] = set()
 
     for topic in ("tech", "life_hack"):
+        used_angles: set[str] = set()
+        for product in ranked:
+            if len([item for item in selected if item.get("_overly_topic") == topic]) >= quotas[topic]:
+                break
+            product_id = _ali_product_id(product.get("product_id"))
+            if product.get("_overly_topic") != topic or not product_id or product_id in selected_ids:
+                continue
+            angle = str(product.get("_overly_angle") or "")
+            if angle and angle in used_angles:
+                continue
+            if _ali_is_near_duplicate(product.get("product_title"), selected):
+                continue
+            selected.append(product)
+            selected_ids.add(product_id)
+            if angle:
+                used_angles.add(angle)
+
+        # إذا لم تكفِ الأفكار المختلفة، نكمل من أفضل النتائج في المجال نفسه.
         for product in ranked:
             if len([item for item in selected if item.get("_overly_topic") == topic]) >= quotas[topic]:
                 break
@@ -917,14 +1056,18 @@ def discover_aliexpress_products() -> list[dict]:
         "tracking_id": ALIEXPRESS_TRACKING_ID,
         "ship_to_country": ALIEXPRESS_SHIP_TO_COUNTRY,
     }
-    discovery_queries = (
+    discovery_queries: list[dict] = (
         ALIEXPRESS_FOCUS_QUERIES
         if ALIEXPRESS_FOCUS_DISCOVERY
-        else [("tech", "", "الإلكترونيات")]
+        else [{"topic": "tech", "keywords": "", "category": "الإلكترونيات", "angle": "تقنية", "include": ()}]
     )
     candidates_by_id: dict[str, dict] = {}
     returned_count = 0
-    for topic, keywords, category in discovery_queries:
+    for focus in discovery_queries:
+        topic = str(focus.get("topic") or "tech")
+        keywords = str(focus.get("keywords") or "")
+        category = str(focus.get("category") or "الإلكترونيات")
+        angle = str(focus.get("angle") or category)
         query = dict(base_query)
         if keywords:
             query["keywords"] = keywords
@@ -940,6 +1083,7 @@ def discover_aliexpress_products() -> list[dict]:
             discount = _ali_discount(product.get("discount"))
             volume = int(_ali_number(product.get("lastest_volume")))
             rating = _ali_number(product.get("evaluate_rate"))
+            price_sar = _ali_sale_price_sar(product)
             if not product_id:
                 continue
             if discount < ALIEXPRESS_AUTO_MIN_DISCOUNT:
@@ -949,13 +1093,19 @@ def discover_aliexpress_products() -> list[dict]:
             # التقييم المفقود لم يعد يمر؛ الأفضل عرض عدد أقل بجودة موثوقة.
             if rating < ALIEXPRESS_AUTO_MIN_RATING:
                 continue
+            if ALIEXPRESS_FOCUS_DISCOVERY and not _ali_matches_focus(product, focus):
+                continue
+            # نطاق مناسب للشراء العفوي والعمولة المعقولة، مع تجنب الخردة والمبالغة السعرية.
+            if not (18 <= price_sar <= 450):
+                continue
             candidate = {
                 **product,
                 "auto_discovered": True,
                 "_overly_topic": topic,
                 "_overly_category": category,
+                "_overly_angle": angle,
             }
-            candidate["_overly_score"] = _ali_focus_score(candidate, topic)
+            candidate["_overly_score"] = _ali_focus_score(candidate, focus)
             previous = candidates_by_id.get(product_id)
             if previous is None or candidate["_overly_score"] > previous["_overly_score"]:
                 candidates_by_id[product_id] = candidate
@@ -1064,6 +1214,8 @@ def scrape_aliexpress() -> list[dict]:
                 "discount_percent": product.get("discount"),
                 "category": categories.get(product_id) or product.get("_overly_category"),
                 "auto_discovered": product.get("auto_discovered"),
+                "angle": product.get("_overly_angle"),
+                "rank_score": min(99, round(float(product.get("_overly_score") or 0) / 3)),
             }
         )
         if deal and product_id not in seen:
@@ -1105,7 +1257,14 @@ def merge_deals(existing: list[dict], updates: list[dict]) -> list[dict]:
         else:
             indexes[key] = len(merged)
             merged.append(deal)
-    merged.sort(key=lambda deal: int(deal.get("discount_percent", 0)), reverse=True)
+    merged.sort(
+        key=lambda deal: (
+            int(deal.get("rank_score") or 0)
+            or int(deal.get("discount_percent", 0)) + 48,
+            int(deal.get("discount_percent", 0)),
+        ),
+        reverse=True,
+    )
     return merged[: MAX_DEALS * 2]
 
 
