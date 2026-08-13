@@ -108,7 +108,7 @@ ALIEXPRESS_AUTO_DISCOVERY = (
     os.environ.get("ALIEXPRESS_AUTO_DISCOVERY") or "true"
 ).strip().lower() in {"1", "true", "yes", "on"}
 ALIEXPRESS_AUTO_LIMIT = max(
-    1, min(20, int(os.environ.get("ALIEXPRESS_AUTO_LIMIT") or "12"))
+    1, min(24, int(os.environ.get("ALIEXPRESS_AUTO_LIMIT") or "20"))
 )
 ALIEXPRESS_AUTO_MIN_DISCOUNT = max(
     5, min(95, int(os.environ.get("ALIEXPRESS_AUTO_MIN_DISCOUNT") or "20"))
@@ -149,6 +149,22 @@ ALIEXPRESS_FOCUS_QUERIES = [
         "angle": "منزل ذكي", "include": ("motion sensor", "مستشعر حركة", "استشعار الحركة", "مصباح", "إضاءة"),
     },
     {
+        "topic": "tech", "keywords": "gan charger usb c fast", "category": "الإلكترونيات",
+        "angle": "شحن سريع", "include": ("gan charger", "شاحن gan", "شاحن سريع", "usb c charger"),
+    },
+    {
+        "topic": "tech", "keywords": "portable tire inflator digital", "category": "السيارة",
+        "angle": "طوارئ السيارة", "include": ("tire inflator", "air compressor", "منفاخ إطارات", "ضاغط هواء", "نفخ الإطارات"),
+    },
+    {
+        "topic": "tech", "keywords": "bluetooth thermal label printer", "category": "الإلكترونيات",
+        "angle": "تنظيم ذكي", "include": ("label printer", "thermal printer", "طابعة ملصقات", "طابعة حرارية"),
+    },
+    {
+        "topic": "tech", "keywords": "wireless earbuds noise cancelling", "category": "الإلكترونيات",
+        "angle": "صوت وتقنية", "include": ("wireless earbuds", "bluetooth earbuds", "سماعات لاسلكية", "سماعات بلوتوث"),
+    },
+    {
         "topic": "life_hack", "keywords": "electric spin scrubber bathroom", "category": "المنزل",
         "angle": "تنظيف ذكي", "include": ("spin scrubber", "bathroom scrubber", "فرشاة تنظيف كهربائية", "فرشاة دوارة"),
     },
@@ -157,8 +173,8 @@ ALIEXPRESS_FOCUS_QUERIES = [
         "angle": "مطبخ عملي", "include": ("bag sealer", "sealer", "لحام الأكياس", "إغلاق الأكياس", "ختم الأكياس"),
     },
     {
-        "topic": "life_hack", "keywords": "cordless handheld vacuum cleaner", "category": "المنزل",
-        "angle": "تنظيف سريع", "include": ("handheld vacuum", "cordless vacuum", "مكنسة يدوية", "مكنسة لاسلكية"),
+        "topic": "life_hack", "keywords": "electric milk frother rechargeable", "category": "المنزل",
+        "angle": "مطبخ ذكي", "include": ("milk frother", "electric frother", "مخفّق حليب", "خفاق حليب", "رغوة الحليب"),
     },
     {
         "topic": "life_hack", "keywords": "digital luggage scale travel", "category": "السفر",
@@ -171,6 +187,22 @@ ALIEXPRESS_FOCUS_QUERIES = [
     {
         "topic": "life_hack", "keywords": "cordless air duster rechargeable", "category": "الإلكترونيات",
         "angle": "تنظيف التقنية", "include": ("air duster", "منفاخ هواء", "هواء مضغوط", "منفضة هواء"),
+    },
+    {
+        "topic": "life_hack", "keywords": "mini electric food chopper", "category": "المنزل",
+        "angle": "تحضير أسرع", "include": ("food chopper", "electric chopper", "مفرمة كهربائية", "قطاعة كهربائية"),
+    },
+    {
+        "topic": "life_hack", "keywords": "portable blender rechargeable", "category": "المنزل",
+        "angle": "مشروبات سريعة", "include": ("portable blender", "rechargeable blender", "خلاط محمول", "خلاط قابل للشحن"),
+    },
+    {
+        "topic": "life_hack", "keywords": "electric lint remover rechargeable", "category": "المنزل",
+        "angle": "عناية بالملابس", "include": ("lint remover", "fabric shaver", "مزيل الوبر", "إزالة الوبر"),
+    },
+    {
+        "topic": "life_hack", "keywords": "foldable electric kettle travel", "category": "السفر",
+        "angle": "سفر عملي", "include": ("foldable kettle", "travel kettle", "غلاية قابلة للطي", "غلاية سفر"),
     },
 ]
 ALIEXPRESS_FOCUS_TERMS = {
@@ -795,7 +827,7 @@ def _ali_https_url(value: object) -> str:
 def sanitize_aliexpress(raw: dict) -> dict | None:
     """يحوّل منتج AliExpress إلى مخطط الموقع ويعرض سعره قبل الخصم بالريال."""
     product_id = _ali_product_id(raw.get("product_id"))
-    title = _ali_display_title(raw.get("title"))
+    title = _ali_click_title(raw.get("title"), raw.get("angle"))
     image = str(raw.get("image", "")).strip()
     url = str(raw.get("url", "")).strip()
     currency = str(raw.get("currency", "")).strip().upper()
@@ -896,6 +928,35 @@ def _ali_display_title(value: object) -> str:
     if len(compact) <= 108:
         return compact
     return compact[:108].rsplit(" ", 1)[0].rstrip(" -–—،,")
+
+
+def _ali_click_title(value: object, angle: object) -> str:
+    """عنوان عربي مختصر وصادق مبني على نوع المنتج بلا مواصفات غير موجودة."""
+    raw = str(value or "")
+    low = raw.lower()
+    labels = {
+        "شحن متنقل": "باور بانك مغناطيسي لاسلكي محمول",
+        "صناعة المحتوى": "ميكروفون لافالير لاسلكي لصناعة المحتوى",
+        "تتبّع ذكي": "متتبع ذكي للأغراض والحقائب",
+        "تقنية السيارة": "محوّل CarPlay لاسلكي للسيارة",
+        "مكتب وتقنية": "موزع USB-C متعدد المنافذ" + (" مع HDMI 4K" if "4k" in low and "hdmi" in low else ""),
+        "منزل ذكي": "مصباح LED لاسلكي بمستشعر حركة",
+        "شحن سريع": "شاحن GaN سريع متعدد المنافذ",
+        "طوارئ السيارة": "منفاخ إطارات رقمي محمول للسيارة",
+        "تنظيم ذكي": "طابعة ملصقات حرارية صغيرة بالبلوتوث",
+        "صوت وتقنية": "سماعات أذن لاسلكية بالبلوتوث",
+        "تنظيف ذكي": "فرشاة تنظيف كهربائية دوارة متعددة الاستخدامات",
+        "مطبخ عملي": "جهاز محمول لإغلاق أكياس الطعام بالحرارة",
+        "مطبخ ذكي": "مخفّق حليب كهربائي قابل لإعادة الشحن",
+        "سفر أذكى": "ميزان أمتعة رقمي محمول للسفر",
+        "منزل عملي": "موزع صابون أوتوماتيكي بدون لمس",
+        "تنظيف التقنية": "منفاخ هواء كهربائي لاسلكي لتنظيف الأجهزة",
+        "تحضير أسرع": "مفرمة طعام كهربائية صغيرة",
+        "مشروبات سريعة": "خلاط محمول قابل لإعادة الشحن",
+        "عناية بالملابس": "مزيل وبر كهربائي قابل لإعادة الشحن",
+        "سفر عملي": "غلاية كهربائية قابلة للطي للسفر",
+    }
+    return labels.get(str(angle or "")) or _ali_display_title(raw)
 
 
 def _ali_sale_price_sar(product: dict) -> float:
@@ -1002,6 +1063,9 @@ def _ali_balanced_selection(candidates: list[dict], limit: int) -> list[dict]:
             product_id = _ali_product_id(product.get("product_id"))
             if product.get("_overly_topic") != topic or not product_id or product_id in selected_ids:
                 continue
+            angle = str(product.get("_overly_angle") or "")
+            if angle and any(str(item.get("_overly_angle") or "") == angle for item in selected):
+                continue
             if _ali_is_near_duplicate(product.get("product_title"), selected):
                 continue
             selected.append(product)
@@ -1012,6 +1076,9 @@ def _ali_balanced_selection(candidates: list[dict], limit: int) -> list[dict]:
             break
         product_id = _ali_product_id(product.get("product_id"))
         if not product_id or product_id in selected_ids:
+            continue
+        angle = str(product.get("_overly_angle") or "")
+        if angle and any(str(item.get("_overly_angle") or "") == angle for item in selected):
             continue
         if _ali_is_near_duplicate(product.get("product_title"), selected):
             continue
