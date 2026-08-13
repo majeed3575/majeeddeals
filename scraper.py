@@ -108,13 +108,16 @@ ALIEXPRESS_AUTO_DISCOVERY = (
     os.environ.get("ALIEXPRESS_AUTO_DISCOVERY") or "true"
 ).strip().lower() in {"1", "true", "yes", "on"}
 ALIEXPRESS_AUTO_LIMIT = max(
-    1, min(60, int(os.environ.get("ALIEXPRESS_AUTO_LIMIT") or "48"))
+    1, min(260, int(os.environ.get("ALIEXPRESS_AUTO_LIMIT") or "220"))
 )
 ALIEXPRESS_MAX_PER_ANGLE = max(
-    1, min(4, int(os.environ.get("ALIEXPRESS_MAX_PER_ANGLE") or "3"))
+    1, min(15, int(os.environ.get("ALIEXPRESS_MAX_PER_ANGLE") or "12"))
 )
 ALIEXPRESS_QUERY_PAGE_SIZE = max(
-    20, min(50, int(os.environ.get("ALIEXPRESS_QUERY_PAGE_SIZE") or "40"))
+    20, min(50, int(os.environ.get("ALIEXPRESS_QUERY_PAGE_SIZE") or "50"))
+)
+ALIEXPRESS_QUERY_PAGES = max(
+    1, min(4, int(os.environ.get("ALIEXPRESS_QUERY_PAGES") or "2"))
 )
 ALIEXPRESS_AUTO_MIN_VOLUME = max(
     0, int(os.environ.get("ALIEXPRESS_AUTO_MIN_VOLUME") or "1000")
@@ -988,6 +991,10 @@ def _ali_click_title(value: object, angle: object) -> str:
             details.append(clean_spec[:20])
         if len(details) >= 2:
             break
+    if not details:
+        source_hint = _ali_display_title(raw)
+        if source_hint and source_hint.lower() != base.lower():
+            details.append(source_hint[:42].rstrip(" -–—،,"))
     return f"{base} — {' · '.join(details)}" if details else base
 
 
@@ -1065,7 +1072,7 @@ def _ali_is_near_duplicate(
 
 
 def _ali_balanced_selection(candidates: list[dict], limit: int) -> list[dict]:
-    """اختيار متوازن: نغطي كل فكرة أولاً ثم نضيف أفضل بديلين لها."""
+    """اختيار متوازن: نغطي كل فكرة أولاً ثم نضيف بدائل مختلفة عالية الطلب."""
     ranked = sorted(
         candidates,
         key=lambda item: float(item.get("_overly_score", 0)),
@@ -1159,7 +1166,6 @@ def discover_aliexpress_products() -> list[dict]:
     )
     base_query = {
         "fields": fields,
-        "page_no": 1,
         "page_size": ALIEXPRESS_QUERY_PAGE_SIZE,
         "platform_product_type": "ALL",
         "sort": "LAST_VOLUME_DESC",
@@ -1180,49 +1186,56 @@ def discover_aliexpress_products() -> list[dict]:
         keywords = str(focus.get("keywords") or "")
         category = str(focus.get("category") or "الإلكترونيات")
         angle = str(focus.get("angle") or category)
-        query = dict(base_query)
-        if keywords:
-            query["keywords"] = keywords
-        result = aliexpress_api_call(
-            "aliexpress.affiliate.product.query",
-            query,
-        )
-        products = _ali_list((result or {}).get("products"), "product")
-        returned_count += len(products)
         accepted_for_query = 0
-        for product in products:
-            product_id = _ali_product_id(product.get("product_id"))
-            volume = int(_ali_number(product.get("lastest_volume")))
-            rating = _ali_number(product.get("evaluate_rate"))
-            price_sar = _ali_sale_price_sar(product)
-            if not product_id:
-                continue
-            if volume < ALIEXPRESS_AUTO_MIN_VOLUME:
-                continue
-            # التقييم المفقود لم يعد يمر؛ الأفضل عرض عدد أقل بجودة موثوقة.
-            if rating < ALIEXPRESS_AUTO_MIN_RATING:
-                continue
-            if ALIEXPRESS_FOCUS_DISCOVERY and not _ali_matches_focus(product, focus):
-                continue
-            # نطاق مناسب للشراء العفوي والعمولة المعقولة، مع تجنب الخردة والمبالغة السعرية.
-            if not (18 <= price_sar <= 450):
-                continue
-            candidate = {
-                **product,
-                "auto_discovered": True,
-                "_overly_topic": topic,
-                "_overly_category": category,
-                "_overly_angle": angle,
-            }
-            candidate["_overly_score"] = _ali_focus_score(candidate, focus)
-            previous = candidates_by_id.get(product_id)
-            if previous is None or candidate["_overly_score"] > previous["_overly_score"]:
-                candidates_by_id[product_id] = candidate
-            accepted_for_query += 1
+        returned_for_query = 0
+        for page_no in range(1, ALIEXPRESS_QUERY_PAGES + 1):
+            query = {**base_query, "page_no": page_no}
+            if keywords:
+                query["keywords"] = keywords
+            result = aliexpress_api_call(
+                "aliexpress.affiliate.product.query",
+                query,
+            )
+            products = _ali_list((result or {}).get("products"), "product")
+            returned_count += len(products)
+            returned_for_query += len(products)
+            for product in products:
+                product_id = _ali_product_id(product.get("product_id"))
+                volume = int(_ali_number(product.get("lastest_volume")))
+                rating = _ali_number(product.get("evaluate_rate"))
+                price_sar = _ali_sale_price_sar(product)
+                if not product_id:
+                    continue
+                if volume < ALIEXPRESS_AUTO_MIN_VOLUME:
+                    continue
+                # التقييم المفقود لم يعد يمر؛ الأفضل عرض عدد أقل بجودة موثوقة.
+                if rating < ALIEXPRESS_AUTO_MIN_RATING:
+                    continue
+                if ALIEXPRESS_FOCUS_DISCOVERY and not _ali_matches_focus(product, focus):
+                    continue
+                # نطاق مناسب للشراء العفوي والعمولة المعقولة، مع تجنب الخردة والمبالغة السعرية.
+                if not (18 <= price_sar <= 450):
+                    continue
+                candidate = {
+                    **product,
+                    "auto_discovered": True,
+                    "_overly_topic": topic,
+                    "_overly_category": category,
+                    "_overly_angle": angle,
+                }
+                candidate["_overly_score"] = _ali_focus_score(candidate, focus)
+                previous = candidates_by_id.get(product_id)
+                if previous is None or candidate["_overly_score"] > previous["_overly_score"]:
+                    candidates_by_id[product_id] = candidate
+                    accepted_for_query += 1
+            # لا نطلب صفحات إضافية إذا انتهت النتائج مبكراً.
+            if len(products) < ALIEXPRESS_QUERY_PAGE_SIZE:
+                break
+            time.sleep(0.25)
         label = "تقنية" if topic == "tech" else "Life Hacks"
         print(
             f"[aliexpress] {label} / {keywords or 'عام'}: "
-            f"{accepted_for_query} من {len(products)} اجتاز الجودة"
+            f"{accepted_for_query} من {returned_for_query} اجتاز الجودة"
         )
         time.sleep(0.35)
 
@@ -1337,7 +1350,13 @@ def scrape_aliexpress() -> list[dict]:
             seen.add(product_id)
             clean.append(deal)
 
-    clean.sort(key=lambda deal: deal["discount_percent"], reverse=True)
+    clean.sort(
+        key=lambda deal: (
+            int(deal.get("rank_score") or 0),
+            int(deal.get("sales_volume") or 0),
+        ),
+        reverse=True,
+    )
     print(f"[aliexpress] {len(clean)} عرض صالح برابط عمولة رسمي")
     return clean[:ALIEXPRESS_AUTO_LIMIT]
 
