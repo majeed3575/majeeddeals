@@ -116,11 +116,8 @@ ALIEXPRESS_MAX_PER_ANGLE = max(
 ALIEXPRESS_QUERY_PAGE_SIZE = max(
     20, min(50, int(os.environ.get("ALIEXPRESS_QUERY_PAGE_SIZE") or "40"))
 )
-ALIEXPRESS_AUTO_MIN_DISCOUNT = max(
-    5, min(95, int(os.environ.get("ALIEXPRESS_AUTO_MIN_DISCOUNT") or "20"))
-)
 ALIEXPRESS_AUTO_MIN_VOLUME = max(
-    0, int(os.environ.get("ALIEXPRESS_AUTO_MIN_VOLUME") or "100")
+    0, int(os.environ.get("ALIEXPRESS_AUTO_MIN_VOLUME") or "1000")
 )
 ALIEXPRESS_AUTO_MIN_RATING = max(
     0, min(100, int(os.environ.get("ALIEXPRESS_AUTO_MIN_RATING") or "90"))
@@ -831,7 +828,7 @@ def _ali_https_url(value: object) -> str:
 
 
 def sanitize_aliexpress(raw: dict) -> dict | None:
-    """يحوّل منتج AliExpress إلى مخطط الموقع ويعرض سعره قبل الخصم بالريال."""
+    """يحوّل منتج AliExpress إلى مخطط الموقع؛ الخصم اختياري وليس شرط قبول."""
     product_id = _ali_product_id(raw.get("product_id"))
     title = _ali_click_title(raw.get("title"), raw.get("angle"))
     image = str(raw.get("image", "")).strip()
@@ -851,12 +848,13 @@ def sanitize_aliexpress(raw: dict) -> dict | None:
     original = _ali_number(raw.get("original_price"))
     current = _ali_number(raw.get("sale_price"))
     discount = _ali_discount(raw.get("discount_percent"))
-    if not original and current > 0 and 5 <= discount <= 95:
-        original = current / (1 - discount / 100)
+    if not original and current > 0:
+        original = current / (1 - discount / 100) if 5 <= discount <= 95 else current
     if not discount and original > current > 0:
         discount = round((original - current) / original * 100)
-    if original <= 0 or not (5 <= discount <= 95):
+    if original <= 0:
         return None
+    discount = max(0, min(95, discount))
     if currency == "USD":
         original *= ALIEXPRESS_USD_TO_SAR
 
@@ -869,6 +867,7 @@ def sanitize_aliexpress(raw: dict) -> dict | None:
         "image": image,
         "discount_percent": int(discount),
         "original_price": round(original, 2),
+        **({"sales_volume": int(raw.get("sales_volume"))} if raw.get("sales_volume") else {}),
         "category": category if category in CATEGORY_KEYWORDS else classify(title),
         **({"auto_discovered": True} if raw.get("auto_discovered") else {}),
         **({"angle": str(raw.get("angle"))[:40]} if raw.get("angle") else {}),
@@ -1025,9 +1024,8 @@ def _ali_matches_focus(product: dict, focus: dict) -> bool:
 
 
 def _ali_focus_score(product: dict, focus: dict) -> float:
-    """درجة نية نقر: صلة واضحة + طلب قوي + تقييم + سعر مناسب، والخصم عامل ثانوي."""
+    """درجة نية نقر: صلة واضحة + مبيعات قوية + تقييم + سعر مناسب، بلا وزن للخصم."""
     topic = str(focus.get("topic") or "tech")
-    discount = _ali_discount(product.get("discount"))
     volume = int(_ali_number(product.get("lastest_volume")))
     rating = _ali_number(product.get("evaluate_rate"))
     price_sar = _ali_sale_price_sar(product)
@@ -1036,7 +1034,6 @@ def _ali_focus_score(product: dict, focus: dict) -> float:
     price_fit = 22 if 35 <= price_sar <= 260 else 14 if 18 <= price_sar <= 450 else 0
     return round(
         rating * 1.05
-        + discount * 0.45
         + min(math.log10(volume + 1) * 27, 105)
         + min(relevant, 4) * 9
         + price_fit,
@@ -1138,7 +1135,7 @@ def discover_aliexpress_products() -> list[dict]:
     """يكتشف منتجات تقنية وLife Hacks القابلة للشحن للسعودية.
 
     يستخدم product.query المتاحة للتطبيق، ويبحث بعبارات موضوعية مستقلة ثم يوازن
-    النتائج بين المجالين. لا يدخل الموقع إلا المنتج ذو خصم ومبيعات وتقييم صالح.
+    النتائج بين المجالين. الخصم ليس شرطاً؛ الأولوية للمبيعات والتقييم والصلة.
     """
     fields = ",".join(
         [
@@ -1195,13 +1192,10 @@ def discover_aliexpress_products() -> list[dict]:
         accepted_for_query = 0
         for product in products:
             product_id = _ali_product_id(product.get("product_id"))
-            discount = _ali_discount(product.get("discount"))
             volume = int(_ali_number(product.get("lastest_volume")))
             rating = _ali_number(product.get("evaluate_rate"))
             price_sar = _ali_sale_price_sar(product)
             if not product_id:
-                continue
-            if discount < ALIEXPRESS_AUTO_MIN_DISCOUNT:
                 continue
             if volume < ALIEXPRESS_AUTO_MIN_VOLUME:
                 continue
@@ -1332,6 +1326,7 @@ def scrape_aliexpress() -> list[dict]:
                 or product.get("original_price_currency")
                 or product.get("sale_price_currency"),
                 "discount_percent": product.get("discount"),
+                "sales_volume": int(_ali_number(product.get("lastest_volume"))),
                 "category": categories.get(product_id) or product.get("_overly_category"),
                 "auto_discovered": product.get("auto_discovered"),
                 "angle": product.get("_overly_angle"),
