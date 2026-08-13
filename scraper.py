@@ -149,20 +149,20 @@ ALIEXPRESS_FOCUS_QUERIES = [
         "angle": "منزل ذكي", "include": ("motion sensor", "مستشعر حركة", "استشعار الحركة", "مصباح", "إضاءة"),
     },
     {
-        "topic": "life_hack", "keywords": "electric cleaning brush rechargeable", "category": "المنزل",
-        "angle": "تنظيف ذكي", "include": ("cleaning brush", "فرشاة تنظيف", "فرشاة كهربائية", "تنظيف كهربائي"),
+        "topic": "life_hack", "keywords": "electric spin scrubber bathroom", "category": "المنزل",
+        "angle": "تنظيف ذكي", "include": ("spin scrubber", "bathroom scrubber", "فرشاة تنظيف كهربائية", "فرشاة دوارة"),
     },
     {
         "topic": "life_hack", "keywords": "mini bag sealer rechargeable", "category": "المنزل",
         "angle": "مطبخ عملي", "include": ("bag sealer", "sealer", "لحام الأكياس", "إغلاق الأكياس", "ختم الأكياس"),
     },
     {
-        "topic": "life_hack", "keywords": "vacuum storage bags electric pump", "category": "المنزل",
-        "angle": "توفير مساحة", "include": ("vacuum storage", "أكياس تفريغ", "تفريغ الهواء", "مضخة كهربائية"),
+        "topic": "life_hack", "keywords": "cordless handheld vacuum cleaner", "category": "المنزل",
+        "angle": "تنظيف سريع", "include": ("handheld vacuum", "cordless vacuum", "مكنسة يدوية", "مكنسة لاسلكية"),
     },
     {
-        "topic": "life_hack", "keywords": "compression travel organizer", "category": "السفر",
-        "angle": "سفر أذكى", "include": ("travel organizer", "packing cube", "منظم سفر", "حقيبة ضغط", "مكعبات تعبئة"),
+        "topic": "life_hack", "keywords": "digital luggage scale travel", "category": "السفر",
+        "angle": "سفر أذكى", "include": ("luggage scale", "baggage scale", "ميزان أمتعة", "ميزان حقائب", "ميزان سفر"),
     },
     {
         "topic": "life_hack", "keywords": "automatic soap dispenser rechargeable", "category": "المنزل",
@@ -196,7 +196,8 @@ ALIEXPRESS_BLOCK_TERMS = {
     "تعليقة", "سلسلة مفاتيح", "دمية", "لعبة", "تاتو", "وشم", "غطاء هاتف",
     "pill", "medicine", "medical", "dental", "weight loss", "adult", "weapon", "knife",
     "blade", "mosquito", "insect trap", "sticker", "metal plate", "replacement", "spare part",
-    "strap", "keychain", "charm", "doll", "toy", "tattoo", "phone case",
+    "strap", "keychain", "charm", "doll", "toy", "tattoo", "phone case", "comb", "massage",
+    "grill brush", "hair brush", "مشط", "تدليك", "فرشاة شعر", "فرشاة شواء",
 }
 ALIEXPRESS_ID_RE = re.compile(r"(?<!\d)(\d{6,20})(?!\d)")
 
@@ -1177,13 +1178,18 @@ def scrape_aliexpress() -> list[dict]:
         return []
 
     source_urls = []
+    missing_link_sources = []
     for product in raw_products:
         product_id = _ali_product_id(product.get("product_id"))
-        source_urls.append(
+        source_url = (
             str(product.get("product_detail_url") or "").strip()
             or f"https://www.aliexpress.com/item/{product_id}.html"
         )
-    link_map = aliexpress_generate_links(source_urls)
+        source_urls.append(source_url)
+        if not _ali_https_url(product.get("promotion_link")):
+            missing_link_sources.append(source_url)
+    # أغلب نتائج product.query تعيد رابط العمولة مباشرة؛ لا نستهلك نداءاً إضافياً إلا للناقص.
+    link_map = aliexpress_generate_links(missing_link_sources)
 
     clean: list[dict] = []
     seen: set[str] = set()
