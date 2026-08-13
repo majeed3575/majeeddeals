@@ -1117,7 +1117,8 @@
       }
     }, 6000);
 
-    fetch("deals.json", {cache: "no-store"})
+    const dealsEndpoint = `deals.json?v=${Date.now()}`;
+    fetch(dealsEndpoint, {cache: "no-store", headers: {"Cache-Control": "no-cache"}})
       .then(response => response.ok ? response.json() : Promise.reject(new Error("تعذر تحميل البيانات")))
       .then(data => {
         if (Array.isArray(data.deals) && data.deals.length) {
