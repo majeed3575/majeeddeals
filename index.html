@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://*.workers.dev; img-src 'self' data: https://*.media-amazon.com https://*.ssl-images-amazon.com https://*.alicdn.com https://*.aliexpress-media.com https://*.aliexpress.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="theme-color" content="#050807">
   <meta name="description" content="أوفرلي يجمع عروض التقنية وLife Hacks المختارة من Amazon السعودية وAliExpress، مرتبة حسب الجودة والطلب مع روابط تسويق بالعمولة.">
   <meta name="robots" content="index,follow,max-image-preview:large">
@@ -277,6 +279,40 @@
     .store-badge.aliexpress::before { background: #ef533f; }
     .empty strong { display: block; margin-bottom: 8px; color: var(--ink); font-size: 18px; }
     .empty span { display: block; max-width: 520px; margin: auto; line-height: 1.8; }
+
+    /* AliExpress live search */
+    .ali-live-search {
+      position: relative;
+      overflow: hidden;
+      margin: 0 0 48px;
+      padding: 27px;
+      border: 1px solid rgba(239,83,63,.2);
+      border-radius: 30px;
+      background:
+        radial-gradient(circle at 7% 15%, rgba(239,83,63,.13), transparent 30%),
+        linear-gradient(135deg, var(--panel-strong), var(--panel));
+      box-shadow: 0 24px 65px rgba(0,0,0,.2);
+    }
+    .ali-live-search::after { position: absolute; top: -70px; left: -55px; width: 190px; height: 190px; border: 1px solid rgba(239,83,63,.13); border-radius: 50%; content: ""; }
+    .ali-search-head { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .ali-search-title { display: flex; align-items: center; gap: 12px; }
+    .ali-search-mark { display: grid; place-items: center; width: 43px; height: 43px; border-radius: 14px; color: #fff; background: linear-gradient(135deg, #ff7a54, #ef533f); box-shadow: 0 12px 30px rgba(239,83,63,.25); font-size: 19px; font-weight: 900; }
+    .ali-search-title strong { display: block; font-size: 16px; }
+    .ali-search-title span { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; }
+    .saudi-shipping-badge { display: inline-flex; align-items: center; gap: 7px; min-height: 34px; padding: 0 12px; border: 1px solid rgba(120,201,193,.18); border-radius: 999px; color: var(--blue); background: rgba(120,201,193,.07); font-size: 9px; font-weight: 800; }
+    .saudi-shipping-badge::before { width: 7px; height: 7px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 5px rgba(120,201,193,.08); content: ""; }
+    .ali-search-form { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-top: 20px; }
+    .ali-search-input { min-width: 0; min-height: 54px; padding: 0 18px; border: 1px solid var(--line-strong); border-radius: 17px; color: var(--ink); background: rgba(0,0,0,.13); outline: none; font-size: 13px; transition: border-color .2s ease, box-shadow .2s ease; }
+    .ali-search-input:focus { border-color: #ef533f; box-shadow: 0 0 0 4px rgba(239,83,63,.09); }
+    .ali-search-submit { min-height: 54px; padding: 0 25px; border-radius: 17px; color: #fff; background: linear-gradient(135deg, #ff7450, #e94c3a); box-shadow: 0 13px 32px rgba(239,83,63,.24); font-size: 12px; font-weight: 800; transition: transform .2s ease, opacity .2s ease; }
+    .ali-search-submit:hover { transform: translateY(-2px); }
+    .ali-search-submit:disabled { cursor: wait; opacity: .65; transform: none; }
+    .ali-search-suggestions { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 7px; margin-top: 13px; }
+    .ali-search-chip { min-height: 31px; padding: 0 11px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: rgba(255,255,255,.025); font-size: 9px; transition: .2s ease; }
+    .ali-search-chip:hover { color: var(--ink); border-color: rgba(239,83,63,.3); background: rgba(239,83,63,.07); }
+    .ali-search-status { position: relative; z-index: 1; min-height: 18px; margin-top: 12px; color: var(--muted); font-size: 10px; }
+    .ali-search-status.loading { color: var(--blue); }
+    .ali-search-status.error { color: #ff8d80; }
 
     /* Hero */
     .hero {
@@ -558,6 +594,10 @@
       .floating-chip.source { bottom: 4%; left: -1%; }
       .trust-strip { grid-template-columns: 1fr; margin-bottom: 42px; }
       .trust-item { min-height: 48px; }
+      .ali-live-search { padding: 20px; border-radius: 24px; }
+      .ali-search-head { align-items: start; flex-direction: column; }
+      .ali-search-form { grid-template-columns: 1fr; }
+      .ali-search-submit { width: 100%; }
       .section-head { align-items: start; }
       .section-stats { max-width: 115px; }
       .grid { grid-template-columns: 1fr; gap: 15px; }
@@ -683,6 +723,28 @@
       <div class="trust-item"><span class="trust-icon">↗</span><span class="trust-copy"><strong>طريق مختصر</strong><small>رابط مباشر إلى صفحة المنتج</small></span></div>
     </div>
 
+    <section class="ali-live-search" id="aliSearchSection" aria-labelledby="aliSearchTitle">
+      <div class="ali-search-head">
+        <div class="ali-search-title">
+          <span class="ali-search-mark">A</span>
+          <div><strong id="aliSearchTitle">ابحث في AliExpress بالكامل</strong><span>بحث مباشر عبر الواجهة الرسمية — لا يقتصر على المنتجات المحفوظة</span></div>
+        </div>
+        <span class="saudi-shipping-badge">يشحن إلى السعودية فقط</span>
+      </div>
+      <form class="ali-search-form" id="aliSearchForm">
+        <input class="ali-search-input" id="aliSearchInput" type="search" minlength="2" maxlength="80" autocomplete="off" placeholder="مثال: شاحن سريع، كاميرا سيارة، أداة مطبخ…" aria-label="ابحث في منتجات AliExpress القابلة للشحن للسعودية" required>
+        <button class="ali-search-submit" id="aliSearchSubmit" type="submit">ابحث في AliExpress ⌕</button>
+      </form>
+      <div class="ali-search-suggestions" aria-label="اقتراحات بحث">
+        <button class="ali-search-chip" type="button" data-ali-query="شاحن سريع USB C">شواحن سريعة</button>
+        <button class="ali-search-chip" type="button" data-ali-query="كاميرا سيارة">كاميرات سيارة</button>
+        <button class="ali-search-chip" type="button" data-ali-query="منزل ذكي">منزل ذكي</button>
+        <button class="ali-search-chip" type="button" data-ali-query="أدوات مطبخ ذكية">أدوات مطبخ</button>
+        <button class="ali-search-chip" type="button" data-ali-query="إكسسوارات سفر">إكسسوارات سفر</button>
+      </div>
+      <div class="ali-search-status" id="aliSearchStatus" role="status" aria-live="polite">النتائج تعتمد على توفر الشحن إلى السعودية وقت البحث.</div>
+    </section>
+
     <section aria-labelledby="dealsTitle">
       <div class="section-head">
         <div>
@@ -796,6 +858,7 @@
     </div>
   </div>
 
+  <script src="search-config.js"></script>
   <script>
     const AFFILIATE_TAG = "faraj733-21";
     const amazonLink = asin => `https://www.amazon.sa/dp/${asin}/?tag=${AFFILIATE_TAG}`;
@@ -804,12 +867,46 @@
     const storeMeta = deal => storeOf(deal) === "aliexpress"
       ? {key:"aliexpress", name:"AliExpress", host:"AliExpress", cta:"اعرض السعر الحالي على AliExpress ↗"}
       : {key:"amazon", name:"Amazon.sa", host:"Amazon.sa", cta:"اعرض السعر الحالي على أمازون ↗"};
-    const dealLink = deal => {
-      if (storeOf(deal) === "amazon") return amazonLink(deal.asin);
-      const url = String(deal.url || "");
-      return /^https:\/\/([a-z0-9-]+\.)*(aliexpress\.com|aliexpress\.us)\//i.test(url) ? url : "#";
+    const safeHttpsUrl = (value, allowedDomains) => {
+      try {
+        const url = new URL(String(value || ""));
+        const host = url.hostname.toLowerCase();
+        if (url.protocol !== "https:" || !allowedDomains.some(domain => host === domain || host.endsWith(`.${domain}`))) return "";
+        return url.href;
+      } catch (_) { return ""; }
     };
+    const dealLink = deal => storeOf(deal) === "amazon"
+      ? (/^[A-Z0-9]{10}$/.test(String(deal.asin || "")) ? amazonLink(deal.asin) : "#")
+      : safeHttpsUrl(deal.url, ["aliexpress.com", "aliexpress.us"]) || "#";
+    const safeImageUrl = deal => storeOf(deal) === "aliexpress"
+      ? safeHttpsUrl(deal.image, ["alicdn.com", "aliexpress-media.com", "aliexpress.com"])
+      : safeHttpsUrl(deal.image, ["media-amazon.com", "ssl-images-amazon.com", "amazon.com"]);
     const CATEGORIES = ["الكل", "الإلكترونيات", "المنزل", "السيارة", "السفر", "الموضة"];
+    const normalizeAliSearchProduct = product => {
+      const productId = String(product?.product_id || "").match(/^\d{6,20}$/)?.[0] || "";
+      const title = String(product?.title || "").replace(/[\u0000-\u001f\u007f]/g, " ").replace(/\s+/g, " ").trim().slice(0, 180);
+      const candidate = {...product, store: "aliexpress", product_id: productId};
+      const url = dealLink(candidate);
+      const image = safeImageUrl(candidate);
+      if (!productId || title.length < 4 || url === "#" || !image || product?.shipping_country !== "SA") return null;
+      const originalPrice = Number(product.original_price);
+      const discount = Number(product.discount_percent);
+      const sales = Number(product.sales_volume);
+      const rating = Number(product.rating);
+      return {
+        store: "aliexpress",
+        product_id: productId,
+        url,
+        title,
+        image,
+        original_price: Number.isFinite(originalPrice) && originalPrice > 0 ? Math.min(originalPrice, 1000000) : 0,
+        discount_percent: Number.isFinite(discount) ? Math.min(95, Math.max(0, Math.round(discount))) : 0,
+        sales_volume: Number.isFinite(sales) ? Math.min(1000000000, Math.max(0, Math.round(sales))) : 0,
+        rating: Number.isFinite(rating) ? Math.min(100, Math.max(0, rating)) : 0,
+        category: CATEGORIES.includes(product.category) && product.category !== "الكل" ? product.category : "الإلكترونيات",
+        shipping_country: "SA"
+      };
+    };
     const FALLBACK_DATA = {
       updated_at: "2026-07-21T04:18:12+00:00",
       deals: [
@@ -833,8 +930,22 @@
     let revealObserver = null;
     let loadMoreObserver = null;
     let loadingNextBatch = false;
+    let aliSearchResults = null;
+    let aliSearchQuery = "";
+    let aliSearchPage = 0;
+    let aliSearchHasMore = false;
+    let aliSearchLoading = false;
+    let aliSearchController = null;
     const GRID_BATCH_SIZE = 24;
     let visibleLimit = GRID_BATCH_SIZE;
+    const ALIEXPRESS_SEARCH_API = (() => {
+      try {
+        const url = new URL(String(window.OVERLY_CONFIG?.aliexpressSearchApi || ""));
+        const local = /^(localhost|127\.0\.0\.1)$/i.test(url.hostname);
+        if ((url.protocol !== "https:" && !local) || (!url.hostname.endsWith(".workers.dev") && !local && url.origin !== location.origin)) return "";
+        return url.href.replace(/\/$/, "");
+      } catch (_) { return ""; }
+    })();
 
     const el = id => document.getElementById(id);
     const formatNumber = value => new Intl.NumberFormat("ar-SA", {maximumFractionDigits: 0}).format(value);
@@ -850,6 +961,8 @@
       ? `${shop.name} قبل الخصم: <s>${formatNumber(deal.original_price)} ر.س</s>`
       : `السعر الحالي والتوفر يُتحقق منهما على ${shop.name}`;
     const topDeals = () => [...deals].sort(smartSort).slice(0,3);
+    const activeDeals = () => Array.isArray(aliSearchResults) ? aliSearchResults : deals;
+    const findDeal = key => activeDeals().find(item => dealKey(item) === String(key)) || deals.find(item => dealKey(item) === String(key));
     const visibleTopDeals = () => {
       const scoped = [...deals].filter(deal => store === "all" || storeOf(deal) === store).sort(smartSort);
       if (store !== "all") return scoped.slice(0,3);
@@ -889,6 +1002,8 @@
       hero.innerHTML = top.map((deal, index) => {
         const shop = storeMeta(deal);
         const key = escapeHtml(dealKey(deal));
+        const link = escapeHtml(dealLink(deal));
+        const image = escapeHtml(safeImageUrl(deal) || "assets/overly-icon.png");
         return `
         <article class="hero-slide ${index === heroIndex ? "active" : ""}">
           <div class="hero-copy">
@@ -899,13 +1014,13 @@
               <span class="old-price">${priceContext(deal, shop)}</span>
             </div>
             <div class="hero-actions">
-              <a class="primary-link" href="${dealLink(deal)}" target="_blank" rel="noopener noreferrer" onclick="return go(event,'${key}')">اعرض السعر الحالي ↗</a>
+              <a class="primary-link" href="${link}" target="_blank" rel="noopener noreferrer" onclick="return go(event,'${key}')">اعرض السعر الحالي ↗</a>
               <button class="secondary-link" type="button" onclick="document.getElementById('dealsTitle').scrollIntoView()">استعرض كل العروض</button>
             </div>
           </div>
           <div class="hero-visual">
             <div class="hero-orbit"></div>
-            <div class="hero-image-stage"><img src="${deal.image}" alt="${escapeHtml(deal.title)}" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🛍️',style:'font-size:64px'}))"></div>
+            <div class="hero-image-stage"><img src="${image}" alt="${escapeHtml(deal.title)}" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🛍️',style:'font-size:64px'}))"></div>
             <span class="floating-chip discount">${hasDiscount(deal) ? `وفّر ${deal.discount_percent}٪` : popularityText(deal)}</span>
             <span class="floating-chip source">${shop.name} ↗</span>
           </div>
@@ -933,6 +1048,7 @@
     }
 
     function setStore(nextStore) {
+      if (nextStore !== "aliexpress" && Array.isArray(aliSearchResults)) clearAliSearchResults();
       store = ["all", "amazon", "aliexpress"].includes(nextStore) ? nextStore : "all";
       visibleLimit = GRID_BATCH_SIZE;
       heroIndex = 0;
@@ -944,7 +1060,7 @@
 
     function renderCategoryChips() {
       el("categoryChips").innerHTML = CATEGORIES.map(item => {
-        const scoped = deals.filter(deal => store === "all" || storeOf(deal) === store);
+        const scoped = activeDeals().filter(deal => store === "all" || storeOf(deal) === store);
         const count = item === "الكل" ? scoped.length : scoped.filter(deal => deal.category === item).length;
         const label = item === "الكل" ? "الكل" : item;
         return `<button type="button" class="category-chip ${item === category ? "active" : ""}" onclick="setCategory('${item}')">${label}<b>${formatNumber(count)}</b></button>`;
@@ -953,7 +1069,7 @@
 
     function filteredDeals() {
       const normalizedQuery = query.trim().toLowerCase();
-      const list = deals.filter(deal =>
+      const list = activeDeals().filter(deal =>
         (store === "all" || storeOf(deal) === store) &&
         (category === "الكل" || deal.category === category) &&
         (!normalizedQuery || `${deal.title} ${deal.category} ${deal.angle || ""}`.toLowerCase().includes(normalizedQuery))
@@ -985,18 +1101,23 @@
       cards.forEach(card => revealObserver.observe(card));
     }
 
-    function setupInfiniteScroll(remaining) {
+    function setupInfiniteScroll(hasMore) {
       if (loadMoreObserver) loadMoreObserver.disconnect();
-      if (!remaining || !("IntersectionObserver" in window)) return;
+      if (!hasMore || !("IntersectionObserver" in window)) return;
       loadMoreObserver = new IntersectionObserver(entries => {
         if (entries.some(entry => entry.isIntersecting)) loadNextBatch();
       }, {threshold: 0, rootMargin: "900px 0px"});
       loadMoreObserver.observe(el("loadMoreWrap"));
     }
 
-    function loadNextBatch() {
+    async function loadNextBatch() {
       const total = filteredDeals().length;
-      if (loadingNextBatch || visibleLimit >= total) return;
+      if (loadingNextBatch) return;
+      if (visibleLimit >= total && Array.isArray(aliSearchResults) && aliSearchHasMore) {
+        await searchAliExpress(aliSearchQuery, true);
+        return;
+      }
+      if (visibleLimit >= total) return;
       loadingNextBatch = true;
       const appendFrom = visibleLimit;
       visibleLimit = Math.min(visibleLimit + GRID_BATCH_SIZE, total);
@@ -1009,34 +1130,44 @@
       const visibleList = list.slice(0, visibleLimit);
       const cardsToRender = appendFrom === null ? visibleList : list.slice(appendFrom, visibleList.length);
       const remaining = Math.max(0, list.length - visibleList.length);
+      const hasMore = remaining > 0 || (Array.isArray(aliSearchResults) && aliSearchHasMore);
       const supportsAutoLoad = "IntersectionObserver" in window;
       el("resultCount").textContent = formatNumber(list.length);
       el("introDealCount").textContent = formatNumber(deals.length);
       el("emptyState").classList.toggle("hidden", list.length > 0);
       if (!list.length) {
+        const remoteEmpty = Array.isArray(aliSearchResults);
         const aliEmpty = store === "aliexpress" && !deals.some(deal => storeOf(deal) === "aliexpress");
-        el("emptyTitle").textContent = aliEmpty ? "عروض AliExpress قيد الإضافة" : "لا توجد نتائج مطابقة";
-        el("emptyDescription").textContent = aliEmpty
+        el("emptyTitle").textContent = remoteEmpty ? "لا توجد نتائج قابلة للشحن للسعودية" : aliEmpty ? "عروض AliExpress قيد الإضافة" : "لا توجد نتائج مطابقة";
+        el("emptyDescription").textContent = remoteEmpty
+          ? "جرّب وصفاً أوسع أو كلمة مختلفة؛ النتائج تأتي مباشرة من AliExpress للسعودية."
+          : aliEmpty
           ? "جهّزنا المنصة والفلترة والروابط؛ ستظهر هنا العروض الموثقة فور إضافتها، دون منتجات أو أسعار تجريبية."
           : "جرّب كلمة أخرى أو غيّر التصنيف أو المتجر.";
       }
-      el("loadMoreWrap").classList.toggle("hidden", remaining === 0);
+      el("loadMoreWrap").classList.toggle("hidden", !hasMore);
       el("infiniteSpinner").classList.toggle("hidden", !supportsAutoLoad);
       el("loadMoreButton").classList.toggle("hidden", supportsAutoLoad);
-      el("loadMoreButton").textContent = `تحميل ${formatNumber(Math.min(GRID_BATCH_SIZE, remaining))} عرضًا إضافيًا`;
-      el("loadMoreNote").textContent = remaining
+      el("loadMoreButton").textContent = Array.isArray(aliSearchResults) && !remaining
+        ? "تحميل نتائج أخرى من AliExpress"
+        : `تحميل ${formatNumber(Math.min(GRID_BATCH_SIZE, remaining))} عرضًا إضافيًا`;
+      el("loadMoreNote").textContent = hasMore
         ? supportsAutoLoad
-          ? `واصل النزول — تظهر العروض تلقائيًا (${formatNumber(visibleList.length)} من ${formatNumber(list.length)})`
-          : `يظهر الآن ${formatNumber(visibleList.length)} من أصل ${formatNumber(list.length)}`
+          ? Array.isArray(aliSearchResults)
+            ? `واصل النزول — تُجلب نتائج AliExpress التالية تلقائيًا (${formatNumber(visibleList.length)})`
+            : `واصل النزول — تظهر العروض تلقائيًا (${formatNumber(visibleList.length)} من ${formatNumber(list.length)})`
+          : Array.isArray(aliSearchResults) ? `يظهر الآن ${formatNumber(visibleList.length)} نتيجة` : `يظهر الآن ${formatNumber(visibleList.length)} من أصل ${formatNumber(list.length)}`
         : "";
       const cardsMarkup = cardsToRender.map(deal => {
         const shop = storeMeta(deal);
         const key = escapeHtml(dealKey(deal));
+        const link = escapeHtml(dealLink(deal));
+        const image = escapeHtml(safeImageUrl(deal) || "assets/overly-icon.png");
         return `
         <article class="product-card">
           <div class="product-media">
-            <a class="media-product-link" href="${dealLink(deal)}" target="_blank" rel="noopener noreferrer" onclick="return go(event,'${key}')" aria-label="${escapeHtml(deal.title)}">
-              <img src="${deal.image}" alt="${escapeHtml(deal.title)}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🛍️',style:'font-size:52px'}))">
+            <a class="media-product-link" href="${link}" target="_blank" rel="noopener noreferrer" onclick="return go(event,'${key}')" aria-label="${escapeHtml(deal.title)}">
+              <img src="${image}" alt="${escapeHtml(deal.title)}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🛍️',style:'font-size:52px'}))">
             </a>
             <span class="discount-badge">${hasDiscount(deal) ? `-${deal.discount_percent}٪` : popularityText(deal)}</span>
             <span class="category-tag">${escapeHtml(deal.angle || deal.category)}</span>
@@ -1055,7 +1186,7 @@
               </div>
             </details>
             <div class="card-actions">
-              <a class="card-cta" href="${dealLink(deal)}" target="_blank" rel="noopener noreferrer" onclick="return go(event,'${key}')">${shop.cta}</a>
+              <a class="card-cta" href="${link}" target="_blank" rel="noopener noreferrer" onclick="return go(event,'${key}')">${shop.cta}</a>
               <button class="share-button" type="button" onclick="shareDeal(event,'${key}')" aria-label="مشاركة ${escapeHtml(deal.title)}" title="مشاركة العرض">↗</button>
             </div>
           </div>
@@ -1064,7 +1195,7 @@
       if (appendFrom === null) el("dealsGrid").innerHTML = cardsMarkup;
       else el("dealsGrid").insertAdjacentHTML("beforeend", cardsMarkup);
       setupCardReveal();
-      setupInfiniteScroll(remaining);
+      setupInfiniteScroll(hasMore);
     }
 
     function renderTimestamp() {
@@ -1074,9 +1205,100 @@
 
     function renderAll() { renderHero(); renderCategoryChips(); renderGrid(); renderTimestamp(); }
 
+    function setAliSearchStatus(message, type = "") {
+      el("aliSearchStatus").textContent = message;
+      el("aliSearchStatus").className = `ali-search-status ${type}`.trim();
+    }
+
+    function clearAliSearchResults(resetStatus = true) {
+      if (aliSearchController) aliSearchController.abort();
+      aliSearchResults = null;
+      aliSearchQuery = "";
+      aliSearchPage = 0;
+      aliSearchHasMore = false;
+      aliSearchLoading = false;
+      el("aliSearchSubmit").disabled = false;
+      if (resetStatus) setAliSearchStatus("النتائج تعتمد على توفر الشحن إلى السعودية وقت البحث.");
+    }
+
+    async function searchAliExpress(rawQuery, append = false) {
+      const searchText = String(rawQuery || "").normalize("NFKC").replace(/\s+/g, " ").trim();
+      if (searchText.length < 2 || searchText.length > 80) {
+        setAliSearchStatus("اكتب حرفين على الأقل، وبحد أقصى 80 حرفاً.", "error");
+        return;
+      }
+      if (!ALIEXPRESS_SEARCH_API) {
+        setAliSearchStatus("بوابة البحث الآمنة بانتظار ربط عنوان Cloudflare.", "error");
+        return;
+      }
+      if (aliSearchLoading) return;
+      aliSearchLoading = true;
+      el("aliSearchSubmit").disabled = true;
+      setAliSearchStatus(append ? "جاري جلب نتائج إضافية قابلة للشحن للسعودية…" : "جاري البحث في AliExpress بالكامل…", "loading");
+
+      if (aliSearchController) aliSearchController.abort();
+      aliSearchController = new AbortController();
+      const requestedPage = append ? aliSearchPage + 1 : 1;
+      const params = new URLSearchParams({q: searchText, page: String(requestedPage), page_size: String(GRID_BATCH_SIZE)});
+      try {
+        const response = await fetch(`${ALIEXPRESS_SEARCH_API}/search?${params}`, {
+          method: "GET",
+          mode: "cors",
+          cache: "no-store",
+          headers: {"Accept": "application/json"},
+          signal: aliSearchController.signal
+        });
+        if (!response.ok) throw new Error(response.status === 429 ? "RATE_LIMIT" : "SEARCH_FAILED");
+        const payload = await response.json();
+        if (!payload?.ok || payload.shipping_country !== "SA" || !Array.isArray(payload.products)) throw new Error("INVALID_RESPONSE");
+        const safeProducts = payload.products.map(normalizeAliSearchProduct).filter(Boolean);
+        const previous = append && Array.isArray(aliSearchResults) ? aliSearchResults : [];
+        const merged = [...previous];
+        const seen = new Set(merged.map(product => String(product.product_id)));
+        safeProducts.forEach(product => {
+          if (!seen.has(String(product.product_id))) {
+            seen.add(String(product.product_id));
+            merged.push(product);
+          }
+        });
+
+        aliSearchResults = merged;
+        aliSearchQuery = searchText;
+        aliSearchPage = requestedPage;
+        aliSearchHasMore = Boolean(payload.has_more);
+        store = "aliexpress";
+        category = "الكل";
+        query = "";
+        visibleLimit = merged.length;
+        el("searchInput").value = "";
+        el("categorySelect").value = "الكل";
+        document.querySelectorAll(".market-tab").forEach(button => button.classList.toggle("active", button.dataset.store === "aliexpress"));
+        renderHero();
+        renderCategoryChips();
+        renderGrid();
+        setAliSearchStatus(
+          merged.length
+            ? `ظهرت ${formatNumber(merged.length)} نتيجة من AliExpress قابلة للشحن للسعودية${aliSearchHasMore ? " — واصل النزول للمزيد" : ""}.`
+            : "لم تظهر نتائج قابلة للشحن للسعودية لهذه العبارة؛ جرّب كلمة أخرى.",
+          merged.length ? "" : "error"
+        );
+        if (!append) el("dealsTitle").scrollIntoView({behavior: "smooth", block: "start"});
+      } catch (error) {
+        if (error?.name !== "AbortError") {
+          setAliSearchStatus(
+            error?.message === "RATE_LIMIT" ? "تمت طلبات كثيرة خلال دقيقة؛ انتظر قليلاً ثم أعد المحاولة." : "تعذر الوصول إلى بحث AliExpress الآن؛ حاول مرة أخرى بعد قليل.",
+            "error"
+          );
+        }
+      } finally {
+        aliSearchLoading = false;
+        el("aliSearchSubmit").disabled = false;
+      }
+    }
+
     function go(event, key) {
       event.preventDefault();
-      const deal = deals.find(item => dealKey(item) === String(key));
+      const deal = findDeal(key);
       if (!deal) return false;
       const url = dealLink(deal);
       if (url === "#") return false;
@@ -1095,12 +1317,15 @@
     function closeQuickView() { el("quickViewModal").classList.add("hidden"); }
 
     async function shareDeal(event, key) {
-      const deal = deals.find(item => dealKey(item) === String(key));
+      const deal = findDeal(key);
       if (!deal) return;
       const button = event.currentTarget;
-      const url = new URL("https://majeed3575.github.io/majeeddeals/");
-      url.searchParams.set("deal", dealKey(deal));
-      const payload = {title: `أوفرلي | ${deal.title}`, text: `${deal.title} — ${offerText(deal)}`, url: url.toString()};
+      const shareUrl = storeOf(deal) === "aliexpress" ? dealLink(deal) : (() => {
+        const siteUrl = new URL("https://majeed3575.github.io/majeeddeals/");
+        siteUrl.searchParams.set("deal", dealKey(deal));
+        return siteUrl.toString();
+      })();
+      const payload = {title: `أوفرلي | ${deal.title}`, text: `${deal.title} — ${offerText(deal)}`, url: shareUrl};
       try {
         if (navigator.share) await navigator.share(payload);
         else {
@@ -1112,10 +1337,10 @@
     }
 
     function openQuickView(key) {
-      const deal = deals.find(item => dealKey(item) === String(key));
+      const deal = findDeal(key);
       if (!deal) return;
       const shop = storeMeta(deal);
-      el("quickImage").src = deal.image;
+      el("quickImage").src = safeImageUrl(deal) || "assets/overly-icon.png";
       el("quickImage").alt = deal.title;
       el("quickCategory").textContent = deal.angle || deal.category;
       el("quickTitle").textContent = deal.title;
@@ -1131,10 +1356,15 @@
 
     el("themeToggle").addEventListener("click", () => setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark"));
     el("filterToggle").addEventListener("click", () => toggleFilters());
-    el("searchInput").addEventListener("input", event => { query = event.target.value; visibleLimit = GRID_BATCH_SIZE; renderGrid(); });
+    el("searchInput").addEventListener("input", event => { if (Array.isArray(aliSearchResults)) clearAliSearchResults(false); query = event.target.value; visibleLimit = GRID_BATCH_SIZE; renderCategoryChips(); renderGrid(); });
     el("categorySelect").addEventListener("change", event => setCategory(event.target.value));
     el("sortSelect").addEventListener("change", event => { sortBy = event.target.value; visibleLimit = GRID_BATCH_SIZE; renderGrid(); });
     el("loadMoreButton").addEventListener("click", loadNextBatch);
+    el("aliSearchForm").addEventListener("submit", event => { event.preventDefault(); searchAliExpress(el("aliSearchInput").value); });
+    document.querySelectorAll("[data-ali-query]").forEach(button => button.addEventListener("click", () => {
+      el("aliSearchInput").value = button.dataset.aliQuery || "";
+      searchAliExpress(el("aliSearchInput").value);
+    }));
     el("closeModal").addEventListener("click", closeExitModal);
     el("skipModal").addEventListener("click", closeExitModal);
     el("exitModal").addEventListener("click", event => { if (event.target === el("exitModal")) closeExitModal(); });
