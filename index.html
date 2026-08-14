@@ -6,28 +6,28 @@
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://*.workers.dev; img-src 'self' data: https://*.media-amazon.com https://*.ssl-images-amazon.com https://*.alicdn.com https://*.aliexpress-media.com https://*.aliexpress.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="theme-color" content="#050807">
-  <meta name="description" content="أوفرلي يجمع عروض التقنية وLife Hacks المختارة من Amazon السعودية وAliExpress، مرتبة حسب الجودة والطلب مع روابط تسويق بالعمولة.">
+  <meta name="description" content="أوفرلي يجمع المنتجات الرائجة من مختلف أقسام Amazon السعودية وAliExpress، مرتبة حسب المبيعات والتقييم مع روابط تسويق بالعمولة.">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <link rel="canonical" href="https://majeed3575.github.io/majeeddeals/">
   <meta property="og:locale" content="ar_SA">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="أوفرلي | Overly">
-  <meta property="og:title" content="أوفرلي | عروض تقنية وLife Hacks مختارة">
+  <meta property="og:title" content="أوفرلي | المنتجات الأكثر رواجاً من Amazon وAliExpress">
   <meta property="og:description" content="منتجات مفيدة وعروض مختارة من Amazon السعودية وAliExpress، مرتبة لتصل للأفضل بسرعة.">
   <meta property="og:url" content="https://majeed3575.github.io/majeeddeals/">
   <meta property="og:image" content="https://majeed3575.github.io/majeeddeals/assets/overly-dark-chroma.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="أوفرلي | عروض تقنية وLife Hacks مختارة">
+  <meta name="twitter:title" content="أوفرلي | المنتجات الأكثر رواجاً من Amazon وAliExpress">
   <meta name="twitter:description" content="اختيارات مفيدة من Amazon السعودية وAliExpress، مرتبة حسب الجودة والطلب.">
   <meta name="twitter:image" content="https://majeed3575.github.io/majeeddeals/assets/overly-dark-chroma.png">
-  <title>أوفرلي | عروض تقنية وLife Hacks من Amazon وAliExpress</title>
+  <title>أوفرلي | المنتجات الرائجة من Amazon وAliExpress</title>
   <link rel="icon" type="image/png" href="assets/overly-icon.png">
   <link rel="apple-touch-icon" href="assets/overly-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <script type="application/ld+json">
-    {"@context":"https://schema.org","@type":"WebSite","name":"أوفرلي","alternateName":"Overly","url":"https://majeed3575.github.io/majeeddeals/","inLanguage":"ar-SA","description":"عروض تقنية وLife Hacks مختارة من Amazon السعودية وAliExpress."}
+    {"@context":"https://schema.org","@type":"WebSite","name":"أوفرلي","alternateName":"Overly","url":"https://majeed3575.github.io/majeeddeals/","inLanguage":"ar-SA","description":"منتجات رائجة مختارة من مختلف أقسام Amazon السعودية وAliExpress."}
   </script>
   <style>
     :root {
@@ -673,6 +673,11 @@
                 <option value="الموضة">الموضة</option>
                 <option value="السيارة">السيارة</option>
                 <option value="السفر">السفر</option>
+                <option value="الجمال والعناية">الجمال والعناية</option>
+                <option value="الرياضة">الرياضة</option>
+                <option value="الأطفال">الأطفال</option>
+                <option value="الحيوانات الأليفة">الحيوانات الأليفة</option>
+                <option value="الأدوات والهوايات">الأدوات والهوايات</option>
               </select>
             </div>
             <div class="field">
@@ -881,7 +886,10 @@
     const safeImageUrl = deal => storeOf(deal) === "aliexpress"
       ? safeHttpsUrl(deal.image, ["alicdn.com", "aliexpress-media.com", "aliexpress.com"])
       : safeHttpsUrl(deal.image, ["media-amazon.com", "ssl-images-amazon.com", "amazon.com"]);
-    const CATEGORIES = ["الكل", "الإلكترونيات", "المنزل", "السيارة", "السفر", "الموضة"];
+    const CATEGORIES = [
+      "الكل", "الإلكترونيات", "المنزل", "السيارة", "السفر", "الموضة",
+      "الجمال والعناية", "الرياضة", "الأطفال", "الحيوانات الأليفة", "الأدوات والهوايات"
+    ];
     const normalizeAliSearchProduct = product => {
       const productId = String(product?.product_id || "").match(/^\d{6,20}$/)?.[0] || "";
       const title = String(product?.title || "").replace(/[\u0000-\u001f\u007f]/g, " ").replace(/\s+/g, " ").trim().slice(0, 180);

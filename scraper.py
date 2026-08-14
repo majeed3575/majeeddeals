@@ -125,6 +125,13 @@ ALIEXPRESS_AUTO_MIN_VOLUME = max(
 ALIEXPRESS_AUTO_MIN_RATING = max(
     0, min(100, int(os.environ.get("ALIEXPRESS_AUTO_MIN_RATING") or "90"))
 )
+ALIEXPRESS_AUTO_MIN_PRICE_SAR = max(
+    0.0, float(os.environ.get("ALIEXPRESS_AUTO_MIN_PRICE_SAR") or "10")
+)
+ALIEXPRESS_AUTO_MAX_PRICE_SAR = max(
+    ALIEXPRESS_AUTO_MIN_PRICE_SAR,
+    float(os.environ.get("ALIEXPRESS_AUTO_MAX_PRICE_SAR") or "5000"),
+)
 # الاكتشاف الموجّه هو الوضع الافتراضي: يمنع امتلاء الموقع بمنتجات عامة عشوائية.
 ALIEXPRESS_FOCUS_DISCOVERY = (
     os.environ.get("ALIEXPRESS_FOCUS_DISCOVERY") or "true"
@@ -403,32 +410,161 @@ ALIEXPRESS_FOCUS_QUERIES = [
         "topic": "life_hack", "keywords": "shoe organizer rack", "category": "المنزل",
         "angle": "تنظيم الأحذية", "include": ("shoe organizer", "shoe rack", "shoe storage", "منظم أحذية", "رف أحذية"),
     },
+    # أقسام رائجة عامة: لا ينحصر الاختيار في التقنية وLife Hacks.
+    {
+        "topic": "fashion", "keywords": "women shoulder bag handbag", "category": "الموضة",
+        "angle": "حقائب نسائية", "include": ("shoulder bag", "handbag", "women bag", "حقيبة نسائية"),
+    },
+    {
+        "topic": "fashion", "keywords": "men casual sneakers", "category": "الموضة",
+        "angle": "أحذية رجالية", "include": ("men sneakers", "men shoes", "casual shoes", "أحذية رجالية"),
+    },
+    {
+        "topic": "fashion", "keywords": "women modest dress", "category": "الموضة",
+        "angle": "أزياء نسائية", "include": ("modest dress", "women dress", "long dress", "فستان نسائي"),
+    },
+    {
+        "topic": "fashion", "keywords": "polarized sunglasses", "category": "الموضة",
+        "angle": "نظارات شمسية", "include": ("polarized sunglasses", "sun glasses", "نظارة شمسية", "نظارات شمسية"),
+    },
+    {
+        "topic": "fashion", "keywords": "men automatic watch", "category": "الموضة",
+        "angle": "ساعات رجالية", "include": ("automatic watch", "men watch", "wrist watch", "ساعة رجالية"),
+    },
+    {
+        "topic": "fashion", "keywords": "waterproof travel backpack", "category": "السفر",
+        "angle": "حقائب ظهر", "include": ("travel backpack", "waterproof backpack", "حقيبة ظهر", "شنطة ظهر"),
+    },
+    {
+        "topic": "beauty", "keywords": "makeup brush set", "category": "الجمال والعناية",
+        "angle": "أدوات مكياج", "include": ("makeup brush", "cosmetic brush", "فرش مكياج", "فرشاة مكياج"),
+    },
+    {
+        "topic": "beauty", "keywords": "electric hair clipper", "category": "الجمال والعناية",
+        "angle": "عناية بالشعر", "include": ("hair clipper", "electric trimmer", "ماكينة حلاقة", "ماكينة شعر"),
+    },
+    {
+        "topic": "beauty", "keywords": "hair dryer brush", "category": "الجمال والعناية",
+        "angle": "تصفيف الشعر", "include": ("hair dryer brush", "hot air brush", "فرشاة استشوار", "فرشاة تجفيف"),
+    },
+    {
+        "topic": "beauty", "keywords": "electric nail drill machine", "category": "الجمال والعناية",
+        "angle": "العناية بالأظافر", "include": ("nail drill", "manicure machine", "جهاز أظافر", "مثقاب أظافر"),
+    },
+    {
+        "topic": "beauty", "keywords": "facial cleansing brush", "category": "الجمال والعناية",
+        "angle": "العناية بالبشرة", "include": ("facial cleansing", "face cleansing brush", "تنظيف الوجه", "فرشاة وجه"),
+    },
+    {
+        "topic": "beauty", "keywords": "led face mask skincare", "category": "الجمال والعناية",
+        "angle": "تقنية العناية", "include": ("led face mask", "light therapy mask", "قناع وجه led", "قناع ضوئي"),
+    },
+    {
+        "topic": "sports", "keywords": "resistance bands set", "category": "الرياضة",
+        "angle": "تمارين منزلية", "include": ("resistance band", "exercise band", "حبال مقاومة", "أشرطة مقاومة"),
+    },
+    {
+        "topic": "sports", "keywords": "yoga mat non slip", "category": "الرياضة",
+        "angle": "يوغا ولياقة", "include": ("yoga mat", "exercise mat", "سجادة يوغا", "بساط تمارين"),
+    },
+    {
+        "topic": "sports", "keywords": "adjustable dumbbell set", "category": "الرياضة",
+        "angle": "أثقال ولياقة", "include": ("adjustable dumbbell", "dumbbell set", "دمبل قابل", "مجموعة دمبل"),
+    },
+    {
+        "topic": "sports", "keywords": "running shoes", "category": "الرياضة",
+        "angle": "أحذية رياضية", "include": ("running shoes", "sport shoes", "أحذية جري", "حذاء رياضي"),
+    },
+    {
+        "topic": "sports", "keywords": "camping tent waterproof", "category": "الرياضة",
+        "angle": "تخييم خارجي", "include": ("camping tent", "waterproof tent", "خيمة تخييم", "خيمة رحلات"),
+    },
+    {
+        "topic": "sports", "keywords": "spinning fishing reel", "category": "الرياضة",
+        "angle": "صيد وهوايات", "include": ("fishing reel", "spinning reel", "بكرة صيد", "ماكينة صيد"),
+    },
+    {
+        "topic": "kids", "keywords": "building blocks set", "category": "الأطفال",
+        "angle": "ألعاب تركيب", "include": ("building blocks", "construction blocks", "مكعبات تركيب", "لعبة تركيب"),
+    },
+    {
+        "topic": "kids", "keywords": "remote control car", "category": "الأطفال",
+        "angle": "ألعاب تحكم", "include": ("remote control car", "rc car", "سيارة تحكم", "سيارة ريموت"),
+    },
+    {
+        "topic": "kids", "keywords": "kids drawing tablet", "category": "الأطفال",
+        "angle": "تعلم ورسم", "include": ("drawing tablet", "writing tablet", "لوح رسم", "سبورة كتابة"),
+    },
+    {
+        "topic": "kids", "keywords": "baby feeding set", "category": "الأطفال",
+        "angle": "مستلزمات الطفل", "include": ("baby feeding", "toddler feeding", "أدوات إطعام", "طقم طعام طفل"),
+    },
+    {
+        "topic": "kids", "keywords": "kids school backpack", "category": "الأطفال",
+        "angle": "حقائب مدرسية", "include": ("kids backpack", "school backpack", "حقيبة مدرسية", "شنطة أطفال"),
+    },
+    {
+        "topic": "pets", "keywords": "automatic pet feeder", "category": "الحيوانات الأليفة",
+        "angle": "إطعام الحيوانات", "include": ("automatic pet feeder", "cat feeder", "dog feeder", "موزع طعام حيوانات"),
+    },
+    {
+        "topic": "pets", "keywords": "cat water fountain", "category": "الحيوانات الأليفة",
+        "angle": "سقاية الحيوانات", "include": ("cat water fountain", "pet fountain", "نافورة قطط", "سقاية حيوانات"),
+    },
+    {
+        "topic": "pets", "keywords": "pet grooming vacuum", "category": "الحيوانات الأليفة",
+        "angle": "عناية بالحيوانات", "include": ("pet grooming vacuum", "pet grooming kit", "تنظيف الحيوانات", "عناية بالحيوانات"),
+    },
+    {
+        "topic": "pets", "keywords": "dog harness reflective", "category": "الحيوانات الأليفة",
+        "angle": "مستلزمات الحيوانات", "include": ("dog harness", "reflective harness", "حزام كلب", "صدرية كلب"),
+    },
+    {
+        "topic": "tools", "keywords": "cordless drill set", "category": "الأدوات والهوايات",
+        "angle": "أدوات كهربائية", "include": ("cordless drill", "electric drill", "دريل لاسلكي", "مثقاب كهربائي"),
+    },
+    {
+        "topic": "tools", "keywords": "laser level tool", "category": "الأدوات والهوايات",
+        "angle": "قياس وتسوية", "include": ("laser level", "level tool", "ميزان ليزر", "جهاز تسوية"),
+    },
+    {
+        "topic": "tools", "keywords": "socket wrench set", "category": "الأدوات والهوايات",
+        "angle": "عدة يدوية", "include": ("socket wrench", "ratchet set", "طقم مفاتيح", "عدة صيانة"),
+    },
+    {
+        "topic": "tools", "keywords": "cordless pressure washer", "category": "الأدوات والهوايات",
+        "angle": "غسيل وضغط", "include": ("pressure washer", "cordless washer", "غسالة ضغط", "مسدس غسيل"),
+    },
+    {
+        "topic": "popular", "keywords": "robot vacuum cleaner", "category": "المنزل",
+        "angle": "أجهزة منزلية رائجة", "include": ("robot vacuum", "robot cleaner", "مكنسة روبوت", "روبوت تنظيف"),
+    },
+    {
+        "topic": "popular", "keywords": "espresso coffee machine", "category": "المنزل",
+        "angle": "قهوة وأجهزة", "include": ("espresso machine", "coffee machine", "ماكينة اسبريسو", "ماكينة قهوة"),
+    },
+    {
+        "topic": "popular", "keywords": "portable power station", "category": "الإلكترونيات",
+        "angle": "طاقة محمولة", "include": ("portable power station", "solar generator", "محطة طاقة", "مولد طاقة"),
+    },
+    {
+        "topic": "popular", "keywords": "android car stereo", "category": "السيارة",
+        "angle": "شاشات السيارة", "include": ("android car stereo", "car radio", "شاشة سيارة", "مسجل سيارة"),
+    },
+    {
+        "topic": "popular", "keywords": "electric scooter adult", "category": "الرياضة",
+        "angle": "تنقل شخصي", "include": ("electric scooter", "adult scooter", "سكوتر كهربائي", "دراجة كهربائية"),
+    },
 ]
-ALIEXPRESS_FOCUS_TERMS = {
-    "tech": {
-        "usb", "شاحن", "شحن", "لاسلكي", "هاتف", "جوال", "ذكي", "بلوتوث",
-        "كمبيوتر", "حاسوب", "لابتوب", "محول", "محوّل", "كابل", "كيبل",
-        "سماعة", "لوحة", "فأرة", "ماوس", "hub", "charger", "wireless",
-        "computer", "phone", "smart", "bluetooth", "adapter", "cable", "power",
-        "bank", "microphone", "tracker", "carplay", "sensor", "light", "4k",
-    },
-    "life_hack": {
-        "منظم", "منظّم", "تنظيم", "تخزين", "مطبخ", "تنظيف", "فرشاة", "حامل",
-        "رف", "صندوق", "أداة", "اداة", "سفر", "حقيبة", "موزع", "قاطع",
-        "organizer", "storage", "kitchen", "cleaning", "brush", "holder",
-        "travel", "gadget", "tool", "rack", "dispenser",
-    },
-}
 # استبعاد الخردة والمنتجات الحساسة أو ضعيفة النية الشرائية حتى لو ظهر لها خصم مرتفع.
 ALIEXPRESS_BLOCK_TERMS = {
     "حبوب", "دواء", "أدوية", "طبي", "طبية", "أسنان", "تخسيس", "جنس", "بالغين",
     "سلاح", "سكين", "شفرة", "مصيدة حشرات", "بعوض", "ذباب", "طارد الحشرات",
-    "ملصق", "ستيكر", "حلقة معدنية", "لوحة معدنية", "قطعة غيار", "بديل", "حزام",
-    "تعليقة", "سلسلة مفاتيح", "دمية", "لعبة", "تاتو", "وشم", "غطاء هاتف",
+    "ملصق", "ستيكر", "حلقة معدنية", "لوحة معدنية", "قطعة غيار", "بديل",
+    "تعليقة", "سلسلة مفاتيح", "تاتو", "وشم",
     "pill", "medicine", "medical", "dental", "weight loss", "adult", "weapon", "knife",
     "blade", "mosquito", "insect trap", "sticker", "metal plate", "replacement", "spare part",
-    "strap", "keychain", "charm", "doll", "toy", "tattoo", "phone case", "comb", "massage",
-    "grill brush", "hair brush", "مشط", "تدليك", "فرشاة شعر", "فرشاة شواء",
+    "keychain", "charm", "tattoo", "grill brush", "فرشاة شواء",
 }
 ALIEXPRESS_ID_RE = re.compile(r"(?<!\d)(\d{6,20})(?!\d)")
 
@@ -488,6 +624,25 @@ CATEGORY_KEYWORDS = {
         "ملابس", "جاكيت",
         "bag", "shoe", "shirt", "dress", "sunglasses", "perfume", "jacket",
         "backpack", "wallet",
+    ],
+    "الجمال والعناية": [
+        "مكياج", "تجميل", "بشرة", "شعر", "أظافر", "حلاقة", "استشوار",
+        "makeup", "beauty", "skincare", "cosmetic", "hair", "nail", "clipper",
+    ],
+    "الرياضة": [
+        "رياضة", "تمارين", "لياقة", "يوغا", "تخييم", "صيد", "جري", "دمبل",
+        "sport", "fitness", "exercise", "yoga", "camping", "fishing", "running", "dumbbell",
+    ],
+    "الأطفال": [
+        "طفل", "أطفال", "رضيع", "مدرسة", "مكعبات", "ريموت",
+        "baby", "kids", "child", "toddler", "school", "blocks", "remote control",
+    ],
+    "الحيوانات الأليفة": [
+        "قطط", "كلاب", "حيوانات", "قطة", "كلب", "pet", "cat", "dog", "grooming",
+    ],
+    "الأدوات والهوايات": [
+        "دريل", "مثقاب", "عدة", "مفاتيح", "أدوات", "ليزر", "صيانة",
+        "drill", "wrench", "tool", "laser level", "ratchet", "workshop",
     ],
 }
 
@@ -1269,19 +1424,19 @@ def _ali_matches_focus(product: dict, focus: dict) -> bool:
 
 
 def _ali_focus_score(product: dict, focus: dict) -> float:
-    """درجة نية نقر: صلة واضحة + مبيعات قوية + تقييم + سعر مناسب، بلا وزن للخصم."""
-    topic = str(focus.get("topic") or "tech")
+    """درجة الرواج: المبيعات والتقييم أولاً، ثم وضوح صلة المنتج بعبارة البحث."""
     volume = int(_ali_number(product.get("lastest_volume")))
     rating = _ali_number(product.get("evaluate_rate"))
-    price_sar = _ali_sale_price_sar(product)
-    title_tokens = _ali_title_tokens(product.get("product_title"))
-    relevant = len(title_tokens & ALIEXPRESS_FOCUS_TERMS.get(topic, set()))
-    price_fit = 22 if 35 <= price_sar <= 260 else 14 if 18 <= price_sar <= 450 else 0
+    title = str(product.get("product_title") or "").lower()
+    relevant = sum(
+        1
+        for term in focus.get("include", ())
+        if str(term or "").lower().strip() in title
+    )
     return round(
-        rating * 1.05
-        + min(math.log10(volume + 1) * 27, 105)
-        + min(relevant, 4) * 9
-        + price_fit,
+        rating * 1.10
+        + min(math.log10(volume + 1) * 30, 120)
+        + min(relevant, 4) * 8,
         2,
     )
 
@@ -1310,54 +1465,36 @@ def _ali_is_near_duplicate(
 
 
 def _ali_balanced_selection(candidates: list[dict], limit: int) -> list[dict]:
-    """اختيار متوازن: نغطي كل فكرة أولاً ثم نضيف بدائل مختلفة عالية الطلب."""
+    """يغطي كل اتجاه رائج أولاً، ثم يملأ القائمة بالأعلى مبيعاً وتقييماً."""
     ranked = sorted(
         candidates,
         key=lambda item: float(item.get("_overly_score", 0)),
         reverse=True,
     )
-    tech_quota = (limit + 1) // 2
-    quotas = {"tech": tech_quota, "life_hack": limit - tech_quota}
     selected: list[dict] = []
     selected_ids: set[str] = set()
     angle_counts: dict[str, int] = {}
+    used_angles: set[str] = set()
 
-    for topic in ("tech", "life_hack"):
-        used_angles: set[str] = set()
-        for product in ranked:
-            if len([item for item in selected if item.get("_overly_topic") == topic]) >= quotas[topic]:
-                break
-            product_id = _ali_product_id(product.get("product_id"))
-            if product.get("_overly_topic") != topic or not product_id or product_id in selected_ids:
-                continue
-            angle = str(product.get("_overly_angle") or "")
-            if angle and angle in used_angles:
-                continue
-            if _ali_is_near_duplicate(product.get("product_title"), selected, angle):
-                continue
-            selected.append(product)
-            selected_ids.add(product_id)
-            if angle:
-                used_angles.add(angle)
-                angle_counts[angle] = angle_counts.get(angle, 0) + 1
+    # الجولة الأولى: منتج قوي واحد على الأقل من كل اتجاه متاح.
+    for product in ranked:
+        if len(selected) >= limit:
+            break
+        product_id = _ali_product_id(product.get("product_id"))
+        if not product_id or product_id in selected_ids:
+            continue
+        angle = str(product.get("_overly_angle") or "")
+        if angle and angle in used_angles:
+            continue
+        if _ali_is_near_duplicate(product.get("product_title"), selected, angle):
+            continue
+        selected.append(product)
+        selected_ids.add(product_id)
+        if angle:
+            used_angles.add(angle)
+            angle_counts[angle] = 1
 
-        # إذا لم تكفِ الأفكار المختلفة، نكمل من أفضل النتائج في المجال نفسه.
-        for product in ranked:
-            if len([item for item in selected if item.get("_overly_topic") == topic]) >= quotas[topic]:
-                break
-            product_id = _ali_product_id(product.get("product_id"))
-            if product.get("_overly_topic") != topic or not product_id or product_id in selected_ids:
-                continue
-            angle = str(product.get("_overly_angle") or "")
-            if angle and angle_counts.get(angle, 0) >= ALIEXPRESS_MAX_PER_ANGLE:
-                continue
-            if _ali_is_near_duplicate(product.get("product_title"), selected, angle):
-                continue
-            selected.append(product)
-            selected_ids.add(product_id)
-            if angle:
-                angle_counts[angle] = angle_counts.get(angle, 0) + 1
-
+    # الجولة الثانية: الأعلى رواجاً بلا حصة ثابتة لقسم بعينه.
     for product in ranked:
         if len(selected) >= limit:
             break
@@ -1377,10 +1514,10 @@ def _ali_balanced_selection(candidates: list[dict], limit: int) -> list[dict]:
 
 
 def discover_aliexpress_products() -> list[dict]:
-    """يكتشف منتجات تقنية وLife Hacks القابلة للشحن للسعودية.
+    """يكتشف المنتجات الرائجة من مختلف أقسام AliExpress للشحن إلى السعودية.
 
-    يستخدم product.query المتاحة للتطبيق، ويبحث بعبارات موضوعية مستقلة ثم يوازن
-    النتائج بين المجالين. الخصم ليس شرطاً؛ الأولوية للمبيعات والتقييم والصلة.
+    يستخدم product.query المتاحة للتطبيق مع ترتيب المبيعات، ويبحث بعبارات متنوعة.
+    الخصم ليس شرطاً؛ الأولوية لعدد المبيعات والتقييم والصلة، مع منع التكرار.
     """
     fields = ",".join(
         [
@@ -1415,12 +1552,12 @@ def discover_aliexpress_products() -> list[dict]:
     discovery_queries: list[dict] = (
         ALIEXPRESS_FOCUS_QUERIES
         if ALIEXPRESS_FOCUS_DISCOVERY
-        else [{"topic": "tech", "keywords": "", "category": "الإلكترونيات", "angle": "تقنية", "include": ()}]
+        else [{"topic": "popular", "keywords": "", "category": "الإلكترونيات", "angle": "الأكثر رواجاً", "include": ()}]
     )
     candidates_by_id: dict[str, dict] = {}
     returned_count = 0
     for focus in discovery_queries:
-        topic = str(focus.get("topic") or "tech")
+        topic = str(focus.get("topic") or "popular")
         keywords = str(focus.get("keywords") or "")
         category = str(focus.get("category") or "الإلكترونيات")
         angle = str(focus.get("angle") or category)
@@ -1451,8 +1588,7 @@ def discover_aliexpress_products() -> list[dict]:
                     continue
                 if ALIEXPRESS_FOCUS_DISCOVERY and not _ali_matches_focus(product, focus):
                     continue
-                # نطاق مناسب للشراء العفوي والعمولة المعقولة، مع تجنب الخردة والمبالغة السعرية.
-                if not (18 <= price_sar <= 450):
+                if not (ALIEXPRESS_AUTO_MIN_PRICE_SAR <= price_sar <= ALIEXPRESS_AUTO_MAX_PRICE_SAR):
                     continue
                 candidate = {
                     **product,
@@ -1470,7 +1606,7 @@ def discover_aliexpress_products() -> list[dict]:
             if len(products) < ALIEXPRESS_QUERY_PAGE_SIZE:
                 break
             time.sleep(0.25)
-        label = "تقنية" if topic == "tech" else "Life Hacks"
+        label = category
         print(
             f"[aliexpress] {label} / {keywords or 'عام'}: "
             f"{accepted_for_query} من {returned_for_query} اجتاز الجودة"
@@ -1481,12 +1617,18 @@ def discover_aliexpress_products() -> list[dict]:
         list(candidates_by_id.values()),
         ALIEXPRESS_AUTO_LIMIT,
     )
-    tech_count = sum(item.get("_overly_topic") == "tech" for item in accepted)
-    life_count = sum(item.get("_overly_topic") == "life_hack" for item in accepted)
+    category_counts: dict[str, int] = {}
+    for item in accepted:
+        item_category = str(item.get("_overly_category") or "غير مصنف")
+        category_counts[item_category] = category_counts.get(item_category, 0) + 1
+    category_summary = "، ".join(
+        f"{name} {count}"
+        for name, count in sorted(category_counts.items(), key=lambda pair: pair[1], reverse=True)
+    )
 
     print(
-        f"[aliexpress] اكتشاف موجّه: {len(accepted)} من {returned_count} نتيجة "
-        f"(تقنية {tech_count}، Life Hacks {life_count})"
+        f"[aliexpress] اكتشاف رائج شامل: {len(accepted)} من {returned_count} نتيجة "
+        f"({category_summary})"
     )
     return accepted
 
