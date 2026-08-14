@@ -117,7 +117,7 @@ ALIEXPRESS_QUERY_PAGE_SIZE = max(
     20, min(50, int(os.environ.get("ALIEXPRESS_QUERY_PAGE_SIZE") or "50"))
 )
 ALIEXPRESS_QUERY_PAGES = max(
-    1, min(4, int(os.environ.get("ALIEXPRESS_QUERY_PAGES") or "2"))
+    1, min(6, int(os.environ.get("ALIEXPRESS_QUERY_PAGES") or "4"))
 )
 ALIEXPRESS_AUTO_MIN_VOLUME = max(
     0, int(os.environ.get("ALIEXPRESS_AUTO_MIN_VOLUME") or "1000")
@@ -305,6 +305,103 @@ ALIEXPRESS_FOCUS_QUERIES = [
     {
         "topic": "life_hack", "keywords": "collapsible laundry basket", "category": "المنزل",
         "angle": "تنظيم الغسيل", "include": ("laundry basket", "laundry hamper", "سلة غسيل", "سلة ملابس"),
+    },
+    # تصنيفات رائجة إضافية لزيادة التنوع والوصول، مع تطبيق شروط الجودة نفسها.
+    {
+        "topic": "tech", "keywords": "smart watch fitness tracker", "category": "الإلكترونيات",
+        "angle": "تقنية قابلة للارتداء", "include": ("smart watch", "smartwatch", "fitness tracker", "ساعة ذكية"),
+    },
+    {
+        "topic": "tech", "keywords": "mini projector android", "category": "الإلكترونيات",
+        "angle": "ترفيه منزلي", "include": ("mini projector", "android projector", "projector", "بروجكتر", "عارض"),
+    },
+    {
+        "topic": "tech", "keywords": "bluetooth game controller", "category": "الإلكترونيات",
+        "angle": "ألعاب وتقنية", "include": ("game controller", "gamepad", "gaming controller", "يد تحكم"),
+    },
+    {
+        "topic": "tech", "keywords": "wifi repeater extender", "category": "الإلكترونيات",
+        "angle": "شبكة منزلية", "include": ("wifi repeater", "wifi extender", "range extender", "مقوي واي فاي"),
+    },
+    {
+        "topic": "tech", "keywords": "wireless charging station 3 in 1", "category": "الإلكترونيات",
+        "angle": "شحن متعدد", "include": ("charging station", "wireless charger", "3 in 1 charger", "شاحن لاسلكي"),
+    },
+    {
+        "topic": "tech", "keywords": "rgb led strip wifi", "category": "المنزل",
+        "angle": "إضاءة ذكية", "include": ("led strip", "rgb strip", "smart light strip", "شريط ليد", "إضاءة rgb"),
+    },
+    {
+        "topic": "tech", "keywords": "action camera 4k", "category": "الإلكترونيات",
+        "angle": "تصوير المغامرات", "include": ("action camera", "sport camera", "4k camera", "كاميرا رياضية"),
+    },
+    {
+        "topic": "tech", "keywords": "usb c cable 100w", "category": "الإلكترونيات",
+        "angle": "شحن وكابلات", "include": ("usb c cable", "type c cable", "100w cable", "كيبل شحن", "كابل شحن"),
+    },
+    {
+        "topic": "tech", "keywords": "smart doorbell wifi", "category": "المنزل",
+        "angle": "أمان المنزل", "include": ("smart doorbell", "video doorbell", "wifi doorbell", "جرس باب ذكي"),
+    },
+    {
+        "topic": "tech", "keywords": "digital microscope usb", "category": "الإلكترونيات",
+        "angle": "استكشاف وتقنية", "include": ("digital microscope", "usb microscope", "electronic microscope", "مجهر رقمي"),
+    },
+    {
+        "topic": "tech", "keywords": "portable monitor usb c", "category": "الإلكترونيات",
+        "angle": "عمل متنقل", "include": ("portable monitor", "usb c monitor", "travel monitor", "شاشة محمولة"),
+    },
+    {
+        "topic": "tech", "keywords": "solar security camera wifi", "category": "المنزل",
+        "angle": "مراقبة بالطاقة الشمسية", "include": ("solar camera", "solar security camera", "wifi solar camera", "كاميرا شمسية"),
+    },
+    {
+        "topic": "life_hack", "keywords": "manual vegetable chopper", "category": "المنزل",
+        "angle": "تحضير المطبخ", "include": ("vegetable chopper", "food chopper", "manual chopper", "قطاعة خضار", "مفرمة يدوية"),
+    },
+    {
+        "topic": "life_hack", "keywords": "oil sprayer bottle kitchen", "category": "المنزل",
+        "angle": "مطبخ صحي", "include": ("oil sprayer", "oil spray bottle", "cooking sprayer", "بخاخ زيت", "رشاش زيت"),
+    },
+    {
+        "topic": "life_hack", "keywords": "under sink organizer", "category": "المنزل",
+        "angle": "تنظيم المساحات", "include": ("under sink organizer", "sink storage", "cabinet organizer", "منظم تحت المغسلة"),
+    },
+    {
+        "topic": "life_hack", "keywords": "vacuum storage bags", "category": "المنزل",
+        "angle": "توفير المساحة", "include": ("vacuum storage bag", "compression bag", "space saver bag", "أكياس تفريغ", "أكياس ضغط"),
+    },
+    {
+        "topic": "life_hack", "keywords": "car seat gap organizer", "category": "السيارة",
+        "angle": "تنظيم السيارة", "include": ("seat gap organizer", "car seat organizer", "car gap filler", "منظم مقعد السيارة"),
+    },
+    {
+        "topic": "life_hack", "keywords": "reusable pet hair remover", "category": "المنزل",
+        "angle": "تنظيف الوبر", "include": ("pet hair remover", "lint roller", "fur remover", "مزيل شعر الحيوانات", "مزيل وبر"),
+    },
+    {
+        "topic": "life_hack", "keywords": "drawer organizer adjustable", "category": "المنزل",
+        "angle": "تنظيم الأدراج", "include": ("drawer organizer", "drawer divider", "adjustable divider", "منظم أدراج", "فاصل درج"),
+    },
+    {
+        "topic": "life_hack", "keywords": "electric cleaning brush kitchen", "category": "المنزل",
+        "angle": "تنظيف المطبخ", "include": ("electric cleaning brush", "power scrubber", "cleaning scrubber", "فرشاة تنظيف كهربائية"),
+    },
+    {
+        "topic": "life_hack", "keywords": "silicone air fryer liner", "category": "المنزل",
+        "angle": "استخدام القلاية", "include": ("air fryer liner", "silicone liner", "air fryer basket", "بطانة قلاية", "سيليكون قلاية"),
+    },
+    {
+        "topic": "life_hack", "keywords": "foldable clothes drying rack", "category": "المنزل",
+        "angle": "تجفيف عملي", "include": ("drying rack", "clothes hanger rack", "foldable hanger", "منشر ملابس", "حامل تجفيف"),
+    },
+    {
+        "topic": "life_hack", "keywords": "travel neck pillow memory foam", "category": "السفر",
+        "angle": "راحة السفر", "include": ("travel pillow", "neck pillow", "memory foam pillow", "وسادة سفر", "وسادة رقبة"),
+    },
+    {
+        "topic": "life_hack", "keywords": "shoe organizer rack", "category": "المنزل",
+        "angle": "تنظيم الأحذية", "include": ("shoe organizer", "shoe rack", "shoe storage", "منظم أحذية", "رف أحذية"),
     },
 ]
 ALIEXPRESS_FOCUS_TERMS = {
@@ -842,52 +939,73 @@ def aliexpress_api_call(method: str, parameters: dict) -> dict | None:
         for key, value in parameters.items()
         if value is not None and value != ""
     }
-    system = {
-        "app_key": ALIEXPRESS_APP_KEY,
-        "format": "json",
-        "method": method,
-        "sign_method": "md5",
-        "timestamp": str(int(time.time() * 1000)),
-        "v": "2.0",
-    }
-    sign_input = {**system, **application}
-    system["sign"] = _ali_sign(sign_input)
+    max_attempts = 3
+    for attempt in range(1, max_attempts + 1):
+        # التوقيع والطابع الزمني يجب تجديدهما في كل محاولة.
+        system = {
+            "app_key": ALIEXPRESS_APP_KEY,
+            "format": "json",
+            "method": method,
+            "sign_method": "md5",
+            "timestamp": str(int(time.time() * 1000)),
+            "v": "2.0",
+        }
+        sign_input = {**system, **application}
+        system["sign"] = _ali_sign(sign_input)
 
-    try:
-        response = requests.post(
-            ALIEXPRESS_API_ENDPOINT,
-            params=system,
-            data=application,
-            headers={"Accept": "application/json", "User-Agent": "OverlyDeals/1.0"},
-            timeout=REQUEST_TIMEOUT,
-        )
-        if response.status_code != 200:
-            print(f"[aliexpress] {method} HTTP {response.status_code}")
+        try:
+            response = requests.post(
+                ALIEXPRESS_API_ENDPOINT,
+                params=system,
+                data=application,
+                headers={"Accept": "application/json", "User-Agent": "OverlyDeals/1.0"},
+                timeout=REQUEST_TIMEOUT,
+            )
+            if response.status_code == 429 and attempt < max_attempts:
+                wait_seconds = 1.25 * attempt + random.random() * 0.5
+                print(
+                    f"[aliexpress] حد سرعة HTTP 429 — إعادة المحاولة "
+                    f"{attempt + 1}/{max_attempts} بعد {wait_seconds:.1f}ث"
+                )
+                time.sleep(wait_seconds)
+                continue
+            if response.status_code != 200:
+                print(f"[aliexpress] {method} HTTP {response.status_code}")
+                return None
+            payload = response.json()
+        except (requests.RequestException, ValueError) as exc:
+            print(f"[aliexpress] فشل {method}: {exc}")
             return None
-        payload = response.json()
-    except (requests.RequestException, ValueError) as exc:
-        print(f"[aliexpress] فشل {method}: {exc}")
-        return None
 
-    if "error_response" in payload:
-        error = payload.get("error_response") or {}
-        print(
-            "[aliexpress] رفض النداء "
-            f"{method}: {error.get('code')} — {error.get('msg') or error.get('sub_msg')}"
-        )
-        return None
+        if "error_response" in payload:
+            error = payload.get("error_response") or {}
+            code = str(error.get("code") or "")
+            message = str(error.get("msg") or error.get("sub_msg") or "")
+            rate_limited = code == "ApiCallLimit" or "frequency exceeds" in message.lower()
+            if rate_limited and attempt < max_attempts:
+                wait_seconds = 1.25 * attempt + random.random() * 0.5
+                print(
+                    f"[aliexpress] تقييد سرعة مؤقت — إعادة المحاولة "
+                    f"{attempt + 1}/{max_attempts} بعد {wait_seconds:.1f}ث"
+                )
+                time.sleep(wait_seconds)
+                continue
+            print(f"[aliexpress] رفض النداء {method}: {code} — {message}")
+            return None
 
-    response_key = method.replace(".", "_") + "_response"
-    envelope = payload.get(response_key) or {}
-    result = envelope.get("resp_result") or {}
-    if str(result.get("resp_code")) not in {"200", "200.0"}:
-        print(
-            f"[aliexpress] {method} resp_code={result.get('resp_code')} "
-            f"— {result.get('resp_msg', 'استجابة غير ناجحة')}"
-        )
-        return None
-    value = result.get("result")
-    return value if isinstance(value, dict) else {}
+        response_key = method.replace(".", "_") + "_response"
+        envelope = payload.get(response_key) or {}
+        result = envelope.get("resp_result") or {}
+        if str(result.get("resp_code")) not in {"200", "200.0"}:
+            print(
+                f"[aliexpress] {method} resp_code={result.get('resp_code')} "
+                f"— {result.get('resp_msg', 'استجابة غير ناجحة')}"
+            )
+            return None
+        value = result.get("result")
+        return value if isinstance(value, dict) else {}
+
+    return None
 
 
 def _ali_list(value: object, child_key: str) -> list[dict]:
