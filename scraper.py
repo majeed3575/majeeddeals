@@ -108,10 +108,10 @@ ALIEXPRESS_AUTO_DISCOVERY = (
     os.environ.get("ALIEXPRESS_AUTO_DISCOVERY") or "true"
 ).strip().lower() in {"1", "true", "yes", "on"}
 ALIEXPRESS_AUTO_LIMIT = max(
-    1, min(260, int(os.environ.get("ALIEXPRESS_AUTO_LIMIT") or "220"))
+    1, min(1000, int(os.environ.get("ALIEXPRESS_AUTO_LIMIT") or "1000"))
 )
 ALIEXPRESS_MAX_PER_ANGLE = max(
-    1, min(15, int(os.environ.get("ALIEXPRESS_MAX_PER_ANGLE") or "12"))
+    1, min(40, int(os.environ.get("ALIEXPRESS_MAX_PER_ANGLE") or "24"))
 )
 ALIEXPRESS_QUERY_PAGE_SIZE = max(
     20, min(50, int(os.environ.get("ALIEXPRESS_QUERY_PAGE_SIZE") or "50"))
