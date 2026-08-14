@@ -4,7 +4,10 @@ const SETTINGS_KEY = "overly_github_settings_v5";
 const TOKEN_KEY = "overly_github_token_v5";
 const REMOTE_HASHES_KEY = "overly_remote_hashes_v5";
 const LAST_SYNC_KEY = "overly_last_sync_v5";
-const ALLOWED_CATEGORIES = ["الإلكترونيات", "المنزل", "الموضة"];
+const ALLOWED_CATEGORIES = [
+  "الإلكترونيات", "المنزل", "الموضة", "السيارة", "السفر",
+  "الجمال والعناية", "الرياضة", "الأطفال", "الحيوانات الأليفة", "الأدوات والهوايات"
+];
 const DEFAULT_GITHUB = { owner: "majeed3575", repo: "majeeddeals", branch: "main", path: "deals.json" };
 
 const $ = (id) => document.getElementById(id);
@@ -40,6 +43,13 @@ function extractFromProductPage() {
   function detectCategory(title) {
     const searchable = String(title || "").toLowerCase();
     const contains = (words) => words.some((word) => searchable.includes(word));
+    if (contains(["قطط", "كلاب", "حيوان", "pet", "cat", "dog", "grooming"])) return "الحيوانات الأليفة";
+    if (contains(["طفل", "أطفال", "رضيع", "لعبة", "baby", "kids", "child", "toy"])) return "الأطفال";
+    if (contains(["مكياج", "بشرة", "شعر", "أظافر", "makeup", "beauty", "skincare", "hair", "nail"])) return "الجمال والعناية";
+    if (contains(["رياضة", "لياقة", "تمارين", "يوغا", "sport", "fitness", "exercise", "yoga", "running"])) return "الرياضة";
+    if (contains(["دريل", "مثقاب", "عدة", "أدوات", "drill", "wrench", "tool", "laser level"])) return "الأدوات والهوايات";
+    if (contains(["سيارة", "كاربلاي", "مركبة", "car", "carplay", "vehicle"])) return "السيارة";
+    if (contains(["سفر", "رحلات", "أمتعة", "travel", "luggage", "camping"])) return "السفر";
     if (contains(["مقلاة", "قلاية", "مكنسة", "خلاط", "قهوة", "مطبخ", "غسالة", "سرير", "وسادة", "إضاءة", "مصباح", "تنظيف", "ثلاجة", "ثلج", "ميزان", "تنقية", "kitchen", "vacuum", "blender", "coffee", "fryer", "pillow", "lamp", "cleaner", "ice", "scale", "purifier"])) return "المنزل";
     if (contains(["حقيبة", "حذاء", "قميص", "عباية", "فستان", "نظارة", "عطر", "ملابس", "جاكيت", "مظلة", "bag", "shoe", "shirt", "dress", "sunglasses", "perfume", "jacket", "backpack", "wallet", "umbrella"])) return "الموضة";
     return "الإلكترونيات";
