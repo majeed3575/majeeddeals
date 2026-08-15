@@ -678,6 +678,7 @@
                 <option value="الأطفال">الأطفال</option>
                 <option value="الحيوانات الأليفة">الحيوانات الأليفة</option>
                 <option value="الأدوات والهوايات">الأدوات والهوايات</option>
+                <option value="الترفيه المنزلي">الترفيه المنزلي</option>
               </select>
             </div>
             <div class="field">
@@ -888,7 +889,8 @@
       : safeHttpsUrl(deal.image, ["media-amazon.com", "ssl-images-amazon.com", "amazon.com"]);
     const CATEGORIES = [
       "الكل", "الإلكترونيات", "المنزل", "السيارة", "السفر", "الموضة",
-      "الجمال والعناية", "الرياضة", "الأطفال", "الحيوانات الأليفة", "الأدوات والهوايات"
+      "الجمال والعناية", "الرياضة", "الأطفال", "الحيوانات الأليفة", "الأدوات والهوايات",
+      "الترفيه المنزلي"
     ];
     const normalizeAliSearchProduct = product => {
       const productId = String(product?.product_id || "").match(/^\d{6,20}$/)?.[0] || "";
