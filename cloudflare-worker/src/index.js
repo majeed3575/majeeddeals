@@ -108,6 +108,7 @@ function cleanTitle(value) {
 
 function classify(title) {
   const text = title.toLowerCase();
+  if (/byintek|\btcl\b|projector|smart tv|qled tv|television|بروجكتر|بروجكتور|تلفزيون|تلفاز|سينما منزلية/.test(text)) return "الترفيه المنزلي";
   if (/pet|cat|dog|grooming|قطط|كلاب|حيوان/.test(text)) return "الحيوانات الأليفة";
   if (/baby|kids|child|toddler|toy|طفل|أطفال|رضيع|لعبة/.test(text)) return "الأطفال";
   if (/beauty|makeup|skincare|cosmetic|hair|nail|مكياج|بشرة|شعر|أظافر/.test(text)) return "الجمال والعناية";

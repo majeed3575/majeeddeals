@@ -319,8 +319,24 @@ ALIEXPRESS_FOCUS_QUERIES = [
         "angle": "تقنية قابلة للارتداء", "include": ("smart watch", "smartwatch", "fitness tracker", "ساعة ذكية"),
     },
     {
-        "topic": "tech", "keywords": "mini projector android", "category": "الإلكترونيات",
+        "topic": "home_entertainment", "keywords": "mini projector android", "category": "الترفيه المنزلي",
         "angle": "ترفيه منزلي", "include": ("mini projector", "android projector", "projector", "بروجكتر", "عارض"),
+    },
+    {
+        "topic": "home_entertainment", "keywords": "BYINTEK projector 4k", "category": "الترفيه المنزلي",
+        "angle": "بروجكترات BYINTEK", "include": ("byintek",),
+    },
+    {
+        "topic": "home_entertainment", "keywords": "BYINTEK android projector", "category": "الترفيه المنزلي",
+        "angle": "بروجكترات BYINTEK", "include": ("byintek",),
+    },
+    {
+        "topic": "home_entertainment", "keywords": "TCL smart TV", "category": "الترفيه المنزلي",
+        "angle": "تلفزيونات TCL", "include": ("tcl",),
+    },
+    {
+        "topic": "home_entertainment", "keywords": "TCL QLED TV", "category": "الترفيه المنزلي",
+        "angle": "تلفزيونات TCL", "include": ("tcl",),
     },
     {
         "topic": "tech", "keywords": "bluetooth game controller", "category": "الإلكترونيات",
@@ -599,6 +615,12 @@ def build_headers() -> dict:
 
 # تصنيف تقريبي بالكلمات المفتاحية (عربي/إنجليزي)
 CATEGORY_KEYWORDS = {
+    "الترفيه المنزلي": [
+        "بروجكتر", "بروجكتور", "جهاز عرض", "عارض منزلي", "تلفزيون", "تلفاز",
+        "سينما منزلية", "بيونتيك", "projector", "home cinema", "home theater",
+        "smart tv", "qled tv", "mini projector", "android projector", "television",
+        "byintek", "tcl",
+    ],
     "الإلكترونيات": [
         "سماعة", "سماعات", "شاحن", "كيبل", "كابل", "لابتوب", "حاسوب", "جوال",
         "هاتف", "ساعة ذكية", "شاشة", "كاميرا", "باور بانك", "تابلت",

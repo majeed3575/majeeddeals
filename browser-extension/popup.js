@@ -6,7 +6,8 @@ const REMOTE_HASHES_KEY = "overly_remote_hashes_v5";
 const LAST_SYNC_KEY = "overly_last_sync_v5";
 const ALLOWED_CATEGORIES = [
   "الإلكترونيات", "المنزل", "الموضة", "السيارة", "السفر",
-  "الجمال والعناية", "الرياضة", "الأطفال", "الحيوانات الأليفة", "الأدوات والهوايات"
+  "الجمال والعناية", "الرياضة", "الأطفال", "الحيوانات الأليفة", "الأدوات والهوايات",
+  "الترفيه المنزلي"
 ];
 const DEFAULT_GITHUB = { owner: "majeed3575", repo: "majeeddeals", branch: "main", path: "deals.json" };
 
@@ -43,6 +44,7 @@ function extractFromProductPage() {
   function detectCategory(title) {
     const searchable = String(title || "").toLowerCase();
     const contains = (words) => words.some((word) => searchable.includes(word));
+    if (contains(["byintek", "tcl", "projector", "smart tv", "qled tv", "television", "بروجكتر", "بروجكتور", "تلفزيون", "تلفاز", "سينما منزلية"])) return "الترفيه المنزلي";
     if (contains(["قطط", "كلاب", "حيوان", "pet", "cat", "dog", "grooming"])) return "الحيوانات الأليفة";
     if (contains(["طفل", "أطفال", "رضيع", "لعبة", "baby", "kids", "child", "toy"])) return "الأطفال";
     if (contains(["مكياج", "بشرة", "شعر", "أظافر", "makeup", "beauty", "skincare", "hair", "nail"])) return "الجمال والعناية";
