@@ -1,0 +1,203 @@
+:root {
+  color-scheme: dark;
+  --bg: #050909;
+  --panel: #0b1413;
+  --panel-2: #0f1d1b;
+  --line: rgba(137, 226, 216, .14);
+  --text: #f4fbfa;
+  --muted: #a8b9b6;
+  --accent: #79c9c1;
+  --accent-strong: #a3ebe4;
+  --shadow: 0 30px 80px rgba(0, 0, 0, .34);
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 78% -8%, rgba(71, 152, 143, .20), transparent 34rem),
+    radial-gradient(circle at 8% 60%, rgba(42, 104, 98, .10), transparent 30rem),
+    var(--bg);
+  color: var(--text);
+  font-family: "Tajawal", "SF Arabic", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.85;
+}
+
+a { color: var(--accent-strong); }
+a:hover { color: #fff; }
+
+.legal-shell {
+  width: min(920px, calc(100% - 32px));
+  margin-inline: auto;
+}
+
+.legal-header {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 10;
+  border-bottom: 1px solid var(--line);
+  background: rgba(5, 9, 9, .82);
+  -webkit-backdrop-filter: blur(22px);
+  backdrop-filter: blur(22px);
+}
+
+.legal-nav {
+  min-height: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.legal-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 900;
+}
+
+.legal-brand img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: #07100f;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 17px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--text);
+  background: rgba(255, 255, 255, .025);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.legal-hero { padding: 82px 0 30px; }
+
+.legal-kicker {
+  margin: 0 0 12px;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+h1 {
+  max-width: 760px;
+  margin: 0;
+  font-size: clamp(36px, 7vw, 70px);
+  line-height: 1.06;
+  letter-spacing: -.045em;
+}
+
+.legal-lead {
+  max-width: 720px;
+  margin: 22px 0 0;
+  color: var(--muted);
+  font-size: clamp(16px, 2.3vw, 20px);
+}
+
+.legal-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.legal-meta span {
+  padding: 7px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  background: rgba(255, 255, 255, .025);
+  font-size: 12px;
+}
+
+.legal-card {
+  margin: 22px 0 72px;
+  padding: clamp(24px, 5vw, 54px);
+  border: 1px solid var(--line);
+  border-radius: 30px;
+  background: linear-gradient(145deg, rgba(15, 29, 27, .96), rgba(7, 14, 13, .96));
+  box-shadow: var(--shadow);
+}
+
+.legal-card section + section {
+  margin-top: 36px;
+  padding-top: 34px;
+  border-top: 1px solid var(--line);
+}
+
+h2 {
+  margin: 0 0 10px;
+  font-size: clamp(22px, 3.4vw, 31px);
+  line-height: 1.35;
+}
+
+p { margin: 10px 0 0; color: var(--muted); }
+strong { color: var(--text); }
+
+ul {
+  margin: 14px 0 0;
+  padding-inline-start: 22px;
+  color: var(--muted);
+}
+
+li + li { margin-top: 7px; }
+
+.notice {
+  margin-top: 18px;
+  padding: 18px 20px;
+  border: 1px solid rgba(121, 201, 193, .22);
+  border-radius: 18px;
+  background: rgba(121, 201, 193, .07);
+  color: #d9eeec;
+}
+
+.legal-footer {
+  border-top: 1px solid var(--line);
+  background: #040707;
+}
+
+.legal-footer-inner {
+  display: grid;
+  gap: 20px;
+  padding: 32px 0 42px;
+}
+
+.legal-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+}
+
+.legal-links a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.legal-links a[aria-current="page"] { color: var(--accent-strong); }
+
+.legal-copyright { color: #71817f; font-size: 12px; }
+
+@media (max-width: 620px) {
+  .legal-nav { min-height: 68px; }
+  .legal-brand span { display: none; }
+  .legal-hero { padding-top: 52px; }
+  .legal-card { border-radius: 24px; }
+}

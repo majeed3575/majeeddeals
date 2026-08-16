@@ -503,6 +503,9 @@
     .footer-logo { width: 100%; height: auto; }
     .footer-brand p { margin-top: 8px; color: var(--muted); font-size: 11px; font-weight: 400; }
     .disclosure { color: var(--muted); font-size: 11px; line-height: 1.9; }
+    .footer-legal-links { display: flex; flex-wrap: wrap; gap: 7px 16px; margin-top: 15px; }
+    .footer-legal-links a { color: var(--muted); text-decoration: none; font-size: 10px; font-weight: 700; transition: color .2s ease; }
+    .footer-legal-links a:hover, .footer-legal-links a:focus-visible { color: var(--accent); }
     .copyright { margin-top: 13px; color: var(--dim); font-size: 10px; }
 
     /* Modal + redirect */
@@ -814,6 +817,12 @@
       </div>
       <div class="disclosure">
         إفصاح: بصفتنا مشاركين في برنامج أمازون أسوشيتس (Amazon Associates)، نحصل على عمولة من عمليات الشراء المؤهلة عبر روابط أمازون دون تكلفة إضافية عليك. وقد تتضمن الصفحة روابط تسويق بالعمولة لمتاجر أخرى مثل AliExpress. الأسعار ونسب الخصم كما رُصدت وقت آخر تحديث وقد تتغيّر — السعر النهائي المعتمد هو الظاهر لدى المتجر لحظة الشراء.
+        <nav class="footer-legal-links" aria-label="الصفحات القانونية">
+          <a href="privacy.html">سياسة الخصوصية</a>
+          <a href="terms.html">شروط الاستخدام</a>
+          <a href="affiliate-disclosure.html">إفصاح العمولة</a>
+          <a href="copyright.html">حقوق الملكية</a>
+        </nav>
         <div class="copyright" id="copyright"></div>
       </div>
     </div>
@@ -956,6 +965,27 @@
         return url.href.replace(/\/$/, "");
       } catch (_) { return ""; }
     })();
+
+    function trackEvent(eventType, deal = null) {
+      if (!ALIEXPRESS_SEARCH_API) return;
+      const payload = {
+        event_type: eventType,
+        page_path: location.pathname,
+        product_key: deal ? `${storeOf(deal)}:${dealKey(deal)}` : "",
+        product_title: deal?.title || "",
+        store: deal ? storeOf(deal) : "",
+        category: deal?.category || ""
+      };
+      try {
+        fetch(`${ALIEXPRESS_SEARCH_API}/events`, {
+          method: "POST",
+          mode: "cors",
+          keepalive: true,
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(payload)
+        }).catch(() => {});
+      } catch (_) {}
+    }
 
     const el = id => document.getElementById(id);
     const formatNumber = value => new Intl.NumberFormat("ar-SA", {maximumFractionDigits: 0}).format(value);
@@ -1312,6 +1342,7 @@
       if (!deal) return false;
       const url = dealLink(deal);
       if (url === "#") return false;
+      trackEvent("product_click", deal);
       let newWindow = null;
       try { newWindow = window.open("about:blank", "_blank"); if (newWindow) newWindow.opener = null; } catch (_) {}
       el("redirect").classList.remove("hidden");
@@ -1437,10 +1468,11 @@
       })
       .catch(() => {});
 
-    el("copyright").textContent = `© ${new Date().getFullYear()} أوفرلي | overly`;
+    el("copyright").textContent = `© ${new Date().getFullYear()} أوفرلي (Overly) — جميع الحقوق محفوظة.`;
     setTheme(storage.get("site_theme") || "dark");
     renderAll();
     updateScrollUI();
+    trackEvent("page_view");
   </script>
 </body>
 </html>
