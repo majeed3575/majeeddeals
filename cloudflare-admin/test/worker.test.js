@@ -1,11 +1,28 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { normalizeTeamDomain, analyticsDashboard } from "../src/index.js";
+import { authenticate, analyticsDashboard } from "../src/index.js";
 
-test("accepts only Cloudflare Access team domains", () => {
-  assert.equal(normalizeTeamDomain("https://overly.cloudflareaccess.com"), "https://overly.cloudflareaccess.com");
-  assert.equal(normalizeTeamDomain("https://example.com"), "");
-  assert.equal(normalizeTeamDomain("javascript:alert(1)"), "");
+test("accepts only identities verified by Worker-level Cloudflare Access", async () => {
+  assert.equal(await authenticate({}), null);
+  assert.equal(await authenticate({ access: null }), null);
+
+  const identity = await authenticate({
+    access: {
+      async getIdentity() {
+        return { email: "Owner@Example.com" };
+      }
+    }
+  });
+  assert.deepEqual(identity, { email: "owner@example.com" });
+
+  const rejected = await authenticate({
+    access: {
+      async getIdentity() {
+        throw new Error("invalid Access identity");
+      }
+    }
+  });
+  assert.equal(rejected, null);
 });
 
 test("analytics endpoint returns aggregated read-only metrics", async () => {
