@@ -1,4 +1,3 @@
-import { createRemoteJWKSet, jwtVerify } from "jose";
 import { adminPage } from "./admin-page.js";
 
 function securityHeaders(contentType) {
@@ -29,30 +28,12 @@ function text(body, status = 200) {
   });
 }
 
-function normalizeTeamDomain(value) {
+async function authenticate(context) {
+  if (!context?.access) return null;
   try {
-    const url = new URL(String(value || ""));
-    if (url.protocol !== "https:" || !url.hostname.endsWith(".cloudflareaccess.com")) return "";
-    return url.origin;
-  } catch {
-    return "";
-  }
-}
-
-async function authenticate(request, env) {
-  const teamDomain = normalizeTeamDomain(env.TEAM_DOMAIN);
-  const audience = String(env.POLICY_AUD || "").trim();
-  const allowedEmail = String(env.ADMIN_ALLOWED_EMAIL || "").trim().toLowerCase();
-  const token = request.headers.get("cf-access-jwt-assertion") || "";
-  if (!teamDomain || !audience || !allowedEmail || !token) return null;
-  try {
-    const jwks = createRemoteJWKSet(new URL(`${teamDomain}/cdn-cgi/access/certs`));
-    const { payload } = await jwtVerify(token, jwks, {
-      issuer: teamDomain,
-      audience
-    });
-    const email = String(payload.email || "").trim().toLowerCase();
-    return email && email === allowedEmail ? { email } : null;
+    const identity = await context.access.getIdentity();
+    const email = String(identity?.email || "").trim().toLowerCase();
+    return email ? { email } : null;
   } catch {
     return null;
   }
@@ -143,11 +124,11 @@ async function analyticsDashboard(request, env) {
   });
 }
 
-export { analyticsDashboard, authenticate, normalizeTeamDomain };
+export { analyticsDashboard, authenticate };
 
 export default {
-  async fetch(request, env) {
-    const identity = await authenticate(request, env);
+  async fetch(request, env, context) {
+    const identity = await authenticate(context);
     if (!identity) return text("غير مصرح بالدخول إلى لوحة أوفرلي.", 403);
 
     const url = new URL(request.url);
