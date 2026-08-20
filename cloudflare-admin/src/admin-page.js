@@ -7,14 +7,14 @@ function escapeHtml(value) {
 export function adminPage({ nonce, email, siteUrl }) {
   const safeEmail = escapeHtml(email);
   const safeSiteUrl = escapeHtml(siteUrl);
-  return \`<!doctype html>
+  return `<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#071310">
 <title>لوحة أوفرلي</title>
-<style nonce="\${nonce}">
+<style nonce="${nonce}">
 :root{color-scheme:dark;--bg:#06110e;--panel:#0b1b17;--panel2:#10251f;--line:rgba(160,233,214,.14);--text:#effbf7;--muted:#8fa9a1;--mint:#7fe2cd;--mint2:#45bda4;--blue:#7ac7ff;--orange:#ffc27a;--danger:#ff8e8e;--shadow:0 24px 70px rgba(0,0,0,.38)}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;min-height:100vh;background:radial-gradient(circle at 92% -10%,rgba(69,189,164,.18),transparent 32rem),radial-gradient(circle at 0 45%,rgba(41,100,87,.13),transparent 30rem),var(--bg);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Tajawal","Segoe UI",sans-serif;color:var(--text)}
 button,a{font:inherit}.shell{width:min(1440px,100%);margin:auto;padding:22px clamp(16px,3vw,42px) 48px}.top{position:sticky;top:12px;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:15px 18px;border:1px solid var(--line);border-radius:22px;background:rgba(7,21,17,.82);backdrop-filter:blur(22px);box-shadow:var(--shadow)}
@@ -33,10 +33,10 @@ button,a{font:inherit}.shell{width:min(1440px,100%);margin:auto;padding:22px cla
 <main class="shell">
 <header class="top">
   <div class="brand"><div class="mark">O</div><div><h1>Overly Analytics</h1><div class="sub">لوحة خاصة محمية بواسطة Cloudflare Access</div></div></div>
-  <div class="top-actions"><a class="link" href="\${safeSiteUrl}" target="_blank" rel="noopener">فتح الموقع ↗</a></div>
+  <div class="top-actions"><a class="link" href="${safeSiteUrl}" target="_blank" rel="noopener">فتح الموقع ↗</a></div>
 </header>
 <section class="hero">
-  <div class="eyebrow">لوحة المالك · \${safeEmail}</div>
+  <div class="eyebrow">لوحة المالك · ${safeEmail}</div>
   <h2>صورة واضحة لأداء أوفرلي.</h2>
   <p>إحصاءات مجمّعة تحترم الخصوصية، من دون حفظ عنوان IP أو بيانات تعريف شخصية.</p>
 </section>
@@ -58,7 +58,7 @@ button,a{font:inherit}.shell{width:min(1440px,100%);margin:auto;padding:22px cla
 </section>
 <footer class="foot"><span>© Overly — لوحة قراءة فقط</span><span id="generated">—</span></footer>
 </main>
-<script nonce="\${nonce}">
+<script nonce="${nonce}">
 const $=id=>document.getElementById(id);
 const fmt=n=>new Intl.NumberFormat("ar-SA").format(Number(n||0));
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -89,5 +89,5 @@ document.querySelectorAll("[data-days]").forEach(button=>button.addEventListener
 load();setInterval(load,60000);
 </script>
 </body>
-</html>\`;
+</html>`;
 }
