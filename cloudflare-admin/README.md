@@ -17,13 +17,14 @@
 
 ## الحماية
 
-الدخول يعتمد على Cloudflare Access والتحقق من JWT داخل العامل. يجب إضافة القيم التالية كأسرار أو متغيرات آمنة في إعدادات العامل، ولا توضع في GitHub:
+الدخول يعتمد على **Worker-level Cloudflare Access**. الحماية مرتبطة بالعامل نفسه، ولذلك تشمل رابط الإنتاج وكل روابط المعاينة حتى لو تغيّرت عناوين العامل.
 
-- `ADMIN_ALLOWED_EMAIL`: بريد المالك المسموح له.
-- `TEAM_DOMAIN`: رابط فريق Cloudflare Access مثل `https://team.cloudflareaccess.com`.
-- `POLICY_AUD`: Audience الخاص بتطبيق Access.
+- النطاق: كل حركة العامل `All traffic`.
+- السياسة: أعضاء حساب Cloudflare فقط.
+- مدة الجلسة: ساعة واحدة.
+- داخل الكود يتم رفض الطلب ما لم يوفّر Cloudflare هوية موثقة عبر `ctx.access`.
 
-لا يحتاج هذا العامل إلى GitHub Token.
+لا يحتاج هذا العامل إلى GitHub Token أو كلمة مرور مخزنة في GitHub.
 
 ## النشر
 
@@ -32,4 +33,4 @@ npm ci
 npx wrangler deploy --keep-vars
 ```
 
-بعد النشر، أنشئ تطبيق Cloudflare Access من نوع Self-hosted، واربطه بعنوان `overly-admin.workers.dev`، ثم اسمح لبريد المالك فقط.
+بعد النشر، فعّل الحماية من **Workers & Pages → overly-admin → Access** واختر **All traffic** وسياسة **Cloudflare account**. يُنصح بتفعيل المصادقة الثنائية على حساب Cloudflare.
