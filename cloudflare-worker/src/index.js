@@ -5,6 +5,7 @@ const DEFAULT_ORIGIN = "https://majeed3575.github.io";
 const MAX_QUERY_LENGTH = 80;
 const MAX_PAGE = 20;
 const MAX_PAGE_SIZE = 24;
+const MAX_EVENT_BODY_BYTES = 4 * 1024;
 
 function json(body, status = 200, headers = {}) {
   return new Response(JSON.stringify(body), {
@@ -32,7 +33,7 @@ function allowedOrigin(request, env) {
 function cors(origin) {
   return {
     "Access-Control-Allow-Origin": origin,
-    "Access-Control-Allow-Methods": "GET, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Max-Age": "86400",
     "Vary": "Origin"
@@ -50,15 +51,100 @@ function boundedInteger(value, fallback, min, max) {
   return Number.isFinite(number) ? Math.min(max, Math.max(min, number)) : fallback;
 }
 
-async function rateAllowed(request, env) {
+async function rateAllowed(request, env, bucket = "search") {
   if (!env.SEARCH_RATE_LIMITER?.limit) return null;
   const fingerprint = [
     request.headers.get("CF-Connecting-IP") || "unknown",
     request.headers.get("User-Agent") || "unknown"
   ].join("|");
   const clientKey = createHash("sha256").update(fingerprint, "utf8").digest("hex").slice(0, 32);
-  const result = await env.SEARCH_RATE_LIMITER.limit({ key: `search:${clientKey}` });
+  const result = await env.SEARCH_RATE_LIMITER.limit({ key: `${bucket}:${clientKey}` });
   return result.success;
+}
+
+function cleanEventText(value, maxLength) {
+  return String(value || "")
+    .normalize("NFKC")
+    .replace(/[\u0000-\u001f\u007f]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, maxLength);
+}
+
+function deviceType(userAgent) {
+  const value = String(userAgent || "").toLowerCase();
+  if (/ipad|tablet|playbook|silk/.test(value)) return "tablet";
+  if (/mobile|iphone|ipod|android/.test(value)) return "mobile";
+  return "desktop";
+}
+
+function referrerHost(request) {
+  try {
+    const value = new URL(request.headers.get("Referer") || "").hostname.toLowerCase();
+    return cleanEventText(value, 120);
+  } catch {
+    return "direct";
+  }
+}
+
+function sanitizeEvent(input) {
+  const eventType = input?.event_type === "product_click" ? "product_click" :
+    input?.event_type === "page_view" ? "page_view" : "";
+  const store = input?.store === "aliexpress" ? "aliexpress" : input?.store === "amazon" ? "amazon" : "";
+  const productKey = cleanEventText(input?.product_key, 80).toLowerCase();
+  const pagePath = cleanEventText(input?.page_path, 160);
+  if (!eventType || !pagePath.startsWith("/")) return null;
+  if (eventType === "product_click" && !/^(amazon:[a-z0-9]{10}|aliexpress:\d{6,20})$/.test(productKey)) return null;
+  return {
+    event_type: eventType,
+    product_key: eventType === "product_click" ? productKey : "",
+    product_title: eventType === "product_click" ? cleanEventText(input?.product_title, 180) : "",
+    store: eventType === "product_click" ? store : "",
+    category: eventType === "product_click" ? cleanEventText(input?.category, 60) : "",
+    page_path: pagePath
+  };
+}
+
+async function recordEvent(request, env, origin) {
+  if (!env.ANALYTICS_DB?.prepare) {
+    return json({ ok: false, error: "ANALYTICS_NOT_CONFIGURED" }, 503, cors(origin));
+  }
+  const type = (request.headers.get("Content-Type") || "").toLowerCase();
+  const length = Number(request.headers.get("Content-Length") || 0);
+  if (!type.startsWith("application/json") || length > MAX_EVENT_BODY_BYTES) {
+    return json({ ok: false, error: "INVALID_EVENT" }, 400, cors(origin));
+  }
+  const rateStatus = await rateAllowed(request, env, "events");
+  if (rateStatus === null) return json({ ok: false, error: "SERVICE_NOT_CONFIGURED" }, 503, cors(origin));
+  if (!rateStatus) return json({ ok: false, error: "RATE_LIMIT" }, 429, { ...cors(origin), "Retry-After": "60" });
+  const raw = await request.text();
+  if (new TextEncoder().encode(raw).length > MAX_EVENT_BODY_BYTES) {
+    return json({ ok: false, error: "INVALID_EVENT" }, 400, cors(origin));
+  }
+  let input;
+  try { input = JSON.parse(raw); } catch { return json({ ok: false, error: "INVALID_EVENT" }, 400, cors(origin)); }
+  const event = sanitizeEvent(input);
+  if (!event) return json({ ok: false, error: "INVALID_EVENT" }, 400, cors(origin));
+  const now = new Date();
+  const occurredAt = now.toISOString();
+  await env.ANALYTICS_DB.prepare(`
+    INSERT INTO analytics_events
+      (occurred_at, day, event_type, product_key, product_title, store, category, page_path, referrer_host, device_type, country)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).bind(
+    occurredAt,
+    occurredAt.slice(0, 10),
+    event.event_type,
+    event.product_key,
+    event.product_title,
+    event.store,
+    event.category,
+    event.page_path,
+    referrerHost(request),
+    deviceType(request.headers.get("User-Agent")),
+    cleanEventText(request.cf?.country || "", 2).toUpperCase()
+  ).run();
+  return json({ ok: true }, 202, { ...cors(origin), "Cache-Control": "no-store" });
 }
 
 function sign(parameters, secret) {
@@ -254,7 +340,7 @@ async function search(request, env, origin) {
   }
 }
 
-export { sanitizeQuery, sign, mapProduct, unwrapProducts };
+export { deviceType, sanitizeEvent, sanitizeQuery, sign, mapProduct, unwrapProducts };
 
 export default {
   async fetch(request, env) {
@@ -265,8 +351,16 @@ export default {
     const origin = allowedOrigin(request, env);
     if (!origin) return json({ ok: false, error: "FORBIDDEN" }, 403);
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors(origin) });
-    if (url.pathname !== "/search") return json({ ok: false, error: "NOT_FOUND" }, 404, cors(origin));
-    if (request.method !== "GET") return json({ ok: false, error: "METHOD_NOT_ALLOWED" }, 405, { ...cors(origin), "Allow": "GET, OPTIONS" });
-    return search(request, env, origin);
+    if (url.pathname === "/events" && request.method === "POST") return recordEvent(request, env, origin);
+    if (url.pathname === "/search" && request.method === "GET") return search(request, env, origin);
+    if (!["/search", "/events"].includes(url.pathname)) return json({ ok: false, error: "NOT_FOUND" }, 404, cors(origin));
+    return json({ ok: false, error: "METHOD_NOT_ALLOWED" }, 405, { ...cors(origin), "Allow": "GET, POST, OPTIONS" });
+  },
+
+  async scheduled(_controller, env, ctx) {
+    if (!env.ANALYTICS_DB?.prepare) return;
+    ctx.waitUntil(env.ANALYTICS_DB.prepare(
+      "DELETE FROM analytics_events WHERE occurred_at < datetime('now', '-180 days')"
+    ).run());
   }
 };
