@@ -29,7 +29,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://m.media-amazon.com" crossorigin>
   <link rel="preconnect" href="https://ae01.alicdn.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
   <script type="application/ld+json">
     {"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://majeed3575.github.io/majeeddeals/#organization","name":"أوفرلي","alternateName":"Overly","url":"https://majeed3575.github.io/majeeddeals/","logo":{"@type":"ImageObject","url":"https://majeed3575.github.io/majeeddeals/assets/overly-icon.png"}},{"@type":"WebSite","@id":"https://majeed3575.github.io/majeeddeals/#website","name":"أوفرلي","alternateName":"Overly","url":"https://majeed3575.github.io/majeeddeals/","inLanguage":"ar-SA","description":"منتجات رائجة مختارة من مختلف أقسام Amazon السعودية وAliExpress.","publisher":{"@id":"https://majeed3575.github.io/majeeddeals/#organization"}}]}
   </script>
@@ -63,17 +63,23 @@
 
     html[data-theme="light"] {
       color-scheme: light;
-      --bg: #f5f5f7;
-      --bg-soft: #ebebef;
-      --panel: rgba(255, 255, 255, .76);
-      --panel-solid: #fff;
-      --panel-strong: #f5f5f7;
-      --ink: #1d1d1f;
-      --muted: #6e6e73;
-      --dim: #929299;
-      --line: rgba(0, 0, 0, .08);
-      --line-strong: rgba(0, 0, 0, .14);
-      --shadow: 0 24px 80px rgba(0, 0, 0, .12);
+      --bg: #f2efe9;
+      --bg-soft: #e8e3da;
+      --panel: rgba(255, 252, 247, .82);
+      --panel-solid: #fffdf9;
+      --panel-strong: #f4efe7;
+      --ink: #17302c;
+      --muted: #61716e;
+      --dim: #87938f;
+      --line: rgba(31, 79, 72, .1);
+      --line-strong: rgba(31, 79, 72, .18);
+      --blue: #3f928a;
+      --blue-strong: #2f756f;
+      --cyan: #84d6cd;
+      --violet: #69b9b1;
+      --violet-strong: #2f716b;
+      --green: #208d49;
+      --shadow: 0 22px 65px rgba(38, 58, 53, .12);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -91,6 +97,24 @@
       -webkit-font-smoothing: antialiased;
       transition: background-color .3s ease, color .3s ease;
     }
+
+    html[data-theme="light"] body {
+      background:
+        radial-gradient(circle at 88% -10%, rgba(63, 146, 138, .13), transparent 31rem),
+        radial-gradient(circle at -10% 28%, rgba(199, 169, 126, .1), transparent 28rem),
+        var(--bg);
+    }
+    html[data-theme="light"] .site-header > .shell,
+    html[data-theme="light"] .filters-drawer.open,
+    html[data-theme="light"] .mobile-dock { box-shadow: 0 18px 55px rgba(49, 67, 62, .12), inset 0 1px rgba(255,255,255,.8); }
+    html[data-theme="light"] .secondary-link,
+    html[data-theme="light"] .ali-search-chip,
+    html[data-theme="light"] .seo-links a { background: rgba(49, 89, 82, .045); }
+    html[data-theme="light"] .market-tabs,
+    html[data-theme="light"] .ali-search-input { background: rgba(75, 93, 87, .06); }
+    html[data-theme="light"] .product-media,
+    html[data-theme="light"] .quick-view-media { background: #f7f2ea; }
+    html[data-theme="light"] .seo-directory { background: linear-gradient(145deg, rgba(255,253,249,.96), rgba(239,234,225,.86)); }
 
     a { color: inherit; text-decoration: none; }
     button, input, select { color: inherit; font: inherit; }
@@ -175,10 +199,15 @@
     .filters-drawer {
       display: grid;
       grid-template-rows: 0fr;
-      border-top: 0 solid transparent;
-      transition: grid-template-rows .35s cubic-bezier(.2,.8,.2,1), border-color .25s ease;
+      width: min(1180px, calc(100% - 36px));
+      margin: 6px auto 0;
+      overflow: hidden;
+      border: 1px solid transparent;
+      border-radius: 20px;
+      background: transparent;
+      transition: grid-template-rows .35s cubic-bezier(.2,.8,.2,1), border-color .25s ease, background .25s ease, box-shadow .25s ease;
     }
-    .filters-drawer.open { grid-template-rows: 1fr; border-top: 1px solid var(--line); }
+    .filters-drawer.open { grid-template-rows: 1fr; border-color: var(--line); background: color-mix(in srgb, var(--panel-solid) 88%, transparent); box-shadow: 0 18px 55px rgba(0,0,0,.24); backdrop-filter: var(--glass); }
     .filters-inner { overflow: hidden; }
     .filter-grid { display: grid; grid-template-columns: minmax(240px, 1.7fr) 1fr 1fr; gap: 10px; padding: 14px 11px 17px; }
     .field { position: relative; }
@@ -196,6 +225,7 @@
     .field select { padding: 0 15px; cursor: pointer; appearance: auto; }
     .field input::placeholder { color: var(--dim); }
     .field input:focus, .field select:focus { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(120,201,193,.13); }
+    .filters-mobile-head, .filters-mobile-actions, .filters-backdrop { display: none; }
 
     main { padding: 46px 0 94px; scroll-margin-top: 96px; }
     #dealsTitle, #whyOverly { scroll-margin-top: 105px; }
@@ -318,6 +348,27 @@
     .ali-search-status.loading { color: var(--blue); }
     .ali-search-status.error { color: #ff8d80; }
 
+    /* Compact unified search for phones */
+    .mobile-search-hub { display: none; }
+    .mobile-search-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .mobile-search-head strong { display: block; font-size: 18px; }
+    .mobile-search-head span { display: block; margin-top: 2px; color: var(--muted); font-size: 12px; }
+    .mobile-search-icon { display: grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; border: 1px solid var(--line-strong); border-radius: 15px; color: var(--cyan); background: rgba(120,201,193,.08); font-size: 20px; }
+    .mobile-search-modes { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 16px; padding: 4px; border: 1px solid var(--line); border-radius: 15px; background: rgba(0,0,0,.11); }
+    .mobile-search-mode { min-height: 44px; border-radius: 11px; color: var(--muted); background: transparent; font-size: 12px; font-weight: 800; }
+    .mobile-search-mode.active { color: #04100e; background: var(--blue); box-shadow: 0 8px 20px rgba(47,159,149,.2); }
+    .mobile-search-mode[data-mobile-search-mode="ali"].active { color: #fff; background: #ef533f; box-shadow: 0 8px 20px rgba(239,83,63,.2); }
+    .mobile-search-form { display: grid; grid-template-columns: 1fr 52px; gap: 8px; margin-top: 10px; }
+    .mobile-search-input { min-width: 0; min-height: 50px; padding: 0 15px; outline: none; border: 1px solid var(--line-strong); border-radius: 15px; color: var(--ink); background: var(--panel-solid); font-size: 14px; }
+    .mobile-search-input:focus { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(120,201,193,.12); }
+    .mobile-search-submit { display: grid; place-items: center; min-height: 50px; border-radius: 15px; color: #04100e; background: linear-gradient(135deg, var(--cyan), var(--blue)); font-size: 20px; font-weight: 900; }
+    .mobile-search-suggestions { display: flex; gap: 7px; margin-top: 11px; padding-bottom: 2px; overflow-x: auto; scrollbar-width: none; }
+    .mobile-search-suggestions::-webkit-scrollbar { display: none; }
+    .mobile-search-suggestion { flex: 0 0 auto; min-height: 44px; padding: 0 13px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: rgba(255,255,255,.025); font-size: 12px; font-weight: 700; }
+    .mobile-search-status { min-height: 18px; margin-top: 8px; color: var(--muted); font-size: 12px; }
+    .mobile-search-status.loading { color: var(--blue); }
+    .mobile-search-status.error { color: #ff776b; }
+
     /* Hero */
     .hero {
       position: relative;
@@ -422,7 +473,7 @@
     .category-chip:hover { transform: translateY(-1px); color: var(--ink); border-color: var(--line-strong); }
     .category-chip.active { color: #03100e; border-color: transparent; background: linear-gradient(120deg, var(--cyan), var(--blue)); box-shadow: 0 8px 24px rgba(47,159,149,.2); }
     .category-chip b { display: grid; place-items: center; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 999px; background: rgba(255,255,255,.1); font-size: 9px; }
-    .market-switch-copy a { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .market-switch-copy a { color: var(--blue); text-decoration: none; font-weight: 700; }
     .grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 18px; }
     .load-more-wrap { display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 9px; min-height: 72px; margin-top: 26px; }
     .infinite-spinner { width: 22px; height: 22px; border: 2px solid var(--line-strong); border-top-color: var(--blue); border-radius: 50%; animation: infinite-spin 1s linear infinite; }
@@ -478,6 +529,7 @@
     .detail-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 11px; }
     .detail-row b { color: var(--ink); font-weight: 600; }
     .card-cta { display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%; min-height: 44px; margin-top: 15px; border-radius: 14px; color: #03100e; background: linear-gradient(120deg, var(--cyan), var(--blue)); font-size: 12px; font-weight: 800; transition: filter .2s ease, transform .2s ease; }
+    .cta-mobile { display: none; }
     .card-cta:hover { filter: brightness(1.12); transform: translateY(-1px); }
     .card-actions { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; margin-top: 15px; }
     .card-actions .card-cta { margin-top: 0; }
@@ -512,7 +564,7 @@
     .disclosure { color: var(--muted); font-size: 11px; line-height: 1.9; }
     .footer-legal-links { display: flex; flex-wrap: wrap; gap: 7px 16px; margin-top: 15px; }
     .footer-legal-links a { color: var(--muted); text-decoration: none; font-size: 10px; font-weight: 700; transition: color .2s ease; }
-    .footer-legal-links a:hover, .footer-legal-links a:focus-visible { color: var(--accent); }
+    .footer-legal-links a:hover, .footer-legal-links a:focus-visible { color: var(--blue); }
     .seo-directory { margin: 54px 0 70px; padding: clamp(24px, 4vw, 42px); border: 1px solid var(--line); border-radius: var(--radius-xl); background: linear-gradient(145deg, rgba(16,26,24,.9), rgba(9,17,15,.72)); }
     .seo-directory h2 { margin: 4px 0 8px; font-size: clamp(24px, 3.2vw, 38px); }
     .seo-directory > p { color: var(--muted); font-size: 12px; }
@@ -570,77 +622,194 @@
     }
 
     @media (max-width: 640px) {
+      :root { --glass: saturate(145%) blur(14px); --radius-xl: 25px; --radius-lg: 19px; }
+      html { scroll-padding-bottom: 100px; }
+      body.filters-open { overflow: hidden; }
       .shell { width: min(100% - 24px, 1180px); }
-      .site-header { top: 8px; }
-      .site-header > .shell { border-radius: 19px; }
+      .ambient { opacity: .1; filter: blur(90px); }
+      .site-header { z-index: 60; top: 8px; }
+      .site-header > .shell { overflow: hidden; border-radius: 19px; }
       .nav-row { min-height: 60px; padding: 0 8px; }
-      .brand-plate { width: 105px; height: 46px; padding: 4px 7px; border-radius: 14px; }
-      .filter-button .filter-label { display: none; }
-      .filter-button { width: 40px; padding: 0; }
-      .filter-grid { grid-template-columns: 1fr; }
+      .brand-plate { width: 108px; height: 46px; padding: 4px 7px; border-radius: 14px; }
+      .icon-button, .filter-button { min-height: 44px; }
+      .icon-button { width: 44px; }
+      .filter-button .filter-label, .filter-button .chevron { display: none; }
+      .filter-button { width: 44px; padding: 0; }
+
+      .filters-backdrop { position: fixed; z-index: 58; inset: 0; display: block; visibility: hidden; background: rgba(2,9,8,.6); opacity: 0; pointer-events: none; backdrop-filter: blur(5px); transition: opacity .25s ease, visibility .25s ease; }
+      .filters-backdrop.open { visibility: visible; opacity: 1; pointer-events: auto; }
+      .filters-drawer {
+        position: fixed;
+        z-index: 62;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        display: block;
+        width: 100%;
+        margin: 0;
+        visibility: hidden;
+        overflow: hidden;
+        border: 1px solid var(--line-strong);
+        border-bottom: 0;
+        border-radius: 28px 28px 0 0;
+        background: color-mix(in srgb, var(--panel-solid) 96%, transparent);
+        box-shadow: 0 -25px 75px rgba(0,0,0,.42);
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(105%);
+        transition: transform .32s cubic-bezier(.2,.8,.2,1), opacity .24s ease, visibility .24s ease;
+      }
+      .filters-drawer.open { visibility: visible; border-color: var(--line-strong); background: color-mix(in srgb, var(--panel-solid) 96%, transparent); opacity: 1; pointer-events: auto; transform: translateY(0); }
+      .filters-inner { max-height: min(82dvh, 690px); padding: 8px 16px calc(16px + env(safe-area-inset-bottom)); overflow-y: auto; }
+      .filters-mobile-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 5px 2px 13px; }
+      .filters-mobile-head::before { position: absolute; top: 7px; right: 50%; width: 42px; height: 4px; border-radius: 99px; background: var(--line-strong); transform: translateX(50%); content: ""; }
+      .filters-mobile-head strong { display: block; margin-top: 10px; font-size: 18px; }
+      .filters-mobile-head span { display: block; color: var(--muted); font-size: 12px; }
+      .filters-close { display: grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; margin-top: 8px; border-radius: 50%; color: var(--muted); background: var(--panel-strong); font-size: 20px; }
+      .filter-grid { grid-template-columns: 1fr; gap: 10px; padding: 0; }
       .filter-grid .search-field { grid-column: auto; }
-      main { padding-top: 34px; }
-      .intro { min-height: 0; gap: 30px; padding: 30px 0 46px; }
-      .brand-stage { min-height: 295px; border-radius: 30px; }
-      .brand-stage::before { inset: 14px; border-radius: 22px; }
-      .brand-stage::after { width: 230px; height: 230px; }
-      .intro-logo-plate { width: min(300px, 86%); padding: 18px; }
-      .stage-chip.amazon { top: 20px; right: 20px; }
-      .stage-chip.aliexpress { bottom: 20px; left: 20px; }
-      .intro h1 { font-size: clamp(42px, 14vw, 62px); letter-spacing: -2.4px; }
-      .intro p { font-size: 13px; }
-      .intro-actions .primary-link, .intro-actions .secondary-link { flex: 1; padding-inline: 14px; }
-      .intro-proof { justify-content: space-around; gap: 8px; }
-      .proof-item strong { font-size: 17px; }
-      .market-switch { align-items: stretch; flex-direction: column; padding: 13px; }
-      .market-tabs { display: grid; grid-template-columns: repeat(3, 1fr); }
-      .market-tab { padding: 0 8px; }
-      .hero { min-height: 610px; border-radius: 26px; }
-      .hero-slide, .hero-slide.active { min-height: 610px; grid-template-columns: 1fr; gap: 16px; padding: 28px 22px 55px; }
-      .hero-copy { order: 2; text-align: center; }
-      .eyebrow { justify-content: center; }
-      .hero h2 { margin-inline: auto; font-size: 29px; letter-spacing: -.7px; }
-      .hero-meta, .hero-actions { justify-content: center; }
-      .hero-actions .primary-link { width: 100%; }
-      .hero-visual { order: 1; }
-      .hero-image-stage { width: min(70vw, 285px); padding: 30px; }
-      .hero-orbit { width: min(66vw, 270px); }
+      .field input, .field select { height: 52px; font-size: 14px; }
+      .filters-mobile-actions { position: sticky; bottom: -1px; display: grid; grid-template-columns: .7fr 1.3fr; gap: 8px; margin-top: 12px; padding-top: 11px; background: var(--panel-solid); }
+      .filters-mobile-actions button { min-height: 50px; border-radius: 15px; font-size: 13px; font-weight: 800; }
+      .filters-reset { color: var(--muted); border: 1px solid var(--line); background: var(--panel-strong); }
+      .filters-apply { color: #04100e; background: linear-gradient(120deg, var(--cyan), var(--blue)); }
+
+      main { padding: 22px 0 130px; }
+      .intro { display: block; min-height: 0; padding: 26px 2px 27px; text-align: right; }
+      .intro-copy { order: initial; }
+      .brand-stage { display: none; }
+      .intro-pill { min-height: 36px; padding-inline: 11px; font-size: 12px; }
+      .intro h1 { max-width: 350px; margin-top: 16px; font-size: clamp(39px, 12.5vw, 54px); line-height: 1.02; letter-spacing: -2px; }
+      .intro p { margin-top: 14px; font-size: 14px; line-height: 1.75; }
+      .intro-actions { margin-top: 19px; }
+      .intro-actions .primary-link, .intro-actions .secondary-link { flex: 1; min-height: 48px; padding-inline: 12px; font-size: 12px; }
+      .intro-proof { justify-content: space-between; gap: 8px; margin-top: 22px; padding-top: 17px; }
+      .proof-item { text-align: center; }
+      .proof-item strong { font-size: 18px; }
+      .proof-item small { font-size: 11px; }
+      .proof-line { height: 30px; }
+
+      .mobile-search-hub { display: block; margin: 0 0 14px; padding: 17px; border: 1px solid var(--line); border-radius: 23px; background: linear-gradient(145deg, var(--panel-strong), var(--panel)); box-shadow: 0 15px 42px rgba(0,0,0,.14); }
+      html[data-theme="light"] .mobile-search-modes { background: rgba(45,76,70,.06); }
+      .ali-live-search { display: none; }
+
+      .hero { min-height: 300px; border-radius: 24px; }
+      .hero-slide, .hero-slide.active { min-height: 300px; grid-template-columns: minmax(0, 1fr) 112px; gap: 11px; padding: 22px 18px 47px; }
+      .hero-copy { order: 1; text-align: right; }
+      .eyebrow { justify-content: flex-start; font-size: 11px; }
+      .eyebrow::before { width: 18px; }
+      .hero h2 { max-width: 100%; margin: 8px 0 0; font-size: 19px; line-height: 1.4; letter-spacing: -.3px; }
+      .hero-meta { align-items: start; justify-content: flex-start; flex-direction: column; gap: 2px; margin-top: 9px; }
+      .hero-discount { font-size: 14px; }
+      .old-price { font-size: 10px; }
+      .hero-actions { justify-content: flex-start; margin-top: 11px; }
+      .hero-actions .primary-link { width: 100%; min-height: 46px; }
+      .hero-actions .secondary-link { display: none; }
+      .hero-visual { order: 2; min-height: 126px; }
+      .hero-image-stage { width: 108px; padding: 13px; }
+      .hero-orbit { width: 120px; }
       .hero-arrow { display: none; }
-      .floating-chip { min-height: 30px; padding: 0 9px; font-size: 9px; }
-      .floating-chip.discount { top: 7%; right: -1%; }
-      .floating-chip.source { bottom: 4%; left: -1%; }
-      .trust-strip { grid-template-columns: 1fr; margin-bottom: 42px; }
-      .trust-item { min-height: 48px; }
-      .ali-live-search { padding: 20px; border-radius: 24px; }
-      .ali-search-head { align-items: start; flex-direction: column; }
-      .ali-search-form { grid-template-columns: 1fr; }
-      .ali-search-submit { width: 100%; }
-      .section-head { align-items: start; }
-      .section-stats { max-width: 115px; }
-      .grid { grid-template-columns: 1fr; gap: 15px; }
+      .hero-nav { bottom: 0; gap: 0; }
+      .hero-nav button, .hero-nav button.active { position: relative; width: 44px; height: 44px; background: transparent; }
+      .hero-nav button::after { position: absolute; top: 50%; right: 50%; width: 10px; height: 10px; border-radius: 999px; background: var(--dim); transform: translate(50%, -50%); transition: width .25s ease, background .25s ease; content: ""; }
+      .hero-nav button.active::after { width: 28px; background: var(--ink); }
+      .floating-chip { min-height: 32px; padding: 0 10px; font-size: 10px; }
+      .floating-chip.discount { top: 3%; right: -5%; }
+      .floating-chip.source { display: none; }
+
+      .trust-strip { display: flex; gap: 8px; margin: 10px 0 32px; padding-bottom: 2px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; }
+      .trust-strip::-webkit-scrollbar { display: none; }
+      .trust-item { flex: 0 0 82%; min-height: 68px; scroll-snap-align: start; padding: 10px 13px; }
+      .trust-copy strong { font-size: 13px; }
+      .trust-copy small { font-size: 11px; }
+
+      .section-head { align-items: start; margin-bottom: 17px; }
+      .section-head h2 { font-size: 28px; }
+      .section-head .overline, .section-stats { font-size: 12px; }
+      .section-stats { max-width: 120px; }
+      .market-switch { align-items: stretch; flex-direction: column; gap: 10px; padding: 13px; border-radius: 18px; }
+      .market-switch-copy strong { font-size: 14px; }
+      .market-switch-copy span { font-size: 11px; line-height: 1.55; }
+      .market-tabs { display: grid; grid-template-columns: repeat(3, 1fr); }
+      .market-tab { min-height: 44px; padding: 0 5px; font-size: 11px; }
+      .category-chips { gap: 7px; margin-bottom: 16px; }
+      .category-chip { min-height: 44px; padding-inline: 13px; font-size: 12px; }
+
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 10px; }
       .load-more-button { width: 100%; }
-      .product-card, .product-card:nth-child(1), .product-card:nth-child(2), .product-card:nth-child(6) { display: block; grid-column: 1; }
-      .product-card:nth-child(1) .product-media, .product-card:nth-child(2) .product-media, .product-card:nth-child(6) .product-media, .product-media { height: 280px; min-height: 0; }
-      .product-card:nth-child(6) .product-body { display: block; padding: 20px; }
-      .product-card:nth-child(1) .product-body h3, .product-card:nth-child(6) .product-body h3 { font-size: 15px; }
-      .quick-look { opacity: 1; transform: translate(-50%, 0); }
+      .product-card,
+      .product-card:nth-child(1),
+      .product-card:nth-child(2),
+      .product-card:nth-child(6) { display: block !important; grid-column: auto !important; border-radius: 18px; }
+      .product-card.featured-mobile { grid-column: 1 / -1 !important; }
+      .product-card:nth-child(1) .product-media,
+      .product-card:nth-child(2) .product-media,
+      .product-card:nth-child(6) .product-media,
+      .product-card.featured-mobile .product-media { height: 225px; min-height: 0; }
+      .product-card.compact-mobile .product-media { height: 150px; min-height: 0; padding: 13px; }
+      .product-card.compact-mobile .media-product-link { padding: 13px; }
+      .product-card:nth-child(6) .product-body,
+      .product-card.featured-mobile .product-body { display: block; padding: 17px; }
+      .product-card.compact-mobile .product-body { padding: 11px; }
+      .product-card:nth-child(1) .product-body h3,
+      .product-card:nth-child(6) .product-body h3,
+      .product-card.featured-mobile .product-body h3 { min-height: 3.15em; font-size: 15px; }
+      .product-card.compact-mobile .product-body h3 { min-height: 4.65em; font-size: 13px; line-height: 1.55; -webkit-line-clamp: 3; }
+      .product-card.compact-mobile .discount-badge { top: 8px; right: 8px; max-width: calc(100% - 16px); padding: 5px 7px; overflow: hidden; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+      .product-card.compact-mobile .category-tag { display: none; }
+      .product-card.compact-mobile .store-badge { right: 8px; bottom: 8px; min-height: 27px; padding-inline: 7px; font-size: 10px; }
+      .product-card.compact-mobile .quick-meta { align-items: start; flex-direction: column; gap: 1px; margin-top: 9px; }
+      .product-card.compact-mobile .quick-meta strong { font-size: 13px; }
+      .product-card.compact-mobile .quick-meta span { font-size: 10px; }
+      .product-card.compact-mobile .deal-details,
+      .product-card.compact-mobile .quick-look,
+      .product-card.compact-mobile .share-button { display: none; }
+      .product-card.featured-mobile .quick-look { min-height: 44px; opacity: 1; transform: translate(-50%, 0); }
+      .product-card.compact-mobile .card-actions { grid-template-columns: 1fr; gap: 0; margin-top: 10px; }
+      .product-card.compact-mobile .card-cta { min-height: 44px; padding: 0 7px; border-radius: 12px; font-size: 11px; }
+      .product-card.compact-mobile .cta-desktop { display: none; }
+      .product-card.compact-mobile .cta-mobile { display: inline; }
+
       .story { margin-top: 68px; }
       .story-grid { grid-template-columns: 1fr; }
       .story-card.large, .story-card.small { grid-column: 1; min-height: 260px; padding: 25px; }
-      .story-card.large { min-height: 360px; }
+      .story-card.large { min-height: 340px; }
       .story-orb { width: 110px; }
+      .seo-directory { padding: 22px 17px; }
+      .seo-links { grid-template-columns: 1fr; }
+      .seo-links a { min-height: 70px; font-size: 14px; }
+      .seo-links a span { font-size: 11px; }
+
+      #quickViewModal { place-items: end center; padding: 0; }
       .quick-view-grid { grid-template-columns: 1fr; }
-      .quick-view-box { max-height: calc(100vh - 30px); overflow-y: auto; border-radius: 25px; }
-      .quick-view-media { min-height: 280px; padding: 30px; }
-      .quick-view-copy { padding: 27px; }
+      .quick-view-box { width: 100%; max-height: 92dvh; overflow-y: auto; border-radius: 27px 27px 0 0; }
+      .quick-view-box::before { position: absolute; z-index: 3; top: 8px; right: 50%; width: 42px; height: 4px; border-radius: 99px; background: var(--line-strong); transform: translateX(50%); content: ""; }
+      .quick-view-media { min-height: 210px; max-height: 245px; padding: 27px; }
+      .quick-view-copy { padding: 24px 20px calc(24px + env(safe-area-inset-bottom)); }
       .quick-view-copy h3 { font-size: 21px; }
-      .mobile-dock { position: fixed; z-index: 55; right: 50%; bottom: max(12px, env(safe-area-inset-bottom)); display: grid; grid-template-columns: repeat(3, 1fr); width: min(300px, calc(100% - 34px)); min-height: 58px; padding: 6px; border: 1px solid var(--line-strong); border-radius: 21px; background: color-mix(in srgb, var(--panel-solid) 83%, transparent); box-shadow: 0 20px 60px rgba(0,0,0,.48); backdrop-filter: var(--glass); transform: translateX(50%); }
-      .mobile-dock a, .mobile-dock button { display: grid; place-items: center; gap: 1px; border-radius: 15px; color: var(--muted); background: transparent; font-size: 9px; font-weight: 700; }
-      .mobile-dock a span, .mobile-dock button span { color: var(--ink); font-size: 16px; }
-      .mobile-dock a:active, .mobile-dock button:active { background: rgba(255,255,255,.07); }
-      footer { padding-bottom: 86px; }
+      .close-button { width: 44px; height: 44px; }
+
+      .mobile-dock { position: fixed; z-index: 55; right: 50%; bottom: max(10px, env(safe-area-inset-bottom)); display: grid; grid-template-columns: repeat(4, 1fr); width: min(360px, calc(100% - 24px)); min-height: 64px; padding: 6px; border: 1px solid var(--line-strong); border-radius: 22px; background: color-mix(in srgb, var(--panel-solid) 88%, transparent); box-shadow: 0 20px 60px rgba(0,0,0,.4); backdrop-filter: var(--glass); transform: translateX(50%); transition: transform .28s cubic-bezier(.2,.8,.2,1), opacity .22s ease; }
+      .mobile-dock.is-hidden { opacity: 0; pointer-events: none; transform: translate(50%, calc(100% + 24px)); }
+      .mobile-dock a, .mobile-dock button { display: grid; min-height: 50px; place-items: center; gap: 1px; border-radius: 15px; color: var(--muted); background: transparent; font-size: 11px; font-weight: 700; }
+      .mobile-dock a span, .mobile-dock button span { color: var(--ink); font-size: 17px; }
+      .mobile-dock a:active, .mobile-dock button:active { background: rgba(120,201,193,.1); }
+      footer { padding-bottom: 92px; }
       .footer-inner { grid-template-columns: 1fr; gap: 20px; }
-      .seo-links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .disclosure { font-size: 12px; }
+    }
+
+    @media (max-width: 350px) {
+      .shell { width: min(100% - 18px, 1180px); }
+      .intro h1 { font-size: 38px; }
+      .mobile-search-hub { padding: 14px; }
+      .hero-slide, .hero-slide.active { grid-template-columns: minmax(0, 1fr) 96px; gap: 8px; padding-inline: 14px; }
+      .hero-image-stage { width: 94px; }
+      .hero-orbit { width: 104px; }
+      .hero h2 { font-size: 17px; }
+      .product-card.compact-mobile .product-media { height: 138px; }
+      .product-card.compact-mobile .product-body { padding: 9px; }
+      .mobile-dock { width: calc(100% - 16px); }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -677,44 +846,53 @@
           </button>
         </div>
       </div>
+    </div>
 
-      <div class="filters-drawer" id="filtersDrawer">
-        <div class="filters-inner">
-          <div class="filter-grid">
-            <div class="field search-field">
-              <span class="field-icon">⌕</span>
-              <input id="searchInput" type="search" placeholder="ابحث عن شاحن، منزل، حقيبة…" aria-label="ابحث في العروض">
-            </div>
-            <div class="field">
-              <select id="categorySelect" aria-label="اختر التصنيف">
-                <option value="الكل">كل التصنيفات</option>
-                <option value="الإلكترونيات">الإلكترونيات</option>
-                <option value="المنزل">المنزل</option>
-                <option value="الموضة">الموضة</option>
-                <option value="السيارة">السيارة</option>
-                <option value="السفر">السفر</option>
-                <option value="الجمال والعناية">الجمال والعناية</option>
-                <option value="الرياضة">الرياضة</option>
-                <option value="الأطفال">الأطفال</option>
-                <option value="الحيوانات الأليفة">الحيوانات الأليفة</option>
-                <option value="الأدوات والهوايات">الأدوات والهوايات</option>
-                <option value="الترفيه المنزلي">الترفيه المنزلي</option>
-              </select>
-            </div>
-            <div class="field">
-              <select id="sortSelect" aria-label="ترتيب العروض">
-                <option value="smart">اختيارات أوفرلي</option>
-                <option value="discount">الأعلى خصمًا</option>
-                <option value="price-high">السعر قبل الخصم: الأعلى</option>
-                <option value="price-low">السعر قبل الخصم: الأقل</option>
-                <option value="name">الاسم أبجديًا</option>
-              </select>
-            </div>
+    <div class="filters-drawer" id="filtersDrawer">
+      <div class="filters-inner">
+        <div class="filters-mobile-head">
+          <div><strong>رتّب النتائج بطريقتك</strong><span>بحث وتصنيف وترتيب في مكان واحد</span></div>
+          <button class="filters-close" id="filtersClose" type="button" aria-label="إغلاق الفلاتر">×</button>
+        </div>
+        <div class="filter-grid">
+          <div class="field search-field">
+            <span class="field-icon">⌕</span>
+            <input id="searchInput" type="search" placeholder="ابحث عن شاحن، منزل، حقيبة…" aria-label="ابحث في العروض">
           </div>
+          <div class="field">
+            <select id="categorySelect" aria-label="اختر التصنيف">
+              <option value="الكل">كل التصنيفات</option>
+              <option value="الإلكترونيات">الإلكترونيات</option>
+              <option value="المنزل">المنزل</option>
+              <option value="الموضة">الموضة</option>
+              <option value="السيارة">السيارة</option>
+              <option value="السفر">السفر</option>
+              <option value="الجمال والعناية">الجمال والعناية</option>
+              <option value="الرياضة">الرياضة</option>
+              <option value="الأطفال">الأطفال</option>
+              <option value="الحيوانات الأليفة">الحيوانات الأليفة</option>
+              <option value="الأدوات والهوايات">الأدوات والهوايات</option>
+              <option value="الترفيه المنزلي">الترفيه المنزلي</option>
+            </select>
+          </div>
+          <div class="field">
+            <select id="sortSelect" aria-label="ترتيب العروض">
+              <option value="smart">اختيارات أوفرلي</option>
+              <option value="discount">الأعلى خصمًا</option>
+              <option value="price-high">السعر قبل الخصم: الأعلى</option>
+              <option value="price-low">السعر قبل الخصم: الأقل</option>
+              <option value="name">الاسم أبجديًا</option>
+            </select>
+          </div>
+        </div>
+        <div class="filters-mobile-actions">
+          <button class="filters-reset" id="filtersReset" type="button">إعادة تعيين</button>
+          <button class="filters-apply" id="filtersApply" type="button">عرض <b id="filterResultCount">٠</b> نتيجة</button>
         </div>
       </div>
     </div>
   </header>
+  <button class="filters-backdrop" id="filtersBackdrop" type="button" aria-label="إغلاق نافذة الفلاتر"></button>
 
   <main class="shell" id="top">
     <section class="intro" aria-labelledby="introTitle">
@@ -724,7 +902,7 @@
         <p>أوفرلي يرتّب لك أبرز العروض من أمازون السعودية ومن علي إكسبريس في واجهة واحدة، واضحة وسريعة وبدون ضجيج.</p>
         <div class="intro-actions">
           <a class="primary-link" href="#dealsTitle">اكتشف العروض ↓</a>
-          <button class="secondary-link" type="button" onclick="toggleFilters(true)">ابحث عن منتج ⌕</button>
+          <button class="secondary-link" type="button" onclick="openPrimarySearch()">ابحث عن منتج ⌕</button>
         </div>
         <div class="intro-proof" aria-label="ملخص المنصة">
           <div class="proof-item"><strong id="introDealCount">٠</strong><small>عروض مختارة</small></div>
@@ -739,6 +917,29 @@
         <div class="intro-logo-plate"><img class="intro-logo" src="assets/overly-dark-logo-trimmed.webp" width="520" height="213" alt="أوفرلي — overly" decoding="async"></div>
         <span class="stage-chip aliexpress"><i></i> AliExpress</span>
       </div>
+    </section>
+
+    <section class="mobile-search-hub" id="mobileSearchHub" aria-labelledby="mobileSearchTitle">
+      <div class="mobile-search-head">
+        <div><strong id="mobileSearchTitle">وش تدور عليه؟</strong><span>ابحث في أوفرلي أو في AliExpress مباشرة</span></div>
+        <span class="mobile-search-icon" aria-hidden="true">⌕</span>
+      </div>
+      <div class="mobile-search-modes" role="group" aria-label="نطاق البحث">
+        <button class="mobile-search-mode active" type="button" data-mobile-search-mode="local" aria-pressed="true">عروض أوفرلي</button>
+        <button class="mobile-search-mode" type="button" data-mobile-search-mode="ali" aria-pressed="false">AliExpress كامل</button>
+      </div>
+      <form class="mobile-search-form" id="mobileSearchForm">
+        <input class="mobile-search-input" id="mobileSearchInput" type="search" minlength="2" maxlength="80" autocomplete="off" placeholder="ابحث في المنتجات المحفوظة…" aria-label="البحث في المنتجات">
+        <button class="mobile-search-submit" id="mobileSearchSubmit" type="submit" aria-label="تنفيذ البحث">⌕</button>
+      </form>
+      <div class="mobile-search-suggestions" aria-label="تصنيفات وعبارات رائجة">
+        <button class="mobile-search-suggestion" type="button" data-mobile-query="" data-mobile-category="الكل">الأكثر رواجًا</button>
+        <button class="mobile-search-suggestion" type="button" data-mobile-query="منزل ذكي">منزل ذكي</button>
+        <button class="mobile-search-suggestion" type="button" data-mobile-query="ترفيه منزلي" data-mobile-category="الترفيه المنزلي">ترفيه منزلي</button>
+        <button class="mobile-search-suggestion" type="button" data-mobile-query="سيارة" data-mobile-category="السيارة">للسيارة</button>
+        <button class="mobile-search-suggestion" type="button" data-mobile-query="سفر" data-mobile-category="السفر">للسفر</button>
+      </div>
+      <div class="mobile-search-status" id="mobileSearchStatus" role="status" aria-live="polite">اختر النطاق ثم اكتب ما تبحث عنه.</div>
     </section>
 
     <section class="hero" id="hero" aria-label="أبرز العروض"></section>
@@ -869,9 +1070,10 @@
     </div>
   </footer>
 
-  <nav class="mobile-dock" aria-label="التنقل السريع">
+  <nav class="mobile-dock" id="mobileDock" aria-label="التنقل السريع">
     <a href="#top"><span>⌂</span>الرئيسية</a>
     <a href="#dealsTitle"><span>◇</span>العروض</a>
+    <a href="categories/"><span>▦</span>الأقسام</a>
     <button id="mobileSearchButton" type="button"><span>⌕</span>بحث</button>
   </nav>
 
@@ -1009,8 +1211,12 @@
     let aliSearchHasMore = false;
     let aliSearchLoading = false;
     let aliSearchController = null;
-    const GRID_BATCH_SIZE = 24;
-    let visibleLimit = GRID_BATCH_SIZE;
+    let mobileSearchMode = "local";
+    let lastScrollY = 0;
+    const DESKTOP_GRID_BATCH_SIZE = 24;
+    const MOBILE_GRID_BATCH_SIZE = 12;
+    const gridBatchSize = () => window.matchMedia("(max-width: 640px)").matches ? MOBILE_GRID_BATCH_SIZE : DESKTOP_GRID_BATCH_SIZE;
+    let visibleLimit = gridBatchSize();
     const ALIEXPRESS_SEARCH_API = (() => {
       try {
         const url = new URL(String(window.OVERLY_CONFIG?.aliexpressSearchApi || ""));
@@ -1076,15 +1282,80 @@
       document.documentElement.dataset.theme = theme;
       el("themeToggle").textContent = theme === "dark" ? "☀︎" : "◐";
       el("themeToggle").setAttribute("aria-label", theme === "dark" ? "تفعيل الوضع الفاتح" : "تفعيل الوضع الداكن");
-      document.querySelector('meta[name="theme-color"]').content = theme === "dark" ? "#050807" : "#f5f5f7";
+      document.querySelector('meta[name="theme-color"]').content = theme === "dark" ? "#050807" : "#f2efe9";
       storage.set("site_theme", theme);
     }
 
     function toggleFilters(force) {
       const next = typeof force === "boolean" ? force : !el("filtersDrawer").classList.contains("open");
+      const mobile = window.matchMedia("(max-width: 640px)").matches;
       el("filtersDrawer").classList.toggle("open", next);
       el("filterToggle").setAttribute("aria-expanded", String(next));
-      if (next && window.innerWidth < 640) setTimeout(() => el("searchInput").focus(), 320);
+      el("filtersBackdrop").classList.toggle("open", next && mobile);
+      document.body.classList.toggle("filters-open", next && mobile);
+      if (next && mobile) {
+        el("mobileDock")?.classList.remove("is-hidden");
+        setTimeout(() => el("searchInput").focus(), 320);
+      }
+    }
+
+    function openPrimarySearch() {
+      if (window.matchMedia("(max-width: 640px)").matches) {
+        el("mobileSearchHub").scrollIntoView({behavior: "smooth", block: "center"});
+        setTimeout(() => el("mobileSearchInput").focus(), 420);
+      } else toggleFilters(true);
+    }
+
+    function setMobileSearchStatus(message, type = "") {
+      el("mobileSearchStatus").textContent = message;
+      el("mobileSearchStatus").className = `mobile-search-status ${type}`.trim();
+    }
+
+    function setMobileSearchMode(mode) {
+      mobileSearchMode = mode === "ali" ? "ali" : "local";
+      document.querySelectorAll("[data-mobile-search-mode]").forEach(button => {
+        const active = button.dataset.mobileSearchMode === mobileSearchMode;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+      el("mobileSearchInput").placeholder = mobileSearchMode === "ali"
+        ? "ابحث في AliExpress القابل للشحن للسعودية…"
+        : "ابحث في المنتجات المحفوظة…";
+      setMobileSearchStatus(mobileSearchMode === "ali"
+        ? "ستظهر نتائج AliExpress القابلة للشحن إلى السعودية فقط."
+        : "البحث داخل قائمة أوفرلي الحالية.");
+    }
+
+    function runMobileSearch(rawQuery, preferredCategory = "") {
+      const searchText = String(rawQuery || "").normalize("NFKC").replace(/\s+/g, " ").trim();
+      if (mobileSearchMode === "ali") {
+        if (searchText.length < 2) {
+          setMobileSearchStatus("اكتب حرفين على الأقل للبحث في AliExpress.", "error");
+          return;
+        }
+        el("aliSearchInput").value = searchText;
+        searchAliExpress(searchText);
+        return;
+      }
+
+      if (Array.isArray(aliSearchResults)) clearAliSearchResults(false);
+      store = "all";
+      category = CATEGORIES.includes(preferredCategory) ? preferredCategory : "الكل";
+      sortBy = "smart";
+      query = searchText;
+      visibleLimit = gridBatchSize();
+      el("searchInput").value = searchText;
+      el("categorySelect").value = category;
+      el("sortSelect").value = "smart";
+      document.querySelectorAll(".market-tab").forEach(button => button.classList.toggle("active", button.dataset.store === "all"));
+      renderHero();
+      renderCategoryChips();
+      renderGrid();
+      const count = filteredDeals().length;
+      setMobileSearchStatus(searchText || category !== "الكل"
+        ? `وجدنا ${formatNumber(count)} نتيجة مطابقة في أوفرلي.`
+        : `يعرض أوفرلي الآن ${formatNumber(count)} من المنتجات الأكثر رواجًا.`);
+      el("dealsTitle").scrollIntoView({behavior: "smooth", block: "start"});
     }
 
     function renderHero() {
@@ -1136,7 +1407,7 @@
 
     function setCategory(nextCategory) {
       category = CATEGORIES.includes(nextCategory) ? nextCategory : "الكل";
-      visibleLimit = GRID_BATCH_SIZE;
+      visibleLimit = gridBatchSize();
       el("categorySelect").value = category;
       renderCategoryChips();
       renderGrid();
@@ -1145,7 +1416,7 @@
     function setStore(nextStore) {
       if (nextStore !== "aliexpress" && Array.isArray(aliSearchResults)) clearAliSearchResults();
       store = ["all", "amazon", "aliexpress"].includes(nextStore) ? nextStore : "all";
-      visibleLimit = GRID_BATCH_SIZE;
+      visibleLimit = gridBatchSize();
       heroIndex = 0;
       document.querySelectorAll(".market-tab").forEach(button => button.classList.toggle("active", button.dataset.store === store));
       renderHero();
@@ -1216,7 +1487,7 @@
       if (visibleLimit >= total) return;
       loadingNextBatch = true;
       const appendFrom = visibleLimit;
-      visibleLimit = Math.min(visibleLimit + GRID_BATCH_SIZE, total);
+      visibleLimit = Math.min(visibleLimit + gridBatchSize(), total);
       renderGrid(appendFrom);
       loadingNextBatch = false;
     }
@@ -1229,6 +1500,7 @@
       const hasMore = remaining > 0 || (Array.isArray(aliSearchResults) && aliSearchHasMore);
       const supportsAutoLoad = "IntersectionObserver" in window;
       el("resultCount").textContent = formatNumber(list.length);
+      el("filterResultCount").textContent = formatNumber(list.length);
       el("introDealCount").textContent = formatNumber(deals.length);
       el("emptyState").classList.toggle("hidden", list.length > 0);
       if (!list.length) {
@@ -1246,7 +1518,7 @@
       el("loadMoreButton").classList.toggle("hidden", supportsAutoLoad);
       el("loadMoreButton").textContent = Array.isArray(aliSearchResults) && !remaining
         ? "تحميل نتائج أخرى من AliExpress"
-        : `تحميل ${formatNumber(Math.min(GRID_BATCH_SIZE, remaining))} عرضًا إضافيًا`;
+        : `تحميل ${formatNumber(Math.min(gridBatchSize(), remaining))} عرضًا إضافيًا`;
       el("loadMoreNote").textContent = hasMore
         ? supportsAutoLoad
           ? Array.isArray(aliSearchResults)
@@ -1254,14 +1526,16 @@
             : `واصل النزول — تظهر العروض تلقائيًا (${formatNumber(visibleList.length)} من ${formatNumber(list.length)})`
           : Array.isArray(aliSearchResults) ? `يظهر الآن ${formatNumber(visibleList.length)} نتيجة` : `يظهر الآن ${formatNumber(visibleList.length)} من أصل ${formatNumber(list.length)}`
         : "";
-      const cardsMarkup = cardsToRender.map(deal => {
+      const cardsMarkup = cardsToRender.map((deal, index) => {
         const shop = storeMeta(deal);
         const key = escapeHtml(dealKey(deal));
         const link = escapeHtml(dealLink(deal));
         const page = escapeHtml(catalogProductPage(deal));
         const image = escapeHtml(safeImageUrl(deal) || "assets/overly-icon.webp");
+        const absoluteIndex = (appendFrom === null ? 0 : appendFrom) + index;
+        const mobileCardClass = absoluteIndex < 4 ? "featured-mobile" : "compact-mobile";
         return `
-        <article class="product-card">
+        <article class="product-card ${mobileCardClass}" data-product-key="${key}">
           <div class="product-media">
             <a class="media-product-link" href="${page}" aria-label="تفاصيل ${escapeHtml(deal.title)}">
               <img src="${image}" alt="${escapeHtml(deal.title)}" width="640" height="640" loading="lazy" decoding="async" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🛍️',style:'font-size:52px'}))">
@@ -1283,7 +1557,7 @@
               </div>
             </details>
             <div class="card-actions">
-              <a class="card-cta" href="${link}" target="_blank" rel="sponsored noopener noreferrer" onclick="return go(event,'${key}')">${shop.cta}</a>
+              <a class="card-cta" href="${link}" target="_blank" rel="sponsored noopener noreferrer" onclick="return go(event,'${key}')"><span class="cta-desktop">${shop.cta}</span><span class="cta-mobile">عرض السعر ↗</span></a>
               <button class="share-button" type="button" onclick="shareDeal(event,'${key}')" aria-label="مشاركة ${escapeHtml(deal.title)}" title="مشاركة العرض">↗</button>
             </div>
           </div>
@@ -1305,6 +1579,7 @@
     function setAliSearchStatus(message, type = "") {
       el("aliSearchStatus").textContent = message;
       el("aliSearchStatus").className = `ali-search-status ${type}`.trim();
+      if (mobileSearchMode === "ali") setMobileSearchStatus(message, type);
     }
 
     function clearAliSearchResults(resetStatus = true) {
@@ -1336,7 +1611,7 @@
       if (aliSearchController) aliSearchController.abort();
       aliSearchController = new AbortController();
       const requestedPage = append ? aliSearchPage + 1 : 1;
-      const params = new URLSearchParams({q: searchText, page: String(requestedPage), page_size: String(GRID_BATCH_SIZE)});
+      const params = new URLSearchParams({q: searchText, page: String(requestedPage), page_size: String(DESKTOP_GRID_BATCH_SIZE)});
       try {
         const response = await fetch(`${ALIEXPRESS_SEARCH_API}/search?${params}`, {
           method: "GET",
@@ -1366,7 +1641,9 @@
         store = "aliexpress";
         category = "الكل";
         query = "";
-        visibleLimit = merged.length;
+        visibleLimit = append
+          ? Math.min(merged.length, visibleLimit + gridBatchSize())
+          : Math.min(merged.length, gridBatchSize());
         el("searchInput").value = "";
         el("categorySelect").value = "الكل";
         document.querySelectorAll(".market-tab").forEach(button => button.classList.toggle("active", button.dataset.store === "aliexpress"));
@@ -1449,37 +1726,87 @@
       el("quickViewModal").classList.remove("hidden");
     }
 
+    function resetFilters() {
+      if (Array.isArray(aliSearchResults)) clearAliSearchResults();
+      category = "الكل";
+      store = "all";
+      sortBy = "smart";
+      query = "";
+      heroIndex = 0;
+      visibleLimit = gridBatchSize();
+      el("searchInput").value = "";
+      el("mobileSearchInput").value = "";
+      el("categorySelect").value = "الكل";
+      el("sortSelect").value = "smart";
+      document.querySelectorAll(".market-tab").forEach(button => button.classList.toggle("active", button.dataset.store === "all"));
+      renderAll();
+      setMobileSearchStatus(`يعرض أوفرلي الآن ${formatNumber(filteredDeals().length)} من المنتجات الأكثر رواجًا.`);
+    }
+
     el("themeToggle").addEventListener("click", () => setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark"));
     el("filterToggle").addEventListener("click", () => toggleFilters());
-    el("searchInput").addEventListener("input", event => { if (Array.isArray(aliSearchResults)) clearAliSearchResults(false); query = event.target.value; visibleLimit = GRID_BATCH_SIZE; renderCategoryChips(); renderGrid(); });
+    el("filtersClose").addEventListener("click", () => toggleFilters(false));
+    el("filtersBackdrop").addEventListener("click", () => toggleFilters(false));
+    el("filtersApply").addEventListener("click", () => toggleFilters(false));
+    el("filtersReset").addEventListener("click", resetFilters);
+    el("searchInput").addEventListener("input", event => {
+      if (Array.isArray(aliSearchResults)) clearAliSearchResults(false);
+      if (mobileSearchMode !== "local") setMobileSearchMode("local");
+      query = event.target.value;
+      if (mobileSearchMode === "local") el("mobileSearchInput").value = query;
+      visibleLimit = gridBatchSize();
+      renderCategoryChips();
+      renderGrid();
+    });
     el("categorySelect").addEventListener("change", event => setCategory(event.target.value));
-    el("sortSelect").addEventListener("change", event => { sortBy = event.target.value; visibleLimit = GRID_BATCH_SIZE; renderGrid(); });
+    el("sortSelect").addEventListener("change", event => { sortBy = event.target.value; visibleLimit = gridBatchSize(); renderGrid(); });
     el("loadMoreButton").addEventListener("click", loadNextBatch);
     el("aliSearchForm").addEventListener("submit", event => { event.preventDefault(); searchAliExpress(el("aliSearchInput").value); });
     document.querySelectorAll("[data-ali-query]").forEach(button => button.addEventListener("click", () => {
       el("aliSearchInput").value = button.dataset.aliQuery || "";
       searchAliExpress(el("aliSearchInput").value);
     }));
+    document.querySelectorAll("[data-mobile-search-mode]").forEach(button => button.addEventListener("click", () => setMobileSearchMode(button.dataset.mobileSearchMode)));
+    el("mobileSearchForm").addEventListener("submit", event => {
+      event.preventDefault();
+      runMobileSearch(el("mobileSearchInput").value);
+    });
+    document.querySelectorAll("[data-mobile-query]").forEach(button => button.addEventListener("click", () => {
+      const preferredCategory = button.dataset.mobileCategory || "";
+      const searchText = mobileSearchMode === "ali"
+        ? (button.dataset.mobileQuery || "منتجات رائجة")
+        : (preferredCategory ? "" : (button.dataset.mobileQuery || ""));
+      el("mobileSearchInput").value = searchText;
+      runMobileSearch(searchText, preferredCategory);
+    }));
     el("closeModal").addEventListener("click", closeExitModal);
     el("skipModal").addEventListener("click", closeExitModal);
     el("exitModal").addEventListener("click", event => { if (event.target === el("exitModal")) closeExitModal(); });
     el("closeQuickView").addEventListener("click", closeQuickView);
     el("quickViewModal").addEventListener("click", event => { if (event.target === el("quickViewModal")) closeQuickView(); });
-    el("mobileSearchButton").addEventListener("click", () => {
-      toggleFilters(true);
-      document.querySelector(".site-header").scrollIntoView({behavior: "smooth", block: "start"});
-      setTimeout(() => el("searchInput").focus(), 420);
-    });
+    el("mobileSearchButton").addEventListener("click", openPrimarySearch);
 
     document.addEventListener("keydown", event => {
       if (event.key === "Escape") { closeExitModal(); closeQuickView(); toggleFilters(false); }
     });
 
+    window.addEventListener("resize", () => {
+      if (!window.matchMedia("(max-width: 640px)").matches) toggleFilters(false);
+    }, {passive: true});
+
     function updateScrollUI() {
+      const currentScrollY = Math.max(0, window.scrollY);
       const available = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = available > 0 ? Math.min(100, Math.max(0, window.scrollY / available * 100)) : 0;
+      const progress = available > 0 ? Math.min(100, Math.max(0, currentScrollY / available * 100)) : 0;
       el("scrollProgress").style.width = `${progress}%`;
-      document.querySelector(".site-header").classList.toggle("compact", window.scrollY > 80);
+      document.querySelector(".site-header").classList.toggle("compact", currentScrollY > 80);
+      if (window.matchMedia("(max-width: 640px)").matches) {
+        const dock = el("mobileDock");
+        const delta = currentScrollY - lastScrollY;
+        if (currentScrollY < 120 || el("filtersDrawer").classList.contains("open")) dock.classList.remove("is-hidden");
+        else if (Math.abs(delta) > 7) dock.classList.toggle("is-hidden", delta > 0);
+      }
+      lastScrollY = currentScrollY;
     }
     window.addEventListener("scroll", updateScrollUI, {passive: true});
 
@@ -1538,6 +1865,7 @@
 
     el("copyright").textContent = `© ${new Date().getFullYear()} أوفرلي (Overly) — جميع الحقوق محفوظة.`;
     setTheme(storage.get("site_theme") || "dark");
+    setMobileSearchMode("local");
     renderAll();
     updateScrollUI();
     trackEvent("page_view");
