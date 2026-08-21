@@ -43,11 +43,21 @@ jobs:
           ALIEXPRESS_APP_SECRET: ${{ secrets.ALIEXPRESS_APP_SECRET }}
           ALIEXPRESS_TRACKING_ID: ${{ secrets.ALIEXPRESS_TRACKING_ID }}
 
+      - name: Generate SEO pages and sitemap
+        run: python generate_seo.py
+        env:
+          SEO_MAX_PRODUCT_PAGES: "1000"
+
+      - name: Verify SEO output
+        run: python verify_seo.py
+
       - name: Commit & push (if changed)
         run: |
           git config user.name "deals-bot"
           git config user.email "actions@github.com"
           git add deals.json
+          git add -A -- sitemap.xml deals-initial.json seo.css seo-state.json seo-generated-files.json seo-report.json
+          git add -A -- products categories stores guides about.html methodology.html 404.html
           if [ -f posted_deals.json ]; then git add posted_deals.json; fi
           if [ -f asins.json ]; then git add asins.json; fi
           if [ -f aliexpress_products.json ]; then git add aliexpress_products.json; fi

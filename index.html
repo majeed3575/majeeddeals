@@ -15,19 +15,23 @@
   <meta property="og:title" content="أوفرلي | المنتجات الأكثر رواجاً من Amazon وAliExpress">
   <meta property="og:description" content="منتجات مفيدة وعروض مختارة من Amazon السعودية وAliExpress، مرتبة لتصل للأفضل بسرعة.">
   <meta property="og:url" content="https://majeed3575.github.io/majeeddeals/">
-  <meta property="og:image" content="https://majeed3575.github.io/majeeddeals/assets/overly-dark-chroma.png">
+  <meta property="og:image" content="https://majeed3575.github.io/majeeddeals/assets/overly-social.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="أوفرلي | المنتجات الأكثر رواجاً من Amazon وAliExpress">
   <meta name="twitter:description" content="اختيارات مفيدة من Amazon السعودية وAliExpress، مرتبة حسب الجودة والطلب.">
-  <meta name="twitter:image" content="https://majeed3575.github.io/majeeddeals/assets/overly-dark-chroma.png">
+  <meta name="twitter:image" content="https://majeed3575.github.io/majeeddeals/assets/overly-social.jpg">
   <title>أوفرلي | المنتجات الرائجة من Amazon وAliExpress</title>
-  <link rel="icon" type="image/png" href="assets/overly-icon.png">
-  <link rel="apple-touch-icon" href="assets/overly-icon.png">
+  <link rel="icon" type="image/webp" href="assets/overly-icon.webp">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/overly-icon-180.png">
+  <link rel="sitemap" type="application/xml" href="sitemap.xml">
+  <link rel="preload" href="assets/overly-dark-logo-trimmed.webp" as="image" type="image/webp" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://m.media-amazon.com" crossorigin>
+  <link rel="preconnect" href="https://ae01.alicdn.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <script type="application/ld+json">
-    {"@context":"https://schema.org","@type":"WebSite","name":"أوفرلي","alternateName":"Overly","url":"https://majeed3575.github.io/majeeddeals/","inLanguage":"ar-SA","description":"منتجات رائجة مختارة من مختلف أقسام Amazon السعودية وAliExpress."}
+    {"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://majeed3575.github.io/majeeddeals/#organization","name":"أوفرلي","alternateName":"Overly","url":"https://majeed3575.github.io/majeeddeals/","logo":{"@type":"ImageObject","url":"https://majeed3575.github.io/majeeddeals/assets/overly-icon.png"}},{"@type":"WebSite","@id":"https://majeed3575.github.io/majeeddeals/#website","name":"أوفرلي","alternateName":"Overly","url":"https://majeed3575.github.io/majeeddeals/","inLanguage":"ar-SA","description":"منتجات رائجة مختارة من مختلف أقسام Amazon السعودية وAliExpress.","publisher":{"@id":"https://majeed3575.github.io/majeeddeals/#organization"}}]}
   </script>
   <style>
     :root {
@@ -414,10 +418,11 @@
     .section-stats strong { color: var(--ink); }
     .category-chips { display: flex; gap: 8px; overflow-x: auto; margin: -8px 0 22px; padding: 8px 0 2px; scrollbar-width: none; }
     .category-chips::-webkit-scrollbar { display: none; }
-    .category-chip { display: inline-flex; align-items: center; gap: 7px; min-height: 38px; padding: 0 14px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: var(--panel); white-space: nowrap; font-size: 10px; font-weight: 700; transition: transform .2s ease, color .2s ease, border-color .2s ease, background .2s ease; }
+    .category-chip { display: inline-flex; align-items: center; gap: 7px; min-height: 38px; padding: 0 14px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: var(--panel); white-space: nowrap; text-decoration: none; font-size: 10px; font-weight: 700; transition: transform .2s ease, color .2s ease, border-color .2s ease, background .2s ease; }
     .category-chip:hover { transform: translateY(-1px); color: var(--ink); border-color: var(--line-strong); }
     .category-chip.active { color: #03100e; border-color: transparent; background: linear-gradient(120deg, var(--cyan), var(--blue)); box-shadow: 0 8px 24px rgba(47,159,149,.2); }
     .category-chip b { display: grid; place-items: center; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 999px; background: rgba(255,255,255,.1); font-size: 9px; }
+    .market-switch-copy a { color: var(--accent); text-decoration: none; font-weight: 700; }
     .grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 18px; }
     .load-more-wrap { display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 9px; min-height: 72px; margin-top: 26px; }
     .infinite-spinner { width: 22px; height: 22px; border: 2px solid var(--line-strong); border-top-color: var(--blue); border-radius: 50%; animation: infinite-spin 1s linear infinite; }
@@ -456,6 +461,8 @@
     .product-card:hover .quick-look, .quick-look:focus-visible { opacity: 1; transform: translate(-50%, 0); }
     .discount-badge { position: absolute; z-index: 2; top: 14px; right: 14px; padding: 6px 10px; border-radius: 999px; color: #fff; background: rgba(255,55,95,.94); box-shadow: 0 8px 24px rgba(255,55,95,.2); font-size: 12px; font-weight: 800; }
     .category-tag { position: absolute; z-index: 2; top: 14px; left: 14px; padding: 6px 10px; border: 1px solid rgba(0,0,0,.07); border-radius: 999px; color: #444; background: rgba(255,255,255,.82); backdrop-filter: blur(12px); font-size: 10px; font-weight: 700; }
+    .hero-copy h2 a, .product-body h3 a { color: inherit; text-decoration: none; }
+    .hero-copy h2 a:hover, .product-body h3 a:hover { color: var(--cyan); }
     .product-body { padding: 20px; }
     .product-body h3 { min-height: 3.2em; font-size: 15px; font-weight: 700; line-height: 1.6; display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
     .quick-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 15px; }
@@ -506,6 +513,13 @@
     .footer-legal-links { display: flex; flex-wrap: wrap; gap: 7px 16px; margin-top: 15px; }
     .footer-legal-links a { color: var(--muted); text-decoration: none; font-size: 10px; font-weight: 700; transition: color .2s ease; }
     .footer-legal-links a:hover, .footer-legal-links a:focus-visible { color: var(--accent); }
+    .seo-directory { margin: 54px 0 70px; padding: clamp(24px, 4vw, 42px); border: 1px solid var(--line); border-radius: var(--radius-xl); background: linear-gradient(145deg, rgba(16,26,24,.9), rgba(9,17,15,.72)); }
+    .seo-directory h2 { margin: 4px 0 8px; font-size: clamp(24px, 3.2vw, 38px); }
+    .seo-directory > p { color: var(--muted); font-size: 12px; }
+    .seo-links { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 22px; }
+    .seo-links a { display: grid; gap: 3px; min-height: 76px; padding: 14px; border: 1px solid var(--line); border-radius: 16px; color: var(--ink); background: rgba(255,255,255,.025); text-decoration: none; font-size: 12px; font-weight: 800; }
+    .seo-links a span { color: var(--muted); font-size: 9px; font-weight: 500; }
+    .seo-links a:hover, .seo-links a:focus-visible { border-color: rgba(120,201,193,.42); color: var(--cyan); }
     .copyright { margin-top: 13px; color: var(--dim); font-size: 10px; }
 
     /* Modal + redirect */
@@ -626,6 +640,7 @@
       .mobile-dock a:active, .mobile-dock button:active { background: rgba(255,255,255,.07); }
       footer { padding-bottom: 86px; }
       .footer-inner { grid-template-columns: 1fr; gap: 20px; }
+      .seo-links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -641,15 +656,17 @@
   <header class="site-header">
     <div class="shell">
       <div class="nav-row">
-        <a class="brand" href="#top" aria-label="الصفحة الرئيسية">
+        <a class="brand" href="./" aria-label="الصفحة الرئيسية">
           <span class="brand-plate">
-            <img class="brand-logo" src="assets/overly-dark-logo-trimmed.png" alt="أوفرلي">
+            <img class="brand-logo" src="assets/overly-dark-logo-trimmed.webp" width="520" height="213" alt="أوفرلي" fetchpriority="high" decoding="async">
           </span>
         </a>
 
         <nav class="desktop-nav" aria-label="التنقل الرئيسي">
           <a href="#top">الرئيسية</a>
           <a href="#dealsTitle">العروض</a>
+          <a href="categories/">التصنيفات</a>
+          <a href="guides/">الأدلة</a>
           <a href="#whyOverly">لماذا أوفرلي؟</a>
         </nav>
 
@@ -719,7 +736,7 @@
       </div>
       <div class="brand-stage" aria-label="هوية أوفرلي">
         <span class="stage-chip amazon"><i></i> Amazon.sa</span>
-        <div class="intro-logo-plate"><img class="intro-logo" src="assets/overly-dark-logo-trimmed.png" alt="أوفرلي — overly"></div>
+        <div class="intro-logo-plate"><img class="intro-logo" src="assets/overly-dark-logo-trimmed.webp" width="520" height="213" alt="أوفرلي — overly" decoding="async"></div>
         <span class="stage-chip aliexpress"><i></i> AliExpress</span>
       </div>
     </section>
@@ -763,7 +780,7 @@
         <div class="section-stats"><strong id="resultCount">0</strong> عروض<br><span id="updatedAt"></span></div>
       </div>
       <div class="market-switch" aria-label="اختيار منصة التسوق">
-        <div class="market-switch-copy"><strong>تصفّح حسب المتجر</strong><span>الأسعار والتوفر النهائيان لدى المنصة المختارة</span></div>
+        <div class="market-switch-copy"><strong>تصفّح حسب المتجر</strong><span>الأسعار والتوفر النهائيان لدى المنصة المختارة · <a href="stores/amazon/">Amazon</a> · <a href="stores/aliexpress/">AliExpress</a></span></div>
         <div class="market-tabs" id="marketTabs">
           <button class="market-tab active" type="button" data-store="all" onclick="setStore('all')">كل العروض</button>
           <button class="market-tab" type="button" data-store="amazon" onclick="setStore('amazon')">Amazon</button>
@@ -807,17 +824,41 @@
         </article>
       </div>
     </section>
+
+    <section class="seo-directory" aria-labelledby="exploreTitle">
+      <div class="overline">روابط واضحة لمحركات البحث والزوار</div>
+      <h2 id="exploreTitle">استكشف أوفرلي حسب احتياجك</h2>
+      <p>صفحات ثابتة تتحدث آليًا مع قائمة المنتجات، وتساعدك على الوصول إلى القسم المناسب بسرعة.</p>
+      <nav class="seo-links" aria-label="دليل أقسام أوفرلي">
+        <a href="categories/electronics/">الإلكترونيات<span>شواحن وأجهزة وملحقات</span></a>
+        <a href="categories/home/">المنزل<span>تنظيم ومطبخ ومنزل ذكي</span></a>
+        <a href="categories/car/">السيارة<span>أدوات وإكسسوارات عملية</span></a>
+        <a href="categories/travel/">السفر<span>راحة وتنظيم أثناء التنقل</span></a>
+        <a href="categories/fashion/">الموضة<span>إكسسوارات ومنتجات رائجة</span></a>
+        <a href="categories/beauty-care/">الجمال والعناية<span>عناية شخصية وأدوات</span></a>
+        <a href="categories/sports/">الرياضة<span>لياقة ونشاط يومي</span></a>
+        <a href="categories/kids/">الأطفال<span>منتجات عملية للأسرة</span></a>
+        <a href="categories/pets/">الحيوانات الأليفة<span>أدوات للعناية اليومية</span></a>
+        <a href="categories/tools-hobbies/">الأدوات والهوايات<span>مشروعات وهوايات منزلية</span></a>
+        <a href="categories/home-entertainment/">الترفيه المنزلي<span>بروجكترات وتلفزيونات</span></a>
+        <a href="guides/">أدلة الشراء<span>قوائم فحص قبل الطلب</span></a>
+      </nav>
+    </section>
   </main>
 
   <footer>
     <div class="shell footer-inner">
       <div class="footer-brand">
-        <div class="footer-logo-plate"><img class="footer-logo" src="assets/overly-dark-logo-trimmed.png" alt="أوفرلي"></div>
+        <div class="footer-logo-plate"><img class="footer-logo" src="assets/overly-dark-logo-trimmed.webp" width="520" height="213" alt="أوفرلي" loading="lazy" decoding="async"></div>
         <p>العروض أوضح. الاختيار أسرع.</p>
       </div>
       <div class="disclosure">
         إفصاح: بصفتنا مشاركين في برنامج أمازون أسوشيتس (Amazon Associates)، نحصل على عمولة من عمليات الشراء المؤهلة عبر روابط أمازون دون تكلفة إضافية عليك. وقد تتضمن الصفحة روابط تسويق بالعمولة لمتاجر أخرى مثل AliExpress. الأسعار ونسب الخصم كما رُصدت وقت آخر تحديث وقد تتغيّر — السعر النهائي المعتمد هو الظاهر لدى المتجر لحظة الشراء.
         <nav class="footer-legal-links" aria-label="الصفحات القانونية">
+          <a href="about.html">عن أوفرلي</a>
+          <a href="methodology.html">منهجية الاختيار</a>
+          <a href="categories/">التصنيفات</a>
+          <a href="guides/">أدلة الشراء</a>
           <a href="privacy.html">سياسة الخصوصية</a>
           <a href="terms.html">شروط الاستخدام</a>
           <a href="affiliate-disclosure.html">إفصاح العمولة</a>
@@ -840,7 +881,7 @@
       <div class="modal-icon">🔥</div>
       <h3 id="modalTitle"></h3>
       <p id="modalDescription"></p>
-      <a class="primary-link" id="modalLink" href="#">اعرض العرض لدى المتجر ↗</a>
+      <a class="primary-link" id="modalLink" href="#" rel="sponsored noopener noreferrer">اعرض العرض لدى المتجر ↗</a>
       <button class="skip" id="skipModal" type="button">لا شكرًا، سأكمل التصفح</button>
     </div>
   </div>
@@ -857,7 +898,7 @@
     <div class="quick-view-box">
       <button class="close-button" id="closeQuickView" type="button" aria-label="إغلاق النظرة السريعة">×</button>
       <div class="quick-view-grid">
-        <div class="quick-view-media"><img id="quickImage" src="" alt=""></div>
+        <div class="quick-view-media"><img id="quickImage" src="" alt="صورة المنتج"></div>
         <div class="quick-view-copy">
           <div class="category" id="quickCategory"></div>
           <h3 id="quickTitle"></h3>
@@ -867,7 +908,7 @@
             <div><span>رقم المنتج</span><b id="quickAsin" dir="ltr"></b></div>
             <div><span>السعر والتوفر</span><b id="quickStore">يُتحقق لدى المتجر</b></div>
           </div>
-          <a class="primary-link" id="quickLink" href="#">اعرض السعر الحالي ↗</a>
+          <a class="primary-link" id="quickLink" href="#" rel="sponsored noopener noreferrer">اعرض السعر الحالي ↗</a>
         </div>
       </div>
     </div>
@@ -896,11 +937,24 @@
     const safeImageUrl = deal => storeOf(deal) === "aliexpress"
       ? safeHttpsUrl(deal.image, ["alicdn.com", "aliexpress-media.com", "aliexpress.com"])
       : safeHttpsUrl(deal.image, ["media-amazon.com", "ssl-images-amazon.com", "amazon.com"]);
+    const dealPage = deal => {
+      const key = dealKey(deal).toLowerCase();
+      const valid = storeOf(deal) === "aliexpress" ? /^\d{6,20}$/.test(key) : /^[a-z0-9]{10}$/.test(key);
+      return valid ? `products/${storeOf(deal)}-${key}/` : "#dealsTitle";
+    };
+    const catalogProductPage = deal => deals.some(item => storeOf(item) === storeOf(deal) && dealKey(item) === dealKey(deal))
+      ? dealPage(deal)
+      : "#dealsTitle";
     const CATEGORIES = [
       "الكل", "الإلكترونيات", "المنزل", "السيارة", "السفر", "الموضة",
       "الجمال والعناية", "الرياضة", "الأطفال", "الحيوانات الأليفة", "الأدوات والهوايات",
       "الترفيه المنزلي"
     ];
+    const CATEGORY_SLUGS = {
+      "الإلكترونيات":"electronics", "المنزل":"home", "السيارة":"car", "السفر":"travel",
+      "الموضة":"fashion", "الجمال والعناية":"beauty-care", "الرياضة":"sports", "الأطفال":"kids",
+      "الحيوانات الأليفة":"pets", "الأدوات والهوايات":"tools-hobbies", "الترفيه المنزلي":"home-entertainment"
+    };
     const normalizeAliSearchProduct = product => {
       const productId = String(product?.product_id || "").match(/^\d{6,20}$/)?.[0] || "";
       const title = String(product?.title || "").replace(/[\u0000-\u001f\u007f]/g, " ").replace(/\s+/g, " ").trim().slice(0, 180);
@@ -1043,24 +1097,25 @@
         const shop = storeMeta(deal);
         const key = escapeHtml(dealKey(deal));
         const link = escapeHtml(dealLink(deal));
-        const image = escapeHtml(safeImageUrl(deal) || "assets/overly-icon.png");
+        const page = escapeHtml(catalogProductPage(deal));
+        const image = escapeHtml(safeImageUrl(deal) || "assets/overly-icon.webp");
         return `
         <article class="hero-slide ${index === heroIndex ? "active" : ""}">
           <div class="hero-copy">
             <div class="eyebrow">أحد أبرز عروض ${shop.name}</div>
-            <h2>${escapeHtml(deal.title)}</h2>
+            <h2><a href="${page}">${escapeHtml(deal.title)}</a></h2>
             <div class="hero-meta">
               <span class="hero-discount">${offerText(deal)}</span>
               <span class="old-price">${priceContext(deal, shop)}</span>
             </div>
             <div class="hero-actions">
-              <a class="primary-link" href="${link}" target="_blank" rel="noopener noreferrer" onclick="return go(event,'${key}')">اعرض السعر الحالي ↗</a>
+              <a class="primary-link" href="${link}" target="_blank" rel="sponsored noopener noreferrer" onclick="return go(event,'${key}')">اعرض السعر الحالي ↗</a>
               <button class="secondary-link" type="button" onclick="document.getElementById('dealsTitle').scrollIntoView()">استعرض كل العروض</button>
             </div>
           </div>
           <div class="hero-visual">
             <div class="hero-orbit"></div>
-            <div class="hero-image-stage"><img src="${image}" alt="${escapeHtml(deal.title)}" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🛍️',style:'font-size:64px'}))"></div>
+            <a class="hero-image-stage" href="${page}" aria-label="تفاصيل ${escapeHtml(deal.title)}"><img src="${image}" alt="${escapeHtml(deal.title)}" width="720" height="720" loading="${index === heroIndex ? "eager" : "lazy"}" fetchpriority="${index === heroIndex ? "high" : "low"}" decoding="async" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🛍️',style:'font-size:64px'}))"></a>
             <span class="floating-chip discount">${hasDiscount(deal) ? `وفّر ${deal.discount_percent}٪` : popularityText(deal)}</span>
             <span class="floating-chip source">${shop.name} ↗</span>
           </div>
@@ -1103,7 +1158,8 @@
         const scoped = activeDeals().filter(deal => store === "all" || storeOf(deal) === store);
         const count = item === "الكل" ? scoped.length : scoped.filter(deal => deal.category === item).length;
         const label = item === "الكل" ? "الكل" : item;
-        return `<button type="button" class="category-chip ${item === category ? "active" : ""}" onclick="setCategory('${item}')">${label}<b>${formatNumber(count)}</b></button>`;
+        const href = item === "الكل" ? "categories/" : `categories/${CATEGORY_SLUGS[item] || "electronics"}/`;
+        return `<a href="${href}" class="category-chip ${item === category ? "active" : ""}" ${item === category ? 'aria-current="true"' : ""} onclick="event.preventDefault(); setCategory('${item}')">${label}<b>${formatNumber(count)}</b></a>`;
       }).join("");
     }
 
@@ -1202,12 +1258,13 @@
         const shop = storeMeta(deal);
         const key = escapeHtml(dealKey(deal));
         const link = escapeHtml(dealLink(deal));
-        const image = escapeHtml(safeImageUrl(deal) || "assets/overly-icon.png");
+        const page = escapeHtml(catalogProductPage(deal));
+        const image = escapeHtml(safeImageUrl(deal) || "assets/overly-icon.webp");
         return `
         <article class="product-card">
           <div class="product-media">
-            <a class="media-product-link" href="${link}" target="_blank" rel="noopener noreferrer" onclick="return go(event,'${key}')" aria-label="${escapeHtml(deal.title)}">
-              <img src="${image}" alt="${escapeHtml(deal.title)}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🛍️',style:'font-size:52px'}))">
+            <a class="media-product-link" href="${page}" aria-label="تفاصيل ${escapeHtml(deal.title)}">
+              <img src="${image}" alt="${escapeHtml(deal.title)}" width="640" height="640" loading="lazy" decoding="async" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🛍️',style:'font-size:52px'}))">
             </a>
             <span class="discount-badge">${hasDiscount(deal) ? `-${deal.discount_percent}٪` : popularityText(deal)}</span>
             <span class="category-tag">${escapeHtml(deal.angle || deal.category)}</span>
@@ -1215,7 +1272,7 @@
             <button class="quick-look" type="button" onclick="openQuickView('${key}')">⌘ نظرة سريعة</button>
           </div>
           <div class="product-body">
-            <h3>${escapeHtml(deal.title)}</h3>
+            <h3><a href="${page}">${escapeHtml(deal.title)}</a></h3>
             <div class="quick-meta"><strong>${offerText(deal)}</strong><span>السعر على ${shop.name}</span></div>
             <details class="deal-details">
               <summary>تفاصيل العرض</summary>
@@ -1226,7 +1283,7 @@
               </div>
             </details>
             <div class="card-actions">
-              <a class="card-cta" href="${link}" target="_blank" rel="noopener noreferrer" onclick="return go(event,'${key}')">${shop.cta}</a>
+              <a class="card-cta" href="${link}" target="_blank" rel="sponsored noopener noreferrer" onclick="return go(event,'${key}')">${shop.cta}</a>
               <button class="share-button" type="button" onclick="shareDeal(event,'${key}')" aria-label="مشاركة ${escapeHtml(deal.title)}" title="مشاركة العرض">↗</button>
             </div>
           </div>
@@ -1361,11 +1418,8 @@
       const deal = findDeal(key);
       if (!deal) return;
       const button = event.currentTarget;
-      const shareUrl = storeOf(deal) === "aliexpress" ? dealLink(deal) : (() => {
-        const siteUrl = new URL("https://majeed3575.github.io/majeeddeals/");
-        siteUrl.searchParams.set("deal", dealKey(deal));
-        return siteUrl.toString();
-      })();
+      const page = catalogProductPage(deal);
+      const shareUrl = page.startsWith("products/") ? new URL(page, location.href).href : dealLink(deal);
       const payload = {title: `أوفرلي | ${deal.title}`, text: `${deal.title} — ${offerText(deal)}`, url: shareUrl};
       try {
         if (navigator.share) await navigator.share(payload);
@@ -1381,7 +1435,7 @@
       const deal = findDeal(key);
       if (!deal) return;
       const shop = storeMeta(deal);
-      el("quickImage").src = safeImageUrl(deal) || "assets/overly-icon.png";
+      el("quickImage").src = safeImageUrl(deal) || "assets/overly-icon.webp";
       el("quickImage").alt = deal.title;
       el("quickCategory").textContent = deal.angle || deal.category;
       el("quickTitle").textContent = deal.title;
@@ -1452,21 +1506,35 @@
       }
     }, 6000);
 
-    const dealsEndpoint = `deals.json?v=${Date.now()}`;
-    fetch(dealsEndpoint, {cache: "no-store", headers: {"Cache-Control": "no-cache"}})
-      .then(response => response.ok ? response.json() : Promise.reject(new Error("تعذر تحميل البيانات")))
+    const requestedDeal = new URLSearchParams(location.search).get("deal");
+    let requestedDealOpened = false;
+    const applyDealPayload = data => {
+      if (!Array.isArray(data?.deals) || !data.deals.length) return false;
+      deals = data.deals;
+      updatedAt = data.updated_at || updatedAt;
+      renderAll();
+      if (!requestedDealOpened && requestedDeal && deals.some(item => dealKey(item) === requestedDeal)) {
+        requestedDealOpened = true;
+        setTimeout(() => openQuickView(requestedDeal), 180);
+      }
+      return true;
+    };
+    const loadFullCatalog = () => fetch("deals.json", {cache: "no-cache"})
+      .then(response => response.ok ? response.json() : Promise.reject(new Error("تعذر تحميل القائمة الكاملة")))
+      .then(applyDealPayload)
+      .catch(() => false);
+    const scheduleFullCatalog = () => {
+      const run = () => loadFullCatalog();
+      if ("requestIdleCallback" in window) requestIdleCallback(run, {timeout: 2500});
+      else setTimeout(run, 1400);
+    };
+    fetch("deals-initial.json", {cache: "no-cache"})
+      .then(response => response.ok ? response.json() : Promise.reject(new Error("تعذر تحميل القائمة الأولية")))
       .then(data => {
-        if (Array.isArray(data.deals) && data.deals.length) {
-          deals = data.deals;
-          updatedAt = data.updated_at || updatedAt;
-          renderAll();
-          const requested = new URLSearchParams(location.search).get("deal");
-          if (requested && deals.some(item => dealKey(item) === requested)) {
-            setTimeout(() => openQuickView(requested), 180);
-          }
-        }
+        const applied = applyDealPayload(data);
+        if (!applied || Number(data.total_count || 0) > data.deals.length) scheduleFullCatalog();
       })
-      .catch(() => {});
+      .catch(loadFullCatalog);
 
     el("copyright").textContent = `© ${new Date().getFullYear()} أوفرلي (Overly) — جميع الحقوق محفوظة.`;
     setTheme(storage.get("site_theme") || "dark");
