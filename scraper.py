@@ -4,7 +4,7 @@
 صائد الخصومات السعودية — Amazon.sa Gold Box Scraper
 ====================================================
 - Python 3.10+ / Requests / BeautifulSoup4
-- مصمم للتشغيل Serverless عبر GitHub Actions كل 30 دقيقة
+- مصمم للتشغيل Serverless عبر GitHub Actions كل ساعة
 - يكتب deals.json بمخطط ثابت يستهلكه الواجهة الأمامية مباشرة
 
 ملاحظة تشغيلية مهمة:
