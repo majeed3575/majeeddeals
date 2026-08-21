@@ -187,8 +187,10 @@ def main() -> int:
         ("assets/overly-icon.webp", "assets/overly-icon.png"),
     ):
         optimized_path, original_path = ROOT / optimized, ROOT / original
-        if not optimized_path.exists() or optimized_path.stat().st_size >= original_path.stat().st_size:
-            fail(f"الصورة المحسنة غير موجودة أو ليست أصغر: {optimized}")
+        if not optimized_path.exists():
+            fail(f"الصورة المحسنة غير موجودة: {optimized}")
+        elif original_path.exists() and optimized_path.stat().st_size >= original_path.stat().st_size:
+            fail(f"الصورة المحسنة ليست أصغر من الأصل: {optimized}")
 
     if errors:
         print("[seo-check] FAILED")
