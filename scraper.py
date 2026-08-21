@@ -294,7 +294,7 @@ ALIEXPRESS_FOCUS_QUERIES = [
         "angle": "راحة المنزل", "include": ("mini humidifier", "usb humidifier", "مرطب هواء", "جهاز ترطيب"),
     },
     {
-        "topic": "life_hack", "keywords": "camping lantern rechargeable", "category": "السفر",
+        "topic": "camping", "keywords": "camping lantern rechargeable", "category": "التخييم",
         "angle": "رحلات وتخييم", "include": ("camping lantern", "camping light", "مصباح تخييم", "إضاءة رحلات"),
     },
     {
@@ -491,13 +491,80 @@ ALIEXPRESS_FOCUS_QUERIES = [
         "topic": "sports", "keywords": "running shoes", "category": "الرياضة",
         "angle": "أحذية رياضية", "include": ("running shoes", "sport shoes", "أحذية جري", "حذاء رياضي"),
     },
+    # الحدائق: أدوات عملية ورائجة مع الشروط العامة نفسها للجودة والشحن.
     {
-        "topic": "sports", "keywords": "camping tent waterproof", "category": "الرياضة",
-        "angle": "تخييم خارجي", "include": ("camping tent", "waterproof tent", "خيمة تخييم", "خيمة رحلات"),
+        "topic": "garden", "keywords": "solar garden lights outdoor", "category": "الحدائق",
+        "angle": "إضاءة الحدائق", "include": ("solar garden lights", "garden light", "solar lawn light", "مصباح حديقة"),
     },
     {
-        "topic": "sports", "keywords": "spinning fishing reel", "category": "الرياضة",
-        "angle": "صيد وهوايات", "include": ("fishing reel", "spinning reel", "بكرة صيد", "ماكينة صيد"),
+        "topic": "garden", "keywords": "garden hose spray nozzle", "category": "الحدائق",
+        "angle": "ري الحدائق", "include": ("garden hose nozzle", "spray nozzle", "watering nozzle", "hose sprayer"),
+    },
+    {
+        "topic": "garden", "keywords": "drip irrigation kit garden", "category": "الحدائق",
+        "angle": "ري بالتنقيط", "include": ("drip irrigation", "irrigation kit", "watering system", "micro drip"),
+    },
+    {
+        "topic": "garden", "keywords": "electric pruning shears", "category": "الحدائق",
+        "angle": "تقليم الحدائق", "include": ("electric pruning shears", "pruning shear", "garden pruner", "cordless pruner"),
+    },
+    {
+        "topic": "garden", "keywords": "garden tools set", "category": "الحدائق",
+        "angle": "أدوات الحدائق", "include": ("garden tool set", "gardening tools", "hand garden tools", "garden kit"),
+    },
+    {
+        "topic": "garden", "keywords": "plant watering timer", "category": "الحدائق",
+        "angle": "ري ذكي", "include": ("watering timer", "irrigation timer", "water timer", "garden timer"),
+    },
+    # البحر والصيد: صيد وسباحة وتجهيزات مقاومة للماء.
+    {
+        "topic": "marine", "keywords": "spinning fishing reel", "category": "البحر والصيد",
+        "angle": "بكرات الصيد", "include": ("fishing reel", "spinning reel", "بكرة صيد", "ماكينة صيد"),
+    },
+    {
+        "topic": "marine", "keywords": "telescopic fishing rod", "category": "البحر والصيد",
+        "angle": "قصبات الصيد", "include": ("fishing rod", "telescopic rod", "casting rod", "قصبة صيد"),
+    },
+    {
+        "topic": "marine", "keywords": "fishing tackle box organizer", "category": "البحر والصيد",
+        "angle": "تنظيم معدات الصيد", "include": ("tackle box", "fishing organizer", "fishing storage", "صندوق صيد"),
+    },
+    {
+        "topic": "marine", "keywords": "portable fish finder", "category": "البحر والصيد",
+        "angle": "تقنية الصيد", "include": ("fish finder", "sonar fish", "fishing sonar", "كاشف أسماك"),
+    },
+    {
+        "topic": "marine", "keywords": "waterproof dry bag boating", "category": "البحر والصيد",
+        "angle": "حقائب بحرية", "include": ("waterproof dry bag", "dry bag", "boating bag", "حقيبة مقاومة للماء"),
+    },
+    {
+        "topic": "marine", "keywords": "full face snorkel mask", "category": "البحر والصيد",
+        "angle": "سباحة وغوص", "include": ("snorkel mask", "diving mask", "full face snorkel", "قناع غوص"),
+    },
+    # التخييم: تجهيزات الرحلات العملية دون تخفيف شروط المبيعات أو التقييم.
+    {
+        "topic": "camping", "keywords": "camping tent waterproof", "category": "التخييم",
+        "angle": "خيام التخييم", "include": ("camping tent", "waterproof tent", "خيمة تخييم", "خيمة رحلات"),
+    },
+    {
+        "topic": "camping", "keywords": "folding camping chair", "category": "التخييم",
+        "angle": "جلسات التخييم", "include": ("camping chair", "folding chair", "outdoor chair", "كرسي تخييم"),
+    },
+    {
+        "topic": "camping", "keywords": "camping sleeping bag", "category": "التخييم",
+        "angle": "النوم في الرحلات", "include": ("sleeping bag", "camping sleep bag", "sleeping sack", "كيس نوم"),
+    },
+    {
+        "topic": "camping", "keywords": "camping cookware set", "category": "التخييم",
+        "angle": "طبخ الرحلات", "include": ("camping cookware", "camping cooking set", "outdoor cookware", "أواني تخييم"),
+    },
+    {
+        "topic": "camping", "keywords": "inflatable camping mattress", "category": "التخييم",
+        "angle": "راحة التخييم", "include": ("camping mattress", "inflatable mattress", "sleeping mat", "مرتبة تخييم"),
+    },
+    {
+        "topic": "camping", "keywords": "insulated camping cooler bag", "category": "التخييم",
+        "angle": "حفظ طعام الرحلات", "include": ("cooler bag", "insulated cooler", "camping cooler", "حافظة تبريد"),
     },
     {
         "topic": "kids", "keywords": "building blocks set", "category": "الأطفال",
@@ -651,9 +718,21 @@ CATEGORY_KEYWORDS = {
         "مكياج", "تجميل", "بشرة", "شعر", "أظافر", "حلاقة", "استشوار",
         "makeup", "beauty", "skincare", "cosmetic", "hair", "nail", "clipper",
     ],
+    "الحدائق": [
+        "حديقة", "حدائق", "ري", "تقليم", "زراعة", "نباتات",
+        "garden", "gardening", "irrigation", "watering", "pruning", "lawn",
+    ],
+    "البحر والصيد": [
+        "بحر", "صيد", "غوص", "سنوركل", "قصبة صيد", "بكرة صيد",
+        "fishing", "marine", "boating", "snorkel", "diving", "fish finder", "dry bag",
+    ],
+    "التخييم": [
+        "تخييم", "مخيم", "خيمة", "كيس نوم", "رحلات برية",
+        "camping", "tent", "sleeping bag", "camp chair", "outdoor cookware",
+    ],
     "الرياضة": [
-        "رياضة", "تمارين", "لياقة", "يوغا", "تخييم", "صيد", "جري", "دمبل",
-        "sport", "fitness", "exercise", "yoga", "camping", "fishing", "running", "dumbbell",
+        "رياضة", "تمارين", "لياقة", "يوغا", "جري", "دمبل",
+        "sport", "fitness", "exercise", "yoga", "running", "dumbbell",
     ],
     "الأطفال": [
         "طفل", "أطفال", "رضيع", "مدرسة", "مكعبات", "ريموت",
