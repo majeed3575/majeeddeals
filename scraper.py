@@ -48,9 +48,18 @@ RETRIES = 3
 AFFILIATE_TAG = "faraj733-21"
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
 TELEGRAM_CHANNEL = os.environ.get("TELEGRAM_CHANNEL_USERNAME", "").strip()
-MIN_DISCOUNT_TO_POST = 30          # ينشر فقط العروض ذات خصم 30٪ فأكثر
-MAX_POSTS_PER_RUN = 5              # حد أقصى للمنشورات في كل تشغيلة (يحمي من السبام/الحظر)
-REPOST_COOLDOWN_HOURS = 48        # لا يعيد نشر نفس المنتج خلال هذه المدة
+TELEGRAM_MAX_NEW_POSTS = max(1, int(os.environ.get("TELEGRAM_MAX_NEW_POSTS") or "8"))
+TELEGRAM_DIGEST_POSTS = max(1, int(os.environ.get("TELEGRAM_DIGEST_POSTS") or "1"))
+TELEGRAM_DIGEST_HOURS_UTC = {
+    int(part)
+    for part in (os.environ.get("TELEGRAM_DIGEST_HOURS_UTC") or "6,18").split(",")
+    if part.strip().isdigit() and 0 <= int(part) <= 23
+}
+TELEGRAM_FORCE_DIGEST = (
+    os.environ.get("TELEGRAM_FORCE_DIGEST") or "false"
+).strip().lower() in {"1", "true", "yes", "on"}
+REPOST_COOLDOWN_HOURS = 168       # لا يعاد المنتج نفسه خلال 7 أيام
+TELEGRAM_STATE_RETENTION_DAYS = 30
 POSTED_STATE_PATH = Path(__file__).resolve().parent / "posted_deals.json"
 
 # ----------------------------------------------------------------------------
@@ -1908,144 +1917,305 @@ def write_output(deals: list[dict], source: str = DEALS_URL) -> None:
 
 
 # ----------------------------------------------------------------------------
-# نشر تيليجرام + منع التكرار (Deduplication)
+# نشر تيليجرام: المنتج الجديد فوراً + اختياران يومياً + منع التكرار
 # ----------------------------------------------------------------------------
 def affiliate_link(asin: str) -> str:
     return f"https://www.amazon.sa/dp/{asin}/?tag={AFFILIATE_TAG}"
 
 
-def deal_price(original_price: float, discount_percent: int) -> int:
-    """يحسب السعر بعد الخصم تقريبياً من السعر الأصلي ونسبة الخصم."""
-    return round(original_price * (1 - discount_percent / 100))
+def deal_price(original_price: float, discount_percent: int) -> float:
+    """يحسب السعر التقريبي بعد الخصم من بيانات المتجر دون ادعاء أنه سعر نهائي."""
+    return round(original_price * (1 - discount_percent / 100), 2)
 
 
-def tg_escape(text: str) -> str:
+def tg_escape(text: object) -> str:
     """تهريب الأحرف الخاصة بـ HTML parse_mode في تيليجرام."""
     return (
-        text.replace("&", "&amp;")
+        str(text or "")
+        .replace("&", "&amp;")
         .replace("<", "&lt;")
         .replace(">", "&gt;")
     )
 
 
+def telegram_deal_key(deal: dict) -> str:
+    """معرّف ثابت يعمل مع Amazon وAliExpress ويُستخدم لمنع التكرار."""
+    return _deal_key(deal)
+
+
+def telegram_deal_url(deal: dict) -> str:
+    if str(deal.get("store", "amazon")).lower() == "aliexpress":
+        return str(deal.get("url") or "").strip()
+    return affiliate_link(str(deal.get("asin") or "").strip().upper())
+
+
+def telegram_store_label(deal: dict) -> str:
+    return "AliExpress" if str(deal.get("store", "amazon")).lower() == "aliexpress" else "Amazon.sa"
+
+
+def telegram_description(deal: dict) -> str:
+    """وصف عربي قصير مبني فقط على بيانات المنتج الموجودة في الموقع."""
+    explicit = re.sub(r"\s+", " ", str(deal.get("description") or "")).strip()
+    if explicit:
+        return explicit[:260]
+
+    category = str(deal.get("category") or "عروض متنوعة").strip()
+    angle = str(deal.get("angle") or "").strip()
+    sales = int(float(deal.get("sales_volume") or 0))
+
+    if angle:
+        description = f"منتج ضمن قسم {category}، ويطابق اهتمام «{angle}»."
+    else:
+        description = f"منتج معروض في أوفرلي ضمن قسم {category}."
+
+    if sales > 0:
+        description += f" سجّل {sales:,} طلباً حسب بيانات المتجر."
+    return description[:260]
+
+
 def load_posted_state() -> dict:
-    """يقرأ سجل المنتجات المنشورة سابقاً {asin: ISO-timestamp}."""
+    """يقرأ سجل تيليجرام مع ترقية تلقائية للتنسيق القديم."""
+    empty = {"version": 2, "posted": {}, "pending": [], "last_digest_slot": ""}
     try:
         data = json.loads(POSTED_STATE_PATH.read_text(encoding="utf-8"))
-        return data if isinstance(data, dict) else {}
     except (FileNotFoundError, json.JSONDecodeError):
-        return {}
+        return empty
+
+    if not isinstance(data, dict):
+        return empty
+    if isinstance(data.get("posted"), dict):
+        return {
+            "version": 2,
+            "posted": data.get("posted", {}),
+            "pending": data.get("pending", []) if isinstance(data.get("pending"), list) else [],
+            "last_digest_slot": str(data.get("last_digest_slot") or ""),
+        }
+
+    # التنسيق القديم كان {ASIN: timestamp}.
+    posted = {}
+    for key, value in data.items():
+        if isinstance(value, str):
+            clean_key = key if ":" in str(key) else f"amazon:{str(key).strip().upper()}"
+            posted[clean_key] = value
+    empty["posted"] = posted
+    return empty
 
 
 def save_posted_state(state: dict) -> None:
-    # تنظيف السجلات القديمة (أقدم من ضعف فترة التهدئة) حتى لا ينمو الملف بلا حدود
-    cutoff = datetime.now(timezone.utc) - timedelta(hours=REPOST_COOLDOWN_HOURS * 2)
+    """يحفظ الحالة ويمنع نموها بلا حدود مع إبقاء قائمة الانتظار."""
+    cutoff = datetime.now(timezone.utc) - timedelta(days=TELEGRAM_STATE_RETENTION_DAYS)
     cleaned = {}
-    for asin, ts in state.items():
+    for key, ts in state.get("posted", {}).items():
         try:
             if datetime.fromisoformat(ts) >= cutoff:
-                cleaned[asin] = ts
-        except ValueError:
+                cleaned[str(key)] = ts
+        except (TypeError, ValueError):
             continue
+
+    pending = []
+    seen = set()
+    for key in state.get("pending", []):
+        key = str(key)
+        if key and key not in seen and key not in cleaned:
+            seen.add(key)
+            pending.append(key)
+
+    payload = {
+        "version": 2,
+        "posted": cleaned,
+        "pending": pending[:500],
+        "last_digest_slot": str(state.get("last_digest_slot") or ""),
+    }
     POSTED_STATE_PATH.write_text(
-        json.dumps(cleaned, ensure_ascii=False, indent=2), encoding="utf-8"
+        json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
     )
 
 
-def recently_posted(asin: str, state: dict) -> bool:
-    """هل نُشر هذا المنتج خلال فترة التهدئة؟"""
-    ts = state.get(asin)
+def recently_posted(key: str, posted: dict) -> bool:
+    ts = posted.get(key)
     if not ts:
         return False
     try:
         posted_at = datetime.fromisoformat(ts)
-    except ValueError:
+    except (TypeError, ValueError):
         return False
     return datetime.now(timezone.utc) - posted_at < timedelta(hours=REPOST_COOLDOWN_HOURS)
 
 
-# قوالب جذابة تتناوب لتجنّب رتابة المنشورات
-HEADLINES = [
-    "🚨 عرض فلاش حصري",
-    "🔥 خصم ناري لفترة محدودة",
-    "⚡ صفقة اليوم",
-    "🇸🇦 أقوى عروض أمازون السعودية",
-]
+def format_sar(value: object) -> str:
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return ""
+    if number <= 0:
+        return ""
+    return f"{number:,.2f}".rstrip("0").rstrip(".")
 
 
-def build_caption(deal: dict) -> str:
-    """يبني نص المنشور العربي بصيغة HTML الخاصة بتيليجرام."""
-    title = tg_escape(deal["title"])
-    disc = deal["discount_percent"]
-    original = deal["original_price"]
-    final = deal_price(original, disc)
-    link = affiliate_link(deal["asin"])
-    headline = random.choice(HEADLINES)
+def build_caption(deal: dict, mode: str = "new") -> str:
+    """بطاقة وصفية كاملة من بيانات الموقع، متوافقة مع حد تعليق تيليجرام."""
+    title = tg_escape(str(deal.get("title") or "")[:180])
+    description = tg_escape(telegram_description(deal))
+    category = tg_escape(deal.get("category") or "عروض متنوعة")
+    store = telegram_store_label(deal)
+    discount = int(deal.get("discount_percent") or 0)
+    original = float(deal.get("original_price") or 0)
+    sales = int(float(deal.get("sales_volume") or 0))
+    headline = "🆕 <b>وصل منتج جديد إلى أوفرلي</b>" if mode == "new" else "⭐ <b>اختيار أوفرلي اليوم</b>"
+    facts = [f"🏬 المتجر: <b>{store}</b>", f"🏷️ التصنيف: <b>{category}</b>"]
+    if sales > 0:
+        facts.append(f"🛒 عدد الطلبات: <b>{sales:,}+</b>")
+    if discount > 0:
+        facts.append(f"📉 الخصم المعلن: <b>{discount}%</b>")
+    if original > 0:
+        label = "السعر قبل الخصم" if discount > 0 else "السعر في بيانات المتجر"
+        facts.append(f"💰 {label}: <b>{format_sar(original)} ر.س</b>")
 
-    # ملاحظة التزام: السعر بعد الخصم تقديري محسوب من النسبة،
-    # لذا نوضّح أن السعر النهائي المعتمد هو الظاهر على أمازون.
     return (
-        f"{headline}\n"
-        f"📢 خصم <b>{disc}%</b> لفترة محدودة!\n\n"
+        f"{headline}\n\n"
         f"🛍️ <b>{title}</b>\n\n"
-        f"💰 السعر قبل الخصم: <s>{original} ر.س</s>\n"
-        f"✅ السعر بعد الخصم: <b>~{final} ر.س</b>\n\n"
-        f"🔗 <a href=\"{link}\">اضغط هنا للطلب من أمازون السعودية</a>\n\n"
-        f"🇸🇦 صائد الخصومات السعودية\n"
-        f"<i>السعر النهائي المعتمد هو الظاهر على أمازون لحظة الشراء.</i>"
+        f"📝 {description}\n\n"
+        + "\n".join(facts)
+        + "\n\n👇 اضغط الزر أدناه لعرض المنتج والسعر الحالي.\n\n"
+        f"<i>قد نحصل على عمولة عند الشراء عبر الرابط دون تكلفة إضافية عليك. "
+        f"السعر والتوفر النهائيان هما الظاهران في المتجر.</i>"
     )
 
 
-def send_to_telegram(deal: dict) -> bool:
-    """يرسل صورة المنتج مع النص كتعليق عبر sendPhoto. يعيد True عند النجاح."""
-    api = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendPhoto"
-    payload = {
+def send_to_telegram(deal: dict, mode: str = "new") -> bool:
+    """يرسل صورة وبطاقة وصفية وزر شراء، مع fallback نصي عند تعذر الصورة."""
+    link = telegram_deal_url(deal)
+    if not link.startswith("https://"):
+        print(f"[telegram] missing product URL: {telegram_deal_key(deal)}")
+        return False
+
+    caption = build_caption(deal, mode)
+    reply_markup = json.dumps(
+        {
+            "inline_keyboard": [[
+                {"text": f"مشاهدة المنتج على {telegram_store_label(deal)}", "url": link}
+            ]]
+        },
+        ensure_ascii=False,
+    )
+    base_payload = {
         "chat_id": TELEGRAM_CHANNEL,
-        "photo": deal["image"],
-        "caption": build_caption(deal),
         "parse_mode": "HTML",
+        "reply_markup": reply_markup,
     }
+
     try:
-        resp = requests.post(api, data=payload, timeout=REQUEST_TIMEOUT)
-        ok = resp.status_code == 200 and resp.json().get("ok") is True
+        photo_payload = {
+            **base_payload,
+            "photo": str(deal.get("image") or ""),
+            "caption": caption,
+        }
+        resp = requests.post(
+            f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendPhoto",
+            data=photo_payload,
+            timeout=REQUEST_TIMEOUT,
+        )
+        if resp.status_code == 200 and resp.json().get("ok") is True:
+            return True
+
+        print(
+            f"[telegram] sendPhoto failed {telegram_deal_key(deal)}: "
+            f"{resp.status_code} {resp.text[:160]} — trying text fallback"
+        )
+        text_payload = {**base_payload, "text": caption}
+        fallback = requests.post(
+            f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage",
+            data=text_payload,
+            timeout=REQUEST_TIMEOUT,
+        )
+        ok = fallback.status_code == 200 and fallback.json().get("ok") is True
         if not ok:
-            print(f"[telegram] failed {deal['asin']}: {resp.status_code} {resp.text[:160]}")
+            print(
+                f"[telegram] sendMessage failed {telegram_deal_key(deal)}: "
+                f"{fallback.status_code} {fallback.text[:160]}"
+            )
         return ok
     except (requests.RequestException, ValueError) as exc:
-        print(f"[telegram] error {deal['asin']}: {exc}")
+        print(f"[telegram] error {telegram_deal_key(deal)}: {exc}")
         return False
 
 
-def post_deals_to_telegram(deals: list[dict]) -> None:
-    """ينشر العروض المؤهلة (خصم كافٍ + غير مكررة) ضمن الحدود المسموحة."""
+def telegram_rank(deal: dict) -> tuple[int, int, int]:
+    return (
+        int(deal.get("rank_score") or 0),
+        int(float(deal.get("sales_volume") or 0)),
+        int(deal.get("discount_percent") or 0),
+    )
+
+
+def post_deals_to_telegram(new_deals: list[dict], all_deals: list[dict]) -> None:
+    """ينشر الجديد فوراً، ويرسل اختياراً مرتين يومياً بتوقيت 09:00 و21:00 الرياض."""
     if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHANNEL:
         print("[telegram] secrets not set — skipping channel posting")
         return
 
     state = load_posted_state()
-    # قالب تيليجرام الحالي خاص بأمازون؛ لا ننشر AliExpress قبل إعداد قالب مستقل.
-    eligible = [
-        d for d in deals
-        if str(d.get("store", "amazon")).lower() == "amazon"
-        and d["discount_percent"] >= MIN_DISCOUNT_TO_POST
-    ]
-    print(f"[telegram] {len(eligible)} deals meet the {MIN_DISCOUNT_TO_POST}% threshold")
+    posted = state["posted"]
+    by_key = {
+        telegram_deal_key(deal): deal
+        for deal in all_deals
+        if telegram_deal_key(deal)
+    }
 
-    posted = 0
-    for deal in eligible:
-        if posted >= MAX_POSTS_PER_RUN:
-            print(f"[telegram] reached cap of {MAX_POSTS_PER_RUN} posts this run")
-            break
-        if recently_posted(deal["asin"], state):
+    pending = list(state.get("pending", []))
+    pending_set = set(pending)
+    for deal in new_deals:
+        key = telegram_deal_key(deal)
+        if key and key not in pending_set and not recently_posted(key, posted):
+            pending.append(key)
+            pending_set.add(key)
+
+    new_posted = 0
+    remaining = []
+    now_iso = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    for key in pending:
+        deal = by_key.get(key)
+        if not deal:
             continue
-        if send_to_telegram(deal):
-            state[deal["asin"]] = datetime.now(timezone.utc).isoformat(timespec="seconds")
-            posted += 1
-            print(f"[telegram] posted {deal['asin']} ({deal['discount_percent']}%)")
-            time.sleep(3)  # احترام حدود معدل تيليجرام
+        if recently_posted(key, posted):
+            continue
+        if new_posted >= TELEGRAM_MAX_NEW_POSTS:
+            remaining.append(key)
+            continue
+        if send_to_telegram(deal, "new"):
+            posted[key] = now_iso
+            new_posted += 1
+            print(f"[telegram] posted new product {key}")
+            time.sleep(2)
+        else:
+            remaining.append(key)
+
+    state["pending"] = remaining
+    state["posted"] = posted
+
+    now = datetime.now(timezone.utc)
+    digest_slot = now.strftime("%Y-%m-%d:%H")
+    digest_due = TELEGRAM_FORCE_DIGEST or now.hour in TELEGRAM_DIGEST_HOURS_UTC
+    digest_posted = 0
+    if digest_due and state.get("last_digest_slot") != digest_slot:
+        for deal in sorted(all_deals, key=telegram_rank, reverse=True):
+            if digest_posted >= TELEGRAM_DIGEST_POSTS:
+                break
+            key = telegram_deal_key(deal)
+            if not key or key in remaining or recently_posted(key, posted):
+                continue
+            if send_to_telegram(deal, "digest"):
+                posted[key] = datetime.now(timezone.utc).isoformat(timespec="seconds")
+                digest_posted += 1
+                print(f"[telegram] posted scheduled pick {key}")
+                time.sleep(2)
+        state["last_digest_slot"] = digest_slot
 
     save_posted_state(state)
-    print(f"[telegram] done — {posted} new post(s)")
+    print(
+        f"[telegram] done — immediate={new_posted}, digest={digest_posted}, "
+        f"pending={len(remaining)}"
+    )
 
 
 def main() -> int:
@@ -2076,13 +2246,20 @@ def main() -> int:
     # لا نلمسه إطلاقاً — حتى لا تُمسح العروض المضافة يدوياً في كل تشغيلة.
     if not updates and OUTPUT_PATH.exists():
         print("[main] لا عروض جديدة — إبقاء deals.json الحالي كما هو (حماية العروض اليدوية)")
+        post_deals_to_telegram([], existing)
         return 0
 
     merged = merge_deals(existing, updates)
+    existing_keys = {_deal_key(deal) for deal in existing if _deal_key(deal)}
+    new_deals = [
+        deal for deal in merged
+        if _deal_key(deal) and _deal_key(deal) not in existing_keys
+    ]
     source = "+".join(part for part in [amazon_source if amazon_updates else "", aliexpress_source if aliexpress_updates else ""] if part) or "manual"
     write_output(merged, source)
 
-    post_deals_to_telegram(updates)
+    print(f"[telegram] detected {len(new_deals)} newly added product(s)")
+    post_deals_to_telegram(new_deals, merged)
     return 0
 
 
