@@ -58,6 +58,13 @@ TELEGRAM_DIGEST_HOURS_UTC = {
 TELEGRAM_FORCE_DIGEST = (
     os.environ.get("TELEGRAM_FORCE_DIGEST") or "false"
 ).strip().lower() in {"1", "true", "yes", "on"}
+# عند تفعيله تُضاف منتجات الكتالوج التي لم تُنشر سابقاً إلى قائمة انتظار دائمة.
+TELEGRAM_BACKFILL_ENABLED = (
+    os.environ.get("TELEGRAM_BACKFILL_ENABLED") or "false"
+).strip().lower() in {"1", "true", "yes", "on"}
+TELEGRAM_BACKFILL_POSTS = max(
+    1, min(60, int(os.environ.get("TELEGRAM_BACKFILL_POSTS") or "30"))
+)
 REPOST_COOLDOWN_HOURS = 168       # لا يعاد المنتج نفسه خلال 7 أيام
 TELEGRAM_STATE_RETENTION_DAYS = 30
 POSTED_STATE_PATH = Path(__file__).resolve().parent / "posted_deals.json"
@@ -1974,8 +1981,14 @@ def telegram_description(deal: dict) -> str:
 
 
 def load_posted_state() -> dict:
-    """يقرأ سجل تيليجرام مع ترقية تلقائية للتنسيق القديم."""
-    empty = {"version": 2, "posted": {}, "pending": [], "last_digest_slot": ""}
+    """يقرأ سجل تيليجرام مع ترقية تلقائية للتنسيقات القديمة."""
+    empty = {
+        "version": 3,
+        "posted": {},
+        "pending": [],
+        "ever_posted": [],
+        "last_digest_slot": "",
+    }
     try:
         data = json.loads(POSTED_STATE_PATH.read_text(encoding="utf-8"))
     except (FileNotFoundError, json.JSONDecodeError):
@@ -1984,10 +1997,16 @@ def load_posted_state() -> dict:
     if not isinstance(data, dict):
         return empty
     if isinstance(data.get("posted"), dict):
+        posted = data.get("posted", {})
+        ever_posted = data.get("ever_posted")
+        if not isinstance(ever_posted, list):
+            # ترقية الإصدار 2: كل ما في posted نُشر فعلياً سابقاً.
+            ever_posted = list(posted.keys())
         return {
-            "version": 2,
-            "posted": data.get("posted", {}),
+            "version": 3,
+            "posted": posted,
             "pending": data.get("pending", []) if isinstance(data.get("pending"), list) else [],
+            "ever_posted": ever_posted,
             "last_digest_slot": str(data.get("last_digest_slot") or ""),
         }
 
@@ -1998,11 +2017,12 @@ def load_posted_state() -> dict:
             clean_key = key if ":" in str(key) else f"amazon:{str(key).strip().upper()}"
             posted[clean_key] = value
     empty["posted"] = posted
+    empty["ever_posted"] = list(posted.keys())
     return empty
 
 
 def save_posted_state(state: dict) -> None:
-    """يحفظ الحالة ويمنع نموها بلا حدود مع إبقاء قائمة الانتظار."""
+    """يحفظ الحالة وقائمة الانتظار وسجل النشر التاريخي لمنع التكرار."""
     cutoff = datetime.now(timezone.utc) - timedelta(days=TELEGRAM_STATE_RETENTION_DAYS)
     cleaned = {}
     for key, ts in state.get("posted", {}).items():
@@ -2012,18 +2032,27 @@ def save_posted_state(state: dict) -> None:
         except (TypeError, ValueError):
             continue
 
+    ever_posted = []
+    ever_seen = set()
+    for key in [*state.get("ever_posted", []), *cleaned.keys()]:
+        key = str(key)
+        if key and key not in ever_seen:
+            ever_seen.add(key)
+            ever_posted.append(key)
+
     pending = []
-    seen = set()
+    pending_seen = set()
     for key in state.get("pending", []):
         key = str(key)
-        if key and key not in seen and key not in cleaned:
-            seen.add(key)
+        if key and key not in pending_seen and key not in ever_seen:
+            pending_seen.add(key)
             pending.append(key)
 
     payload = {
-        "version": 2,
+        "version": 3,
         "posted": cleaned,
-        "pending": pending[:500],
+        "pending": pending[:2000],
+        "ever_posted": ever_posted[:3000],
         "last_digest_slot": str(state.get("last_digest_slot") or ""),
     }
     POSTED_STATE_PATH.write_text(
@@ -2061,7 +2090,12 @@ def build_caption(deal: dict, mode: str = "new") -> str:
     discount = int(deal.get("discount_percent") or 0)
     original = float(deal.get("original_price") or 0)
     sales = int(float(deal.get("sales_volume") or 0))
-    headline = "🆕 <b>وصل منتج جديد إلى أوفرلي</b>" if mode == "new" else "⭐ <b>اختيار أوفرلي اليوم</b>"
+    if mode == "new":
+        headline = "🆕 <b>وصل منتج جديد إلى أوفرلي</b>"
+    elif mode == "catalog":
+        headline = "✨ <b>من منتجات أوفرلي المختارة</b>"
+    else:
+        headline = "⭐ <b>اختيار أوفرلي اليوم</b>"
     facts = [f"🏬 المتجر: <b>{store}</b>", f"🏷️ التصنيف: <b>{category}</b>"]
     if sales > 0:
         facts.append(f"🛒 عدد الطلبات: <b>{sales:,}+</b>")
@@ -2149,13 +2183,14 @@ def telegram_rank(deal: dict) -> tuple[int, int, int]:
 
 
 def post_deals_to_telegram(new_deals: list[dict], all_deals: list[dict]) -> None:
-    """ينشر الجديد فوراً، ويرسل اختياراً مرتين يومياً بتوقيت 09:00 و21:00 الرياض."""
+    """ينشر الجديد أولاً ثم يمر على الكتالوج بمعدل آمن، مع اختيارين يومياً."""
     if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHANNEL:
         print("[telegram] secrets not set — skipping channel posting")
         return
 
     state = load_posted_state()
     posted = state["posted"]
+    ever_posted = {str(key) for key in state.get("ever_posted", []) if str(key)}
     by_key = {
         telegram_deal_key(deal): deal
         for deal in all_deals
@@ -2164,34 +2199,62 @@ def post_deals_to_telegram(new_deals: list[dict], all_deals: list[dict]) -> None
 
     pending = list(state.get("pending", []))
     pending_set = set(pending)
+    current_new_keys = {
+        telegram_deal_key(deal)
+        for deal in new_deals
+        if telegram_deal_key(deal)
+    }
+
+    # المنتجات المكتشفة للتو لها الأولوية دائماً.
     for deal in new_deals:
         key = telegram_deal_key(deal)
-        if key and key not in pending_set and not recently_posted(key, posted):
+        if key and key not in pending_set and key not in ever_posted:
             pending.append(key)
             pending_set.add(key)
 
-    new_posted = 0
+    queued_backfill = 0
+    if TELEGRAM_BACKFILL_ENABLED:
+        # ترتيب الكتالوج حسب الجودة والرواج ثم إضافة ما لم يُنشر في أي وقت سابق.
+        for deal in sorted(all_deals, key=telegram_rank, reverse=True):
+            key = telegram_deal_key(deal)
+            if not key or key in pending_set or key in ever_posted:
+                continue
+            pending.append(key)
+            pending_set.add(key)
+            queued_backfill += 1
+        if queued_backfill:
+            print(f"[telegram] queued {queued_backfill} catalog product(s) for backfill")
+
+    hourly_limit = (
+        TELEGRAM_BACKFILL_POSTS
+        if TELEGRAM_BACKFILL_ENABLED
+        else TELEGRAM_MAX_NEW_POSTS
+    )
+    sent_now = 0
     remaining = []
     now_iso = datetime.now(timezone.utc).isoformat(timespec="seconds")
     for key in pending:
         deal = by_key.get(key)
-        if not deal:
+        if not deal or key in ever_posted:
             continue
-        if recently_posted(key, posted):
-            continue
-        if new_posted >= TELEGRAM_MAX_NEW_POSTS:
+        if sent_now >= hourly_limit:
             remaining.append(key)
             continue
-        if send_to_telegram(deal, "new"):
+
+        mode = "new" if key in current_new_keys else "catalog"
+        if send_to_telegram(deal, mode):
             posted[key] = now_iso
-            new_posted += 1
-            print(f"[telegram] posted new product {key}")
+            ever_posted.add(key)
+            sent_now += 1
+            print(f"[telegram] posted {mode} product {key}")
+            # 30 رسالة/دقيقة تقريباً لتفادي Flood Control داخل القناة.
             time.sleep(2)
         else:
             remaining.append(key)
 
     state["pending"] = remaining
     state["posted"] = posted
+    state["ever_posted"] = sorted(ever_posted)
 
     now = datetime.now(timezone.utc)
     digest_slot = now.strftime("%Y-%m-%d:%H")
@@ -2206,15 +2269,17 @@ def post_deals_to_telegram(new_deals: list[dict], all_deals: list[dict]) -> None
                 continue
             if send_to_telegram(deal, "digest"):
                 posted[key] = datetime.now(timezone.utc).isoformat(timespec="seconds")
+                ever_posted.add(key)
                 digest_posted += 1
                 print(f"[telegram] posted scheduled pick {key}")
                 time.sleep(2)
+        state["ever_posted"] = sorted(ever_posted)
         state["last_digest_slot"] = digest_slot
 
     save_posted_state(state)
     print(
-        f"[telegram] done — immediate={new_posted}, digest={digest_posted}, "
-        f"pending={len(remaining)}"
+        f"[telegram] done — hourly={sent_now}/{hourly_limit}, digest={digest_posted}, "
+        f"pending={len(remaining)}, ever_posted={len(ever_posted)}"
     )
 
 
