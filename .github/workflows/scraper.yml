@@ -3,7 +3,13 @@ name: Overly Deals Updater
 on:
   schedule:
     - cron: "0 * * * *"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      telegram_digest:
+        description: "إرسال منشور تيليجرام تجريبي/فوري"
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -34,6 +40,11 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHANNEL_USERNAME: ${{ secrets.TELEGRAM_CHANNEL_USERNAME }}
+          # 06:00 و18:00 UTC = 09:00 و21:00 بتوقيت الرياض.
+          TELEGRAM_DIGEST_HOURS_UTC: "6,18"
+          TELEGRAM_DIGEST_POSTS: "1"
+          TELEGRAM_MAX_NEW_POSTS: "8"
+          TELEGRAM_FORCE_DIGEST: ${{ github.event.inputs.telegram_digest || 'false' }}
           # Amazon Creators API (البديل الرسمي لـ PA-API) — يكفي إضافة هذين السرّين لتفعيل التحديث الحيّ.
           # باقي الإعدادات لها قيم افتراضية جاهزة للسعودية داخل الكود.
           CREATORS_CLIENT_ID: ${{ secrets.CREATORS_CLIENT_ID }}
