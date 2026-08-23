@@ -43,7 +43,10 @@ jobs:
           # 06:00 و18:00 UTC = 09:00 و21:00 بتوقيت الرياض.
           TELEGRAM_DIGEST_HOURS_UTC: "6,18"
           TELEGRAM_DIGEST_POSTS: "1"
-          TELEGRAM_MAX_NEW_POSTS: "8"
+          # إرسال الكتالوج كاملاً تدريجياً بمعدل آمن: 30 منتجاً في كل تشغيل ساعي.
+          TELEGRAM_MAX_NEW_POSTS: "30"
+          TELEGRAM_BACKFILL_ENABLED: "true"
+          TELEGRAM_BACKFILL_POSTS: "30"
           TELEGRAM_FORCE_DIGEST: ${{ github.event.inputs.telegram_digest || 'false' }}
           # Amazon Creators API (البديل الرسمي لـ PA-API) — يكفي إضافة هذين السرّين لتفعيل التحديث الحيّ.
           # باقي الإعدادات لها قيم افتراضية جاهزة للسعودية داخل الكود.
