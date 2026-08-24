@@ -872,6 +872,7 @@
               <option value="الحدائق">الحدائق</option>
               <option value="البحر والصيد">البحر والصيد</option>
               <option value="التخييم">التخييم</option>
+              <option value="المدرسة والتعليم">المدرسة والتعليم</option>
               <option value="الأطفال">الأطفال</option>
               <option value="الحيوانات الأليفة">الحيوانات الأليفة</option>
               <option value="الأدوات والهوايات">الأدوات والهوايات</option>
@@ -944,6 +945,7 @@
         <button class="mobile-search-suggestion" type="button" data-mobile-query="حدائق" data-mobile-category="الحدائق">للحدائق</button>
         <button class="mobile-search-suggestion" type="button" data-mobile-query="صيد" data-mobile-category="البحر والصيد">للبحر والصيد</button>
         <button class="mobile-search-suggestion" type="button" data-mobile-query="تخييم" data-mobile-category="التخييم">للتخييم</button>
+        <button class="mobile-search-suggestion" type="button" data-mobile-query="أدوات مدرسية" data-mobile-category="المدرسة والتعليم">للمدرسة والتعليم</button>
       </div>
       <div class="mobile-search-status" id="mobileSearchStatus" role="status" aria-live="polite">اختر النطاق ثم اكتب ما تبحث عنه.</div>
     </section>
@@ -1159,12 +1161,13 @@
     const CATEGORIES = [
       "الكل", "الإلكترونيات", "المنزل", "السيارة", "السفر", "الموضة",
       "الجمال والعناية", "الرياضة", "الحدائق", "البحر والصيد", "التخييم",
-      "الأطفال", "الحيوانات الأليفة", "الأدوات والهوايات", "الترفيه المنزلي"
+      "المدرسة والتعليم", "الأطفال", "الحيوانات الأليفة", "الأدوات والهوايات", "الترفيه المنزلي"
     ];
     const CATEGORY_SLUGS = {
       "الإلكترونيات":"electronics", "المنزل":"home", "السيارة":"car", "السفر":"travel",
       "الموضة":"fashion", "الجمال والعناية":"beauty-care", "الرياضة":"sports",
-      "الحدائق":"garden", "البحر والصيد":"sea-fishing", "التخييم":"camping", "الأطفال":"kids",
+      "الحدائق":"garden", "البحر والصيد":"sea-fishing", "التخييم":"camping",
+      "المدرسة والتعليم":"school-education", "الأطفال":"kids",
       "الحيوانات الأليفة":"pets", "الأدوات والهوايات":"tools-hobbies", "الترفيه المنزلي":"home-entertainment"
     };
     const normalizeAliSearchProduct = product => {
