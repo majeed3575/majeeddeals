@@ -1529,6 +1529,7 @@ def sanitize_aliexpress(raw: dict) -> dict | None:
         "discount_percent": int(discount),
         "original_price": round(original, 2),
         **({"sales_volume": int(raw.get("sales_volume"))} if raw.get("sales_volume") else {}),
+        **({"rating_percent": round(float(raw.get("rating_percent")), 1)} if raw.get("rating_percent") else {}),
         "category": category if category in CATEGORY_KEYWORDS else classify(title),
         **({"auto_discovered": True} if raw.get("auto_discovered") else {}),
         **({"angle": str(raw.get("angle"))[:40]} if raw.get("angle") else {}),
@@ -1943,6 +1944,8 @@ def scrape_aliexpress() -> list[dict]:
                 "target_sale_price_currency",
                 "discount",
                 "promotion_link",
+                "evaluate_rate",
+                "lastest_volume",
             ]
         )
         for start in range(0, len(product_ids), 20):
@@ -2011,6 +2014,7 @@ def scrape_aliexpress() -> list[dict]:
                 or product.get("sale_price_currency"),
                 "discount_percent": product.get("discount"),
                 "sales_volume": int(_ali_number(product.get("lastest_volume"))),
+                "rating_percent": _ali_number(product.get("evaluate_rate")),
                 "category": categories.get(product_id) or product.get("_overly_category"),
                 "auto_discovered": product.get("auto_discovered"),
                 "angle": product.get("_overly_angle"),
@@ -2135,32 +2139,60 @@ def telegram_store_label(deal: dict) -> str:
 
 
 def telegram_description(deal: dict) -> str:
-    """وصف واضح بلهجة سعودية عامة من البيانات المتاحة، بلا اختراع مواصفات."""
+    """وصف سعودي خفيف من بيانات المنتج المتاحة، من دون تكرار العنوان أو اختراع مواصفات."""
     explicit = re.sub(r"\s+", " ", str(deal.get("description") or "")).strip()
     category = str(deal.get("category") or "العروض المتنوعة").strip()
     angle = str(deal.get("angle") or "").strip()
     title = re.sub(r"\s+", " ", str(deal.get("title") or "")).strip()
+    low = title.lower()
 
-    # لا نعيد استخدام الوصف الآلي القديم أو أي عبارة تصنيفية مبهمة.
     boilerplate = ("منتج ضمن قسم", "منتج معروض في أوفرلي ضمن قسم")
     if explicit and not explicit.startswith(boilerplate):
-        clean = explicit.rstrip(" .،")
-        return f"باختصار: {clean}. إذا ناسب احتياجك، شيّك التفاصيل والسعر الحالي من المتجر."[:300]
+        return explicit.rstrip(" .،")[:220] + "."
+
+    # أوصاف محددة عندما يدل العنوان نفسه بوضوح على الاستخدام.
+    if any(term in low for term in ("مصباح تخييم", "camping lantern", "camping light")):
+        return "ينفع للرحلات والجلسات البرية، وسهل للحمل والتخزين."
+    if any(term in low for term in ("باور بانك", "power bank")):
+        return "ينفع للشحن وأنت برا البيت، وخيار عملي للدوام والسفر."
+    if any(term in low for term in ("منظم", "organizer", "storage")):
+        return "يساعدك ترتب أغراضك وتستفيد من المساحة بشكل عملي."
+    if any(term in low for term in ("مكنسة", "vacuum", "cleaning", "تنظيف")):
+        return "يسهّل عليك التنظيف اليومي ويوفر عليك وقت وجهد."
+    if any(term in low for term in ("بروجكتر", "projector")):
+        return "ينفع لجلسات الأفلام والمباريات في البيت، وتفاصيله كاملة في المتجر."
+    if any(term in low for term in ("carplay", "سيارة", "car ")):
+        return "خيار عملي للسيارة والاستخدام اليومي، وتأكد من التوافق قبل الطلب."
+    if any(term in low for term in ("سفر", "travel", "luggage")):
+        return "ينفع للسفر والتنقل، وفكرته عملية للي يحب يرتب رحلته."
+    if any(term in low for term in ("حديقة", "garden", "plant", "ري ")):
+        return "يفيدك في شغل الحديقة والعناية بالنباتات بشكل أسهل."
+    if any(term in low for term in ("صيد", "fishing", "قارب", "marine")):
+        return "خيار عملي لطلعات البحر والصيد، وتفاصيل استخدامه موضحة في المتجر."
 
     if angle:
-        return (
-            f"فكرته باختصار: {angle}. اخترناه لك من خيارات {category} الرائجة؛ "
-            "إذا ناسب احتياجك، شيّك المواصفات والسعر الحالي من المتجر."
-        )[:300]
+        return f"يفيدك في {angle}، واخترناه لك من الخيارات الرائجة في {category}."
+    return f"خيار عملي من {category} يستاهل تشوف تفاصيله."
 
-    product_name = title[:105].rstrip(" -–—،,.")
-    if product_name:
-        return (
-            f"هذا {product_name}. خيار يستاهل تشوفه؛ "
-            "تأكد من المواصفات والسعر الحالي في المتجر قبل الطلب."
-        )[:300]
 
-    return "خيار مختار لك من أوفرلي. شيّك المواصفات والسعر الحالي في المتجر قبل الطلب."
+def telegram_category_emoji(deal: dict) -> str:
+    category = str(deal.get("category") or "")
+    return {
+        "التخييم": "🏕️",
+        "الحدائق": "🌿",
+        "البحر والصيد": "🎣",
+        "الترفيه المنزلي": "📺",
+        "الإلكترونيات": "🔌",
+        "السيارة": "🚗",
+        "السفر": "🧳",
+        "المنزل": "🏠",
+        "الموضة": "👟",
+        "الجمال والعناية": "✨",
+        "الرياضة": "🏋️",
+        "الأطفال": "🧸",
+        "الحيوانات الأليفة": "🐾",
+        "الأدوات": "🛠️",
+    }.get(category, "🛍️")
 
 
 def load_posted_state() -> dict:
@@ -2280,38 +2312,30 @@ def format_sar(value: object) -> str:
 
 
 def build_caption(deal: dict, mode: str = "new") -> str:
-    """بطاقة وصفية كاملة من بيانات الموقع، متوافقة مع حد تعليق تيليجرام."""
-    title = tg_escape(str(deal.get("title") or "")[:180])
+    """بطاقة تيليجرام خفيفة وواضحة، مع الإفصاح الإلزامي المختصر."""
+    title = tg_escape(str(deal.get("title") or "")[:150])
     description = tg_escape(telegram_description(deal))
-    category = tg_escape(deal.get("category") or "عروض متنوعة")
-    store = telegram_store_label(deal)
-    discount = int(deal.get("discount_percent") or 0)
-    original = float(deal.get("original_price") or 0)
+    emoji = telegram_category_emoji(deal)
     sales = int(float(deal.get("sales_volume") or 0))
-    if mode == "new":
-        headline = "🆕 <b>وصل منتج جديد إلى أوفرلي</b>"
-    elif mode == "featured":
-        headline = "⭐ <b>منتج مميز من أوفرلي</b>"
-    else:
-        headline = "✨ <b>من منتجات أوفرلي المختارة</b>"
-    facts = [f"🏬 المتجر: <b>{store}</b>", f"🏷️ التصنيف: <b>{category}</b>"]
-    if sales > 0:
-        facts.append(f"🛒 عدد الطلبات: <b>{sales:,}+</b>")
-    if discount > 0:
-        facts.append(f"📉 الخصم المعلن: <b>{discount}%</b>")
-    if original > 0:
-        label = "السعر قبل الخصم" if discount > 0 else "السعر في بيانات المتجر"
-        facts.append(f"💰 {label}: <b>{format_sar(original)} ر.س</b>")
+    rating_percent = float(deal.get("rating_percent") or 0)
+    rating = rating_percent / 20 if rating_percent > 5 else rating_percent
 
-    return (
-        f"{headline}\n\n"
-        f"🛍️ <b>{title}</b>\n\n"
-        f"📝 {description}\n\n"
-        + "\n".join(facts)
-        + "\n\n👇 اضغط الزر أدناه لعرض المنتج والسعر الحالي.\n\n"
-        f"<i>قد نحصل على عمولة عند الشراء عبر الرابط دون تكلفة إضافية عليك. "
-        f"السعر والتوفر النهائيان هما الظاهران في المتجر.</i>"
-    )
+    metrics = []
+    if sales > 0:
+        metrics.append(f"🛒 +{sales:,} طلب")
+    if 0 < rating <= 5:
+        metrics.append(f"⭐ {rating:.1f}")
+
+    blocks = [
+        "⭐ <b>اختيار أوفرلي</b>",
+        f"{emoji} <b>{title}</b>",
+        description,
+    ]
+    if metrics:
+        blocks.append("  •  ".join(metrics))
+    blocks.append("👇 شيّك التفاصيل والسعر الحالي")
+    blocks.append("<i>رابط عمولة — السعر النهائي يظهر في المتجر.</i>")
+    return "\n\n".join(blocks)
 
 
 def send_to_telegram(deal: dict, mode: str = "new") -> bool:
@@ -2325,7 +2349,7 @@ def send_to_telegram(deal: dict, mode: str = "new") -> bool:
     reply_markup = json.dumps(
         {
             "inline_keyboard": [[
-                {"text": f"مشاهدة المنتج على {telegram_store_label(deal)}", "url": link}
+                {"text": f"عرض السعر على {telegram_store_label(deal)}", "url": link}
             ]]
         },
         ensure_ascii=False,
