@@ -727,6 +727,58 @@ ALIEXPRESS_FOCUS_QUERIES = [
         "topic": "car", "keywords": "car phone holder", "category": "السيارة",
         "angle": "تنظيم الهاتف بالسيارة", "include": ("car phone holder", "phone mount", "حامل جوال سيارة", "حامل هاتف سيارة"),
     },
+    {
+        "topic": "school", "keywords": "school stationery set students", "category": "المدرسة والتعليم",
+        "angle": "أدوات مدرسية", "include": ("stationery set", "school supplies", "أدوات مدرسية", "قرطاسية"),
+    },
+    {
+        "topic": "school", "keywords": "large pencil case school", "category": "المدرسة والتعليم",
+        "angle": "تنظيم الأقلام", "include": ("pencil case", "pen case", "مقلمة", "حافظة أقلام"),
+    },
+    {
+        "topic": "school", "keywords": "school backpack students", "category": "المدرسة والتعليم",
+        "angle": "حقائب مدرسية", "include": ("school backpack", "student backpack", "حقيبة مدرسية", "شنطة مدرسية"),
+    },
+    {
+        "topic": "school", "keywords": "electric pencil sharpener students", "category": "المدرسة والتعليم",
+        "angle": "تجهيز الدراسة", "include": ("pencil sharpener", "electric sharpener", "براية أقلام", "مبراة أقلام"),
+    },
+    {
+        "topic": "school", "keywords": "geometry set school students", "category": "المدرسة والتعليم",
+        "angle": "أدوات هندسية", "include": ("geometry set", "math set", "طقم هندسي", "أدوات هندسية"),
+    },
+    {
+        "topic": "school", "keywords": "kids art drawing set", "category": "المدرسة والتعليم",
+        "angle": "رسم وتلوين", "include": ("drawing set", "art set", "مجموعة رسم", "أدوات تلوين"),
+    },
+    {
+        "topic": "school", "keywords": "educational flash cards learning", "category": "المدرسة والتعليم",
+        "angle": "بطاقات تعليمية", "include": ("flash cards", "learning cards", "بطاقات تعليمية", "بطاقات تعلم"),
+    },
+    {
+        "topic": "school", "keywords": "stem science experiment kit kids", "category": "المدرسة والتعليم",
+        "angle": "تجارب تعليمية", "include": ("science kit", "stem kit", "مجموعة تجارب", "ألعاب stem"),
+    },
+    {
+        "topic": "school", "keywords": "educational math learning game", "category": "المدرسة والتعليم",
+        "angle": "ألعاب حساب تعليمية", "include": ("math learning", "educational game", "ألعاب حساب", "تعليم الرياضيات"),
+    },
+    {
+        "topic": "school", "keywords": "educational puzzle learning board", "category": "المدرسة والتعليم",
+        "angle": "ألغاز تعليمية", "include": ("educational puzzle", "learning board", "ألغاز تعليمية", "لوح تعليمي"),
+    },
+    {
+        "topic": "school", "keywords": "kids desk organizer school", "category": "المدرسة والتعليم",
+        "angle": "تنظيم مكتب الدراسة", "include": ("desk organizer", "stationery organizer", "منظم مكتب", "منظم قرطاسية"),
+    },
+    {
+        "topic": "school", "keywords": "school lunch box reusable", "category": "المدرسة والتعليم",
+        "angle": "وجبة مدرسية", "include": ("lunch box", "bento box", "علبة طعام", "لانش بوكس"),
+    },
+    {
+        "topic": "school", "keywords": "study planner whiteboard", "category": "المدرسة والتعليم",
+        "angle": "تنظيم المذاكرة", "include": ("study planner", "weekly planner", "منظم مذاكرة", "لوحة تخطيط"),
+    },
 
 ]
 # استبعاد الخردة والمنتجات الحساسة أو ضعيفة النية الشرائية حتى لو ظهر لها خصم مرتفع.
@@ -917,9 +969,15 @@ CATEGORY_KEYWORDS = {
         "رياضة", "تمارين", "لياقة", "يوغا", "جري", "دمبل",
         "sport", "fitness", "exercise", "yoga", "running", "dumbbell",
     ],
+    "المدرسة والتعليم": [
+        "مدرسة", "مدرسي", "مدرسية", "قرطاسية", "مقلمة", "براية", "مبراة",
+        "تعليمي", "تعليمية", "مذاكرة", "أدوات هندسية", "بطاقات تعليمية",
+        "school", "stationery", "pencil case", "pencil sharpener", "geometry set",
+        "educational", "learning", "flash cards", "study planner", "science kit",
+    ],
     "الأطفال": [
-        "طفل", "أطفال", "رضيع", "مدرسة", "مكعبات", "ريموت",
-        "baby", "kids", "child", "toddler", "school", "blocks", "remote control",
+        "طفل", "أطفال", "رضيع", "مكعبات", "ريموت",
+        "baby", "kids", "child", "toddler", "blocks", "remote control",
     ],
     "الحيوانات الأليفة": [
         "قطط", "كلاب", "حيوانات", "قطة", "كلب", "pet", "cat", "dog", "grooming",
@@ -1646,6 +1704,19 @@ def _ali_click_title(value: object, angle: object) -> str:
         "فتح أسهل": "فتاحة علب كهربائية أوتوماتيكية",
         "قهوة متنقلة": "ماكينة إسبريسو محمولة للسفر",
         "تنظيم الغسيل": "سلة غسيل قابلة للطي",
+        "أدوات مدرسية": "مجموعة قرطاسية وأدوات مدرسية للطلاب",
+        "تنظيم الأقلام": "مقلمة مدرسية لتنظيم الأقلام والأدوات",
+        "حقائب مدرسية": "حقيبة مدرسية للطلاب",
+        "تجهيز الدراسة": "براية أقلام كهربائية للدراسة",
+        "أدوات هندسية": "طقم أدوات هندسية للطلاب",
+        "رسم وتلوين": "مجموعة رسم وتلوين تعليمية",
+        "بطاقات تعليمية": "بطاقات تعليمية للمراجعة والتعلّم",
+        "تجارب تعليمية": "مجموعة تجارب علمية تعليمية STEM",
+        "ألعاب حساب تعليمية": "لعبة تعليمية لتعلّم الحساب",
+        "ألغاز تعليمية": "ألغاز ولوح تعليمي للتعلّم",
+        "تنظيم مكتب الدراسة": "منظم مكتب للقرطاسية وأدوات الدراسة",
+        "وجبة مدرسية": "علبة طعام قابلة لإعادة الاستخدام للمدرسة",
+        "تنظيم المذاكرة": "لوحة تخطيط لتنظيم المذاكرة والأسبوع",
     }
     base = labels.get(str(angle or ""))
     if not base:
@@ -2151,6 +2222,8 @@ def telegram_description(deal: dict) -> str:
         return explicit.rstrip(" .،")[:220] + "."
 
     # أوصاف محددة عندما يدل العنوان نفسه بوضوح على الاستخدام.
+    if category == "المدرسة والتعليم":
+        return "ينفع للمدرسة والمذاكرة، ويساعد على ترتيب وقت الدراسة وأدواتها بشكل عملي."
     if any(term in low for term in ("مصباح تخييم", "camping lantern", "camping light")):
         return "ينفع للرحلات والجلسات البرية، وسهل للحمل والتخزين."
     if any(term in low for term in ("باور بانك", "power bank")):
@@ -2189,6 +2262,7 @@ def telegram_category_emoji(deal: dict) -> str:
         "الموضة": "👟",
         "الجمال والعناية": "✨",
         "الرياضة": "🏋️",
+        "المدرسة والتعليم": "🎒",
         "الأطفال": "🧸",
         "الحيوانات الأليفة": "🐾",
         "الأدوات": "🛠️",
