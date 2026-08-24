@@ -48,24 +48,17 @@ RETRIES = 3
 AFFILIATE_TAG = "faraj733-21"
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
 TELEGRAM_CHANNEL = os.environ.get("TELEGRAM_CHANNEL_USERNAME", "").strip()
-TELEGRAM_MAX_NEW_POSTS = max(1, int(os.environ.get("TELEGRAM_MAX_NEW_POSTS") or "8"))
-TELEGRAM_DIGEST_POSTS = max(1, int(os.environ.get("TELEGRAM_DIGEST_POSTS") or "1"))
-TELEGRAM_DIGEST_HOURS_UTC = {
-    int(part)
-    for part in (os.environ.get("TELEGRAM_DIGEST_HOURS_UTC") or "6,18").split(",")
-    if part.strip().isdigit() and 0 <= int(part) <= 23
-}
-TELEGRAM_FORCE_DIGEST = (
-    os.environ.get("TELEGRAM_FORCE_DIGEST") or "false"
-).strip().lower() in {"1", "true", "yes", "on"}
-# عند تفعيله تُضاف منتجات الكتالوج التي لم تُنشر سابقاً إلى قائمة انتظار دائمة.
-TELEGRAM_BACKFILL_ENABLED = (
-    os.environ.get("TELEGRAM_BACKFILL_ENABLED") or "false"
-).strip().lower() in {"1", "true", "yes", "on"}
-TELEGRAM_BACKFILL_POSTS = max(
-    1, min(60, int(os.environ.get("TELEGRAM_BACKFILL_POSTS") or "30"))
+TELEGRAM_MAX_NEW_POSTS = max(
+    1, min(30, int(os.environ.get("TELEGRAM_MAX_NEW_POSTS") or "30"))
 )
-REPOST_COOLDOWN_HOURS = 168       # لا يعاد المنتج نفسه خلال 7 أيام
+# منتج مميز واحد كل ساعتين، وبحد أقصى 10 منتجات في اليوم بتوقيت الرياض.
+TELEGRAM_FEATURED_INTERVAL_HOURS = max(
+    2, int(os.environ.get("TELEGRAM_FEATURED_INTERVAL_HOURS") or "2")
+)
+TELEGRAM_FEATURED_DAILY_LIMIT = max(
+    1, min(10, int(os.environ.get("TELEGRAM_FEATURED_DAILY_LIMIT") or "10"))
+)
+REPOST_COOLDOWN_HOURS = 168       # لا يعاد المنتج المميز نفسه خلال 7 أيام
 TELEGRAM_STATE_RETENTION_DAYS = 30
 POSTED_STATE_PATH = Path(__file__).resolve().parent / "posted_deals.json"
 
@@ -196,10 +189,6 @@ ALIEXPRESS_FOCUS_QUERIES = [
     {
         "topic": "tech", "keywords": "portable bluetooth speaker", "category": "الإلكترونيات",
         "angle": "صوت محمول", "include": ("bluetooth speaker", "wireless speaker", "مكبر صوت بلوتوث", "سماعة بلوتوث"),
-    },
-    {
-        "topic": "tech", "keywords": "wifi security camera", "category": "الإلكترونيات",
-        "angle": "مراقبة ذكية", "include": ("security camera", "wifi camera", "ip camera", "كاميرا مراقبة"),
     },
     {
         "topic": "tech", "keywords": "mechanical keyboard", "category": "الإلكترونيات",
@@ -654,17 +643,195 @@ ALIEXPRESS_FOCUS_QUERIES = [
         "topic": "popular", "keywords": "electric scooter adult", "category": "الرياضة",
         "angle": "تنقل شخصي", "include": ("electric scooter", "adult scooter", "سكوتر كهربائي", "دراجة كهربائية"),
     },
+    {
+        "topic": "home", "keywords": "drawer organizer adjustable", "category": "المنزل",
+        "angle": "تنظيم الأدراج", "include": ("drawer organizer", "drawer divider", "منظم أدراج", "فاصل أدراج"),
+    },
+    {
+        "topic": "home", "keywords": "storage bins organizer", "category": "المنزل",
+        "angle": "تخزين منزلي", "include": ("storage bin", "storage box", "صندوق تخزين", "منظم تخزين"),
+    },
+    {
+        "topic": "home", "keywords": "microfiber floor mop", "category": "المنزل",
+        "angle": "تنظيف الأرضيات", "include": ("microfiber mop", "floor mop", "ممسحة أرضية", "ممسحة مايكروفايبر"),
+    },
+    {
+        "topic": "home", "keywords": "shoe rack organizer", "category": "المنزل",
+        "angle": "تنظيم الأحذية", "include": ("shoe rack", "shoe organizer", "رف أحذية", "منظم أحذية"),
+    },
+    {
+        "topic": "home", "keywords": "bedding sheet set", "category": "المنزل",
+        "angle": "مفروشات منزلية", "include": ("bed sheet", "bedding set", "ملاءة سرير", "طقم سرير"),
+    },
+    {
+        "topic": "fashion", "keywords": "crossbody bag casual", "category": "الموضة",
+        "angle": "حقائب يومية", "include": ("crossbody bag", "shoulder bag", "حقيبة كروس", "حقيبة كتف"),
+    },
+    {
+        "topic": "fashion", "keywords": "rfid wallet men", "category": "الموضة",
+        "angle": "محافظ عملية", "include": ("rfid wallet", "leather wallet", "محفظة rfid", "محفظة رجالية"),
+    },
+    {
+        "topic": "beauty", "keywords": "hair dryer brush", "category": "الجمال والعناية",
+        "angle": "تصفيف الشعر", "include": ("hair dryer brush", "hot air brush", "فرشاة استشوار", "فرشاة هواء ساخن"),
+    },
+    {
+        "topic": "beauty", "keywords": "makeup organizer box", "category": "الجمال والعناية",
+        "angle": "تنظيم أدوات العناية", "include": ("makeup organizer", "cosmetic organizer", "منظم مكياج", "منظم مستحضرات"),
+    },
+    {
+        "topic": "sport", "keywords": "foam roller fitness", "category": "الرياضة",
+        "angle": "استشفاء رياضي", "include": ("foam roller", "massage roller", "رول تمارين", "أسطوانة تمارين"),
+    },
+    {
+        "topic": "sport", "keywords": "cycling accessories bag", "category": "الرياضة",
+        "angle": "إكسسوارات الدراجات", "include": ("bike bag", "bicycle bag", "حقيبة دراجة", "إكسسوارات دراجة"),
+    },
+    {
+        "topic": "garden", "keywords": "soil moisture meter", "category": "الحدائق",
+        "angle": "قياس التربة", "include": ("soil moisture meter", "soil tester", "مقياس رطوبة التربة", "فاحص تربة"),
+    },
+    {
+        "topic": "garden", "keywords": "garden gloves waterproof", "category": "الحدائق",
+        "angle": "عناية بالحديقة", "include": ("garden gloves", "gardening gloves", "قفازات حديقة", "قفازات زراعة"),
+    },
+    {
+        "topic": "garden", "keywords": "plant support clips", "category": "الحدائق",
+        "angle": "دعم النباتات", "include": ("plant clips", "plant support", "مشابك نبات", "دعامة نبات"),
+    },
+    {
+        "topic": "fishing", "keywords": "fishing pliers tool", "category": "البحر والصيد",
+        "angle": "أدوات الصيد", "include": ("fishing pliers", "hook remover", "كماشة صيد", "مزيل خطاف"),
+    },
+    {
+        "topic": "camping", "keywords": "rechargeable camping lantern", "category": "التخييم",
+        "angle": "إضاءة الرحلات", "include": ("camping lantern", "rechargeable lantern", "فانوس تخييم", "إضاءة رحلات"),
+    },
+    {
+        "topic": "camping", "keywords": "folding camping table", "category": "التخييم",
+        "angle": "أثاث الرحلات", "include": ("camping table", "folding table", "طاولة تخييم", "طاولة قابلة للطي"),
+    },
+    {
+        "topic": "kids", "keywords": "magnetic building tiles", "category": "الأطفال",
+        "angle": "تعلم وتركيب", "include": ("magnetic tiles", "building tiles", "مكعبات مغناطيسية", "قطع تركيب"),
+    },
+    {
+        "topic": "pet", "keywords": "pet hair remover roller", "category": "الحيوانات الأليفة",
+        "angle": "تنظيف شعر الحيوانات", "include": ("pet hair remover", "lint roller", "مزيل شعر الحيوانات", "رول إزالة الوبر"),
+    },
+    {
+        "topic": "tools", "keywords": "digital caliper tool", "category": "الأدوات والهوايات",
+        "angle": "قياس دقيق", "include": ("digital caliper", "electronic caliper", "قدمة رقمية", "مقياس رقمي"),
+    },
+    {
+        "topic": "car", "keywords": "car phone holder", "category": "السيارة",
+        "angle": "تنظيم الهاتف بالسيارة", "include": ("car phone holder", "phone mount", "حامل جوال سيارة", "حامل هاتف سيارة"),
+    },
+
 ]
 # استبعاد الخردة والمنتجات الحساسة أو ضعيفة النية الشرائية حتى لو ظهر لها خصم مرتفع.
+# فلترة محافظة مبنية على قوائم هيئة الزكاة والضريبة والجمارك السعودية.
+# المصادر الرسمية:
+# https://zatca.gov.sa/ar/RulesRegulations/Taxes/Pages/customs-individual/Prohibited-goods.aspx
+# https://eservices.zatca.gov.sa/sites/sc/ar/CustomsGuideNew/RestrictedGoods/Pages/Pages/LandingPage.aspx
+# لا يمكن للنص وحده إثبات الفسح النظامي؛ لذلك تُستبعد أيضاً السلع عالية الخطورة
+# التي تحتاج عادةً موافقة أو ترخيصاً قبل إدخالها إلى المملكة.
+SAUDI_COMPLIANCE_BLOCKS = {
+    "أسلحة أو ذخائر": (
+        "firearm", "airsoft", "bb gun", "pellet gun", "pistol", "rifle",
+        "ammunition", "bullet", "crossbow", "slingshot", "brass knuckle",
+        "switchblade", "butterfly knife", "combat knife", "tactical knife",
+        "سلاح", "مسدس", "بندقية", "ذخيرة", "رصاص", "قوس نشاب", "قبضة حديدية",
+        "سكين فراشة", "سكين قتالي",
+    ),
+    "صواعق أو مسيلات دموع": (
+        "stun gun", "taser", "electric shock weapon", "pepper spray", "tear gas",
+        "صاعق كهربائي", "مسدس صاعق", "رذاذ فلفل", "مسيل دموع",
+    ),
+    "ألعاب نارية أو متفجرات": (
+        "firework", "firecracker", "pyrotechnic", "explosive", "detonator",
+        "ألعاب نارية", "مفرقعات", "متفجرات", "صاعق تفجير",
+    ),
+    "كاميرا سرية أو تنصت": (
+        "spy camera", "hidden camera", "camera pen", "camera glasses", "camera watch",
+        "eavesdropping device", "audio bug", "gsm listening",
+        "كاميرا خفية", "كاميرا سرية", "قلم بكاميرا", "نظارة بكاميرا",
+        "ساعة بكاميرا", "جهاز تنصت",
+    ),
+    "جهاز اتصالات أو مراقبة مقيّد": (
+        "signal jammer", "gps jammer", "mobile jammer", "radar detector",
+        "speed camera detector", "satellite internet receiver", "cctv camera",
+        "security camera", "wifi security camera", "quadcopter drone", "camera drone",
+        "مشوش إشارة", "مشوش gps", "كاشف رادار", "كاشف كاميرا سرعة",
+        "مستقبل إنترنت فضائي", "كاميرا مراقبة", "طائرة درون", "طائرة بدون طيار",
+    ),
+    "ليزر غير واضح القدرة": (
+        "high power laser", "burning laser", "laser pointer", "blue laser pen",
+        "ليزر عالي القدرة", "ليزر حارق", "مؤشر ليزر", "قلم ليزر أزرق",
+    ),
+    "منتجات جنسية أو مخلة": (
+        "sex toy", "adult toy", "vibrator", "dildo", "masturbator",
+        "penis enlargement", "pornographic", "erotic toy",
+        "أداة جنسية", "لعبة جنسية", "جهاز جنسي", "تكبير القضيب", "مواد إباحية",
+    ),
+    "مخدرات أو مسكرات أو تبغ": (
+        "cannabis", "marijuana", "hashish", "alcohol distiller", "wine making kit",
+        "vape", "e-cigarette", "nicotine pouch", "chewing tobacco",
+        "قنب", "حشيش", "جهاز تقطير كحول", "صناعة النبيذ", "سيجارة إلكترونية",
+        "فيب", "نيكوتين", "تبغ مضغ",
+    ),
+    "دواء أو مستحضر عالي المخاطر غير قابل للتحقق": (
+        "abortion pill", "sexual enhancement", "male enhancement", "slimming capsule",
+        "weight loss pill", "herbal capsule", "diet pill",
+        "حبوب إجهاض", "مقوي جنسي", "منشط جنسي", "حبوب تخسيس", "كبسولات أعشاب",
+    ),
+    "عملة مزورة أو مقلدة": (
+        "counterfeit money", "fake banknote", "prop money", "replica currency",
+        "عملة مزورة", "نقود مزيفة", "أوراق نقدية مقلدة",
+    ),
+    "أغذية محظورة واضحة": (
+        "pork meat", "pork snack", "bacon food", "nutmeg powder",
+        "لحم خنزير", "منتج خنزير", "مسحوق جوز الطيب",
+    ),
+}
+
+# استبعاد الخردة والمنتجات ضعيفة النية الشرائية حتى إن لم تكن محظورة.
 ALIEXPRESS_BLOCK_TERMS = {
     "حبوب", "دواء", "أدوية", "طبي", "طبية", "أسنان", "تخسيس", "جنس", "بالغين",
-    "سلاح", "سكين", "شفرة", "مصيدة حشرات", "بعوض", "ذباب", "طارد الحشرات",
+    "مصيدة حشرات", "بعوض", "ذباب", "طارد الحشرات",
     "ملصق", "ستيكر", "حلقة معدنية", "لوحة معدنية", "قطعة غيار", "بديل",
     "تعليقة", "سلسلة مفاتيح", "تاتو", "وشم",
-    "pill", "medicine", "medical", "dental", "weight loss", "adult", "weapon", "knife",
-    "blade", "mosquito", "insect trap", "sticker", "metal plate", "replacement", "spare part",
+    "pill", "medicine", "medical", "dental", "weight loss", "adult",
+    "mosquito", "insect trap", "sticker", "metal plate", "replacement", "spare part",
     "keychain", "charm", "tattoo", "grill brush", "فرشاة شواء",
 }
+
+
+def _saudi_title_contains(title: str, term: str) -> bool:
+    phrase = str(term or "").lower().strip()
+    if not phrase:
+        return False
+    if re.fullmatch(r"[a-z0-9 -]+", phrase):
+        return bool(re.search(rf"(?<![a-z0-9]){re.escape(phrase)}(?![a-z0-9])", title))
+    return phrase in title
+
+
+def saudi_product_block_reason(title: object) -> str:
+    """يعيد سبب الاستبعاد عند تطابق منتج مع فئة ممنوعة/مقيدة عالية الخطورة."""
+    normalized = re.sub(r"\s+", " ", str(title or "").lower()).strip()
+    if not normalized:
+        return ""
+    # كلمة gun وحدها تُحجب إلا عند وضوح أنها أداة منزلية غير سلاح.
+    if _saudi_title_contains(normalized, "gun") and not any(
+        safe in normalized for safe in ("heat gun", "glue gun", "massage gun", "nail gun", "spray gun")
+    ):
+        return "سلاح أو منتج مشابه للسلاح"
+    for reason, terms in SAUDI_COMPLIANCE_BLOCKS.items():
+        if any(_saudi_title_contains(normalized, term) for term in terms):
+            return reason
+    return ""
+
+
 ALIEXPRESS_ID_RE = re.compile(r"(?<!\d)(\d{6,20})(?!\d)")
 
 ASIN_RE = re.compile(r"^[A-Z0-9]{10}$")
@@ -1319,7 +1486,12 @@ def _ali_https_url(value: object) -> str:
 def sanitize_aliexpress(raw: dict) -> dict | None:
     """يحوّل منتج AliExpress إلى مخطط الموقع؛ الخصم اختياري وليس شرط قبول."""
     product_id = _ali_product_id(raw.get("product_id"))
-    title = _ali_click_title(raw.get("title"), raw.get("angle"))
+    raw_title = str(raw.get("title") or "")
+    block_reason = saudi_product_block_reason(raw_title)
+    if block_reason:
+        print(f"[compliance] حجب AliExpress {product_id or 'unknown'}: {block_reason}")
+        return None
+    title = _ali_click_title(raw_title, raw.get("angle"))
     image = str(raw.get("image", "")).strip()
     url = str(raw.get("url", "")).strip()
     currency = str(raw.get("currency", "")).strip().upper()
@@ -1535,6 +1707,8 @@ def _ali_matches_focus(product: dict, focus: dict) -> bool:
             return bool(re.search(rf"(?<![a-z0-9]){re.escape(phrase)}(?![a-z0-9])", title))
         return phrase in title
 
+    if saudi_product_block_reason(title):
+        return False
     if any(contains(term) for term in ALIEXPRESS_BLOCK_TERMS):
         return False
     return any(contains(term) for term in focus.get("include", ()))
@@ -1961,33 +2135,44 @@ def telegram_store_label(deal: dict) -> str:
 
 
 def telegram_description(deal: dict) -> str:
-    """وصف عربي قصير مبني فقط على بيانات المنتج الموجودة في الموقع."""
+    """وصف واضح بلهجة سعودية عامة من البيانات المتاحة، بلا اختراع مواصفات."""
     explicit = re.sub(r"\s+", " ", str(deal.get("description") or "")).strip()
-    if explicit:
-        return explicit[:260]
-
-    category = str(deal.get("category") or "عروض متنوعة").strip()
+    category = str(deal.get("category") or "العروض المتنوعة").strip()
     angle = str(deal.get("angle") or "").strip()
-    sales = int(float(deal.get("sales_volume") or 0))
+    title = re.sub(r"\s+", " ", str(deal.get("title") or "")).strip()
+
+    # لا نعيد استخدام الوصف الآلي القديم أو أي عبارة تصنيفية مبهمة.
+    boilerplate = ("منتج ضمن قسم", "منتج معروض في أوفرلي ضمن قسم")
+    if explicit and not explicit.startswith(boilerplate):
+        clean = explicit.rstrip(" .،")
+        return f"باختصار: {clean}. إذا ناسب احتياجك، شيّك التفاصيل والسعر الحالي من المتجر."[:300]
 
     if angle:
-        description = f"منتج ضمن قسم {category}، ويطابق اهتمام «{angle}»."
-    else:
-        description = f"منتج معروض في أوفرلي ضمن قسم {category}."
+        return (
+            f"فكرته باختصار: {angle}. اخترناه لك من خيارات {category} الرائجة؛ "
+            "إذا ناسب احتياجك، شيّك المواصفات والسعر الحالي من المتجر."
+        )[:300]
 
-    if sales > 0:
-        description += f" سجّل {sales:,} طلباً حسب بيانات المتجر."
-    return description[:260]
+    product_name = title[:105].rstrip(" -–—،,.")
+    if product_name:
+        return (
+            f"هذا {product_name}. خيار يستاهل تشوفه؛ "
+            "تأكد من المواصفات والسعر الحالي في المتجر قبل الطلب."
+        )[:300]
+
+    return "خيار مختار لك من أوفرلي. شيّك المواصفات والسعر الحالي في المتجر قبل الطلب."
 
 
 def load_posted_state() -> dict:
-    """يقرأ سجل تيليجرام مع ترقية تلقائية للتنسيقات القديمة."""
+    """يقرأ سجل تيليجرام ويزيل طابور النشر الجماعي القديم عند الترقية."""
     empty = {
-        "version": 3,
+        "version": 4,
         "posted": {},
         "pending": [],
         "ever_posted": [],
-        "last_digest_slot": "",
+        "featured_day": "",
+        "featured_count": 0,
+        "last_featured_at": "",
     }
     try:
         data = json.loads(POSTED_STATE_PATH.read_text(encoding="utf-8"))
@@ -2000,17 +2185,28 @@ def load_posted_state() -> dict:
         posted = data.get("posted", {})
         ever_posted = data.get("ever_posted")
         if not isinstance(ever_posted, list):
-            # ترقية الإصدار 2: كل ما في posted نُشر فعلياً سابقاً.
             ever_posted = list(posted.keys())
+        try:
+            version = int(data.get("version") or 0)
+        except (TypeError, ValueError):
+            version = 0
+        # الإصدارات الأقدم كانت تحمل مئات منتجات الكتالوج في pending.
+        # لا ننقلها؛ من الإصدار 4 لا يحوي pending إلا منتجات جديدة فشل إرسالها.
+        pending = (
+            data.get("pending", [])
+            if version >= 4 and isinstance(data.get("pending"), list)
+            else []
+        )
         return {
-            "version": 3,
+            "version": 4,
             "posted": posted,
-            "pending": data.get("pending", []) if isinstance(data.get("pending"), list) else [],
+            "pending": pending,
             "ever_posted": ever_posted,
-            "last_digest_slot": str(data.get("last_digest_slot") or ""),
+            "featured_day": str(data.get("featured_day") or ""),
+            "featured_count": int(data.get("featured_count") or 0),
+            "last_featured_at": str(data.get("last_featured_at") or ""),
         }
 
-    # التنسيق القديم كان {ASIN: timestamp}.
     posted = {}
     for key, value in data.items():
         if isinstance(value, str):
@@ -2022,7 +2218,7 @@ def load_posted_state() -> dict:
 
 
 def save_posted_state(state: dict) -> None:
-    """يحفظ الحالة وقائمة الانتظار وسجل النشر التاريخي لمنع التكرار."""
+    """يحفظ المنتجات الجديدة المؤجلة وعدّاد المنتجات المميزة اليومي."""
     cutoff = datetime.now(timezone.utc) - timedelta(days=TELEGRAM_STATE_RETENTION_DAYS)
     cleaned = {}
     for key, ts in state.get("posted", {}).items():
@@ -2049,11 +2245,13 @@ def save_posted_state(state: dict) -> None:
             pending.append(key)
 
     payload = {
-        "version": 3,
+        "version": 4,
         "posted": cleaned,
-        "pending": pending[:2000],
+        "pending": pending[:100],
         "ever_posted": ever_posted[:3000],
-        "last_digest_slot": str(state.get("last_digest_slot") or ""),
+        "featured_day": str(state.get("featured_day") or ""),
+        "featured_count": max(0, int(state.get("featured_count") or 0)),
+        "last_featured_at": str(state.get("last_featured_at") or ""),
     }
     POSTED_STATE_PATH.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
@@ -2092,10 +2290,10 @@ def build_caption(deal: dict, mode: str = "new") -> str:
     sales = int(float(deal.get("sales_volume") or 0))
     if mode == "new":
         headline = "🆕 <b>وصل منتج جديد إلى أوفرلي</b>"
-    elif mode == "catalog":
-        headline = "✨ <b>من منتجات أوفرلي المختارة</b>"
+    elif mode == "featured":
+        headline = "⭐ <b>منتج مميز من أوفرلي</b>"
     else:
-        headline = "⭐ <b>اختيار أوفرلي اليوم</b>"
+        headline = "✨ <b>من منتجات أوفرلي المختارة</b>"
     facts = [f"🏬 المتجر: <b>{store}</b>", f"🏷️ التصنيف: <b>{category}</b>"]
     if sales > 0:
         facts.append(f"🛒 عدد الطلبات: <b>{sales:,}+</b>")
@@ -2183,7 +2381,7 @@ def telegram_rank(deal: dict) -> tuple[int, int, int]:
 
 
 def post_deals_to_telegram(new_deals: list[dict], all_deals: list[dict]) -> None:
-    """ينشر الجديد أولاً ثم يمر على الكتالوج بمعدل آمن، مع اختيارين يومياً."""
+    """ينشر الجديد، ثم منتجاً مميزاً واحداً كل ساعتين بحد 10 يومياً."""
     if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHANNEL:
         print("[telegram] secrets not set — skipping channel posting")
         return
@@ -2197,94 +2395,100 @@ def post_deals_to_telegram(new_deals: list[dict], all_deals: list[dict]) -> None
         if telegram_deal_key(deal)
     }
 
-    pending = list(state.get("pending", []))
+    # pending في الإصدار 4 مخصص فقط للمنتجات الجديدة التي فشل إرسالها.
+    pending = [
+        str(key) for key in state.get("pending", [])
+        if str(key) in by_key and str(key) not in ever_posted
+    ]
     pending_set = set(pending)
-    current_new_keys = {
-        telegram_deal_key(deal)
-        for deal in new_deals
-        if telegram_deal_key(deal)
-    }
-
-    # المنتجات المكتشفة للتو لها الأولوية دائماً.
     for deal in new_deals:
         key = telegram_deal_key(deal)
         if key and key not in pending_set and key not in ever_posted:
             pending.append(key)
             pending_set.add(key)
 
-    queued_backfill = 0
-    if TELEGRAM_BACKFILL_ENABLED:
-        # ترتيب الكتالوج حسب الجودة والرواج ثم إضافة ما لم يُنشر في أي وقت سابق.
-        for deal in sorted(all_deals, key=telegram_rank, reverse=True):
-            key = telegram_deal_key(deal)
-            if not key or key in pending_set or key in ever_posted:
-                continue
-            pending.append(key)
-            pending_set.add(key)
-            queued_backfill += 1
-        if queued_backfill:
-            print(f"[telegram] queued {queued_backfill} catalog product(s) for backfill")
-
-    hourly_limit = (
-        TELEGRAM_BACKFILL_POSTS
-        if TELEGRAM_BACKFILL_ENABLED
-        else TELEGRAM_MAX_NEW_POSTS
-    )
-    sent_now = 0
+    sent_new = 0
     remaining = []
-    now_iso = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    now_utc = datetime.now(timezone.utc)
+    now_iso = now_utc.isoformat(timespec="seconds")
     for key in pending:
         deal = by_key.get(key)
         if not deal or key in ever_posted:
             continue
-        if sent_now >= hourly_limit:
+        if sent_new >= TELEGRAM_MAX_NEW_POSTS:
             remaining.append(key)
             continue
-
-        mode = "new" if key in current_new_keys else "catalog"
-        if send_to_telegram(deal, mode):
+        if send_to_telegram(deal, "new"):
             posted[key] = now_iso
             ever_posted.add(key)
-            sent_now += 1
-            print(f"[telegram] posted {mode} product {key}")
-            # 30 رسالة/دقيقة تقريباً لتفادي Flood Control داخل القناة.
+            sent_new += 1
+            print(f"[telegram] posted new product {key}")
             time.sleep(2)
         else:
             remaining.append(key)
 
-    state["pending"] = remaining
-    state["posted"] = posted
-    state["ever_posted"] = sorted(ever_posted)
+    # توقيت الرياض ثابت UTC+3. يُصفّر العدّاد عند بداية اليوم المحلي.
+    riyadh_tz = timezone(timedelta(hours=3))
+    now_riyadh = now_utc.astimezone(riyadh_tz)
+    featured_day = now_riyadh.strftime("%Y-%m-%d")
+    if state.get("featured_day") != featured_day:
+        state["featured_day"] = featured_day
+        state["featured_count"] = 0
 
-    now = datetime.now(timezone.utc)
-    digest_slot = now.strftime("%Y-%m-%d:%H")
-    digest_due = TELEGRAM_FORCE_DIGEST or now.hour in TELEGRAM_DIGEST_HOURS_UTC
-    digest_posted = 0
-    if digest_due and state.get("last_digest_slot") != digest_slot:
+    featured_count = max(0, int(state.get("featured_count") or 0))
+    last_featured_at = None
+    try:
+        if state.get("last_featured_at"):
+            last_featured_at = datetime.fromisoformat(state["last_featured_at"])
+    except (TypeError, ValueError):
+        last_featured_at = None
+    interval_due = (
+        last_featured_at is None
+        or now_utc - last_featured_at >= timedelta(hours=TELEGRAM_FEATURED_INTERVAL_HOURS)
+    )
+    featured_posted = 0
+    if interval_due and featured_count < TELEGRAM_FEATURED_DAILY_LIMIT:
         for deal in sorted(all_deals, key=telegram_rank, reverse=True):
-            if digest_posted >= TELEGRAM_DIGEST_POSTS:
-                break
             key = telegram_deal_key(deal)
             if not key or key in remaining or recently_posted(key, posted):
                 continue
-            if send_to_telegram(deal, "digest"):
+            if send_to_telegram(deal, "featured"):
                 posted[key] = datetime.now(timezone.utc).isoformat(timespec="seconds")
                 ever_posted.add(key)
-                digest_posted += 1
-                print(f"[telegram] posted scheduled pick {key}")
-                time.sleep(2)
-        state["ever_posted"] = sorted(ever_posted)
-        state["last_digest_slot"] = digest_slot
+                featured_posted = 1
+                featured_count += 1
+                state["last_featured_at"] = posted[key]
+                print(
+                    f"[telegram] posted featured product {key} "
+                    f"({featured_count}/{TELEGRAM_FEATURED_DAILY_LIMIT} today)"
+                )
+                break
 
+    state["pending"] = remaining
+    state["posted"] = posted
+    state["ever_posted"] = sorted(ever_posted)
+    state["featured_count"] = featured_count
     save_posted_state(state)
     print(
-        f"[telegram] done — hourly={sent_now}/{hourly_limit}, digest={digest_posted}, "
-        f"pending={len(remaining)}, ever_posted={len(ever_posted)}"
+        f"[telegram] done — new={sent_new}, featured={featured_posted}, "
+        f"featured_today={featured_count}/{TELEGRAM_FEATURED_DAILY_LIMIT}, "
+        f"pending_new={len(remaining)}"
     )
 
 
 def main() -> int:
-    existing = load_existing_deals()
+    existing_raw = load_existing_deals()
+    existing = []
+    blocked_existing = 0
+    for deal in existing_raw:
+        reason = saudi_product_block_reason(deal.get("title"))
+        if reason:
+            blocked_existing += 1
+            print(f"[compliance] إزالة منتج موجود {_deal_key(deal)}: {reason}")
+            continue
+        existing.append(deal)
+    if blocked_existing:
+        print(f"[compliance] أزيل {blocked_existing} منتج مخالف/عالي الخطورة من الكتالوج")
 
     # عند توفّر مفاتيح Creators API نستخدم التحديث الحيّ الرسمي، وإلا نعود للجمع من HTML.
     if CREATORS_ENABLED:
@@ -2310,7 +2514,11 @@ def main() -> int:
     # حماية التنسيق اليدوي: إذا رجع الجمع فاضياً وملف العروض موجود أصلاً،
     # لا نلمسه إطلاقاً — حتى لا تُمسح العروض المضافة يدوياً في كل تشغيلة.
     if not updates and OUTPUT_PATH.exists():
-        print("[main] لا عروض جديدة — إبقاء deals.json الحالي كما هو (حماية العروض اليدوية)")
+        if blocked_existing:
+            print("[main] لا تحديثات API، لكن سيتم حفظ إزالة المنتجات المحجوبة")
+            write_output(existing, "compliance-filter")
+        else:
+            print("[main] لا عروض جديدة — إبقاء deals.json الحالي كما هو (حماية العروض اليدوية)")
         post_deals_to_telegram([], existing)
         return 0
 
