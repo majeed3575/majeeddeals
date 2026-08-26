@@ -1,8 +1,27 @@
 {
-  "updated_at": "2026-08-26T18:13:02.769Z",
+  "updated_at": "2026-08-26T18:16:08.842Z",
   "source": "aliexpress-affiliates-api",
-  "count": 721,
+  "count": 722,
   "deals": [
+    {
+      "asin": "B0GR1FC8FN",
+      "store": "amazon",
+      "title": "لابتوب ماك بوك اير 15 بوصة 2026 بشريحة M5: لابتوب ماك بوك آير مقاس 15.3 بوصة مزود بالذكاء الاصطناعي وذكاء ابل وشاشة ليكويد ريتينا وذاكرة موحدة 16 جيجابايت ووحدة تخزين SSD سعة",
+      "description": "خيار تقني عملي للاستخدام اليومي؛ شيّك المواصفات والسعر الحالي قبل الطلب.",
+      "image": "https://m.media-amazon.com/images/I/718tMcTs+VL._AC_UL320_.jpg",
+      "discount_percent": 0,
+      "manual_discount_percent": 6,
+      "original_price": 0,
+      "sales_volume": 0,
+      "rating": 0,
+      "review_count": 0,
+      "category": "الإلكترونيات",
+      "auto_discovered": false,
+      "owner_pinned": true,
+      "rank_score": 99,
+      "added_via": "telegram",
+      "added_at": "2026-08-26T18:16:07.984Z"
+    },
     {
       "asin": "B08MXSBRSB",
       "store": "amazon",
