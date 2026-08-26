@@ -1,8 +1,27 @@
 {
-  "updated_at": "2026-08-26T15:35:24.655Z",
+  "updated_at": "2026-08-26T15:59:21.804Z",
   "source": "aliexpress-affiliates-api",
-  "count": 718,
+  "count": 719,
   "deals": [
+    {
+      "asin": "B0GQW9LGQF",
+      "store": "amazon",
+      "title": "جهاز ايباد اير واي فاي (M4) من آبل، 11 بوصة: شاشة ليكويد ريتينا 256 جيجابايت، كاميرا أمامية وخلفية 12 ميجابكسل، واي فاي 7 مع ابل N1، خاصية التعرف باللمس، بطارية تدوم طوال الي",
+      "description": "خيار تقني عملي للاستخدام اليومي؛ شيّك المواصفات والسعر الحالي قبل الطلب.",
+      "image": "https://m.media-amazon.com/images/I/71BoLrdGBsL._AC_UL320_.jpg",
+      "discount_percent": 0,
+      "manual_discount_percent": 13,
+      "original_price": 0,
+      "sales_volume": 0,
+      "rating": 0,
+      "review_count": 0,
+      "category": "الإلكترونيات",
+      "auto_discovered": false,
+      "owner_pinned": true,
+      "rank_score": 99,
+      "added_via": "telegram",
+      "added_at": "2026-08-26T15:59:21.313Z"
+    },
     {
       "asin": "B09SZ4FXWL",
       "store": "amazon",
