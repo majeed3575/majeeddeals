@@ -8,6 +8,9 @@
   "triggers": {
     "crons": ["17 2 * * *"]
   },
+  "ai": {
+    "binding": "AI"
+  },
   "d1_databases": [
     {
       "binding": "ANALYTICS_DB",
@@ -33,6 +36,8 @@
     "ALIEXPRESS_TARGET_CURRENCY": "USD",
     "ALIEXPRESS_TARGET_LANGUAGE": "AR",
     "ALIEXPRESS_SHIP_TO_COUNTRY": "SA",
+    "ALIEXPRESS_SEARCH_MIN_VOLUME": "1000",
+    "ALIEXPRESS_SEARCH_MIN_RATING_PERCENT": "90",
     "USD_TO_SAR": "3.75"
   }
 }

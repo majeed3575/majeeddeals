@@ -1,15 +1,18 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import worker, {
+  aiQueryVariants,
   deviceType,
   mapProduct,
   meetsQualityThreshold,
   qualityThresholds,
+  queryNeedsAi,
   queryVariants,
   ratingFrom,
   sanitizeEvent,
   sanitizeQuery,
   sign,
+  resolvedQueryVariants,
   unwrapProducts
 } from "../src/index.js";
 
@@ -26,6 +29,60 @@ test("يترجم البحث العربي إلى عبارات إنجليزية ي
   assert.deepEqual(queryVariants("سلك ايفون"), ["iphone charging cable", "lightning cable iphone", "cable iphone"]);
   assert.deepEqual(queryVariants("كيبل تايب سي سريع"), ["usb c cable", "type c charging cable", "cable usb c fast"]);
   assert.deepEqual(queryVariants("type c cable"), ["type c cable"]);
+});
+
+test("يكتشف العبارات العربية الخارجة عن القاموس دون إبطاء البحث الإنجليزي", () => {
+  assert.equal(queryNeedsAi("شاحن آيفون"), false);
+  assert.equal(queryNeedsAi("طاولة جانبية مودرن"), true);
+  assert.equal(queryNeedsAi("مكنسة روبوت شاومي s10"), true);
+  assert.equal(queryNeedsAi("robot vacuum xiaomi s10"), false);
+});
+
+test("يترجم أي سياق تسوق عربي غير معروف ويولد صيغ بحث آمنة", async () => {
+  let request;
+  const env = {
+    AI: {
+      async run(model, input) {
+        request = { model, input };
+        return {
+          response: {
+            variants: [
+              "modern side table",
+              "small living room end table",
+              "bedside table modern",
+              "طاولة جانبية",
+              "https://evil.example"
+            ]
+          }
+        };
+      }
+    }
+  };
+
+  const variants = await resolvedQueryVariants("طاولة جانبية مودرن", env);
+  assert.deepEqual(variants, [
+    "modern side table",
+    "small living room end table",
+    "bedside table modern"
+  ]);
+  assert.equal(request.model, "@cf/meta/llama-3.1-8b-instruct-fast");
+  assert.equal(request.input.response_format.type, "json_schema");
+  assert.equal(request.input.messages[1].content, "طاولة جانبية مودرن");
+});
+
+test("يحافظ على الماركة والموديل ويعود للقاموس بأمان إذا تعطلت الترجمة الذكية", async () => {
+  const ai = {
+    async run() {
+      return { response: { variants: ["xiaomi s10 robot vacuum", "robot vacuum cleaner xiaomi s10"] } };
+    }
+  };
+  assert.deepEqual(await aiQueryVariants("مكنسة روبوت شاومي s10", { AI: ai }), [
+    "xiaomi s10 robot vacuum",
+    "robot vacuum cleaner xiaomi s10"
+  ]);
+  assert.deepEqual(await resolvedQueryVariants("مكنسة روبوت شاومي s10", {
+    AI: { async run() { throw new Error("AI_UNAVAILABLE"); } }
+  }), queryVariants("مكنسة روبوت شاومي s10"));
 });
 
 test("يجرّب مرادفات البحث المترجمة ويدمج النتائج بلا تكرار", async () => {

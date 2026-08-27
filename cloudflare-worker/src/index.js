@@ -8,8 +8,9 @@ const MAX_PAGE_SIZE = 24;
 const MAX_EVENT_BODY_BYTES = 4 * 1024;
 const DEFAULT_MIN_SALES_VOLUME = 1000;
 const DEFAULT_MIN_RATING_PERCENT = 90;
-const SEARCH_CACHE_VERSION = "quality-v2-ar-en";
-const MAX_QUERY_VARIANTS = 3;
+const SEARCH_CACHE_VERSION = "quality-v3-ar-ai";
+const MAX_QUERY_VARIANTS = 5;
+const SEARCH_AI_MODEL = "@cf/meta/llama-3.1-8b-instruct-fast";
 
 // حجب محافظ لأبرز السلع الممنوعة في السعودية. لا نحجب الفئات العامة التي
 // قد تكون نظامية، بل الألفاظ الدالة مباشرة على سلعة ممنوعة فقط.
@@ -68,53 +69,77 @@ function normalizedArabicSearch(value) {
     .trim();
 }
 
-function translateShoppingQuery(query) {
-  let value = normalizedArabicSearch(query);
-  const phrases = [
-    [/قابل(?:ه)? للشحن/gu, "rechargeable"],
-    [/شاشه حمايه/gu, "screen protector"],
-    [/ساعه ذكيه/gu, "smart watch"],
-    [/باور بانك/gu, "power bank"],
-    [/لوحه مفاتيح/gu, "keyboard"],
-    [/يو اس بي/gu, "usb"],
-    [/تايب سي|نوع سي/gu, "usb c"],
-    [/تي سي ال/gu, "tcl"]
-  ];
-  for (const [pattern, replacement] of phrases) value = value.replace(pattern, replacement);
+const ARABIC_PHRASE_TRANSLATIONS = [
+  [/قابل(?:ه)? للشحن/gu, "rechargeable"],
+  [/شاشه حمايه/gu, "screen protector"],
+  [/ساعه ذكيه/gu, "smart watch"],
+  [/باور بانك/gu, "power bank"],
+  [/لوحه مفاتيح/gu, "keyboard"],
+  [/يو اس بي/gu, "usb"],
+  [/تايب سي|نوع سي/gu, "usb c"],
+  [/تي سي ال/gu, "tcl"]
+];
 
-  const words = new Map([
-    ["ايفون", "iphone"], ["ابل", "apple"], ["جوال", "phone"], ["هاتف", "phone"],
-    ["موبايل", "phone"], ["شاحن", "charger"], ["شحن", "charging"], ["سلك", "cable"],
-    ["كيبل", "cable"], ["كابل", "cable"], ["وصله", "cable"], ["سريع", "fast"],
-    ["لاسلكي", "wireless"], ["سماعه", "headphones"], ["سماعات", "headphones"],
-    ["ايربودز", "earbuds"], ["بلوتوث", "bluetooth"], ["ساعه", "watch"],
-    ["حامل", "holder"], ["كفر", "case"], ["غطاء", "case"], ["محول", "adapter"],
-    ["يوجرين", "ugreen"], ["انكر", "anker"], ["شاومي", "xiaomi"],
-    ["سامسونج", "samsung"], ["بيسوس", "baseus"], ["لابتوب", "laptop"],
-    ["كمبيوتر", "computer"], ["كيبورد", "keyboard"], ["ماوس", "mouse"],
-    ["بروجكتر", "projector"], ["بروجكتور", "projector"], ["تلفزيون", "tv"],
-    ["منظم", "organizer"], ["مطبخ", "kitchen"], ["تنظيف", "cleaning"],
-    ["منظف", "cleaner"], ["مكنسه", "vacuum"], ["مصباح", "lamp"],
-    ["لمبه", "lamp"], ["اضاءه", "lighting"], ["حمام", "bathroom"],
-    ["سياره", "car"], ["كاميرا", "camera"], ["حقيبه", "bag"], ["سفر", "travel"],
-    ["تخييم", "camping"], ["خيمه", "tent"], ["حديقه", "garden"],
-    ["حدائق", "garden"], ["صيد", "fishing"], ["بحري", "marine"],
-    ["حذاء", "shoes"], ["شوز", "shoes"], ["بنطلون", "pants"],
-    ["قميص", "shirt"], ["ملابس", "clothes"], ["نسائي", "women"],
-    ["رجالي", "men"], ["اطفال", "kids"], ["مدرسي", "school"],
-    ["مدرسيه", "school"], ["قلم", "pen"], ["اقلام", "pens"], ["العاب", "toys"],
-    ["لعبه", "toy"], ["صغير", "small"], ["كبير", "large"], ["محمول", "portable"],
-    ["كهربائي", "electric"], ["ذكي", "smart"]
-  ]);
-  const stopWords = new Set(["في", "من", "مع", "على", "عن", "الي", "الى", "لل", "ل", "حق", "افضل"]);
+const SHOPPING_WORD_TRANSLATIONS = new Map([
+  ["ايفون", "iphone"], ["ابل", "apple"], ["جوال", "phone"], ["هاتف", "phone"],
+  ["موبايل", "phone"], ["شاحن", "charger"], ["شحن", "charging"], ["سلك", "cable"],
+  ["كيبل", "cable"], ["كابل", "cable"], ["وصله", "cable"], ["سريع", "fast"],
+  ["لاسلكي", "wireless"], ["سماعه", "headphones"], ["سماعات", "headphones"],
+  ["ايربودز", "earbuds"], ["بلوتوث", "bluetooth"], ["ساعه", "watch"],
+  ["حامل", "holder"], ["كفر", "case"], ["غطاء", "case"], ["محول", "adapter"],
+  ["يوجرين", "ugreen"], ["انكر", "anker"], ["شاومي", "xiaomi"],
+  ["سامسونج", "samsung"], ["بيسوس", "baseus"], ["لابتوب", "laptop"],
+  ["كمبيوتر", "computer"], ["كيبورد", "keyboard"], ["ماوس", "mouse"],
+  ["بروجكتر", "projector"], ["بروجكتور", "projector"], ["تلفزيون", "tv"],
+  ["منظم", "organizer"], ["مطبخ", "kitchen"], ["تنظيف", "cleaning"],
+  ["منظف", "cleaner"], ["مكنسه", "vacuum"], ["مصباح", "lamp"],
+  ["لمبه", "lamp"], ["اضاءه", "lighting"], ["حمام", "bathroom"],
+  ["سياره", "car"], ["كاميرا", "camera"], ["حقيبه", "bag"], ["سفر", "travel"],
+  ["تخييم", "camping"], ["خيمه", "tent"], ["حديقه", "garden"],
+  ["حدائق", "garden"], ["صيد", "fishing"], ["بحري", "marine"],
+  ["حذاء", "shoes"], ["شوز", "shoes"], ["بنطلون", "pants"],
+  ["قميص", "shirt"], ["ملابس", "clothes"], ["نسائي", "women"],
+  ["رجالي", "men"], ["اطفال", "kids"], ["مدرسي", "school"],
+  ["مدرسيه", "school"], ["قلم", "pen"], ["اقلام", "pens"], ["العاب", "toys"],
+  ["لعبه", "toy"], ["صغير", "small"], ["كبير", "large"], ["محمول", "portable"],
+  ["كهربائي", "electric"], ["ذكي", "smart"]
+]);
+
+const ARABIC_SEARCH_STOP_WORDS = new Set([
+  "في", "من", "مع", "على", "عن", "الي", "الى", "لل", "ل", "حق", "افضل"
+]);
+
+function translateShoppingQueryDetails(query) {
+  let value = normalizedArabicSearch(query);
+  for (const [pattern, replacement] of ARABIC_PHRASE_TRANSLATIONS) {
+    value = value.replace(pattern, replacement);
+  }
+
+  const unknownWords = [];
   const translated = value
     .split(/\s+/)
-    .map(word => words.get(word) || word)
-    .filter(word => !stopWords.has(word) && !/[\u0600-\u06ff]/u.test(word))
+    .map(word => {
+      if (SHOPPING_WORD_TRANSLATIONS.has(word)) return SHOPPING_WORD_TRANSLATIONS.get(word);
+      if (ARABIC_SEARCH_STOP_WORDS.has(word)) return "";
+      if (/[\u0600-\u06ff]/u.test(word)) {
+        unknownWords.push(word);
+        return "";
+      }
+      return word;
+    })
+    .filter(Boolean)
     .join(" ")
     .replace(/\s+/g, " ")
     .trim();
-  return sanitizeQuery(translated);
+
+  return {
+    query: sanitizeQuery(translated),
+    unknownWords: [...new Set(unknownWords)]
+  };
+}
+
+function translateShoppingQuery(query) {
+  return translateShoppingQueryDetails(query).query;
 }
 
 function queryVariants(value) {
@@ -148,6 +173,83 @@ function queryVariants(value) {
   // إذا كانت العبارة خارج قاموس التسوق الحالي، نبقي البحث العربي كحل أخير.
   if (!variants.length) add(query);
   return variants.slice(0, MAX_QUERY_VARIANTS);
+}
+
+function queryNeedsAi(value) {
+  const query = sanitizeQuery(value);
+  if (!query || !/[\u0600-\u06ff]/u.test(query)) return false;
+  const details = translateShoppingQueryDetails(query);
+  return !details.query || details.unknownWords.length > 0 || details.query.split(/\s+/).length < 2;
+}
+
+function safeAiVariant(value) {
+  const query = sanitizeQuery(value);
+  if (!query || /[\u0600-\u06ff]/u.test(query)) return "";
+  if (!/^[A-Za-z0-9\s+&(),./_-]+$/.test(query)) return "";
+  if (query.split(/\s+/).length > 10 || BLOCKED_PRODUCT_PATTERN.test(query)) return "";
+  return query;
+}
+
+async function aiQueryVariants(value, env = {}) {
+  const query = sanitizeQuery(value);
+  if (!query || !queryNeedsAi(query) || !env.AI?.run) return [];
+
+  const result = await env.AI.run(SEARCH_AI_MODEL, {
+    messages: [
+      {
+        role: "system",
+        content: "Convert an Arabic shopping search into 3 to 5 short English AliExpress keyword queries. Preserve every brand, model, size and number exactly. Return exact, synonym and broader category variants. Do not add unrelated products, URLs, explanations or restricted goods."
+      },
+      { role: "user", content: query }
+    ],
+    temperature: 0,
+    max_tokens: 160,
+    response_format: {
+      type: "json_schema",
+      json_schema: {
+        type: "object",
+        properties: {
+          variants: {
+            type: "array",
+            minItems: 1,
+            maxItems: MAX_QUERY_VARIANTS,
+            items: { type: "string", minLength: 2, maxLength: MAX_QUERY_LENGTH }
+          }
+        },
+        required: ["variants"]
+      }
+    }
+  });
+
+  let payload = result?.response ?? result;
+  if (typeof payload === "string") payload = JSON.parse(payload);
+  const variants = Array.isArray(payload?.variants) ? payload.variants : [];
+  const safe = [];
+  for (const candidate of variants) {
+    const clean = safeAiVariant(candidate);
+    if (clean && !safe.some(item => item.toLowerCase() === clean.toLowerCase())) safe.push(clean);
+  }
+  return safe.slice(0, MAX_QUERY_VARIANTS);
+}
+
+async function resolvedQueryVariants(value, env = {}) {
+  const deterministic = queryVariants(value);
+  if (!queryNeedsAi(value) || !env.AI?.run) return deterministic;
+
+  try {
+    const intelligent = await aiQueryVariants(value, env);
+    if (!intelligent.length) return deterministic;
+    const merged = [];
+    const add = candidate => {
+      const clean = safeAiVariant(candidate);
+      if (clean && !merged.some(item => item.toLowerCase() === clean.toLowerCase())) merged.push(clean);
+    };
+    intelligent.forEach(add);
+    deterministic.forEach(add);
+    return merged.slice(0, MAX_QUERY_VARIANTS);
+  } catch {
+    return deterministic;
+  }
 }
 
 function boundedInteger(value, fallback, min, max) {
@@ -493,7 +595,7 @@ async function search(request, env, origin) {
   }
 
   try {
-    const variants = queryVariants(query);
+    const variants = await resolvedQueryVariants(query, env);
     const products = [];
     const seen = new Set();
     const variantsUsed = [];
@@ -545,15 +647,18 @@ async function search(request, env, origin) {
 }
 
 export {
+  aiQueryVariants,
   deviceType,
   mapProduct,
   meetsQualityThreshold,
   qualityThresholds,
+  queryNeedsAi,
   queryVariants,
   ratingFrom,
   sanitizeEvent,
   sanitizeQuery,
   sign,
+  resolvedQueryVariants,
   unwrapProducts
 };
 
