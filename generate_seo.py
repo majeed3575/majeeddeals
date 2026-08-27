@@ -17,7 +17,7 @@ import os
 import re
 from datetime import date, datetime, timezone
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
 
 ROOT = Path(__file__).resolve().parent
@@ -57,7 +57,7 @@ CATEGORIES = {
         "audience": "المسافرين الباحثين عن وزن أقل وتنظيم أسهل",
         "checks": "الأبعاد والوزن وسياسة الأمتعة وجودة الإغلاق",
     },
-    "الموضة": {
+    "الأزياء والأحذية": {
         "slug": "fashion",
         "description": "منتجات موضة وإكسسوارات رائجة مع تنبيه واضح لمراجعة المقاس والخامة لدى المتجر.",
         "audience": "من يبحث عن إكسسوارات وقطع رائجة للاستخدام اليومي",
@@ -69,35 +69,11 @@ CATEGORIES = {
         "audience": "من يبحث عن أدوات عناية شخصية عملية ورائجة",
         "checks": "المكونات، تعليمات الاستخدام، والتحذيرات الموضحة لدى المتجر",
     },
-    "الحدائق": {
-        "slug": "garden",
-        "description": "أدوات حدائق وري وتقليم رائجة، مختارة وفق المبيعات والتقييم مع التحقق من الشحن إلى السعودية.",
-        "audience": "من يهتم بالعناية بالحديقة والنباتات وتنظيم الري",
-        "checks": "المقاس، مصدر الطاقة، مقاومة الماء، وتوافق الوصلات",
-    },
-    "البحر والصيد": {
-        "slug": "sea-fishing",
-        "description": "منتجات للصيد والسباحة والأنشطة البحرية مرتبة وفق مؤشرات الرواج والجودة المتاحة.",
-        "audience": "هواة الصيد والرحلات البحرية والسباحة",
-        "checks": "مقاومة الماء والملوحة، المقاس، الحمولة، وملاءمة الاستخدام",
-    },
-    "التخييم": {
-        "slug": "camping",
-        "description": "خيام وجلسات وأدوات طبخ ونوم للرحلات، مع أولوية للمبيعات والتقييم والشحن إلى السعودية.",
-        "audience": "محبو التخييم والرحلات البرية وتجهيز الجلسات الخارجية",
-        "checks": "الوزن بعد الطي، المقاسات، تحمل الطقس، ومتطلبات السلامة",
-    },
     "الرياضة": {
         "slug": "sports",
         "description": "أدوات ولياقة ومنتجات رياضية رائجة مرتبة لتسهيل المقارنة الأولية.",
         "audience": "من يريد أدوات للتمارين المنزلية والنشاط اليومي",
         "checks": "المقاس، تحمل الوزن، ومستوى الاستخدام المناسب",
-    },
-    "المدرسة والتعليم": {
-        "slug": "school-education",
-        "description": "أدوات مدرسية وألعاب تعليمية رائجة تشمل القرطاسية والتنظيم والرسم وأنشطة التعلّم، مع التحقق من الشحن إلى السعودية.",
-        "audience": "الطلاب والأسر والمعلمون الباحثون عن أدوات دراسة وأنشطة تعليمية عملية",
-        "checks": "العمر المناسب، المواد، المقاسات، محتويات المجموعة، وتحذيرات السلامة لدى المتجر",
     },
     "الأطفال": {
         "slug": "kids",
@@ -123,9 +99,74 @@ CATEGORIES = {
         "audience": "من يبني تجربة مشاهدة أو ألعاب منزلية",
         "checks": "الدقة الفعلية، السطوع، المقاس، المنافذ، والضمان",
     },
+    "التنظيف والمنظفات": {
+        "slug": "cleaning", "description": "منظفات وأدوات تنظيف رائجة للاستخدام المنزلي اليومي.",
+        "audience": "من يبحث عن خيارات تنظيف عملية", "checks": "نوع الاستخدام، الكمية، المكونات والتحذيرات",
+    },
+    "المطبخ والأجهزة المنزلية": {
+        "slug": "kitchen-appliances", "description": "أدوات مطبخ وأجهزة منزلية رائجة مع بيانات المتجر الحالية.",
+        "audience": "من يريد تجهيز المطبخ بأدوات عملية", "checks": "السعة، الأبعاد، الجهد والضمان",
+    },
+    "الأثاث والديكور": {
+        "slug": "furniture-decor", "description": "أثاث وديكور ومنتجات تنظيم للمنزل.",
+        "audience": "من يريد تحسين مساحة المنزل", "checks": "الأبعاد، الخامة، اللون وطريقة التركيب",
+    },
+    "الرحلات والبحر والتخييم": {
+        "slug": "outdoors", "description": "معدات رحلات وبحر وتخييم رائجة وقابلة للشحن للسعودية حسب بيانات المتجر.",
+        "audience": "محبي البر والبحر والأنشطة الخارجية", "checks": "التحمل، المقاس، الوزن ومتطلبات السلامة",
+    },
+    "الحدائق والزراعة": {
+        "slug": "garden", "description": "أدوات حدائق وزراعة وري للاستخدام المنزلي.",
+        "audience": "من يهتم بالحدائق والنباتات", "checks": "المقاس، الخامة وطريقة الاستخدام",
+    },
+    "الصحة والعناية": {
+        "slug": "health-care", "description": "منتجات صحة وعناية عامة مع تذكير بمراجعة تعليمات المتجر.",
+        "audience": "من يبحث عن أدوات عناية يومية", "checks": "تعليمات الاستخدام، التحذيرات والملاءمة الشخصية",
+    },
+    "البقالة والمشروبات": {
+        "slug": "grocery", "description": "منتجات بقالة ومشروبات رائجة وفق بيانات المتجر.",
+        "audience": "من يبحث عن احتياجات البقالة", "checks": "المكونات، الوزن، بلد المنشأ وتاريخ الصلاحية",
+    },
+    "الألعاب": {
+        "slug": "toys", "description": "ألعاب ومنتجات ترفيه رائجة لمراحل عمرية مختلفة.",
+        "audience": "الأسر والباحثين عن ألعاب مناسبة", "checks": "العمر المناسب، المواد وتحذيرات السلامة",
+    },
+    "المدرسة والقرطاسية": {
+        "slug": "school-stationery", "description": "أدوات مدرسية وقرطاسية ومنتجات تعلم رائجة.",
+        "audience": "الطلاب والأسر", "checks": "العمر المناسب، المقاس، المحتويات والخامة",
+    },
+    "الكتب والمكتب": {
+        "slug": "books-office", "description": "كتب وأدوات مكتبية وتنظيم مساحة العمل.",
+        "audience": "القراء والطلاب وأصحاب المكاتب", "checks": "اللغة، الإصدار، المقاس والمحتويات",
+    },
+    "الساعات والمجوهرات": {
+        "slug": "watches-jewelry", "description": "ساعات وإكسسوارات ومجوهرات رائجة.",
+        "audience": "من يبحث عن إكسسوارات للإطلالة اليومية", "checks": "المقاس، الخامة، اللون والضمان",
+    },
+    "تسوق متنوع": {
+        "slug": "general", "description": "منتجات تسوق متنوعة لا تنتمي إلى قسم متخصص.",
+        "audience": "من يستكشف المنتجات الرائجة", "checks": "الوصف، المواصفات، الشحن وسياسة الإرجاع",
+    },
 }
 
-DEFAULT_CATEGORY = "الإلكترونيات"
+DEFAULT_CATEGORY = "تسوق متنوع"
+CATEGORY_ALIASES = {
+    "الموضة": "الأزياء والأحذية",
+    "الحدائق": "الحدائق والزراعة",
+    "البحر والصيد": "الرحلات والبحر والتخييم",
+    "التخييم": "الرحلات والبحر والتخييم",
+    "المدرسة والتعليم": "المدرسة والقرطاسية",
+}
+
+# روابط تصنيفات قديمة ظهرت في محركات البحث قبل توحيد أسماء الأقسام.
+# يجب أن تبقى ضمن manifest حتى لا يحذفها cleanup_stale في كل تشغيل آلي.
+LEGACY_CATEGORY_REDIRECTS = {
+    "categories/camping/": "categories/outdoors/",
+    "categories/camping/page/2/": "categories/outdoors/",
+    "categories/sea-fishing/": "categories/outdoors/",
+    "categories/sea-fishing/page/2/": "categories/outdoors/",
+    "categories/school-education/": "categories/school-stationery/",
+}
 
 GUIDES = [
     {
@@ -243,8 +284,23 @@ def valid_https(value, domains: tuple[str, ...]) -> str:
     return value
 
 
+def valid_aliexpress_affiliate_url(value) -> str:
+    """يقبل روابط العمولة الرسمية فقط؛ رابط المنتج المباشر لا يُنشر."""
+    value = valid_https(value, ("aliexpress.com", "aliexpress.us"))
+    if not value:
+        return ""
+    parsed = urlparse(value)
+    host = (parsed.hostname or "").lower()
+    if host == "s.click.aliexpress.com":
+        return value
+    query = parse_qs(parsed.query)
+    platform = str((query.get("aff_platform") or [""])[0]).lower()
+    return value if query.get("aff_fcid") and query.get("aff_trace_key") and "api" in platform else ""
+
+
 def normalize_category(value) -> str:
     value = clean_text(value, 60)
+    value = CATEGORY_ALIASES.get(value, value)
     return value if value in CATEGORIES else DEFAULT_CATEGORY
 
 
@@ -255,15 +311,17 @@ def normalize_deal(raw: dict) -> dict | None:
         if not re.fullmatch(r"[A-Z0-9]{10}", product_id):
             return None
         affiliate_url = f"https://www.amazon.sa/dp/{product_id}/?tag={AFFILIATE_TAG}"
-        image = valid_https(raw.get("image"), ("media-amazon.com", "ssl-images-amazon.com", "amazon.com"))
+        image = valid_https(
+            raw.get("image"),
+            ("media-amazon.com", "ssl-images-amazon.com", "amazon.com", "majeed3575.github.io"),
+        )
         store_name = "Amazon.sa"
     else:
         product_id = clean_text(raw.get("product_id") or raw.get("id"), 24)
         if not re.fullmatch(r"\d{6,20}", product_id):
             return None
-        affiliate_url = valid_https(
+        affiliate_url = valid_aliexpress_affiliate_url(
             raw.get("promotion_link") or raw.get("affiliate_url") or raw.get("url"),
-            ("aliexpress.com", "aliexpress.us"),
         )
         image = valid_https(
             raw.get("image") or raw.get("product_main_image_url"),
@@ -298,7 +356,7 @@ def normalize_deal(raw: dict) -> dict | None:
         "angle": angle,
         "path": path,
         "url": BASE_URL + path,
-        "raw": raw,
+        "raw": {**raw, "category": category},
     }
 
 
@@ -417,6 +475,45 @@ def page_shell(
 </body>
 </html>
 '''
+
+
+def redirect_page(source_relative: str, target_relative: str) -> str:
+    """صفحة تحويل داخلية دائمة تحافظ على الروابط القديمة بلا إدراجها في Sitemap."""
+    target_url = BASE_URL + target_relative
+    target_path = BASE_PATH + target_relative
+    target_json = json.dumps(target_path, ensure_ascii=False)
+    return f'''<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,follow">
+  <meta name="description" content="تم نقل هذا التصنيف إلى قسمه الجديد في أوفرلي.">
+  <meta http-equiv="refresh" content="0;url={esc(target_path)}">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-inline'; object-src 'none'; base-uri 'self'">
+  <link rel="canonical" href="{esc(target_url)}">
+  <title>تم نقل التصنيف | أوفرلي</title>
+</head>
+<body>
+  <main>
+    <h1>تم نقل هذا التصنيف</h1>
+    <p>سيتم تحويلك إلى القسم الجديد. <a href="{esc(target_path)}">انتقل الآن</a>.</p>
+  </main>
+  <script>location.replace({target_json} + location.search + location.hash);</script>
+</body>
+</html>
+'''
+
+
+def legacy_redirect_pages(generated: set[str]) -> int:
+    changed = 0
+    for source_relative, target_relative in LEGACY_CATEGORY_REDIRECTS.items():
+        changed += write_if_changed(
+            ROOT / source_relative / "index.html",
+            redirect_page(source_relative, target_relative),
+            generated,
+        )
+    return changed
 
 
 def breadcrumbs(items: list[tuple[str, str]]) -> tuple[str, dict]:
@@ -717,6 +814,9 @@ def build() -> dict:
             changed += write_if_changed(ROOT / canonical_path / "index.html", content, generated)
             if category_deals:
                 sitemap[BASE_URL + canonical_path] = lastmod
+
+    # لا نضيف التحويلات القديمة إلى Sitemap، لكن نبقي ملفاتها لتجنب أخطاء 404.
+    changed += legacy_redirect_pages(generated)
 
     for store, store_name in (("amazon", "منتجات Amazon السعودية"), ("aliexpress", "منتجات AliExpress")):
         store_deals = [item for item in deals if item["store"] == store]

@@ -1,12 +1,84 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import worker, { deviceType, mapProduct, sanitizeEvent, sanitizeQuery, sign, unwrapProducts } from "../src/index.js";
+import worker, {
+  deviceType,
+  mapProduct,
+  meetsQualityThreshold,
+  qualityThresholds,
+  queryVariants,
+  ratingFrom,
+  sanitizeEvent,
+  sanitizeQuery,
+  sign,
+  unwrapProducts
+} from "../src/index.js";
 
 test("ينظف كلمات البحث ويرفض المدخلات غير الآمنة", () => {
   assert.equal(sanitizeQuery("  شاحن   سريع  "), "شاحن سريع");
   assert.equal(sanitizeQuery("usb-c hub"), "usb-c hub");
   assert.equal(sanitizeQuery("<script>alert(1)</script>"), "");
   assert.equal(sanitizeQuery("x"), "");
+  assert.equal(sanitizeQuery("كاميرا سرية صغيرة"), "");
+});
+
+test("يترجم البحث العربي إلى عبارات إنجليزية يفهمها AliExpress", () => {
+  assert.deepEqual(queryVariants("شاحن آيفون"), ["iphone charger", "apple iphone fast charger", "charger iphone"]);
+  assert.deepEqual(queryVariants("سلك ايفون"), ["iphone charging cable", "lightning cable iphone", "cable iphone"]);
+  assert.deepEqual(queryVariants("كيبل تايب سي سريع"), ["usb c cable", "type c charging cable", "cable usb c fast"]);
+  assert.deepEqual(queryVariants("type c cable"), ["type c cable"]);
+});
+
+test("يجرّب مرادفات البحث المترجمة ويدمج النتائج بلا تكرار", async () => {
+  const originalFetch = globalThis.fetch;
+  const originalCaches = globalThis.caches;
+  const keywords = [];
+  globalThis.caches = {
+    default: {
+      async match() { return null; },
+      async put() {}
+    }
+  };
+  globalThis.fetch = async (_url, options) => {
+    const keyword = new URLSearchParams(options.body).get("keywords");
+    keywords.push(keyword);
+    const product = keyword === "iphone charger" ? [] : [{
+      product_id: "1005001234567890",
+      product_title: "Apple iPhone fast charging cable",
+      product_main_image_url: "https://ae01.alicdn.com/kf/example.jpg",
+      promotion_link: "https://s.click.aliexpress.com/e/example",
+      target_sale_price: "20",
+      target_original_price: "25",
+      target_sale_price_currency: "USD",
+      lastest_volume: "2500",
+      evaluate_rate: "94%"
+    }];
+    return new Response(JSON.stringify({
+      aliexpress_affiliate_product_query_response: {
+        resp_result: { resp_code: 200, result: { total_page_no: 1, products: { product } } }
+      }
+    }), { status: 200, headers: { "Content-Type": "application/json" } });
+  };
+
+  try {
+    const response = await worker.fetch(new Request("https://worker.example/search?q=شاحن%20آيفون&page_size=5", {
+      headers: { Origin: "https://majeed3575.github.io" }
+    }), {
+      ALLOWED_ORIGIN: "https://majeed3575.github.io",
+      ALIEXPRESS_APP_KEY: "test-key",
+      ALIEXPRESS_APP_SECRET: "test-secret",
+      SEARCH_RATE_LIMITER: { async limit() { return { success: true }; } }
+    });
+    const payload = await response.json();
+    assert.equal(response.status, 200);
+    assert.deepEqual(keywords, ["iphone charger", "apple iphone fast charger", "charger iphone"]);
+    assert.deepEqual(payload.query_variants_used, keywords);
+    assert.equal(payload.products.length, 1);
+    assert.equal(payload.products[0].sales_volume, 2500);
+    assert.equal(payload.products[0].rating, 4.7);
+  } finally {
+    globalThis.fetch = originalFetch;
+    globalThis.caches = originalCaches;
+  }
 });
 
 test("يُنتج توقيع MD5 ثابتاً دون تعديل المعلمات", () => {
@@ -39,6 +111,37 @@ test("يحوّل منتج AliExpress إلى مخطط الموقع السعودي
   assert.equal(product.original_price, 93.75);
   assert.equal(product.discount_percent, 20);
   assert.equal(product.sales_volume, 2500);
+  assert.equal(product.rating, 4.7);
+  assert.equal(product.rating_percent, 94.5);
+});
+
+test("يحوّل نسبة رضا AliExpress إلى تقييم من خمس نجوم", () => {
+  assert.equal(ratingFrom("94.5%"), 4.7);
+  assert.equal(ratingFrom("4.8"), 4.8);
+  assert.equal(ratingFrom(""), 0);
+});
+
+test("يوحّد فلتر الجودة مع الموقع: ألف طلب وتقييم 4.5 فأعلى", () => {
+  const thresholds = qualityThresholds({});
+  assert.deepEqual(thresholds, { minSales: 1000, minRatingPercent: 90, minRating: 4.5 });
+  assert.equal(meetsQualityThreshold({ sales_volume: 999, rating: 5 }, thresholds), false);
+  assert.equal(meetsQualityThreshold({ sales_volume: 1000, rating: 4.4 }, thresholds), false);
+  assert.equal(meetsQualityThreshold({ sales_volume: 1000, rating: 4.5 }, thresholds), true);
+  assert.equal(meetsQualityThreshold({ sales_volume: 1000, rating: 4.5, rating_percent: 89 }, thresholds), false);
+  assert.equal(meetsQualityThreshold({ sales_volume: 1000, rating: 4.5, rating_percent: 90 }, thresholds), true);
+  assert.equal(meetsQualityThreshold({ sales_volume: 5000, rating: 0 }, thresholds), false);
+});
+
+test("يستبعد المنتجات المحظورة قبل إرجاعها للمتسوق", () => {
+  const product = mapProduct({
+    product_id: "1005001234567890",
+    product_title: "Hidden spy camera pen",
+    product_main_image_url: "https://ae01.alicdn.com/kf/example.jpg",
+    promotion_link: "https://s.click.aliexpress.com/e/example",
+    target_sale_price: "20",
+    target_original_price: "25"
+  }, { USD_TO_SAR: "3.75" });
+  assert.equal(product, null);
 });
 
 test("يصنف بروجكترات BYINTEK وتلفزيونات TCL ضمن الترفيه المنزلي", () => {
@@ -54,6 +157,20 @@ test("يصنف بروجكترات BYINTEK وتلفزيونات TCL ضمن الت
   assert.equal(mapProduct({ ...base, product_title: "TCL QLED Smart TV 65 inch" }, {}).category, "الترفيه المنزلي");
 });
 
+test("يوحد تصنيف المنظفات والأزياء والرحلات مع الموقع والبوت", () => {
+  const base = {
+    product_id: "1005001234567890",
+    product_main_image_url: "https://ae01.alicdn.com/kf/example.jpg",
+    promotion_link: "https://s.click.aliexpress.com/e/example",
+    target_sale_price: "20",
+    target_original_price: "25",
+    target_sale_price_currency: "USD"
+  };
+  assert.equal(mapProduct({ ...base, product_title: "Extra White Detergent Powder 10kg" }, {}).category, "التنظيف والمنظفات");
+  assert.equal(mapProduct({ ...base, product_title: "Men casual jeans pants" }, {}).category, "الأزياء والأحذية");
+  assert.equal(mapProduct({ ...base, product_title: "Rechargeable camping lantern" }, {}).category, "الرحلات والبحر والتخييم");
+});
+
 test("يرفض الروابط والصور الخارجة عن نطاق AliExpress", () => {
   const unsafe = mapProduct({
     product_id: "1005001234567890",
@@ -64,6 +181,38 @@ test("يرفض الروابط والصور الخارجة عن نطاق AliExpre
     target_original_price: "25"
   }, { USD_TO_SAR: "3.75" });
   assert.equal(unsafe, null);
+});
+
+test("لا يعرض منتجًا بلا رابط عمولة رسمي", () => {
+  const withoutAffiliateLink = mapProduct({
+    product_id: "1005001234567890",
+    product_title: "USB C charger 65W",
+    product_main_image_url: "https://ae01.alicdn.com/kf/example.jpg",
+    product_detail_url: "https://www.aliexpress.com/item/1005001234567890.html",
+    target_sale_price: "20",
+    target_original_price: "25"
+  }, { USD_TO_SAR: "3.75" });
+  assert.equal(withoutAffiliateLink, null);
+
+  const directPromotionLink = mapProduct({
+    product_id: "1005001234567890",
+    product_title: "USB C charger 65W",
+    product_main_image_url: "https://ae01.alicdn.com/kf/example.jpg",
+    promotion_link: "https://www.aliexpress.com/item/1005001234567890.html",
+    target_sale_price: "20",
+    target_original_price: "25"
+  }, { USD_TO_SAR: "3.75" });
+  assert.equal(directPromotionLink, null);
+
+  const markedAffiliateLink = mapProduct({
+    product_id: "1005001234567890",
+    product_title: "USB C charger 65W",
+    product_main_image_url: "https://ae01.alicdn.com/kf/example.jpg",
+    promotion_link: "https://www.aliexpress.com/item/1005001234567890.html?aff_fcid=abc&aff_trace_key=xyz&aff_platform=api-new-product-query",
+    target_sale_price: "20",
+    target_original_price: "25"
+  }, { USD_TO_SAR: "3.75" });
+  assert.equal(markedAffiliateLink?.product_id, "1005001234567890");
 });
 
 test("يرفض النطاقات غير المصرح بها قبل الوصول إلى الواجهة الخارجية", async () => {

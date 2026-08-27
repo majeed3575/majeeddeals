@@ -6,6 +6,14 @@ const MAX_QUERY_LENGTH = 80;
 const MAX_PAGE = 20;
 const MAX_PAGE_SIZE = 24;
 const MAX_EVENT_BODY_BYTES = 4 * 1024;
+const DEFAULT_MIN_SALES_VOLUME = 1000;
+const DEFAULT_MIN_RATING_PERCENT = 90;
+const SEARCH_CACHE_VERSION = "quality-v2-ar-en";
+const MAX_QUERY_VARIANTS = 3;
+
+// حجب محافظ لأبرز السلع الممنوعة في السعودية. لا نحجب الفئات العامة التي
+// قد تكون نظامية، بل الألفاظ الدالة مباشرة على سلعة ممنوعة فقط.
+const BLOCKED_PRODUCT_PATTERN = /(?:سلاح|مسدس|بندقية|ذخيرة|رصاص\s*حي|متفجر|قنبلة|مخدر|حشيش|كوكايين|هيروين|خمر|نبيذ|ويسكي|فودكا|مشروب\s*كحولي|ألعاب?\s*نارية|مفرقعات|تبغ\s*المضغ|مسيل(?:ات)?\s*الدموع|كاميرا\s*سرية|قلم\s*بكاميرا|ساعة\s*بكاميرا|نظارة\s*بكاميرا|صاعق\s*كهربائي|كاشف\s*رادار\s*السرعة|جهاز\s*تنصت|أداة\s*جنسية|جهاز\s*جنسي|حبوب\s*إجهاض|مقو(?:ي|يات)\s*جنسي|منشط\s*جنسي|جوز(?:ة)?\s*الطيب|لحم\s*خنزير|خنزير|عملة\s*مزورة|محتوى\s*إباحي|محتوى\s*للبالغين|سلعة\s*مقلدة|weapon|pistol|rifle|ammunition|live\s*ammo|explosive|grenade|cannabis|marijuana|cocaine|heroin|alcoholic\s*(?:drink|beverage)|whisk(?:e)?y|vodka|wine|fireworks?|pyrotechnic|chewing\s*tobacco|tear\s*gas|hidden\s*camera|spy\s*camera|stun\s*gun|taser|radar\s*detector|eavesdropping\s*device|wiretap|sex(?:ual)?\s*(?:toy|device)|abortion\s*pill|sexual\s*enhancer|nutmeg|pork|counterfeit\s*(?:currency|money|product)|pornograph|gambling|betting)/iu;
 
 function json(body, status = 200, headers = {}) {
   return new Response(JSON.stringify(body), {
@@ -43,12 +51,135 @@ function cors(origin) {
 function sanitizeQuery(value) {
   const query = String(value || "").normalize("NFKC").replace(/\s+/g, " ").trim();
   if (query.length < 2 || query.length > MAX_QUERY_LENGTH) return "";
-  return /^[\p{L}\p{N}\s+&()،,./_-]+$/u.test(query) ? query : "";
+  if (!/^[\p{L}\p{N}\s+&()،,./_-]+$/u.test(query) || BLOCKED_PRODUCT_PATTERN.test(query)) return "";
+  return query;
+}
+
+function normalizedArabicSearch(value) {
+  return String(value || "")
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/[\u064b-\u065f\u0670\u06d6-\u06ed]/g, "")
+    .replace(/[أإآٱ]/g, "ا")
+    .replace(/ى/g, "ي")
+    .replace(/ة/g, "ه")
+    .replace(/[^\p{L}\p{N}\s+_-]+/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function translateShoppingQuery(query) {
+  let value = normalizedArabicSearch(query);
+  const phrases = [
+    [/قابل(?:ه)? للشحن/gu, "rechargeable"],
+    [/شاشه حمايه/gu, "screen protector"],
+    [/ساعه ذكيه/gu, "smart watch"],
+    [/باور بانك/gu, "power bank"],
+    [/لوحه مفاتيح/gu, "keyboard"],
+    [/يو اس بي/gu, "usb"],
+    [/تايب سي|نوع سي/gu, "usb c"],
+    [/تي سي ال/gu, "tcl"]
+  ];
+  for (const [pattern, replacement] of phrases) value = value.replace(pattern, replacement);
+
+  const words = new Map([
+    ["ايفون", "iphone"], ["ابل", "apple"], ["جوال", "phone"], ["هاتف", "phone"],
+    ["موبايل", "phone"], ["شاحن", "charger"], ["شحن", "charging"], ["سلك", "cable"],
+    ["كيبل", "cable"], ["كابل", "cable"], ["وصله", "cable"], ["سريع", "fast"],
+    ["لاسلكي", "wireless"], ["سماعه", "headphones"], ["سماعات", "headphones"],
+    ["ايربودز", "earbuds"], ["بلوتوث", "bluetooth"], ["ساعه", "watch"],
+    ["حامل", "holder"], ["كفر", "case"], ["غطاء", "case"], ["محول", "adapter"],
+    ["يوجرين", "ugreen"], ["انكر", "anker"], ["شاومي", "xiaomi"],
+    ["سامسونج", "samsung"], ["بيسوس", "baseus"], ["لابتوب", "laptop"],
+    ["كمبيوتر", "computer"], ["كيبورد", "keyboard"], ["ماوس", "mouse"],
+    ["بروجكتر", "projector"], ["بروجكتور", "projector"], ["تلفزيون", "tv"],
+    ["منظم", "organizer"], ["مطبخ", "kitchen"], ["تنظيف", "cleaning"],
+    ["منظف", "cleaner"], ["مكنسه", "vacuum"], ["مصباح", "lamp"],
+    ["لمبه", "lamp"], ["اضاءه", "lighting"], ["حمام", "bathroom"],
+    ["سياره", "car"], ["كاميرا", "camera"], ["حقيبه", "bag"], ["سفر", "travel"],
+    ["تخييم", "camping"], ["خيمه", "tent"], ["حديقه", "garden"],
+    ["حدائق", "garden"], ["صيد", "fishing"], ["بحري", "marine"],
+    ["حذاء", "shoes"], ["شوز", "shoes"], ["بنطلون", "pants"],
+    ["قميص", "shirt"], ["ملابس", "clothes"], ["نسائي", "women"],
+    ["رجالي", "men"], ["اطفال", "kids"], ["مدرسي", "school"],
+    ["مدرسيه", "school"], ["قلم", "pen"], ["اقلام", "pens"], ["العاب", "toys"],
+    ["لعبه", "toy"], ["صغير", "small"], ["كبير", "large"], ["محمول", "portable"],
+    ["كهربائي", "electric"], ["ذكي", "smart"]
+  ]);
+  const stopWords = new Set(["في", "من", "مع", "على", "عن", "الي", "الى", "لل", "ل", "حق", "افضل"]);
+  const translated = value
+    .split(/\s+/)
+    .map(word => words.get(word) || word)
+    .filter(word => !stopWords.has(word) && !/[\u0600-\u06ff]/u.test(word))
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .trim();
+  return sanitizeQuery(translated);
+}
+
+function queryVariants(value) {
+  const query = sanitizeQuery(value);
+  if (!query) return [];
+  if (!/[\u0600-\u06ff]/u.test(query)) return [query];
+
+  const intent = normalizedArabicSearch(query);
+  const variants = [];
+  const add = candidate => {
+    const clean = sanitizeQuery(candidate);
+    if (clean && !variants.some(item => item.toLowerCase() === clean.toLowerCase())) variants.push(clean);
+  };
+  const hasIphone = /(?:^|\s)ايفون(?:\s|$)/u.test(intent);
+  const hasCable = /(?:سلك|كيبل|كابل|وصله)/u.test(intent);
+  const hasCharger = /(?:شاحن|شحن)/u.test(intent);
+  const hasUsbC = /(?:تايب سي|نوع سي|usb\s*c|type\s*c)/iu.test(intent);
+
+  if (hasIphone && hasCable) {
+    add(hasUsbC ? "iphone usb c charging cable" : "iphone charging cable");
+    add("lightning cable iphone");
+  } else if (hasIphone && hasCharger) {
+    add("iphone charger");
+    add("apple iphone fast charger");
+  } else if (hasCable && hasUsbC) {
+    add("usb c cable");
+    add("type c charging cable");
+  }
+  add(translateShoppingQuery(query));
+
+  // إذا كانت العبارة خارج قاموس التسوق الحالي، نبقي البحث العربي كحل أخير.
+  if (!variants.length) add(query);
+  return variants.slice(0, MAX_QUERY_VARIANTS);
 }
 
 function boundedInteger(value, fallback, min, max) {
   const number = Number.parseInt(String(value || ""), 10);
   return Number.isFinite(number) ? Math.min(max, Math.max(min, number)) : fallback;
+}
+
+function qualityThresholds(env = {}) {
+  const minSales = boundedInteger(
+    env.ALIEXPRESS_SEARCH_MIN_VOLUME,
+    DEFAULT_MIN_SALES_VOLUME,
+    0,
+    1_000_000_000
+  );
+  const rawPercent = String(env.ALIEXPRESS_SEARCH_MIN_RATING_PERCENT ?? "").trim();
+  const configuredPercent = rawPercent ? Number(rawPercent) : Number.NaN;
+  const minRatingPercent = Number.isFinite(configuredPercent)
+    ? Math.min(100, Math.max(0, configuredPercent))
+    : DEFAULT_MIN_RATING_PERCENT;
+  return {
+    minSales,
+    minRatingPercent,
+    minRating: Math.round((minRatingPercent / 20) * 10) / 10
+  };
+}
+
+function meetsQualityThreshold(product, thresholds) {
+  return Boolean(
+    product &&
+    Number(product.sales_volume) >= thresholds.minSales &&
+    Number(product.rating_percent ?? (Number(product.rating) * 20)) >= thresholds.minRatingPercent
+  );
 }
 
 async function rateAllowed(request, env, bucket = "search") {
@@ -183,6 +314,18 @@ function httpsUrl(value, kind = "link") {
     host === "aliexpress.us" || host.endsWith(".aliexpress.us") ? url.href : "";
 }
 
+function aliExpressAffiliateUrl(value) {
+  const safe = httpsUrl(value, "link");
+  if (!safe) return "";
+  const url = new URL(safe);
+  const host = url.hostname.toLowerCase();
+  if (host === "s.click.aliexpress.com") return url.href;
+  const hasAffiliateMarkers = url.searchParams.has("aff_fcid") &&
+    url.searchParams.has("aff_trace_key") &&
+    String(url.searchParams.get("aff_platform") || "").toLowerCase().includes("api");
+  return hasAffiliateMarkers ? url.href : "";
+}
+
 function cleanTitle(value) {
   return String(value || "")
     .replace(/<[^>]*>/g, " ")
@@ -195,16 +338,35 @@ function cleanTitle(value) {
 function classify(title) {
   const text = title.toLowerCase();
   if (/byintek|\btcl\b|projector|smart tv|qled tv|television|بروجكتر|بروجكتور|تلفزيون|تلفاز|سينما منزلية/.test(text)) return "الترفيه المنزلي";
+  if (/dish soap|laundry soap|detergent|cleaner|bleach|washing powder|disinfectant|صابون|منظف|منظفات|غسيل|مسحوق غسيل|مبيض|كلور|مطهر/.test(text)) return "التنظيف والمنظفات";
+  if (/pants|trousers|jeans|shirt|dress|shoe|sneaker|sandals|boots|abaya|clothing|fashion|بنطلون|جينز|قميص|فستان|حذاء|شوز|سنيكرز|صندل|بوت|عباية|ملابس|جوارب|جاكيت/.test(text)) return "الأزياء والأحذية";
+  if (/kitchen|cookware|pan|pot|air fryer|blender|coffee maker|espresso machine|oven|fridge|refrigerator|dishwasher|مطبخ|مقلاة|قدر|قلاية|خلاط|ماكينة قهوة|اسبريسو|فرن|ثلاجة|غسالة صحون/.test(text)) return "المطبخ والأجهزة المنزلية";
+  if (/furniture|sofa|chair|table|mattress|cabinet|decor|rug|أثاث|اثاث|كنب|كرسي|طاولة|مرتبة|خزانة|ديكور|سجاد/.test(text)) return "الأثاث والديكور";
+  if (/school|student|pencil|notebook|backpack|learning|education|stationery|مدرس|طالب|قلم|دفتر|حقيبة مدرسية|تعليم|قرطاسية/.test(text)) return "المدرسة والقرطاسية";
+  if (/book|novel|magazine|office desk|document holder|كتاب|رواية|مجلة|مكتب|حامل مستندات/.test(text)) return "الكتب والمكتب";
+  if (/toy|puzzle|doll|building blocks|board game|لعبة|ألعاب|أحجية|دمية|مكعبات/.test(text)) return "الألعاب";
   if (/pet|cat|dog|grooming|قطط|كلاب|حيوان/.test(text)) return "الحيوانات الأليفة";
-  if (/baby|kids|child|toddler|toy|طفل|أطفال|رضيع|لعبة/.test(text)) return "الأطفال";
+  if (/baby|kids|child|toddler|diaper|stroller|طفل|أطفال|رضيع|حفاض|عربة أطفال/.test(text)) return "الأطفال";
   if (/beauty|makeup|skincare|cosmetic|hair|nail|مكياج|بشرة|شعر|أظافر/.test(text)) return "الجمال والعناية";
-  if (/sport|fitness|exercise|yoga|running|fishing|رياضة|لياقة|تمارين|يوغا|صيد/.test(text)) return "الرياضة";
+  if (/first aid|bandage|thermometer|blood pressure|orthopedic|hearing aid|إسعافات|اسعافات|ضماد|ميزان حرارة|ضغط الدم|طبي|صحي/.test(text)) return "الصحة والعناية";
+  if (/coffee|tea|rice|pasta|snack|chocolate|juice|spice|food|قهوة|شاي|أرز|ارز|مكرونة|وجبة|شوكولاتة|عصير|بهارات|غذاء|طعام/.test(text)) return "البقالة والمشروبات";
+  if (/camp|camping|tent|hiking|fishing|marine|boat|kayak|beach|picnic|رحلات برية|تخييم|خيمة|هايكنج|صيد|بحر|قارب|كاياك|شاطئ|نزهة/.test(text)) return "الرحلات والبحر والتخييم";
+  if (/garden|gardening|plant|watering|pruning|lawn|seed|حديقة|حدائق|زراعة|نبات|نظام ري|خرطوم ري|تقليم|بذور/.test(text)) return "الحدائق والزراعة";
+  if (/sport|fitness|exercise|yoga|running|football|basketball|رياضة|لياقة|تمارين|يوغا|جري|كرة قدم|كرة سلة/.test(text)) return "الرياضة";
   if (/drill|wrench|tool|laser level|دريل|مثقاب|عدة|أدوات|صيانة/.test(text)) return "الأدوات والهوايات";
   if (/car|vehicle|auto|سيار|إطار|اطار/.test(text)) return "السيارة";
-  if (/travel|camp|luggage|bag|سفر|رحلات|حقيبة/.test(text)) return "السفر";
-  if (/home|kitchen|clean|vacuum|light|منزل|مطبخ|تنظيف|إضاءة/.test(text)) return "المنزل";
-  if (/shirt|dress|shoe|wear|fashion|ملابس|حذاء|موضة/.test(text)) return "الموضة";
-  return "الإلكترونيات";
+  if (/travel|luggage|suitcase|passport holder|packing cube|سفر|أمتعة|امتعة|شنطة سفر|حقيبة سفر|حامل جواز|منظم سفر/.test(text)) return "السفر";
+  if (/wrist watch|jewelry|jewellery|necklace|bracelet|ring|ساعة يد|مجوهرات|قلادة|سوار|خاتم/.test(text)) return "الساعات والمجوهرات";
+  if (/phone|laptop|computer|charger|cable|usb|keyboard|mouse|headphone|earbuds|هاتف|جوال|لابتوب|كمبيوتر|شاحن|كيبل|سماعة/.test(text)) return "الإلكترونيات";
+  if (/home|organizer|storage box|hanger|rack|bed sheet|blanket|pillow|curtain|vacuum|light|منزل|تنظيم|تخزين|علاقة|رف|مفرش|بطانية|وسادة|ستارة|مكنسة|إضاءة/.test(text)) return "المنزل";
+  return "تسوق متنوع";
+}
+
+function ratingFrom(value) {
+  const raw = numberFrom(value);
+  if (!(raw > 0)) return 0;
+  const rating = raw > 5 ? raw / 20 : raw;
+  return Math.round(Math.min(5, rating) * 10) / 10;
 }
 
 function unwrapProducts(result) {
@@ -217,8 +379,10 @@ function mapProduct(product, env) {
   const productId = String(product?.product_id || "").match(/\d{6,20}/)?.[0] || "";
   const title = cleanTitle(product?.product_title);
   const image = httpsUrl(product?.product_main_image_url, "image");
-  const url = httpsUrl(product?.promotion_link || product?.product_detail_url, "link");
-  if (!productId || title.length < 4 || !image || !url) return null;
+  // لا نرجع رابط المنتج العادي كبديل؛ ظهور النتيجة مشروط بأن تمنح الواجهة
+  // رابط الترويج الرسمي المرتبط بـ Tracking ID الخاص بأوفرلي.
+  const url = aliExpressAffiliateUrl(product?.promotion_link);
+  if (!productId || title.length < 4 || BLOCKED_PRODUCT_PATTERN.test(title) || !image || !url) return null;
 
   const rate = numberFrom(env.USD_TO_SAR || 3.75);
   const currency = String(product?.target_sale_price_currency || product?.sale_price_currency || "USD").toUpperCase();
@@ -226,6 +390,8 @@ function mapProduct(product, env) {
   const current = numberFrom(product?.target_sale_price || product?.sale_price) * multiplier;
   const originalRaw = numberFrom(product?.target_original_price || product?.original_price);
   const original = (originalRaw || numberFrom(product?.target_sale_price || product?.sale_price)) * multiplier;
+  const rawRating = numberFrom(product?.evaluate_rate);
+  const ratingPercent = Math.min(100, rawRating > 5 ? rawRating : rawRating * 20);
   if (!(current > 0) || !(original > 0)) return null;
 
   return {
@@ -237,7 +403,8 @@ function mapProduct(product, env) {
     discount_percent: discountFrom(product?.discount, original, current),
     original_price: Math.round(original * 100) / 100,
     sales_volume: Math.round(numberFrom(product?.lastest_volume)),
-    rating: numberFrom(product?.evaluate_rate),
+    rating: ratingFrom(product?.evaluate_rate),
+    rating_percent: ratingPercent,
     category: classify(title),
     shipping_country: "SA"
   };
@@ -309,8 +476,14 @@ async function search(request, env, origin) {
   if (!query) return json({ ok: false, error: "INVALID_QUERY" }, 400, cors(origin));
   const page = boundedInteger(url.searchParams.get("page"), 1, 1, MAX_PAGE);
   const pageSize = boundedInteger(url.searchParams.get("page_size"), MAX_PAGE_SIZE, 1, MAX_PAGE_SIZE);
+  const thresholds = qualityThresholds(env);
 
-  const cacheKey = new Request(`${url.origin}/search?q=${encodeURIComponent(query.toLowerCase())}&page=${page}&page_size=${pageSize}`, request);
+  const cacheKey = new Request(
+    `${url.origin}/__cache/${SEARCH_CACHE_VERSION}/search?q=${encodeURIComponent(query.toLowerCase())}` +
+    `&page=${page}&page_size=${pageSize}` +
+    `&min_sales=${thresholds.minSales}&min_rating=${thresholds.minRating}`,
+    request
+  );
   const cache = caches.default;
   const cached = await cache.match(cacheKey);
   if (cached) {
@@ -320,16 +493,47 @@ async function search(request, env, origin) {
   }
 
   try {
-    const result = await callAliExpress(query, page, pageSize, env);
-    const products = unwrapProducts(result).map(product => mapProduct(product, env)).filter(Boolean);
-    const totalPages = boundedInteger(result?.total_page_no, page, page, MAX_PAGE);
+    const variants = queryVariants(query);
+    const products = [];
+    const seen = new Set();
+    const variantsUsed = [];
+    let hasMore = false;
+    let successfulCalls = 0;
+    let lastError = null;
+
+    for (const variant of variants) {
+      if (products.length >= pageSize) break;
+      try {
+        const result = await callAliExpress(variant, page, pageSize, env);
+        successfulCalls += 1;
+        variantsUsed.push(variant);
+        const totalPages = boundedInteger(result?.total_page_no, page, page, MAX_PAGE);
+        hasMore = hasMore || page < totalPages;
+        for (const rawProduct of unwrapProducts(result)) {
+          const product = mapProduct(rawProduct, env);
+          if (!meetsQualityThreshold(product, thresholds) || seen.has(product.product_id)) continue;
+          seen.add(product.product_id);
+          products.push(product);
+          if (products.length >= pageSize) break;
+        }
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    if (!successfulCalls) throw lastError || new Error("UPSTREAM");
     const response = json({
       ok: true,
       query,
+      query_variants_used: variantsUsed,
       page,
       page_size: pageSize,
-      has_more: page < totalPages && products.length > 0,
+      has_more: hasMore,
       shipping_country: "SA",
+      filters: {
+        min_sales_volume: thresholds.minSales,
+        min_rating_percent: thresholds.minRatingPercent,
+        min_rating: thresholds.minRating
+      },
       products
     }, 200, { ...cors(origin), "Cache-Control": "public, max-age=300, s-maxage=900" });
     await cache.put(cacheKey, response.clone());
@@ -340,7 +544,18 @@ async function search(request, env, origin) {
   }
 }
 
-export { deviceType, sanitizeEvent, sanitizeQuery, sign, mapProduct, unwrapProducts };
+export {
+  deviceType,
+  mapProduct,
+  meetsQualityThreshold,
+  qualityThresholds,
+  queryVariants,
+  ratingFrom,
+  sanitizeEvent,
+  sanitizeQuery,
+  sign,
+  unwrapProducts
+};
 
 export default {
   async fetch(request, env) {

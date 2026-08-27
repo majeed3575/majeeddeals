@@ -1,7 +1,7 @@
 {
   "updated_at": "2026-08-26T21:40:37+00:00",
   "count": 72,
-  "total_count": 728,
+  "total_count": 730,
   "source": "aliexpress-affiliates-api",
   "deals": [
     {
@@ -41,6 +41,41 @@
       "rank_score": 99,
       "added_via": "telegram",
       "added_at": "2026-08-26T15:59:21.313Z"
+    },
+    {
+      "asin": "B08D22WD2W",
+      "store": "amazon",
+      "title": "صابون اكسترا وايت 10 كيلو",
+      "description": "خيار تقني عملي للاستخدام اليومي؛ شيّك المواصفات والسعر الحالي قبل الطلب.",
+      "image": "https://majeed3575.github.io/majeeddeals/assets/amazon-manual/b08d22wd2w.jpg",
+      "discount_percent": 0,
+      "manual_discount_percent": 50,
+      "original_price": 0,
+      "sales_volume": 0,
+      "rating": 0,
+      "review_count": 0,
+      "category": "الإلكترونيات",
+      "auto_discovered": false,
+      "owner_pinned": true,
+      "rank_score": 99,
+      "added_via": "telegram",
+      "added_at": "2026-08-24T19:48:49.057Z"
+    },
+    {
+      "asin": "B0CN5Q73LC",
+      "store": "amazon",
+      "title": "Amazon.sa",
+      "description": "خصم 5٪ على بلايستيشن 5 ‏PS5 سليم رقمي — بدون قرص، 825 جيجا، ألعاب بدقة ‏4K‏ بأداء عالي.",
+      "image": "https://majeed3575.github.io/majeeddeals/assets/amazon-manual/b0cn5q73lc.jpg",
+      "discount_percent": 0,
+      "original_price": 0,
+      "sales_volume": 0,
+      "category": "الإلكترونيات",
+      "auto_discovered": false,
+      "owner_pinned": true,
+      "rank_score": 99,
+      "added_via": "telegram",
+      "added_at": "2026-08-24T11:53:16.785Z"
     },
     {
       "store": "aliexpress",
@@ -202,7 +237,7 @@
       "original_price": 67.31,
       "sales_volume": 15555,
       "rating_percent": 98.0,
-      "category": "الموضة",
+      "category": "الأزياء والأحذية",
       "auto_discovered": true,
       "angle": "حقائب يومية",
       "rank_score": 81
@@ -502,7 +537,7 @@
       "original_price": 20.81,
       "sales_volume": 17415,
       "rating_percent": 98.0,
-      "category": "الحدائق",
+      "category": "الحدائق والزراعة",
       "auto_discovered": true,
       "angle": "إضاءة الحدائق",
       "rank_score": 79
@@ -532,7 +567,7 @@
       "original_price": 31.84,
       "sales_volume": 16610,
       "rating_percent": 98.0,
-      "category": "الموضة",
+      "category": "الأزياء والأحذية",
       "auto_discovered": true,
       "angle": "نظارات شمسية",
       "rank_score": 79
@@ -547,7 +582,7 @@
       "original_price": 45.07,
       "sales_volume": 16268,
       "rating_percent": 98.0,
-      "category": "الموضة",
+      "category": "الأزياء والأحذية",
       "auto_discovered": true,
       "angle": "نظارات شمسية",
       "rank_score": 79
@@ -592,7 +627,7 @@
       "original_price": 23.74,
       "sales_volume": 14986,
       "rating_percent": 91.8,
-      "category": "الموضة",
+      "category": "الأزياء والأحذية",
       "auto_discovered": true,
       "angle": "نظارات شمسية",
       "rank_score": 79
@@ -607,7 +642,7 @@
       "original_price": 41.02,
       "sales_volume": 14752,
       "rating_percent": 98.0,
-      "category": "الموضة",
+      "category": "الأزياء والأحذية",
       "auto_discovered": true,
       "angle": "نظارات شمسية",
       "rank_score": 79
@@ -637,7 +672,7 @@
       "original_price": 55.61,
       "sales_volume": 14271,
       "rating_percent": 98.0,
-      "category": "الموضة",
+      "category": "الأزياء والأحذية",
       "auto_discovered": true,
       "angle": "نظارات شمسية",
       "rank_score": 79
@@ -652,7 +687,7 @@
       "original_price": 30.86,
       "sales_volume": 13330,
       "rating_percent": 98.0,
-      "category": "الموضة",
+      "category": "الأزياء والأحذية",
       "auto_discovered": true,
       "angle": "نظارات شمسية",
       "rank_score": 79
@@ -697,7 +732,7 @@
       "original_price": 66.79,
       "sales_volume": 12723,
       "rating_percent": 98.0,
-      "category": "التخييم",
+      "category": "الرحلات والبحر والتخييم",
       "auto_discovered": true,
       "angle": "إضاءة الرحلات",
       "rank_score": 79
@@ -727,7 +762,7 @@
       "original_price": 24.56,
       "sales_volume": 12140,
       "rating_percent": 98.0,
-      "category": "الموضة",
+      "category": "الأزياء والأحذية",
       "auto_discovered": true,
       "angle": "نظارات شمسية",
       "rank_score": 79
@@ -742,7 +777,7 @@
       "original_price": 55.12,
       "sales_volume": 11504,
       "rating_percent": 98.0,
-      "category": "الموضة",
+      "category": "الأزياء والأحذية",
       "auto_discovered": true,
       "angle": "نظارات شمسية",
       "rank_score": 79
@@ -757,7 +792,7 @@
       "original_price": 35.25,
       "sales_volume": 11486,
       "rating_percent": 98.0,
-      "category": "الموضة",
+      "category": "الأزياء والأحذية",
       "auto_discovered": true,
       "angle": "نظارات شمسية",
       "rank_score": 79
@@ -892,7 +927,7 @@
       "original_price": 48.75,
       "sales_volume": 10373,
       "rating_percent": 98.0,
-      "category": "الموضة",
+      "category": "الأزياء والأحذية",
       "auto_discovered": true,
       "angle": "نظارات شمسية",
       "rank_score": 79
@@ -1042,7 +1077,7 @@
       "original_price": 53.74,
       "sales_volume": 6390,
       "rating_percent": 98.0,
-      "category": "الموضة",
+      "category": "الأزياء والأحذية",
       "auto_discovered": true,
       "angle": "حقائب يومية",
       "rank_score": 79
@@ -1060,36 +1095,6 @@
       "category": "السيارة",
       "auto_discovered": true,
       "angle": "طوارئ السيارة",
-      "rank_score": 79
-    },
-    {
-      "store": "aliexpress",
-      "product_id": "1005009460530375",
-      "url": "https://s.click.aliexpress.com/s/pyFri10M6ltAv61YZY9TfrxiDaaFXRreuZWJMeLtD8jig1wPxn51K2eq59ds8iT5Wl5L3w5KJyrl7SjOO3B0oJ0Xjwnc7n8AQA7gf5qnT4sCyU05LNms9JvyWQNFHNKtzBcoBpSguMg3UBR1FOODkmGTloXosMhqhnKgzzuJPYPxewVvzupiAiKSJA5SK0iQRxmaQ7UPG0AP2HC7uLitVpvXIfjMl7RnsnN7B8FrGfP9TWP7emQeaXV90Bp9fLEiLeKHsRf9R2jgKD32Axm5na4bRJdkhGVyv3GcDgMjmYrrZWinWctR9gnPwA4FlQfsBWgEapFkgqZkTGLd5U4DVme7DSNd84mxrCsm3EjnhiNjfvXprOquxQU75qLHLa2p5W7FJrferllZDlcBq3ItVQHolyKorFS98XCCjBorIYRGSMyZZTVxakAOYQ94d0H4TjMptav48y22Wcww7uK6F91PPV6iZqey4D9T0JOZrOxdyoeUDNlLHYrxmotjQzwbTjC721vzsvZ6IVM69UgeEhyYcqZuiaZHNzsOcVmr2p0y6qDn4mbforJhKu5JKlH4yjsy9UcD6VI9UvqIkG7UctbuAGlOU2fYRT15QChJJIRhxXDEPfzlwoNZlUGwhLcdLDHw0FiBzoj4Ooap8ofUqH2irpXqMxBHyzIxFZsPL0Y7NDmkOZPTKLYffMkNwrClbZnn7fSY92wotQO1YgLV9doeMgobU2FHmE4EypSRne7Vcsu26QIDqFTSfYyUH7U0CZVkuerPZy010EB2CudKTMknRPStXNI9eSDM4F3Mtx4PEWBiYzx0Nc4az276GLdbhVPt3AZ5krYrswUHnS5MMjcQewKCd0sDqnyHbKoTbxmC8LyPmSS6zHEfiu0HBGPlZHEhWEMCYzbUDMb6DNR4XA7MIKyo1ca0eI4cnSxYEN2G3cT71VZyQtFdNSm2qsT5IVdEMRMZyIFwYVUeJrdEfvg31rAWnLpA3NHJShRUWiPdycnA0u7QjdeZG5sBNEhX5D4jckuu",
-      "title": "أكياس تفريغ الهواء للسفر مع مضخة (انقر مرتين لبدء الاستخدام) — أكياس ضغط قابلة لإعادة الاستخدام ومقاومة",
-      "image": "https://ae-pic-a1.aliexpress-media.com/kf/S35ed50658785427799729d5561dad4e2Q.png",
-      "discount_percent": 54,
-      "original_price": 109.39,
-      "sales_volume": 5847,
-      "rating_percent": 98.0,
-      "category": "المنزل",
-      "auto_discovered": true,
-      "angle": "توفير المساحة",
-      "rank_score": 79
-    },
-    {
-      "store": "aliexpress",
-      "product_id": "1005008248104419",
-      "url": "https://s.click.aliexpress.com/s/NdpwztbAIgDMmxGbP8fFks7yUFfsHjzlImSYmA68h7xlMRgzueFsRgokQ9f9hcpVKttxtQE2VzIoqkXJXrpOr6uR3zv7mP4CDO9CddoFf4t0QE5DXPy8Pgjhz4irfQSEjEGUmy5yF3A5gJ9h3NYjLMgqIMqa3zcpq5E2BC3W5EbV40Dm9buQxWpZzw1lbX8Zm2kZtNIa4KyDieNjsH7IU6Yv8StELKVvT9r4eFAaXPGhwHsgaDqdNcmY116r3GC2YvsOopeiiZPhJrV0cwgOQDSkW93v7gVKDqPkXyZF1oSWa6wSAOeznMFVlVZDdIw3TVxNugLn1mUkLfdzd19YPvf4S6F33lA3nxlXFIe61hxIP5WGSZ4I3hukEjdd3D0Zzwzc56ggu0cbCiR5yWSYd8IYQ3Kqi0x82cPEcl8w3ZAdyVHJOaZinYDY0ykmTn2St7pEhyGkf8uPRv24rsIr4Ew7Cuf2MrXyCKhFX63pGDp3oJ15hokKjrd5bhbMPOfb3hsXkSChNSgQA6ysyWxZaBbLn3G7jgm4Az4aryvJfvVUgGMupShqr9LSU6t59XMUL2JRwZEwPtYnzdSDkHBNB44VAlsoNlof7Sd4hdTEE6Kq493Quc3NyQkub7J51OpznWUypyw79NTI0sPeUEH3fjM73ypV4exjZnZsid0MahCdy1NhQrJpvb8qJJmMXufr2aiEljQUAcEMusp36QMTPpeAQo3jg0Ev77Rrc7ubPYyPQAkqDHsYqSxXBpqFpbWeZUegerfaOOgmbHu5BftBRixyur08eKfRrlg3hIxdF9HQHAXAYINVlHCB43Ss3GgdTwjg86jnsaoNyen2LkieVJUONhLw5NnirVWUDpj62TWjTFgrgSQyK6jw5kndxtJ1RMI9npRn3foExqhDR4zTiJwAKL8y02saOzpAYRuYpPeKFOgje8meoq75obnMEo0XXsYV6wyKzZAMSCHyOzBGLljD7nfZ2y0vM8EtwsMDGP6Wn",
-      "title": "مصباح LED لاسلكي بمستشعر حركة — LED",
-      "image": "https://ae-pic-a1.aliexpress-media.com/kf/Se101a85881b0460387752857d30733a0Y.jpg",
-      "discount_percent": 50,
-      "original_price": 22.88,
-      "sales_volume": 5833,
-      "rating_percent": 98.0,
-      "category": "المنزل",
-      "auto_discovered": true,
-      "angle": "منزل ذكي",
       "rank_score": 79
     }
   ]

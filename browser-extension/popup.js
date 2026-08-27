@@ -5,10 +5,19 @@ const TOKEN_KEY = "overly_github_token_v5";
 const REMOTE_HASHES_KEY = "overly_remote_hashes_v5";
 const LAST_SYNC_KEY = "overly_last_sync_v5";
 const ALLOWED_CATEGORIES = [
-  "الإلكترونيات", "المنزل", "الموضة", "السيارة", "السفر",
-  "الجمال والعناية", "الرياضة", "الأطفال", "الحيوانات الأليفة", "الأدوات والهوايات",
-  "الترفيه المنزلي"
+  "الإلكترونيات", "التنظيف والمنظفات", "الأزياء والأحذية", "المطبخ والأجهزة المنزلية",
+  "الأثاث والديكور", "المنزل", "السيارة", "السفر", "الرحلات والبحر والتخييم",
+  "الحدائق والزراعة", "الجمال والعناية", "الصحة والعناية", "البقالة والمشروبات",
+  "الرياضة", "الأطفال", "الألعاب", "الحيوانات الأليفة", "الأدوات والهوايات",
+  "الترفيه المنزلي", "المدرسة والقرطاسية", "الكتب والمكتب", "الساعات والمجوهرات", "تسوق متنوع"
 ];
+const CATEGORY_ALIASES = {
+  "الموضة": "الأزياء والأحذية",
+  "الحدائق": "الحدائق والزراعة",
+  "البحر والصيد": "الرحلات والبحر والتخييم",
+  "التخييم": "الرحلات والبحر والتخييم",
+  "المدرسة والتعليم": "المدرسة والقرطاسية"
+};
 const DEFAULT_GITHUB = { owner: "majeed3575", repo: "majeeddeals", branch: "main", path: "deals.json" };
 
 const $ = (id) => document.getElementById(id);
@@ -45,16 +54,28 @@ function extractFromProductPage() {
     const searchable = String(title || "").toLowerCase();
     const contains = (words) => words.some((word) => searchable.includes(word));
     if (contains(["byintek", "tcl", "projector", "smart tv", "qled tv", "television", "بروجكتر", "بروجكتور", "تلفزيون", "تلفاز", "سينما منزلية"])) return "الترفيه المنزلي";
+    if (contains(["dish soap", "laundry soap", "detergent", "cleaner", "bleach", "washing powder", "disinfectant", "صابون", "منظف", "منظفات", "غسيل", "مسحوق غسيل", "مبيض", "مطهر"])) return "التنظيف والمنظفات";
+    if (contains(["pants", "trousers", "jeans", "shirt", "dress", "shoe", "sneaker", "sandals", "boots", "abaya", "clothing", "fashion", "بنطلون", "جينز", "قميص", "فستان", "حذاء", "شوز", "سنيكرز", "صندل", "بوت", "عباية", "ملابس", "جاكيت"])) return "الأزياء والأحذية";
+    if (contains(["kitchen", "cookware", "air fryer", "blender", "coffee maker", "espresso", "oven", "fridge", "dishwasher", "مطبخ", "مقلاة", "قلاية", "خلاط", "ماكينة قهوة", "فرن", "ثلاجة", "غسالة صحون"])) return "المطبخ والأجهزة المنزلية";
+    if (contains(["furniture", "sofa", "chair", "table", "mattress", "cabinet", "decor", "rug", "أثاث", "كنب", "كرسي", "طاولة", "مرتبة", "خزانة", "ديكور", "سجاد"])) return "الأثاث والديكور";
+    if (contains(["school", "student", "pencil", "notebook", "stationery", "مدرسة", "طالب", "قلم", "دفتر", "قرطاسية"])) return "المدرسة والقرطاسية";
+    if (contains(["book", "novel", "magazine", "office desk", "document holder", "كتاب", "رواية", "مجلة", "مكتب", "حامل مستندات"])) return "الكتب والمكتب";
+    if (contains(["toy", "puzzle", "doll", "building blocks", "board game", "لعبة", "ألعاب", "أحجية", "دمية", "مكعبات"])) return "الألعاب";
     if (contains(["قطط", "كلاب", "حيوان", "pet", "cat", "dog", "grooming"])) return "الحيوانات الأليفة";
-    if (contains(["طفل", "أطفال", "رضيع", "لعبة", "baby", "kids", "child", "toy"])) return "الأطفال";
+    if (contains(["طفل", "أطفال", "رضيع", "حفاض", "عربة أطفال", "baby", "kids", "child", "toddler", "diaper", "stroller"])) return "الأطفال";
     if (contains(["مكياج", "بشرة", "شعر", "أظافر", "makeup", "beauty", "skincare", "hair", "nail"])) return "الجمال والعناية";
+    if (contains(["first aid", "bandage", "thermometer", "blood pressure", "إسعافات", "ضماد", "ميزان حرارة", "ضغط الدم"])) return "الصحة والعناية";
+    if (contains(["coffee", "tea", "rice", "pasta", "snack", "chocolate", "juice", "spice", "food", "قهوة", "شاي", "أرز", "مكرونة", "شوكولاتة", "عصير", "بهارات"])) return "البقالة والمشروبات";
+    if (contains(["camp", "camping", "tent", "hiking", "fishing", "marine", "boat", "kayak", "beach", "تخييم", "خيمة", "هايكنج", "صيد", "بحر", "قارب", "شاطئ"])) return "الرحلات والبحر والتخييم";
+    if (contains(["garden", "gardening", "plant", "watering", "pruning", "lawn", "seed", "حديقة", "زراعة", "نبات", "ري", "تقليم", "بذور"])) return "الحدائق والزراعة";
     if (contains(["رياضة", "لياقة", "تمارين", "يوغا", "sport", "fitness", "exercise", "yoga", "running"])) return "الرياضة";
     if (contains(["دريل", "مثقاب", "عدة", "أدوات", "drill", "wrench", "tool", "laser level"])) return "الأدوات والهوايات";
     if (contains(["سيارة", "كاربلاي", "مركبة", "car", "carplay", "vehicle"])) return "السيارة";
-    if (contains(["سفر", "رحلات", "أمتعة", "travel", "luggage", "camping"])) return "السفر";
-    if (contains(["مقلاة", "قلاية", "مكنسة", "خلاط", "قهوة", "مطبخ", "غسالة", "سرير", "وسادة", "إضاءة", "مصباح", "تنظيف", "ثلاجة", "ثلج", "ميزان", "تنقية", "kitchen", "vacuum", "blender", "coffee", "fryer", "pillow", "lamp", "cleaner", "ice", "scale", "purifier"])) return "المنزل";
-    if (contains(["حقيبة", "حذاء", "قميص", "عباية", "فستان", "نظارة", "عطر", "ملابس", "جاكيت", "مظلة", "bag", "shoe", "shirt", "dress", "sunglasses", "perfume", "jacket", "backpack", "wallet", "umbrella"])) return "الموضة";
-    return "الإلكترونيات";
+    if (contains(["سفر", "أمتعة", "travel", "luggage", "packing"])) return "السفر";
+    if (contains(["wrist watch", "jewelry", "necklace", "bracelet", "ring", "ساعة يد", "مجوهرات", "قلادة", "سوار", "خاتم"])) return "الساعات والمجوهرات";
+    if (contains(["phone", "laptop", "computer", "charger", "cable", "usb", "headphone", "هاتف", "جوال", "لابتوب", "كمبيوتر", "شاحن", "كيبل", "سماعة"])) return "الإلكترونيات";
+    if (contains(["home", "vacuum", "light", "organizer", "storage", "منزل", "مكنسة", "إضاءة", "تنظيم", "تخزين"])) return "المنزل";
+    return "تسوق متنوع";
   }
 
   if (/aliexpress\.(com|us)$/i.test(location.hostname)) {
@@ -113,6 +134,22 @@ function normalizeAsin(value) { const match = String(value || "").toUpperCase().
 function normalizeProductId(value) { const match = String(value || "").match(/\d{6,20}/); return match ? match[0] : ""; }
 function itemStore(raw) { return String(raw?.store || "amazon").toLowerCase() === "aliexpress" ? "aliexpress" : "amazon"; }
 function roundPrice(value) { const number = Number(value); return Number.isFinite(number) ? Math.round(number * 100) / 100 : 0; }
+function normalizeCategory(value) {
+  const raw = String(value || "");
+  const name = CATEGORY_ALIASES[raw] || raw;
+  return ALLOWED_CATEGORIES.includes(name) ? name : "تسوق متنوع";
+}
+function isAliExpressAffiliateUrl(value) {
+  try {
+    const url = new URL(String(value || "").replace(/^http:\/\//i, "https://"));
+    const host = url.hostname.toLowerCase();
+    if (url.protocol !== "https:") return false;
+    if (host === "s.click.aliexpress.com") return true;
+    if (!(host === "aliexpress.com" || host.endsWith(".aliexpress.com") || host === "aliexpress.us" || host.endsWith(".aliexpress.us"))) return false;
+    return url.searchParams.has("aff_fcid") && url.searchParams.has("aff_trace_key") &&
+      String(url.searchParams.get("aff_platform") || "").toLowerCase().includes("api");
+  } catch (_) { return false; }
+}
 function normalizedItem(raw) {
   const store = itemStore(raw);
   const item = {
@@ -121,7 +158,7 @@ function normalizedItem(raw) {
     image: String(raw?.image || "").trim(),
     discount_percent: Math.round(Number(raw?.discount_percent || raw?.discount || 0)),
     original_price: roundPrice(raw?.original_price || raw?.originalPrice),
-    category: ALLOWED_CATEGORIES.includes(raw?.category) ? raw.category : "الإلكترونيات"
+    category: normalizeCategory(raw?.category)
   };
   if (store === "aliexpress") {
     item.product_id = normalizeProductId(raw?.product_id || raw?.asin);
@@ -132,11 +169,12 @@ function normalizedItem(raw) {
 function itemIdentity(item) { return itemStore(item) === "aliexpress" ? normalizeProductId(item?.product_id) : normalizeAsin(item?.asin); }
 function itemKey(item) { return `${itemStore(item)}:${itemIdentity(item)}`; }
 function itemHash(item) { return JSON.stringify(normalizedItem(item)); }
-function validateItem(item) {
+function validateItem(item, { requireAffiliate = false } = {}) {
   const errors = [];
   if (itemStore(item) === "amazon" && !/^[A-Z0-9]{10}$/.test(item.asin)) errors.push("رقم ASIN غير صحيح");
   if (itemStore(item) === "aliexpress" && !/^\d{6,20}$/.test(item.product_id)) errors.push("رقم AliExpress غير صحيح");
   if (itemStore(item) === "aliexpress" && !/^https:\/\/([a-z0-9-]+\.)*(aliexpress\.com|aliexpress\.us)\//i.test(item.url)) errors.push("رابط AliExpress غير صحيح");
+  if (requireAffiliate && itemStore(item) === "aliexpress" && !isAliExpressAffiliateUrl(item.url)) errors.push("رابط AliExpress ليس رابط عمولة رسميًا؛ نزّل قائمة ASINs ليحوّله الروبوت قبل النشر");
   if (item.title.length < 8) errors.push("اسم المنتج قصير");
   if (!item.image.startsWith("https://")) errors.push("رابط الصورة غير صحيح");
   if (!(item.original_price > 0)) errors.push("سعر ما قبل الخصم غير صحيح");
@@ -144,11 +182,11 @@ function validateItem(item) {
   if (!ALLOWED_CATEGORIES.includes(item.category)) errors.push("التصنيف غير مسموح");
   return errors;
 }
-function auditList(list) {
+function auditList(list, options = {}) {
   const seen = new Set();
   return list.map((raw) => {
     const item = normalizedItem(raw);
-    const errors = validateItem(item);
+    const errors = validateItem(item, options);
     const key = itemKey(item);
     if (seen.has(key)) errors.push("منتج مكرر");
     seen.add(key);
@@ -169,7 +207,7 @@ function setEditor(data, editing = false) {
   $("dealPrice").value = data.dealPrice || "";
   $("originalPrice").value = data.original_price || data.originalPrice || "";
   $("discount").value = data.discount_percent || data.discount || "";
-  $("category").value = ALLOWED_CATEGORIES.includes(data.category) ? data.category : "الإلكترونيات";
+  $("category").value = normalizeCategory(data.category);
   currentDealPrice = Number(data.dealPrice || 0);
   $("saveProduct").textContent = editing ? "حفظ تعديل المنتج" : "＋ إضافة المنتج إلى القائمة";
 }
@@ -342,7 +380,7 @@ async function testGithubConnection() {
 }
 async function publishToGithub() {
   const local = await getList();
-  const audit = auditList(local);
+  const audit = auditList(local, { requireAffiliate: true });
   const broken = audit.filter((entry) => entry.errors.length);
   if (!local.length) throw new Error("أضف منتجًا واحدًا على الأقل أولًا");
   if (broken.length) throw new Error(`يوجد ${broken.length} منتج غير صالح. عدّله قبل النشر`);

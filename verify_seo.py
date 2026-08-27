@@ -17,6 +17,13 @@ ROOT = Path(__file__).resolve().parent
 BASE_URL = "https://majeed3575.github.io/majeeddeals/"
 BASE_PATH = "/majeeddeals/"
 MERCHANT_DOMAINS = ("amazon.sa", "aliexpress.com", "aliexpress.us")
+LEGACY_CATEGORY_REDIRECTS = {
+    "categories/camping/": "categories/outdoors/",
+    "categories/camping/page/2/": "categories/outdoors/",
+    "categories/sea-fishing/": "categories/outdoors/",
+    "categories/sea-fishing/page/2/": "categories/outdoors/",
+    "categories/school-education/": "categories/school-stationery/",
+}
 errors: list[str] = []
 
 
@@ -167,8 +174,24 @@ def main() -> int:
             target = local_target(url)
             if target and not target.exists():
                 fail(f"Sitemap يشير إلى ملف مفقود: {url}")
+        for old_relative in LEGACY_CATEGORY_REDIRECTS:
+            if BASE_URL + old_relative in urls:
+                fail(f"Sitemap يجب ألا يحتوي رابط التحويل القديم: {old_relative}")
     except (OSError, ET.ParseError) as exc:
         fail(f"Sitemap غير صالح: {exc}")
+
+    for old_relative, target_relative in LEGACY_CATEGORY_REDIRECTS.items():
+        redirect_path = ROOT / old_relative / "index.html"
+        if not redirect_path.exists():
+            fail(f"صفحة التحويل القديمة مفقودة: {old_relative}")
+            continue
+        redirect_html = redirect_path.read_text(encoding="utf-8")
+        if f'rel="canonical" href="{BASE_URL + target_relative}"' not in redirect_html:
+            fail(f"canonical التحويل غير صحيح: {old_relative}")
+        if 'name="robots" content="noindex,follow"' not in redirect_html:
+            fail(f"صفحة التحويل قابلة للفهرسة خطأً: {old_relative}")
+        if BASE_PATH + target_relative not in redirect_html:
+            fail(f"هدف التحويل غير موجود داخل الصفحة: {old_relative}")
 
     html_files = [ROOT / relative for relative in generated if relative.endswith(".html")]
     html_files.append(ROOT / "index.html")

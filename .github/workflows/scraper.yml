@@ -29,6 +29,17 @@ jobs:
       - name: Install dependencies
         run: pip install requests beautifulsoup4
 
+      - name: Verify affiliate-link safety rules
+        run: python -m unittest -v test_affiliate_links.py
+
+      - name: Verify AliExpress search Worker
+        run: npm run check --prefix cloudflare-worker
+
+      - name: Verify admin Worker
+        run: |
+          npm ci --prefix cloudflare-admin --ignore-scripts
+          npm run check --prefix cloudflare-admin
+
       - name: Run scraper
         run: python scraper.py
         env:
@@ -54,6 +65,9 @@ jobs:
 
       - name: Verify SEO output
         run: python verify_seo.py
+
+      - name: Verify every published affiliate link
+        run: python verify_affiliate_links.py
 
       - name: Commit & push (if changed)
         run: |

@@ -28,7 +28,7 @@ import sys
 import time
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import parse_qs, urlsplit
 
 import requests
 from bs4 import BeautifulSoup
@@ -915,86 +915,63 @@ def build_headers() -> dict:
     }
 
 
-# تصنيف تقريبي بالكلمات المفتاحية (عربي/إنجليزي)
+# تصنيف موحّد بين الموقع، أداة الإضافة، لوحة الإدارة وبوت Telegram.
 CATEGORY_KEYWORDS = {
-    "الترفيه المنزلي": [
-        "بروجكتر", "بروجكتور", "جهاز عرض", "عارض منزلي", "تلفزيون", "تلفاز",
-        "سينما منزلية", "بيونتيك", "projector", "home cinema", "home theater",
-        "smart tv", "qled tv", "mini projector", "android projector", "television",
-        "byintek", "tcl",
-    ],
-    "الإلكترونيات": [
-        "سماعة", "سماعات", "شاحن", "كيبل", "كابل", "لابتوب", "حاسوب", "جوال",
-        "هاتف", "ساعة ذكية", "شاشة", "كاميرا", "باور بانك", "تابلت",
-        "headphone", "earbud", "charger", "laptop", "phone", "watch", "camera",
-        "monitor", "tablet", "usb", "ssd", "speaker",
-    ],
-    "المنزل": [
-        "مقلاة", "قلاية", "مكنسة", "خلاط", "قهوة", "مطبخ", "غسالة", "مكواة",
-        "سرير", "وسادة", "إضاءة", "مصباح", "تنظيف", "ثلاجة",
-        "kitchen", "vacuum", "blender", "coffee", "fryer", "pillow", "lamp",
-        "cleaner", "cookware",
-    ],
-    "السيارة": [
-        "سيارة", "سيارات", "كاربلاي", "مركبة", "carplay", "car", "vehicle",
-        "dashboard", "dashcam",
-    ],
-    "السفر": [
-        "سفر", "رحلات", "أمتعة", "شنطة سفر", "منظم سفر", "travel", "luggage",
-        "packing", "trip",
-    ],
-    "الموضة": [
-        "حقيبة", "حذاء", "قميص", "عباية", "فستان", "نظارة", "عطر", "ساعة يد",
-        "ملابس", "جاكيت",
-        "bag", "shoe", "shirt", "dress", "sunglasses", "perfume", "jacket",
-        "backpack", "wallet",
-    ],
-    "الجمال والعناية": [
-        "مكياج", "تجميل", "بشرة", "شعر", "أظافر", "حلاقة", "استشوار",
-        "makeup", "beauty", "skincare", "cosmetic", "hair", "nail", "clipper",
-    ],
-    "الحدائق": [
-        "حديقة", "حدائق", "ري", "تقليم", "زراعة", "نباتات",
-        "garden", "gardening", "irrigation", "watering", "pruning", "lawn",
-    ],
-    "البحر والصيد": [
-        "بحر", "صيد", "غوص", "سنوركل", "قصبة صيد", "بكرة صيد",
-        "fishing", "marine", "boating", "snorkel", "diving", "fish finder", "dry bag",
-    ],
-    "التخييم": [
-        "تخييم", "مخيم", "خيمة", "كيس نوم", "رحلات برية",
-        "camping", "tent", "sleeping bag", "camp chair", "outdoor cookware",
-    ],
-    "الرياضة": [
-        "رياضة", "تمارين", "لياقة", "يوغا", "جري", "دمبل",
-        "sport", "fitness", "exercise", "yoga", "running", "dumbbell",
-    ],
-    "المدرسة والتعليم": [
-        "مدرسة", "مدرسي", "مدرسية", "قرطاسية", "مقلمة", "براية", "مبراة",
-        "تعليمي", "تعليمية", "مذاكرة", "أدوات هندسية", "بطاقات تعليمية",
-        "school", "stationery", "pencil case", "pencil sharpener", "geometry set",
-        "educational", "learning", "flash cards", "study planner", "science kit",
-    ],
-    "الأطفال": [
-        "طفل", "أطفال", "رضيع", "مكعبات", "ريموت",
-        "baby", "kids", "child", "toddler", "blocks", "remote control",
-    ],
-    "الحيوانات الأليفة": [
-        "قطط", "كلاب", "حيوانات", "قطة", "كلب", "pet", "cat", "dog", "grooming",
-    ],
-    "الأدوات والهوايات": [
-        "دريل", "مثقاب", "عدة", "مفاتيح", "أدوات", "ليزر", "صيانة",
-        "drill", "wrench", "tool", "laser level", "ratchet", "workshop",
-    ],
+    "الترفيه المنزلي": ["بروجكتر", "بروجكتور", "جهاز عرض", "تلفزيون", "تلفاز", "سينما منزلية", "projector", "home cinema", "home theater", "smart tv", "qled tv", "television", "byintek", "tcl"],
+    "التنظيف والمنظفات": ["صابون", "منظف", "منظفات", "غسيل", "مسحوق غسيل", "مبيض", "كلور", "مطهر", "dish soap", "laundry soap", "detergent", "cleaner", "bleach", "washing powder", "disinfectant"],
+    "الأزياء والأحذية": ["بنطلون", "جينز", "قميص", "فستان", "حذاء", "شوز", "سنيكرز", "صندل", "بوت", "عباية", "ملابس", "جوارب", "جاكيت", "pants", "trousers", "jeans", "shirt", "dress", "shoe", "sneaker", "sandals", "boots", "abaya", "clothing", "fashion"],
+    "المطبخ والأجهزة المنزلية": ["مطبخ", "مقلاة", "قدر", "قلاية", "خلاط", "ماكينة قهوة", "اسبريسو", "فرن", "ثلاجة", "غسالة صحون", "kitchen", "cookware", "pan", "pot", "air fryer", "blender", "coffee maker", "espresso machine", "oven", "fridge", "refrigerator", "dishwasher"],
+    "الأثاث والديكور": ["أثاث", "اثاث", "كنب", "كرسي", "طاولة", "مرتبة", "خزانة", "ديكور", "سجاد", "furniture", "sofa", "chair", "table", "mattress", "cabinet", "decor", "rug"],
+    "الإلكترونيات": ["سماعة", "سماعات", "شاحن", "كيبل", "كابل", "لابتوب", "حاسوب", "جوال", "هاتف", "ساعة ذكية", "شاشة", "كاميرا", "باور بانك", "تابلت", "headphone", "earbud", "charger", "laptop", "phone", "watch", "camera", "monitor", "tablet", "usb", "ssd", "speaker"],
+    "المنزل": ["مكنسة", "مكواة", "سرير", "وسادة", "إضاءة", "مصباح", "vacuum", "pillow", "lamp", "home", "organizer", "storage box", "hanger", "rack", "blanket", "curtain"],
+    "السيارة": ["سيارة", "سيارات", "كاربلاي", "مركبة", "carplay", "car", "vehicle", "dashboard", "dashcam"],
+    "السفر": ["سفر", "أمتعة", "شنطة سفر", "منظم سفر", "travel", "luggage", "packing", "trip"],
+    "الرحلات والبحر والتخييم": ["رحلات برية", "تخييم", "خيمة", "هايكنج", "صيد", "بحر", "قارب", "كاياك", "شاطئ", "نزهة", "camp", "camping", "tent", "hiking", "fishing", "marine", "boat", "kayak", "beach", "picnic"],
+    "الحدائق والزراعة": ["حديقة", "حدائق", "زراعة", "نبات", "نظام ري", "خرطوم ري", "تقليم", "بذور", "garden", "gardening", "plant", "watering", "pruning", "lawn", "seed"],
+    "الجمال والعناية": ["مكياج", "تجميل", "بشرة", "شعر", "أظافر", "حلاقة", "استشوار", "عطر", "makeup", "beauty", "skincare", "cosmetic", "hair", "nail", "clipper", "perfume"],
+    "الصحة والعناية": ["إسعافات", "اسعافات", "ضماد", "ميزان حرارة", "ضغط الدم", "طبي", "صحي", "first aid", "bandage", "thermometer", "blood pressure", "orthopedic", "hearing aid"],
+    "البقالة والمشروبات": ["قهوة", "شاي", "أرز", "ارز", "مكرونة", "وجبة", "شوكولاتة", "عصير", "بهارات", "غذاء", "طعام", "coffee", "tea", "rice", "pasta", "snack", "chocolate", "juice", "spice", "food"],
+    "الرياضة": ["رياضة", "تمارين", "لياقة", "يوغا", "جري", "دمبل", "sport", "fitness", "exercise", "yoga", "running", "dumbbell"],
+    "الأطفال": ["طفل", "أطفال", "رضيع", "حفاض", "عربة أطفال", "baby", "kids", "child", "toddler", "diaper", "stroller"],
+    "الألعاب": ["لعبة", "ألعاب", "أحجية", "دمية", "مكعبات", "ريموت كنترول", "toy", "puzzle", "doll", "building blocks", "board game", "remote control"],
+    "الحيوانات الأليفة": ["قطط", "كلاب", "حيوانات", "قطة", "كلب", "pet", "cat", "dog", "grooming"],
+    "الأدوات والهوايات": ["دريل", "مثقاب", "عدة", "مفاتيح", "أدوات", "ليزر", "صيانة", "drill", "wrench", "tool", "laser level", "ratchet", "workshop"],
+    "المدرسة والقرطاسية": ["مدرسة", "طالب", "قلم", "دفتر", "حقيبة مدرسية", "تعليم", "قرطاسية", "school", "student", "pencil", "notebook", "school backpack", "learning", "education", "stationery"],
+    "الكتب والمكتب": ["كتاب", "رواية", "مجلة", "مكتب", "حامل مستندات", "book", "novel", "magazine", "office desk", "document holder"],
+    "الساعات والمجوهرات": ["ساعة يد", "مجوهرات", "قلادة", "سوار", "خاتم", "نظارة شمسية", "wrist watch", "jewelry", "jewellery", "necklace", "bracelet", "ring", "sunglasses"],
+    "تسوق متنوع": [],
 }
+
+CATEGORY_ALIASES = {
+    "الموضة": "الأزياء والأحذية",
+    "الحدائق": "الحدائق والزراعة",
+    "البحر والصيد": "الرحلات والبحر والتخييم",
+    "التخييم": "الرحلات والبحر والتخييم",
+    "المدرسة والتعليم": "المدرسة والقرطاسية",
+}
+CATEGORY_PRIORITY = (
+    "الترفيه المنزلي", "التنظيف والمنظفات", "الأزياء والأحذية",
+    "المطبخ والأجهزة المنزلية", "الأثاث والديكور", "المدرسة والقرطاسية",
+    "الكتب والمكتب", "الألعاب", "الحيوانات الأليفة", "الأطفال",
+    "الجمال والعناية", "الصحة والعناية", "البقالة والمشروبات",
+    "الرحلات والبحر والتخييم", "الحدائق والزراعة", "الرياضة",
+    "الأدوات والهوايات", "السيارة", "السفر", "الساعات والمجوهرات",
+    "الإلكترونيات", "المنزل",
+)
 
 
 def classify(title: str) -> str:
     low = title.lower()
-    for cat, words in CATEGORY_KEYWORDS.items():
-        if any(w in low for w in words):
+    for cat in CATEGORY_PRIORITY:
+        if any(word in low for word in CATEGORY_KEYWORDS[cat]):
             return cat
-    return "الإلكترونيات"
+    return "تسوق متنوع"
+
+
+def normalize_category(value: object, title: str = "") -> str:
+    name = str(value or "").strip()
+    name = CATEGORY_ALIASES.get(name, name)
+    return name if name in CATEGORY_KEYWORDS else classify(title)
 
 
 # ----------------------------------------------------------------------------
@@ -1036,7 +1013,7 @@ def sanitize(raw: dict) -> dict | None:
         "image": image,
         "discount_percent": discount,
         "original_price": round(price),
-        "category": raw.get("category") or classify(title),
+        "category": normalize_category(raw.get("category"), title),
     }
 
 
@@ -1412,7 +1389,7 @@ def load_aliexpress_watchlist() -> list[dict]:
             {
                 "product_id": product_id,
                 "url": f"https://www.aliexpress.com/item/{product_id}.html",
-                "category": category if category in CATEGORY_KEYWORDS else None,
+                "category": normalize_category(category) if category else None,
             }
         )
     return clean
@@ -1526,17 +1503,24 @@ def _ali_discount(value: object) -> int:
     return int(match.group(0)) if match else 0
 
 
-def _ali_https_url(value: object) -> str:
-    """يقبل روابط AliExpress الرسمية فقط، ويرقّي رابط العمولة من HTTP إلى HTTPS."""
+def _ali_affiliate_url(value: object) -> str:
+    """يقبل رابط عمولة AliExpress الرسمي فقط، ولا يقبل رابط المنتج المباشر."""
     url = str(value or "").strip()
     if url.startswith("http://s.click.aliexpress.com/"):
         url = "https://" + url.removeprefix("http://")
     if not url.startswith("https://"):
         return ""
     host = (urlsplit(url).hostname or "").lower()
-    if host == "aliexpress.com" or host.endswith(".aliexpress.com"):
+    if host == "s.click.aliexpress.com":
         return url
-    if host == "aliexpress.us" or host.endswith(".aliexpress.us"):
+    if not (
+        host == "aliexpress.com" or host.endswith(".aliexpress.com") or
+        host == "aliexpress.us" or host.endswith(".aliexpress.us")
+    ):
+        return ""
+    query = parse_qs(urlsplit(url).query)
+    platform = " ".join(query.get("aff_platform", [])).lower()
+    if query.get("aff_fcid") and query.get("aff_trace_key") and "api" in platform:
         return url
     return ""
 
@@ -1551,12 +1535,12 @@ def sanitize_aliexpress(raw: dict) -> dict | None:
         return None
     title = _ali_click_title(raw_title, raw.get("angle"))
     image = str(raw.get("image", "")).strip()
-    url = str(raw.get("url", "")).strip()
+    url = _ali_affiliate_url(raw.get("url"))
     currency = str(raw.get("currency", "")).strip().upper()
 
     if not product_id or len(title) < 8 or not image.startswith("https://"):
         return None
-    if not url.startswith("https://"):
+    if not url:
         return None
     if currency and currency not in {"SAR", "USD"}:
         print(
@@ -1588,7 +1572,7 @@ def sanitize_aliexpress(raw: dict) -> dict | None:
         "original_price": round(original, 2),
         **({"sales_volume": int(raw.get("sales_volume"))} if raw.get("sales_volume") else {}),
         **({"rating_percent": round(float(raw.get("rating_percent")), 1)} if raw.get("rating_percent") else {}),
-        "category": category if category in CATEGORY_KEYWORDS else classify(title),
+        "category": normalize_category(category, title),
         **({"auto_discovered": True} if raw.get("auto_discovered") else {}),
         **({"angle": str(raw.get("angle"))[:40]} if raw.get("angle") else {}),
         **({"rank_score": int(raw.get("rank_score"))} if raw.get("rank_score") else {}),
@@ -1611,7 +1595,7 @@ def aliexpress_generate_links(source_urls: list[str]) -> dict[str, str]:
     mapped: dict[str, str] = {}
     for item in links:
         source = str(item.get("source_value", ""))
-        promotion = _ali_https_url(item.get("promotion_link"))
+        promotion = _ali_affiliate_url(item.get("promotion_link"))
         if not promotion:
             continue
         if source.startswith("https://"):
@@ -2052,7 +2036,7 @@ def scrape_aliexpress() -> list[dict]:
             or f"https://www.aliexpress.com/item/{product_id}.html"
         )
         source_urls.append(source_url)
-        if not _ali_https_url(product.get("promotion_link")):
+        if not _ali_affiliate_url(product.get("promotion_link")):
             missing_link_sources.append(source_url)
     # أغلب نتائج product.query تعيد رابط العمولة مباشرة؛ لا نستهلك نداءاً إضافياً إلا للناقص.
     link_map = aliexpress_generate_links(missing_link_sources)
@@ -2061,7 +2045,7 @@ def scrape_aliexpress() -> list[dict]:
     seen: set[str] = set()
     for product, source_url in zip(raw_products, source_urls):
         product_id = _ali_product_id(product.get("product_id"))
-        promotion_link = _ali_https_url(product.get("promotion_link"))
+        promotion_link = _ali_affiliate_url(product.get("promotion_link"))
         affiliate_url = (
             promotion_link
             if promotion_link
