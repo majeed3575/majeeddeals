@@ -1,9 +1,9 @@
 {
-  "products": 725,
+  "products": 722,
   "categories": 23,
   "guides": 5,
-  "sitemap_urls": 807,
-  "changed_files": 784,
-  "removed_stale_files": 25,
-  "source_updated_at": "2026-08-28T08:11:41+00:00"
+  "sitemap_urls": 804,
+  "changed_files": 793,
+  "removed_stale_files": 30,
+  "source_updated_at": "2026-08-28T20:07:52+00:00"
 }
