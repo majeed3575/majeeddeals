@@ -15,11 +15,12 @@ concurrency:
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     env:
       OVERLY_SITE_URL: https://overly.live/
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      # معرّف الحساب ليس سراً؛ إبقاؤه هنا يلغي إعداداً زائداً ويترك الرمز فقط داخل Secrets.
+      CLOUDFLARE_ACCOUNT_ID: d26b52952fcfee76d94f522a322ffa9b
 
     steps:
       - name: Checkout repository
@@ -44,7 +45,8 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHANNEL_USERNAME: ${{ secrets.TELEGRAM_CHANNEL_USERNAME }}
           # المنتجات الجديدة فور اكتشافها، ومنتج مميز واحد كل ساعتين بحد 10 يومياً.
-          TELEGRAM_MAX_NEW_POSTS: "30"
+          TELEGRAM_MAX_NEW_POSTS: "10"
+          TELEGRAM_SEND_DELAY_SECONDS: "3"
           TELEGRAM_FEATURED_INTERVAL_HOURS: "2"
           TELEGRAM_FEATURED_DAILY_LIMIT: "10"
           # Amazon Creators API (البديل الرسمي لـ PA-API) — يكفي إضافة هذين السرّين لتفعيل التحديث الحيّ.
@@ -88,13 +90,15 @@ jobs:
           fi
 
       - name: Deploy overly.live to Cloudflare
-        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' }}
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ env.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ env.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy --config wrangler.site.jsonc
 
-      - name: Explain skipped Cloudflare deploy
-        if: ${{ env.CLOUDFLARE_API_TOKEN == '' || env.CLOUDFLARE_ACCOUNT_ID == '' }}
-        run: echo "Cloudflare deploy skipped — add CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID as repository secrets."
+      - name: Fail clearly when Cloudflare deployment is not configured
+        if: ${{ env.CLOUDFLARE_API_TOKEN == '' }}
+        run: |
+          echo "::error::Catalog updated in GitHub but overly.live was not deployed. Add CLOUDFLARE_API_TOKEN to repository secrets."
+          exit 1

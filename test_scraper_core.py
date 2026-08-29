@@ -2,12 +2,24 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import Mock, patch
 
 import scraper
 import generate_seo
 
 
 class ScraperCoreTests(unittest.TestCase):
+    @staticmethod
+    def telegram_deal():
+        return {
+            "store": "aliexpress",
+            "product_id": "1005000000000001",
+            "title": "شاحن متنقل موثوق للاختبار",
+            "image": "https://ae01.alicdn.com/kf/test.jpg",
+            "url": "https://s.click.aliexpress.com/e/test",
+            "category": "الإلكترونيات",
+        }
+
     def test_write_output_does_not_rewrite_identical_catalog(self):
         original_path = scraper.OUTPUT_PATH
         try:
@@ -110,6 +122,44 @@ class ScraperCoreTests(unittest.TestCase):
         self.assertIsNotNone(deal)
         self.assertEqual(deal["discount_percent"], 56)
         self.assertEqual(deal["original_price"], 0)
+
+    @patch("scraper.time.sleep")
+    @patch("scraper.requests.post")
+    def test_telegram_respects_retry_after_before_retrying_photo(self, post, sleep):
+        limited = Mock(status_code=429, text="rate limited")
+        limited.json.return_value = {"ok": False, "parameters": {"retry_after": 2}}
+        accepted = Mock(status_code=200, text="ok")
+        accepted.json.return_value = {"ok": True}
+        post.side_effect = [limited, accepted]
+
+        self.assertTrue(scraper.send_to_telegram(self.telegram_deal()))
+        self.assertEqual(post.call_count, 2)
+        self.assertTrue(all(call.args[0].endswith("/sendPhoto") for call in post.call_args_list))
+        sleep.assert_called_once_with(3)
+
+    @patch("scraper.time.sleep")
+    @patch("scraper.requests.post")
+    def test_telegram_does_not_double_request_when_rate_limit_persists(self, post, sleep):
+        limited = Mock(status_code=429, text="rate limited")
+        limited.json.return_value = {"ok": False, "parameters": {"retry_after": 1}}
+        post.side_effect = [limited, limited, limited]
+
+        self.assertFalse(scraper.send_to_telegram(self.telegram_deal()))
+        self.assertEqual(post.call_count, scraper.TELEGRAM_API_ATTEMPTS)
+        self.assertTrue(all(call.args[0].endswith("/sendPhoto") for call in post.call_args_list))
+        self.assertEqual(sleep.call_count, scraper.TELEGRAM_API_ATTEMPTS - 1)
+
+    @patch("scraper.requests.post")
+    def test_telegram_uses_text_fallback_only_for_non_rate_photo_failure(self, post):
+        rejected = Mock(status_code=400, text="bad photo")
+        rejected.json.return_value = {"ok": False}
+        accepted = Mock(status_code=200, text="ok")
+        accepted.json.return_value = {"ok": True}
+        post.side_effect = [rejected, accepted]
+
+        self.assertTrue(scraper.send_to_telegram(self.telegram_deal()))
+        self.assertTrue(post.call_args_list[0].args[0].endswith("/sendPhoto"))
+        self.assertTrue(post.call_args_list[1].args[0].endswith("/sendMessage"))
 
 
 if __name__ == "__main__":

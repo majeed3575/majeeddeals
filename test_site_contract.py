@@ -74,6 +74,12 @@ class SiteContractTests(unittest.TestCase):
         self.assertNotIn("cd cloudflare-worker", workflow)
         self.assertNotIn("cd cloudflare-admin", workflow)
         self.assertNotIn("cd cloudflare-amazon-bot", workflow)
+        self.assertIn("CLOUDFLARE_API_TOKEN", workflow)
+        self.assertIn("Fail clearly when Cloudflare deployment is not configured", workflow)
+        self.assertNotIn("Explain skipped Cloudflare deploy", workflow)
+        self.assertIn('TELEGRAM_MAX_NEW_POSTS: "10"', workflow)
+        self.assertIn('TELEGRAM_SEND_DELAY_SECONDS: "3"', workflow)
+        self.assertIn("timeout-minutes: 30", workflow)
 
     def test_empty_categories_are_not_published_or_offered_as_filters(self):
         counts = Counter(

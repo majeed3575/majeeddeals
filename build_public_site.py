@@ -34,9 +34,16 @@ PUBLIC_FILES = (
     "sitemap.xml",
     "deals.json",
     "deals-initial.json",
+    "_headers",
 )
 PUBLIC_DIRS = ("assets", "products", "categories", "stores", "guides")
 ASSET_SUFFIXES = {".avif", ".gif", ".ico", ".jpeg", ".jpg", ".png", ".svg", ".webp"}
+SOURCE_ONLY_ASSETS = {
+    "overly-dark-chroma.png",
+    "overly-dark-logo-trimmed.png",
+    "overly-dark-logo.png",
+    "overly-icon.png",
+}
 
 
 def safe_copy(source: Path, destination: Path) -> int:
@@ -51,6 +58,8 @@ def safe_copy(source: Path, destination: Path) -> int:
         return 0
     relative = source.relative_to(ROOT)
     if relative.parts[0] == "assets" and source.suffix.lower() not in ASSET_SUFFIXES:
+        return 0
+    if relative.parts[0] == "assets" and source.name in SOURCE_ONLY_ASSETS:
         return 0
     if relative.parts[0] in {"products", "categories", "stores", "guides"} and source.suffix.lower() != ".html":
         return 0

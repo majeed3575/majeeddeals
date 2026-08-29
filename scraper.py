@@ -49,8 +49,13 @@ AFFILIATE_TAG = "faraj733-21"
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
 TELEGRAM_CHANNEL = os.environ.get("TELEGRAM_CHANNEL_USERNAME", "").strip()
 TELEGRAM_MAX_NEW_POSTS = max(
-    1, min(30, int(os.environ.get("TELEGRAM_MAX_NEW_POSTS") or "30"))
+    1, min(10, int(os.environ.get("TELEGRAM_MAX_NEW_POSTS") or "10"))
 )
+TELEGRAM_SEND_DELAY_SECONDS = max(
+    1.0, min(10.0, float(os.environ.get("TELEGRAM_SEND_DELAY_SECONDS") or "3"))
+)
+TELEGRAM_API_ATTEMPTS = 3
+TELEGRAM_MAX_RETRY_AFTER_SECONDS = 60
 # منتج مميز واحد كل ساعتين، وبحد أقصى 10 منتجات في اليوم بتوقيت الرياض.
 TELEGRAM_FEATURED_INTERVAL_HOURS = max(
     2, int(os.environ.get("TELEGRAM_FEATURED_INTERVAL_HOURS") or "2")
@@ -1233,14 +1238,15 @@ def creators_get_token() -> str | None:
             timeout=REQUEST_TIMEOUT,
         )
         if resp.status_code != 200:
-            print(f"[creators] فشل التوكن HTTP {resp.status_code}: {resp.text[:200]}")
+            # لا نسجل جسم رد المصادقة حتى لا يظهر أي تفصيل حساس في GitHub Actions.
+            print(f"[creators] فشل التوكن HTTP {resp.status_code}")
             return None
         token = resp.json().get("access_token")
         if not token:
             print("[creators] استجابة التوكن بلا access_token")
         return token
     except (requests.RequestException, ValueError) as exc:
-        print(f"[creators] خطأ التوكن: {exc}")
+        print(f"[creators] خطأ التوكن: {type(exc).__name__}")
         return None
 
 
@@ -1269,11 +1275,11 @@ def creators_get_items(asins: list[str], token: str) -> list[dict]:
         try:
             resp = requests.post(url, json=body, headers=headers, timeout=REQUEST_TIMEOUT)
             if resp.status_code != 200:
-                print(f"[creators] getItems HTTP {resp.status_code}: {resp.text[:200]}")
+                print(f"[creators] getItems HTTP {resp.status_code}")
                 continue
             data = resp.json()
         except (requests.RequestException, ValueError) as exc:
-            print(f"[creators] خطأ getItems: {exc}")
+            print(f"[creators] خطأ getItems: {type(exc).__name__}")
             continue
 
         # حاويتان محتملتان حسب توثيق أمازون: itemResults أو itemsResult
@@ -2487,6 +2493,58 @@ def build_caption(deal: dict, mode: str = "new") -> str:
     return "\n\n".join(blocks)
 
 
+def telegram_retry_after(response: requests.Response) -> int:
+    """يقرأ مهلة Telegram الآمنة عند HTTP 429 دون الوثوق بقيمة غير محدودة."""
+    try:
+        payload = response.json()
+    except ValueError:
+        payload = {}
+    if not isinstance(payload, dict):
+        payload = {}
+    try:
+        retry_after = int((payload.get("parameters") or {}).get("retry_after") or 1)
+    except (TypeError, ValueError):
+        retry_after = 1
+    return max(1, min(TELEGRAM_MAX_RETRY_AFTER_SECONDS, retry_after))
+
+
+def telegram_api_request(method: str, payload: dict) -> tuple[bool, bool]:
+    """ينفذ نداء Telegram مع احترام retry_after؛ يعيد (نجاح، تقييد سرعة)."""
+    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/{method}"
+    for attempt in range(1, TELEGRAM_API_ATTEMPTS + 1):
+        try:
+            response = requests.post(url, data=payload, timeout=REQUEST_TIMEOUT)
+        except requests.RequestException as exc:
+            # لا نطبع نص الاستثناء لأنه قد يحتوي رابط Bot API المتضمن للرمز السري.
+            print(f"[telegram] {method} network error: {type(exc).__name__}")
+            return False, False
+
+        try:
+            response_payload = response.json()
+        except ValueError:
+            response_payload = {}
+        if not isinstance(response_payload, dict):
+            response_payload = {}
+        if response.status_code == 200 and response_payload.get("ok") is True:
+            return True, False
+
+        if response.status_code == 429:
+            if attempt >= TELEGRAM_API_ATTEMPTS:
+                print(f"[telegram] {method} rate limited after {attempt} attempts")
+                return False, True
+            wait_seconds = telegram_retry_after(response) + 1
+            print(
+                f"[telegram] {method} rate limited — retry "
+                f"{attempt + 1}/{TELEGRAM_API_ATTEMPTS} after {wait_seconds}s"
+            )
+            time.sleep(wait_seconds)
+            continue
+
+        print(f"[telegram] {method} failed: {response.status_code} {response.text[:160]}")
+        return False, False
+    return False, False
+
+
 def send_to_telegram(deal: dict, mode: str = "new") -> bool:
     """يرسل صورة وبطاقة وصفية وزر شراء، مع fallback نصي عند تعذر الصورة."""
     link = telegram_deal_url(deal)
@@ -2509,40 +2567,22 @@ def send_to_telegram(deal: dict, mode: str = "new") -> bool:
         "reply_markup": reply_markup,
     }
 
-    try:
-        photo_payload = {
-            **base_payload,
-            "photo": str(deal.get("image") or ""),
-            "caption": caption,
-        }
-        resp = requests.post(
-            f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendPhoto",
-            data=photo_payload,
-            timeout=REQUEST_TIMEOUT,
-        )
-        if resp.status_code == 200 and resp.json().get("ok") is True:
-            return True
-
-        print(
-            f"[telegram] sendPhoto failed {telegram_deal_key(deal)}: "
-            f"{resp.status_code} {resp.text[:160]} — trying text fallback"
-        )
-        text_payload = {**base_payload, "text": caption}
-        fallback = requests.post(
-            f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage",
-            data=text_payload,
-            timeout=REQUEST_TIMEOUT,
-        )
-        ok = fallback.status_code == 200 and fallback.json().get("ok") is True
-        if not ok:
-            print(
-                f"[telegram] sendMessage failed {telegram_deal_key(deal)}: "
-                f"{fallback.status_code} {fallback.text[:160]}"
-            )
-        return ok
-    except (requests.RequestException, ValueError) as exc:
-        print(f"[telegram] error {telegram_deal_key(deal)}: {exc}")
+    photo_payload = {
+        **base_payload,
+        "photo": str(deal.get("image") or ""),
+        "caption": caption,
+    }
+    photo_ok, rate_limited = telegram_api_request("sendPhoto", photo_payload)
+    if photo_ok:
+        return True
+    if rate_limited:
+        # لا نرسل fallback فوراً عند 429 لأنه يضاعف الضغط؛ يبقى المنتج في pending.
+        print(f"[telegram] deferring rate-limited product {telegram_deal_key(deal)}")
         return False
+
+    print(f"[telegram] image unavailable for {telegram_deal_key(deal)} — trying text fallback")
+    text_ok, _ = telegram_api_request("sendMessage", {**base_payload, "text": caption})
+    return text_ok
 
 
 def telegram_rank(deal: dict) -> tuple[int, int, int]:
@@ -2596,7 +2636,7 @@ def post_deals_to_telegram(new_deals: list[dict], all_deals: list[dict]) -> None
             ever_posted.add(key)
             sent_new += 1
             print(f"[telegram] posted new product {key}")
-            time.sleep(2)
+            time.sleep(TELEGRAM_SEND_DELAY_SECONDS)
         else:
             remaining.append(key)
 

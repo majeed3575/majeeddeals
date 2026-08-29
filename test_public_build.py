@@ -1,5 +1,7 @@
 import unittest
+from html.parser import HTMLParser
 from pathlib import Path
+from urllib.parse import unquote, urlparse
 
 import build_public_site
 
@@ -19,6 +21,7 @@ class PublicBuildTests(unittest.TestCase):
             "robots.txt",
             "sitemap.xml",
             "search-config.js",
+            "_headers",
         ):
             self.assertTrue((self.output / relative).is_file(), relative)
 
@@ -50,6 +53,55 @@ class PublicBuildTests(unittest.TestCase):
     def test_bundle_does_not_publish_internal_seo_state(self):
         for name in ("seo-state.json", "seo-report.json", "seo-generated-files.json"):
             self.assertFalse((self.output / name).exists(), name)
+
+    def test_bundle_excludes_large_source_only_brand_assets(self):
+        for name in build_public_site.SOURCE_ONLY_ASSETS:
+            self.assertFalse((self.output / "assets" / name).exists(), name)
+
+    def test_bundle_has_baseline_security_headers(self):
+        headers = (self.output / "_headers").read_text(encoding="utf-8")
+        self.assertIn("X-Frame-Options: DENY", headers)
+        self.assertIn("X-Content-Type-Options: nosniff", headers)
+        self.assertIn("Content-Security-Policy:", headers)
+        self.assertIn("frame-ancestors 'none'", headers)
+
+    def test_bundle_has_no_broken_internal_links_or_assets(self):
+        class ReferenceParser(HTMLParser):
+            def __init__(self):
+                super().__init__()
+                self.references = []
+
+            def handle_starttag(self, _tag, attrs):
+                attributes = dict(attrs)
+                for name in ("href", "src"):
+                    if attributes.get(name):
+                        self.references.append(attributes[name])
+
+        missing = []
+        checked = 0
+        for html_path in self.output.rglob("*.html"):
+            parser = ReferenceParser()
+            parser.feed(html_path.read_text(encoding="utf-8"))
+            for reference in parser.references:
+                if reference.startswith(("#", "mailto:", "tel:", "data:", "javascript:")):
+                    continue
+                parsed = urlparse(reference)
+                if parsed.scheme and parsed.netloc not in ("overly.live", "www.overly.live"):
+                    continue
+                if parsed.netloc in ("overly.live", "www.overly.live") or parsed.path.startswith("/"):
+                    target = self.output / unquote(parsed.path).lstrip("/")
+                else:
+                    target = html_path.parent / unquote(parsed.path)
+                candidates = [target]
+                if parsed.path.endswith("/"):
+                    candidates.append(target / "index.html")
+                elif not target.suffix:
+                    candidates.extend((target / "index.html", target.with_suffix(".html")))
+                checked += 1
+                if not any(candidate.exists() for candidate in candidates):
+                    missing.append((str(html_path.relative_to(self.output)), reference))
+        self.assertGreater(checked, 1000)
+        self.assertEqual(missing, [])
 
 
 if __name__ == "__main__":
