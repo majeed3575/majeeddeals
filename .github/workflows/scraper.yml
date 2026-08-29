@@ -91,11 +91,26 @@ jobs:
 
       - name: Deploy overly.live to Cloudflare
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' }}
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ env.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ env.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy --config wrangler.site.jsonc
+
+      - name: Verify live security headers
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' }}
+        run: |
+          for attempt in 1 2 3 4 5; do
+            headers="$(curl -fsSI "${OVERLY_SITE_URL}?v=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${attempt}" || true)"
+            if grep -qi '^strict-transport-security:' <<<"$headers" && grep -qi '^content-security-policy:' <<<"$headers"; then
+              echo "Security headers verified on overly.live."
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "$headers"
+          echo "::error::Cloudflare deployment completed, but CSP or HSTS is missing on overly.live."
+          exit 1
 
       - name: Fail clearly when Cloudflare deployment is not configured
         if: ${{ env.CLOUDFLARE_API_TOKEN == '' }}
