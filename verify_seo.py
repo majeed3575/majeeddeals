@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 import xml.etree.ElementTree as ET
@@ -14,8 +15,8 @@ from urllib.parse import urlparse
 
 
 ROOT = Path(__file__).resolve().parent
-BASE_URL = "https://majeed3575.github.io/majeeddeals/"
-BASE_PATH = "/majeeddeals/"
+BASE_URL = (os.environ.get("OVERLY_SITE_URL") or "https://overly.live/").strip().rstrip("/") + "/"
+BASE_PATH = urlparse(BASE_URL).path or "/"
 MERCHANT_DOMAINS = ("amazon.sa", "aliexpress.com", "aliexpress.us")
 LEGACY_CATEGORY_REDIRECTS = {
     "categories/camping/": "categories/outdoors/",
@@ -190,7 +191,7 @@ def main() -> int:
             fail(f"canonical التحويل غير صحيح: {old_relative}")
         if 'name="robots" content="noindex,follow"' not in redirect_html:
             fail(f"صفحة التحويل قابلة للفهرسة خطأً: {old_relative}")
-        if BASE_PATH + target_relative not in redirect_html:
+        if BASE_URL + target_relative not in redirect_html:
             fail(f"هدف التحويل غير موجود داخل الصفحة: {old_relative}")
 
     html_files = [ROOT / relative for relative in generated if relative.endswith(".html")]

@@ -24,8 +24,15 @@ ROOT = Path(__file__).resolve().parent
 DEALS_PATH = ROOT / "deals.json"
 STATE_PATH = ROOT / "seo-state.json"
 MANIFEST_PATH = ROOT / "seo-generated-files.json"
-BASE_URL = "https://majeed3575.github.io/majeeddeals/"
-BASE_PATH = "/majeeddeals/"
+DEFAULT_SITE_URL = "https://overly.live/"
+_site_url = (os.environ.get("OVERLY_SITE_URL") or DEFAULT_SITE_URL).strip()
+_site_parts = urlparse(_site_url)
+if _site_parts.scheme != "https" or not _site_parts.hostname:
+    raise RuntimeError("OVERLY_SITE_URL يجب أن يكون رابط HTTPS كاملاً")
+BASE_URL = _site_url.rstrip("/") + "/"
+BASE_PATH = urlparse(BASE_URL).path or "/"
+# الروابط المطلقة تعمل على النطاق الأساسي وعلى نسخة GitHub Pages الاحتياطية.
+SITE_LINK_ROOT = BASE_URL
 AFFILIATE_TAG = "faraj733-21"
 PAGE_SIZE = 24
 INITIAL_FEED_SIZE = 72
@@ -313,8 +320,21 @@ def normalize_deal(raw: dict) -> dict | None:
         affiliate_url = f"https://www.amazon.sa/dp/{product_id}/?tag={AFFILIATE_TAG}"
         image = valid_https(
             raw.get("image"),
-            ("media-amazon.com", "ssl-images-amazon.com", "amazon.com", "majeed3575.github.io"),
+            ("media-amazon.com", "ssl-images-amazon.com", "amazon-adsystem.com", "amazon.com"),
         )
+        if not image:
+            owner_image = valid_https(raw.get("image"), ("overly.live", "majeed3575.github.io"))
+            if owner_image:
+                owner_url = urlparse(owner_image)
+                owner_path = owner_url.path
+                if (
+                    owner_url.hostname == "overly.live"
+                    and owner_path.startswith("/assets/amazon-manual/")
+                ) or (
+                    owner_url.hostname == "majeed3575.github.io"
+                    and owner_path.startswith("/majeeddeals/assets/amazon-manual/")
+                ):
+                    image = owner_image
         store_name = "Amazon.sa"
     else:
         product_id = clean_text(raw.get("product_id") or raw.get("id"), 24)
@@ -332,7 +352,9 @@ def normalize_deal(raw: dict) -> dict | None:
     if len(title) < 8 or not image or not affiliate_url:
         return None
     category = normalize_category(raw.get("category"))
-    discount = min(95, int_number(raw.get("discount_percent")))
+    official_discount = min(95, int_number(raw.get("discount_percent")))
+    manual_discount = min(95, int_number(raw.get("manual_discount_percent")))
+    discount = official_discount or manual_discount
     original_price = max(0.0, number(raw.get("original_price")))
     sales = int_number(raw.get("sales_volume") or raw.get("orders") or raw.get("sales"))
     rating = max(0.0, number(raw.get("rating") or raw.get("evaluate_rate")))
@@ -435,7 +457,7 @@ def page_shell(
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://*.media-amazon.com https://*.ssl-images-amazon.com https://*.alicdn.com https://*.aliexpress-media.com https://*.aliexpress.com; style-src 'self'; script-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://overly.live https://majeed3575.github.io https://*.media-amazon.com https://*.ssl-images-amazon.com https://*.amazon-adsystem.com https://*.alicdn.com https://*.aliexpress-media.com https://*.aliexpress.com; style-src 'self'; script-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="theme-color" content="#050807">
   <meta name="description" content="{esc(meta_description(description))}">
   <meta name="robots" content="{esc(robots)}">
@@ -452,24 +474,24 @@ def page_shell(
   <meta name="twitter:description" content="{esc(meta_description(description))}">
   <meta name="twitter:image" content="{esc(image)}">
   <title>{esc(title)}</title>
-  <link rel="icon" type="image/webp" href="{BASE_PATH}assets/overly-icon.webp">
-  <link rel="apple-touch-icon" sizes="180x180" href="{BASE_PATH}assets/overly-icon-180.png">
-  <link rel="stylesheet" href="{BASE_PATH}seo.css">
+  <link rel="icon" type="image/webp" href="{SITE_LINK_ROOT}assets/overly-icon.webp">
+  <link rel="apple-touch-icon" sizes="180x180" href="{SITE_LINK_ROOT}assets/overly-icon-180.png">
+  <link rel="stylesheet" href="{SITE_LINK_ROOT}seo.css">
 {schemas}
 </head>
 <body>
   <a class="skip" href="#content">انتقل إلى المحتوى</a>
   <header class="site-header">
     <div class="shell nav">
-      <a class="brand" href="{BASE_PATH}" aria-label="أوفرلي — الرئيسية"><img src="{BASE_PATH}assets/overly-dark-logo-trimmed.webp" width="230" height="74" alt="أوفرلي — Overly" decoding="async"></a>
-      <nav aria-label="التنقل الرئيسي"><a href="{BASE_PATH}">الرئيسية</a><a href="{BASE_PATH}categories/electronics/">التصنيفات</a><a href="{BASE_PATH}guides/">الأدلة</a><a href="{BASE_PATH}methodology.html">منهجية الاختيار</a></nav>
+      <a class="brand" href="{SITE_LINK_ROOT}" aria-label="أوفرلي — الرئيسية"><img src="{SITE_LINK_ROOT}assets/overly-dark-logo-trimmed.webp" width="230" height="74" alt="أوفرلي — Overly" decoding="async"></a>
+      <nav aria-label="التنقل الرئيسي"><a href="{SITE_LINK_ROOT}">الرئيسية</a><a href="{SITE_LINK_ROOT}categories/">التصنيفات</a><a href="{SITE_LINK_ROOT}guides/">الأدلة</a><a href="{SITE_LINK_ROOT}methodology.html">منهجية الاختيار</a></nav>
     </div>
   </header>
   {body}
   <footer>
     <div class="shell footer-grid">
       <div><strong>أوفرلي | Overly</strong><p>نرتّب بيانات المنتجات لتصل إلى الخيارات الرائجة بوضوح.</p></div>
-      <div class="disclosure">إفصاح: قد نحصل على عمولة من عمليات الشراء المؤهلة عبر روابط Amazon وAliExpress دون تكلفة إضافية عليك. السعر والتوفر النهائيان هما الظاهران لدى المتجر لحظة الشراء.<nav><a href="{BASE_PATH}about.html">عن أوفرلي</a><a href="{BASE_PATH}methodology.html">منهجية الاختيار</a><a href="{BASE_PATH}privacy.html">الخصوصية</a><a href="{BASE_PATH}terms.html">الشروط</a><a href="{BASE_PATH}affiliate-disclosure.html">إفصاح العمولة</a><a href="{BASE_PATH}copyright.html">الحقوق</a></nav></div>
+      <div class="disclosure">إفصاح: قد نحصل على عمولة من عمليات الشراء المؤهلة عبر روابط Amazon وAliExpress دون تكلفة إضافية عليك. السعر والتوفر النهائيان هما الظاهران لدى المتجر لحظة الشراء.<nav><a href="{SITE_LINK_ROOT}about.html">عن أوفرلي</a><a href="{SITE_LINK_ROOT}methodology.html">منهجية الاختيار</a><a href="{SITE_LINK_ROOT}privacy.html">الخصوصية</a><a href="{SITE_LINK_ROOT}terms.html">الشروط</a><a href="{SITE_LINK_ROOT}affiliate-disclosure.html">إفصاح العمولة</a><a href="{SITE_LINK_ROOT}copyright.html">الحقوق</a></nav></div>
     </div>
   </footer>
 </body>
@@ -480,7 +502,7 @@ def page_shell(
 def redirect_page(source_relative: str, target_relative: str) -> str:
     """صفحة تحويل داخلية دائمة تحافظ على الروابط القديمة بلا إدراجها في Sitemap."""
     target_url = BASE_URL + target_relative
-    target_path = BASE_PATH + target_relative
+    target_path = SITE_LINK_ROOT + target_relative
     target_json = json.dumps(target_path, ensure_ascii=False)
     return f'''<!doctype html>
 <html lang="ar" dir="rtl">
@@ -552,8 +574,8 @@ def popularity_text(deal: dict) -> str:
 def product_card(deal: dict) -> str:
     badge = f"خصم مرصود {deal['discount_percent']}٪" if deal["discount_percent"] else "رائج"
     return f'''<article class="product-card">
-  <a class="card-image" href="{BASE_PATH}{esc(deal['path'])}"><img src="{esc(deal['image'])}" alt="{esc(deal['title'])}" loading="lazy" decoding="async" width="520" height="520"></a>
-  <div class="card-copy"><span class="badge">{esc(deal['store_name'])} · {esc(badge)}</span><h2><a href="{BASE_PATH}{esc(deal['path'])}">{esc(deal['title'])}</a></h2><p>{esc(popularity_text(deal))}</p><a class="text-link" href="{BASE_PATH}{esc(deal['path'])}">عرض التفاصيل ←</a></div>
+  <a class="card-image" href="{SITE_LINK_ROOT}{esc(deal['path'])}"><img src="{esc(deal['image'])}" alt="{esc(deal['title'])}" loading="lazy" decoding="async" width="520" height="520"></a>
+  <div class="card-copy"><span class="badge">{esc(deal['store_name'])} · {esc(badge)}</span><h2><a href="{SITE_LINK_ROOT}{esc(deal['path'])}">{esc(deal['title'])}</a></h2><p>{esc(popularity_text(deal))}</p><a class="text-link" href="{SITE_LINK_ROOT}{esc(deal['path'])}">عرض التفاصيل ←</a></div>
 </article>'''
 
 
@@ -599,7 +621,7 @@ def product_page(deal: dict, related: list[dict], lastmod: str) -> str:
     <article class="content-card"><h2>ما الذي ينبغي التحقق منه؟</h2><p>راجع {esc(category['checks'])}، إضافة إلى الشحن للسعودية وسياسة الإرجاع والضمان والسعر النهائي لدى المتجر.</p></article>
     <article class="content-card"><h2>تنبيه مهم</h2><p>الأسعار والتوفر وبيانات المبيعات قد تتغير. أوفرلي لا يبيع المنتج ولا يدّعي اختباره؛ صفحة المتجر هي المرجع النهائي.</p></article>
   </section>
-  <section class="related"><div class="section-head"><div><span>خيارات قريبة</span><h2>منتجات أخرى من {esc(deal['category'])}</h2></div><a href="{BASE_PATH}categories/{category['slug']}/">عرض التصنيف كله ←</a></div><div class="cards">{related_html or '<p class="empty">ستظهر المنتجات القريبة هنا عند توفرها.</p>'}</div></section>
+  <section class="related"><div class="section-head"><div><span>خيارات قريبة</span><h2>منتجات أخرى من {esc(deal['category'])}</h2></div><a href="{SITE_LINK_ROOT}categories/{category['slug']}/">عرض التصنيف كله ←</a></div><div class="cards">{related_html or '<p class="empty">ستظهر المنتجات القريبة هنا عند توفرها.</p>'}</div></section>
 </main>'''
     description = f"{deal['title']} من {deal['store_name']}: معلومات اختيار واضحة ورابط للتحقق من السعر الحالي والشحن إلى السعودية."
     product_schema = {
@@ -640,10 +662,10 @@ def collection_page(
     pagination = []
     if page_number > 1:
         prev = path_prefix if page_number == 2 else f"{path_prefix}page/{page_number - 1}/"
-        pagination.append(f'<a rel="prev" href="{BASE_PATH}{prev}">→ الصفحة السابقة</a>')
+        pagination.append(f'<a rel="prev" href="{SITE_LINK_ROOT}{prev}">→ الصفحة السابقة</a>')
     pagination.append(f"<span>صفحة {page_number} من {pages}</span>")
     if page_number < pages:
-        pagination.append(f'<a rel="next" href="{BASE_PATH}{path_prefix}page/{page_number + 1}/">الصفحة التالية ←</a>')
+        pagination.append(f'<a rel="next" href="{SITE_LINK_ROOT}{path_prefix}page/{page_number + 1}/">الصفحة التالية ←</a>')
     item_list = {
         "@context": "https://schema.org",
         "@type": "ItemList",
@@ -681,7 +703,7 @@ def guide_page(guide: dict, matching: list[dict], lastmod: str) -> str:
         "publisher": {"@type": "Organization", "name": "أوفرلي", "url": BASE_URL},
         "mainEntityOfPage": canonical,
     }
-    body = f'''<main id="content" class="shell page-main">{crumb_html}<article class="guide"><header><span class="eyebrow">دليل مستقل · فريق أوفرلي</span><h1>{esc(guide['title'])}</h1><p class="lead">{esc(guide['intro'])}</p><div class="byline">آخر مراجعة: {esc(lastmod)} · لا يتضمن ادعاء اختبار شخصي</div></header>{sections}<aside class="guide-note"><strong>قاعدة أوفرلي</strong><p>استخدم هذا الدليل لتكوين قائمة فحص، ثم اعتمد المواصفات والسعر والتوفر والضمان الظاهرة لدى المتجر وقت الشراء.</p></aside></article><section class="related"><div class="section-head"><div><span>تطبيق الدليل</span><h2>منتجات مرتبطة</h2></div><a href="{BASE_PATH}categories/{category_slug}/">كل منتجات {esc(guide['category'])} ←</a></div><div class="cards">{related or '<p class="empty">لا توجد منتجات مرتبطة حالياً.</p>'}</div></section></main>'''
+    body = f'''<main id="content" class="shell page-main">{crumb_html}<article class="guide"><header><span class="eyebrow">دليل مستقل · فريق أوفرلي</span><h1>{esc(guide['title'])}</h1><p class="lead">{esc(guide['intro'])}</p><div class="byline">آخر مراجعة: {esc(lastmod)} · لا يتضمن ادعاء اختبار شخصي</div></header>{sections}<aside class="guide-note"><strong>قاعدة أوفرلي</strong><p>استخدم هذا الدليل لتكوين قائمة فحص، ثم اعتمد المواصفات والسعر والتوفر والضمان الظاهرة لدى المتجر وقت الشراء.</p></aside></article><section class="related"><div class="section-head"><div><span>تطبيق الدليل</span><h2>منتجات مرتبطة</h2></div><a href="{SITE_LINK_ROOT}categories/{category_slug}/">كل منتجات {esc(guide['category'])} ←</a></div><div class="cards">{related or '<p class="empty">لا توجد منتجات مرتبطة حالياً.</p>'}</div></section></main>'''
     return page_shell(
         title=f"{guide['title']} | أوفرلي", description=guide["description"], canonical=canonical,
         body=body, schema=[article_schema, crumb_schema], og_type="article", lastmod=lastmod,
@@ -690,19 +712,22 @@ def guide_page(guide: dict, matching: list[dict], lastmod: str) -> str:
 
 def static_pages(deals: list[dict], state: dict, generated: set[str], sitemap: dict[str, str]) -> int:
     changed = 0
+    available_categories = {
+        deal["category"] for deal in deals if deal.get("category") in CATEGORIES
+    }
     category_links = "".join(
-        f'<a class="directory-link" href="{BASE_PATH}categories/{info["slug"]}/"><strong>{esc(name)}</strong><span>{esc(info["description"])}</span></a>'
-        for name, info in CATEGORIES.items()
+        f'<a class="directory-link" href="{SITE_LINK_ROOT}categories/{info["slug"]}/"><strong>{esc(name)}</strong><span>{esc(info["description"])}</span></a>'
+        for name, info in CATEGORIES.items() if name in available_categories
     )
     guide_links = "".join(
-        f'<a class="directory-link" href="{BASE_PATH}guides/{guide["slug"]}/"><strong>{esc(guide["title"])}</strong><span>{esc(guide["description"])}</span></a>'
+        f'<a class="directory-link" href="{SITE_LINK_ROOT}guides/{guide["slug"]}/"><strong>{esc(guide["title"])}</strong><span>{esc(guide["description"])}</span></a>'
         for guide in GUIDES
     )
     pages = {
         "about.html": (
             "عن أوفرلي | Overly",
             "تعرف على أوفرلي، موقع سعودي يساعد على اكتشاف المنتجات الرائجة والتحقق منها لدى المتجر.",
-            f'''<main id="content" class="shell page-main"><header class="collection-head"><span class="eyebrow">من نحن</span><h1>عن أوفرلي</h1><p>أوفرلي موقع سعودي لاكتشاف المنتجات الرائجة من Amazon السعودية وAliExpress. نحن لا نبيع المنتجات؛ ننظم البيانات العامة التي توفرها المنصات ونربطك بصفحة المتجر للتحقق والشراء.</p></header><section class="content-grid"><article class="content-card"><h2>ماذا نفعل؟</h2><p>نرتب المنتجات وفق مؤشرات مثل الطلب والتقييم والتصنيف عندما تتوفر، ونبني صفحات واضحة تساعدك على المقارنة الأولية.</p></article><article class="content-card"><h2>ماذا لا نفعل؟</h2><p>لا نخترع سعراً أو خصماً أو مراجعة، ولا ندّعي اختبار منتج لم نختبره. المتجر هو المرجع النهائي للسعر والتوفر والضمان.</p></article><article class="content-card"><h2>كيف نمول الموقع؟</h2><p>قد نحصل على عمولة من عمليات الشراء المؤهلة عبر روابط التسويق بالعمولة دون زيادة السعر على المشتري.</p></article><article class="content-card"><h2>كيف تختار؟</h2><p>اقرأ <a href="{BASE_PATH}methodology.html">منهجية الاختيار</a> وأدلة الشراء، ثم راجع مواصفات المنتج لدى البائع.</p></article></section></main>''',
+            f'''<main id="content" class="shell page-main"><header class="collection-head"><span class="eyebrow">من نحن</span><h1>عن أوفرلي</h1><p>أوفرلي موقع سعودي لاكتشاف المنتجات الرائجة من Amazon السعودية وAliExpress. نحن لا نبيع المنتجات؛ ننظم البيانات العامة التي توفرها المنصات ونربطك بصفحة المتجر للتحقق والشراء.</p></header><section class="content-grid"><article class="content-card"><h2>ماذا نفعل؟</h2><p>نرتب المنتجات وفق مؤشرات مثل الطلب والتقييم والتصنيف عندما تتوفر، ونبني صفحات واضحة تساعدك على المقارنة الأولية.</p></article><article class="content-card"><h2>ماذا لا نفعل؟</h2><p>لا نخترع سعراً أو خصماً أو مراجعة، ولا ندّعي اختبار منتج لم نختبره. المتجر هو المرجع النهائي للسعر والتوفر والضمان.</p></article><article class="content-card"><h2>كيف نمول الموقع؟</h2><p>قد نحصل على عمولة من عمليات الشراء المؤهلة عبر روابط التسويق بالعمولة دون زيادة السعر على المشتري.</p></article><article class="content-card"><h2>كيف تختار؟</h2><p>اقرأ <a href="{SITE_LINK_ROOT}methodology.html">منهجية الاختيار</a> وأدلة الشراء، ثم راجع مواصفات المنتج لدى البائع.</p></article></section></main>''',
         ),
         "methodology.html": (
             "منهجية اختيار المنتجات | أوفرلي",
@@ -796,8 +821,12 @@ def build() -> dict:
 
     for category_name, info in CATEGORIES.items():
         category_deals = [item for item in deals if item["category"] == category_name]
+        # لا ننشئ صفحة فارغة لمحركات البحث. يبقى التصنيف في القاموس ويظهر
+        # تلقائياً بمجرد وصول أول منتج إليه في تشغيل لاحق.
+        if not category_deals:
+            continue
         prefix = f"categories/{info['slug']}/"
-        page_count = max(1, math.ceil(len(category_deals) / PAGE_SIZE))
+        page_count = math.ceil(len(category_deals) / PAGE_SIZE)
         signature = [
             {key: item[key] for key in ("id", "store", "title", "image", "discount_percent", "sales_volume", "rating")}
             for item in category_deals
@@ -812,8 +841,7 @@ def build() -> dict:
                 crumb_items=[("الرئيسية", BASE_URL), ("التصنيفات", BASE_URL + "categories/")], lastmod=lastmod,
             )
             changed += write_if_changed(ROOT / canonical_path / "index.html", content, generated)
-            if category_deals:
-                sitemap[BASE_URL + canonical_path] = lastmod
+            sitemap[BASE_URL + canonical_path] = lastmod
 
     # لا نضيف التحويلات القديمة إلى Sitemap، لكن نبقي ملفاتها لتجنب أخطاء 404.
     changed += legacy_redirect_pages(generated)
@@ -850,7 +878,7 @@ def build() -> dict:
     not_found = page_shell(
         title="الصفحة غير موجودة | أوفرلي", description="الصفحة المطلوبة غير موجودة.",
         canonical=BASE_URL + "404.html", robots="noindex,follow",
-        body=f'''<main id="content" class="shell page-main"><div class="empty"><span class="eyebrow">404</span><h1>الصفحة غير موجودة</h1><p>قد يكون الرابط قد تغيّر. ابدأ من الصفحة الرئيسية أو تصفح التصنيفات.</p><p><a class="shop-button" href="{BASE_PATH}">العودة إلى أوفرلي</a></p></div></main>''',
+        body=f'''<main id="content" class="shell page-main"><div class="empty"><span class="eyebrow">404</span><h1>الصفحة غير موجودة</h1><p>قد يكون الرابط قد تغيّر. ابدأ من الصفحة الرئيسية أو تصفح التصنيفات.</p><p><a class="shop-button" href="{SITE_LINK_ROOT}">العودة إلى أوفرلي</a></p></div></main>''',
     )
     changed += write_if_changed(ROOT / "404.html", not_found, generated)
     sitemap_lines = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']

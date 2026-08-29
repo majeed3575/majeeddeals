@@ -4,22 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://*.workers.dev; img-src 'self' data: https://*.media-amazon.com https://*.ssl-images-amazon.com https://*.alicdn.com https://*.aliexpress-media.com https://*.aliexpress.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://*.workers.dev; img-src 'self' data: https://overly.live https://majeed3575.github.io https://*.media-amazon.com https://*.ssl-images-amazon.com https://*.amazon-adsystem.com https://*.alicdn.com https://*.aliexpress-media.com https://*.aliexpress.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="theme-color" content="#050807">
   <meta name="description" content="أوفرلي يجمع المنتجات الرائجة من مختلف أقسام Amazon السعودية وAliExpress، مرتبة حسب المبيعات والتقييم مع روابط تسويق بالعمولة.">
   <meta name="robots" content="index,follow,max-image-preview:large">
-  <link rel="canonical" href="https://majeed3575.github.io/majeeddeals/">
+  <link rel="canonical" href="https://overly.live/">
   <meta property="og:locale" content="ar_SA">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="أوفرلي | Overly">
   <meta property="og:title" content="أوفرلي | المنتجات الأكثر رواجاً من Amazon وAliExpress">
   <meta property="og:description" content="منتجات مفيدة وعروض مختارة من Amazon السعودية وAliExpress، مرتبة لتصل للأفضل بسرعة.">
-  <meta property="og:url" content="https://majeed3575.github.io/majeeddeals/">
-  <meta property="og:image" content="https://majeed3575.github.io/majeeddeals/assets/overly-social.jpg">
+  <meta property="og:url" content="https://overly.live/">
+  <meta property="og:image" content="https://overly.live/assets/overly-social.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="أوفرلي | المنتجات الأكثر رواجاً من Amazon وAliExpress">
   <meta name="twitter:description" content="اختيارات مفيدة من Amazon السعودية وAliExpress، مرتبة حسب الجودة والطلب.">
-  <meta name="twitter:image" content="https://majeed3575.github.io/majeeddeals/assets/overly-social.jpg">
+  <meta name="twitter:image" content="https://overly.live/assets/overly-social.jpg">
   <title>أوفرلي | المنتجات الرائجة من Amazon وAliExpress</title>
   <link rel="icon" type="image/webp" href="assets/overly-icon.webp">
   <link rel="apple-touch-icon" sizes="180x180" href="assets/overly-icon-180.png">
@@ -31,7 +31,7 @@
   <link rel="preconnect" href="https://ae01.alicdn.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
   <script type="application/ld+json">
-    {"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://majeed3575.github.io/majeeddeals/#organization","name":"أوفرلي","alternateName":"Overly","url":"https://majeed3575.github.io/majeeddeals/","logo":{"@type":"ImageObject","url":"https://majeed3575.github.io/majeeddeals/assets/overly-icon.png"}},{"@type":"WebSite","@id":"https://majeed3575.github.io/majeeddeals/#website","name":"أوفرلي","alternateName":"Overly","url":"https://majeed3575.github.io/majeeddeals/","inLanguage":"ar-SA","description":"منتجات رائجة مختارة من مختلف أقسام Amazon السعودية وAliExpress.","publisher":{"@id":"https://majeed3575.github.io/majeeddeals/#organization"}}]}
+    {"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://overly.live/#organization","name":"أوفرلي","alternateName":"Overly","url":"https://overly.live/","logo":{"@type":"ImageObject","url":"https://overly.live/assets/overly-icon.png"}},{"@type":"WebSite","@id":"https://overly.live/#website","name":"أوفرلي","alternateName":"Overly","url":"https://overly.live/","inLanguage":"ar-SA","description":"منتجات رائجة مختارة من مختلف أقسام Amazon السعودية وAliExpress.","publisher":{"@id":"https://overly.live/#organization"}}]}
   </script>
   <style>
     :root {
@@ -1118,7 +1118,7 @@
     <div class="quick-view-box">
       <button class="close-button" id="closeQuickView" type="button" aria-label="إغلاق النظرة السريعة">×</button>
       <div class="quick-view-grid">
-        <div class="quick-view-media"><img id="quickImage" src="" alt="صورة المنتج"></div>
+        <div class="quick-view-media"><img id="quickImage" src="assets/overly-icon.webp" alt="صورة المنتج"></div>
         <div class="quick-view-copy">
           <div class="category" id="quickCategory"></div>
           <h3 id="quickTitle"></h3>
@@ -1168,7 +1168,12 @@
       try {
         const url = new URL(String(value || ""), location.href);
         const sameOrigin = url.origin === location.origin || (location.protocol === "file:" && url.protocol === "file:");
-        return sameOrigin && url.pathname.includes("/assets/amazon-manual/") ? url.href : "";
+        const localAsset = sameOrigin && url.pathname.includes("/assets/amazon-manual/");
+        const publicHost = url.hostname.toLowerCase();
+        const publicAsset = url.protocol === "https:"
+          && ((publicHost === "overly.live" && url.pathname.startsWith("/assets/amazon-manual/"))
+            || (publicHost === "majeed3575.github.io" && url.pathname.startsWith("/majeeddeals/assets/amazon-manual/")));
+        return localAsset || publicAsset ? url.href : "";
       } catch (_) { return ""; }
     };
     const dealLink = deal => storeOf(deal) === "amazon"
@@ -1176,7 +1181,7 @@
       : safeAliExpressAffiliateUrl(deal.url) || "#";
     const safeImageUrl = deal => storeOf(deal) === "aliexpress"
       ? safeHttpsUrl(deal.image, ["alicdn.com", "aliexpress-media.com", "aliexpress.com"])
-      : safeHttpsUrl(deal.image, ["media-amazon.com", "ssl-images-amazon.com", "amazon.com"])
+      : safeHttpsUrl(deal.image, ["media-amazon.com", "ssl-images-amazon.com", "amazon-adsystem.com", "amazon.com"])
         || safeOwnerAmazonImage(deal.image);
     const dealPage = deal => {
       const key = dealKey(deal).toLowerCase();
@@ -1226,6 +1231,7 @@
       if (!productId || title.length < 4 || url === "#" || !image || product?.shipping_country !== "SA") return null;
       const originalPrice = Number(product.original_price);
       const discount = Number(product.discount_percent);
+      const manualDiscount = Number(product.manual_discount_percent);
       const sales = Number(product.sales_volume);
       const rating = Number(product.rating);
       return {
@@ -1236,6 +1242,7 @@
         image,
         original_price: Number.isFinite(originalPrice) && originalPrice > 0 ? Math.min(originalPrice, 1000000) : 0,
         discount_percent: Number.isFinite(discount) ? Math.min(95, Math.max(0, Math.round(discount))) : 0,
+        manual_discount_percent: Number.isFinite(manualDiscount) ? Math.min(95, Math.max(0, Math.round(manualDiscount))) : 0,
         sales_volume: Number.isFinite(sales) ? Math.min(1000000000, Math.max(0, Math.round(sales))) : 0,
         rating: Number.isFinite(rating) ? Math.min(100, Math.max(0, rating)) : 0,
         category: normalizeCategory(product.category),
@@ -1257,6 +1264,7 @@
       if (!key || title.length < 4 || url === "#" || !image) return null;
       const originalPrice = Number(product.original_price);
       const discount = Number(product.discount_percent);
+      const manualDiscount = Number(product.manual_discount_percent);
       const sales = Number(product.sales_volume);
       const rating = Number(product.rating);
       return {
@@ -1266,26 +1274,17 @@
         url: store === "aliexpress" ? url : undefined,
         original_price: Number.isFinite(originalPrice) && originalPrice > 0 ? Math.min(originalPrice, 1000000) : 0,
         discount_percent: Number.isFinite(discount) ? Math.min(95, Math.max(0, Math.round(discount))) : 0,
+        manual_discount_percent: Number.isFinite(manualDiscount) ? Math.min(95, Math.max(0, Math.round(manualDiscount))) : 0,
         sales_volume: Number.isFinite(sales) ? Math.min(1000000000, Math.max(0, Math.round(sales))) : 0,
         rating: Number.isFinite(rating) ? Math.min(100, Math.max(0, rating)) : 0,
         category: normalizeCategory(product.category),
         shipping_country: store === "aliexpress" ? "SA" : product.shipping_country
       };
     };
-    const FALLBACK_DATA = {
-      updated_at: "2026-07-21T04:18:12+00:00",
-      deals: [
-        {asin:"B0DL5FT193",title:"شاحن UGREEN بقوة 200 واط بـ8 منافذ وتقنية GaN للشحن السريع",image:"https://m.media-amazon.com/images/I/51PpIM8WXVL._AC_UF894,1000_QL80_FMwebp_.jpg",discount_percent:32,original_price:379,category:"الإلكترونيات"},
-        {asin:"B08FJ678YK",title:"جهاز تنقية الهواء ليفويت Core 200S الذكي للمنزل",image:"https://m.media-amazon.com/images/I/61YVFzh9kLL._AC_UF1000,1000_QL80_FMwebp_.jpg",discount_percent:24,original_price:500,category:"المنزل"},
-        {asin:"B07ZG5NTPJ",title:"ميزان يوفي eufy الذكي C1 بتقنية بلوتوث وتحليل مكونات الجسم",image:"https://m.media-amazon.com/images/I/617LH20BD5L._AC_SF1050,1050_QL80_.jpg",discount_percent:23,original_price:89,category:"المنزل"},
-        {asin:"B0D53RXMB1",title:"جهاز تتبع UGREEN FineTrack بتقنية بلوتوث للحقائب والجوازات",image:"https://m.media-amazon.com/images/I/61eiRrdySeL._AC_SX679_.jpg",discount_percent:20,original_price:69,category:"الإلكترونيات"},
-        {asin:"B08GHC8429",title:"مظلة Showay واقية من الشمس والأشعة فوق البنفسجية لزجاج السيارة",image:"https://m.media-amazon.com/images/I/41PbD+yb4OL._AC_SF1050,1050_QL80_.jpg",discount_percent:11,original_price:20,category:"الموضة"},
-        {asin:"B0DBVFNMQG",title:"ماكينة صنع الثلج Flvzog لسطح الطاولة ذاتية التنظيف",image:"https://m.media-amazon.com/images/I/61dfrgeOOrL._AC_UF350,350_QL80_FMwebp_.jpg",discount_percent:10,original_price:269,category:"المنزل"}
-      ]
-    };
-
-    let deals = FALLBACK_DATA.deals.map(normalizeCatalogDeal).filter(Boolean);
-    let updatedAt = FALLBACK_DATA.updated_at;
+    // لا نعرض أسعارًا أو خصومات قديمة إذا تعذر تحميل ملفات الكتالوج الحالية.
+    let deals = [];
+    let updatedAt = "";
+    let catalogLoading = true;
     let category = "الكل";
     let store = "all";
     let sortBy = "smart";
@@ -1340,14 +1339,21 @@
     const el = id => document.getElementById(id);
     const formatNumber = value => new Intl.NumberFormat("ar-SA", {maximumFractionDigits: 0}).format(value);
     const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
-    const dealRank = deal => Number(deal.rank_score || 0) || Number(deal.discount_percent || 0) + 48;
-    const smartSort = (a,b) => dealRank(b) - dealRank(a) || b.discount_percent - a.discount_percent;
-    const hasDiscount = deal => Number(deal.discount_percent || 0) > 0;
+    const discountPercent = deal => {
+      const official = Number(deal?.discount_percent || 0);
+      const manual = Number(deal?.manual_discount_percent || 0);
+      const value = official > 0 ? official : manual;
+      return Number.isFinite(value) ? Math.min(95, Math.max(0, Math.round(value))) : 0;
+    };
+    const dealRank = deal => Number(deal.rank_score || 0) || discountPercent(deal) + 48;
+    const smartSort = (a,b) => dealRank(b) - dealRank(a) || discountPercent(b) - discountPercent(a);
+    const hasDiscount = deal => discountPercent(deal) > 0;
+    const hasBeforePrice = deal => hasDiscount(deal) && Number(deal.original_price || 0) > 0;
     const popularityText = deal => Number(deal.sales_volume || 0) >= 1000
       ? `${formatNumber(deal.sales_volume)} مبيعة`
       : "منتج رائج";
-    const offerText = deal => hasDiscount(deal) ? `خصم ${deal.discount_percent}٪` : popularityText(deal);
-    const priceContext = (deal, shop) => hasDiscount(deal)
+    const offerText = deal => hasDiscount(deal) ? `خصم ${discountPercent(deal)}٪` : popularityText(deal);
+    const priceContext = (deal, shop) => hasBeforePrice(deal)
       ? `${shop.name} قبل الخصم: <s>${formatNumber(deal.original_price)} ر.س</s>`
       : `السعر الحالي والتوفر يُتحقق منهما على ${shop.name}`;
     const topDeals = () => [...deals].sort(smartSort).slice(0,3);
@@ -1477,7 +1483,7 @@
           <div class="hero-visual">
             <div class="hero-orbit"></div>
             <a class="hero-image-stage" href="${page}" aria-label="تفاصيل ${escapeHtml(deal.title)}"><img src="${image}" alt="${escapeHtml(deal.title)}" width="720" height="720" loading="${index === heroIndex ? "eager" : "lazy"}" fetchpriority="${index === heroIndex ? "high" : "low"}" decoding="async" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🛍️',style:'font-size:64px'}))"></a>
-            <span class="floating-chip discount">${hasDiscount(deal) ? `وفّر ${deal.discount_percent}٪` : popularityText(deal)}</span>
+            <span class="floating-chip discount">${hasDiscount(deal) ? `وفّر ${discountPercent(deal)}٪` : popularityText(deal)}</span>
             <span class="floating-chip source">${shop.name} ↗</span>
           </div>
         </article>
@@ -1515,8 +1521,16 @@
     }
 
     function renderCategoryChips() {
-      el("categoryChips").innerHTML = CATEGORIES.map(item => {
-        const scoped = activeDeals().filter(deal => store === "all" || storeOf(deal) === store);
+      const scoped = activeDeals().filter(deal => store === "all" || storeOf(deal) === store);
+      const availableCategories = CATEGORIES.filter(item =>
+        item === "الكل" || scoped.some(deal => deal.category === item)
+      );
+      if (!availableCategories.includes(category)) category = "الكل";
+      el("categorySelect").innerHTML = availableCategories.map(item =>
+        `<option value="${item}">${item === "الكل" ? "كل التصنيفات" : item}</option>`
+      ).join("");
+      el("categorySelect").value = category;
+      el("categoryChips").innerHTML = availableCategories.map(item => {
         const count = item === "الكل" ? scoped.length : scoped.filter(deal => deal.category === item).length;
         const label = item === "الكل" ? "الكل" : item;
         const href = item === "الكل" ? "categories/" : `categories/${CATEGORY_SLUGS[item] || "electronics"}/`;
@@ -1536,7 +1550,7 @@
         if (sortBy === "price-low") return a.original_price - b.original_price;
         if (sortBy === "name") return a.title.localeCompare(b.title, "ar");
         if (sortBy === "smart") return smartSort(a,b);
-        return b.discount_percent - a.discount_percent;
+        return discountPercent(b) - discountPercent(a);
       });
     }
 
@@ -1596,8 +1610,12 @@
       if (!list.length) {
         const remoteEmpty = Array.isArray(aliSearchResults);
         const aliEmpty = store === "aliexpress" && !deals.some(deal => storeOf(deal) === "aliexpress");
-        el("emptyTitle").textContent = remoteEmpty ? "لا توجد نتائج قابلة للشحن للسعودية" : aliEmpty ? "عروض AliExpress قيد الإضافة" : "لا توجد نتائج مطابقة";
-        el("emptyDescription").textContent = remoteEmpty
+        el("emptyTitle").textContent = catalogLoading
+          ? "جاري تحميل العروض الحالية…"
+          : remoteEmpty ? "لا توجد نتائج قابلة للشحن للسعودية" : aliEmpty ? "عروض AliExpress قيد الإضافة" : "لا توجد نتائج مطابقة";
+        el("emptyDescription").textContent = catalogLoading
+          ? "نتحقق من أحدث نسخة للكتالوج، ولن نعرض بيانات قديمة بدلًا منها."
+          : remoteEmpty
           ? "جرّب وصفاً أوسع أو كلمة مختلفة؛ النتائج تأتي مباشرة من AliExpress للسعودية."
           : aliEmpty
           ? "جهّزنا المنصة والفلترة والروابط؛ ستظهر هنا العروض الموثقة فور إضافتها، دون منتجات أو أسعار تجريبية."
@@ -1630,7 +1648,7 @@
             <a class="media-product-link" href="${page}" aria-label="تفاصيل ${escapeHtml(deal.title)}">
               <img src="${image}" alt="${escapeHtml(deal.title)}" width="640" height="640" loading="lazy" decoding="async" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🛍️',style:'font-size:52px'}))">
             </a>
-            <span class="discount-badge">${hasDiscount(deal) ? `-${deal.discount_percent}٪` : popularityText(deal)}</span>
+            <span class="discount-badge">${hasDiscount(deal) ? `-${discountPercent(deal)}٪` : popularityText(deal)}</span>
             <span class="category-tag">${escapeHtml(deal.angle || deal.category)}</span>
             <span class="store-badge ${shop.key}">${shop.name}</span>
             <button class="quick-look" type="button" onclick="openQuickView('${key}')">⌘ نظرة سريعة</button>
@@ -1641,7 +1659,7 @@
             <details class="deal-details">
               <summary>تفاصيل العرض</summary>
               <div class="detail-content">
-                <div class="detail-row"><span>${hasDiscount(deal) ? `${shop.name} قبل الخصم` : "السعر والتوفر"}</span><b>${hasDiscount(deal) ? `<s>${formatNumber(deal.original_price)} ر.س</s>` : `يُتحقق على ${shop.host}`}</b></div>
+                <div class="detail-row"><span>${hasBeforePrice(deal) ? `${shop.name} قبل الخصم` : "السعر والتوفر"}</span><b>${hasBeforePrice(deal) ? `<s>${formatNumber(deal.original_price)} ر.س</s>` : `يُتحقق على ${shop.host}`}</b></div>
                 <div class="detail-row"><span>رقم المنتج</span><b dir="ltr">${key}</b></div>
                 <div class="detail-row"><span>التوفر والسعر النهائي</span><b>يُتحقق على ${shop.host}</b></div>
               </div>
@@ -1907,7 +1925,7 @@
       exitShown = true;
       storage.set("exit_modal_shown", "1");
       el("modalTitle").textContent = hasDiscount(best)
-        ? `لا تفوّت أقوى عرض بخصم ${best.discount_percent}٪`
+        ? `لا تفوّت أقوى عرض بخصم ${discountPercent(best)}٪`
         : "لا تفوّت هذا المنتج الرائج";
       el("modalDescription").textContent = best.title;
       el("modalLink").textContent = storeMeta(best).cta;
@@ -1931,6 +1949,7 @@
       if (!safeDeals.length) return false;
       deals = safeDeals;
       updatedAt = data.updated_at || updatedAt;
+      catalogLoading = false;
       renderAll();
       if (!requestedDealOpened && requestedDeal && deals.some(item => dealKey(item) === requestedDeal)) {
         requestedDealOpened = true;
@@ -1941,7 +1960,11 @@
     const loadFullCatalog = () => fetch("deals.json", {cache: "no-cache"})
       .then(response => response.ok ? response.json() : Promise.reject(new Error("تعذر تحميل القائمة الكاملة")))
       .then(applyDealPayload)
-      .catch(() => false);
+      .catch(() => {
+        catalogLoading = false;
+        renderAll();
+        return false;
+      });
     const scheduleFullCatalog = () => {
       const run = () => loadFullCatalog();
       if ("requestIdleCallback" in window) requestIdleCallback(run, {timeout: 2500});

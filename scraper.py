@@ -380,10 +380,6 @@ ALIEXPRESS_FOCUS_QUERIES = [
         "angle": "عمل متنقل", "include": ("portable monitor", "usb c monitor", "travel monitor", "شاشة محمولة"),
     },
     {
-        "topic": "tech", "keywords": "solar security camera wifi", "category": "المنزل",
-        "angle": "مراقبة بالطاقة الشمسية", "include": ("solar camera", "solar security camera", "wifi solar camera", "كاميرا شمسية"),
-    },
-    {
         "topic": "life_hack", "keywords": "manual vegetable chopper", "category": "المنزل",
         "angle": "تحضير المطبخ", "include": ("vegetable chopper", "food chopper", "manual chopper", "قطاعة خضار", "مفرمة يدوية"),
     },
@@ -960,10 +956,25 @@ CATEGORY_PRIORITY = (
 )
 
 
+def _category_keyword_matches(text: str, keyword: str) -> bool:
+    """يطابق كلمة/عبارة كاملة كي لا يخلط مثلاً بين «شعر» و«مستشعر»."""
+    phrase = str(keyword or "").casefold().strip()
+    if not phrase:
+        return False
+    edge = r"A-Za-z0-9\u0600-\u06FF"
+    return bool(
+        re.search(
+            rf"(?<![{edge}]){re.escape(phrase)}(?![{edge}])",
+            text,
+            flags=re.IGNORECASE,
+        )
+    )
+
+
 def classify(title: str) -> str:
-    low = title.lower()
+    low = str(title or "").casefold()
     for cat in CATEGORY_PRIORITY:
-        if any(word in low for word in CATEGORY_KEYWORDS[cat]):
+        if any(_category_keyword_matches(low, word) for word in CATEGORY_KEYWORDS[cat]):
             return cat
     return "تسوق متنوع"
 
@@ -972,6 +983,31 @@ def normalize_category(value: object, title: str = "") -> str:
     name = str(value or "").strip()
     name = CATEGORY_ALIASES.get(name, name)
     return name if name in CATEGORY_KEYWORDS else classify(title)
+
+
+GENERIC_PRODUCT_TITLES = {
+    "amazon", "amazon.sa", "amazon sa", "www.amazon.sa",
+    "aliexpress", "aliexpress.com", "product", "منتج",
+}
+
+
+def normalize_catalog_title(deal: dict) -> str:
+    """ينظف عنوان الكتالوج ويستعيد عنواناً مفيداً من الوصف عند وجود اسم متجر عام."""
+    title = re.sub(r"\s+", " ", str(deal.get("title") or "")).strip()
+    if title.casefold() not in GENERIC_PRODUCT_TITLES:
+        return title[:140]
+
+    description = re.sub(r"\s+", " ", str(deal.get("description") or "")).strip()
+    candidate = re.sub(
+        r"^خصم\s+\d{1,2}\s*[٪%]\s+على\s+",
+        "",
+        description,
+        flags=re.IGNORECASE,
+    )
+    candidate = re.split(r"\s+[—–]\s+", candidate, maxsplit=1)[0].strip(" .:-")
+    if len(candidate) < 8 or candidate.casefold() in GENERIC_PRODUCT_TITLES:
+        return ""
+    return candidate[:140]
 
 
 # ----------------------------------------------------------------------------
@@ -2133,10 +2169,69 @@ def merge_deals(existing: list[dict], updates: list[dict]) -> list[dict]:
     return merged[: MAX_DEALS + ALIEXPRESS_AUTO_LIMIT]
 
 
+def normalize_existing_deals(existing_raw: list[dict]) -> tuple[list[dict], int, int, int]:
+    """يعيد (العروض، المحجوب، المصنّف من جديد، العناوين المُصلحة)."""
+    existing: list[dict] = []
+    blocked = 0
+    recategorized = 0
+    repaired_titles = 0
+    for deal in existing_raw:
+        if not isinstance(deal, dict):
+            continue
+        title = normalize_catalog_title(deal)
+        if not title:
+            blocked += 1
+            print(f"[catalog] إزالة منتج بلا عنوان مفيد {_deal_key(deal)}")
+            continue
+        reason = saudi_product_block_reason(title)
+        if reason:
+            blocked += 1
+            print(f"[compliance] إزالة منتج موجود {_deal_key(deal)}: {reason}")
+            continue
+        normalized = dict(deal)
+        if title != re.sub(r"\s+", " ", str(deal.get("title") or "")).strip():
+            normalized["title"] = title
+            repaired_titles += 1
+        original_category = str(deal.get("category") or "").strip()
+        category = normalize_category(original_category, title)
+        # قوائم AliExpress الموجّهة تحمل تصنيفاً سياقياً أدق من تخمين كلمات العنوان.
+        # أما سجل Amazon اليدوي أو التصنيف العام فيصحح من العنوان عند الإمكان.
+        should_infer = (
+            str(deal.get("store") or "").strip().lower() == "amazon"
+            or bool(ASIN_RE.match(str(deal.get("asin") or "").strip().upper()))
+            or category == "تسوق متنوع"
+            or original_category not in CATEGORY_KEYWORDS
+        )
+        if should_infer:
+            inferred_category = classify(title)
+            if inferred_category != "تسوق متنوع":
+                category = inferred_category
+        if category != str(deal.get("category") or ""):
+            normalized["category"] = category
+            recategorized += 1
+        existing.append(normalized)
+    return existing, blocked, recategorized, repaired_titles
+
+
 # ----------------------------------------------------------------------------
 # الكتابة الآمنة
 # ----------------------------------------------------------------------------
-def write_output(deals: list[dict], source: str = DEALS_URL) -> None:
+def write_output(deals: list[dict], source: str = DEALS_URL) -> bool:
+    """يكتب deals.json ذريًا فقط إذا تغير المحتوى الفعلي، ويعيد هل كتب الملف."""
+    if OUTPUT_PATH.exists():
+        try:
+            current = json.loads(OUTPUT_PATH.read_text(encoding="utf-8"))
+            if (
+                current.get("source") == source
+                and current.get("count") == len(deals)
+                and current.get("deals") == deals
+            ):
+                print(f"[write] unchanged — keeping {OUTPUT_PATH}")
+                return False
+        except (OSError, json.JSONDecodeError):
+            # إذا كان الملف تالفًا نعيد بناءه بالكتابة الذرية أدناه.
+            pass
+
     payload = {
         "updated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "source": source,
@@ -2154,6 +2249,7 @@ def write_output(deals: list[dict], source: str = DEALS_URL) -> None:
     json.loads(tmp.read_text(encoding="utf-8"))
     tmp.replace(OUTPUT_PATH)
     print(f"[write] {len(deals)} deals -> {OUTPUT_PATH}")
+    return True
 
 
 # ----------------------------------------------------------------------------
@@ -2161,11 +2257,6 @@ def write_output(deals: list[dict], source: str = DEALS_URL) -> None:
 # ----------------------------------------------------------------------------
 def affiliate_link(asin: str) -> str:
     return f"https://www.amazon.sa/dp/{asin}/?tag={AFFILIATE_TAG}"
-
-
-def deal_price(original_price: float, discount_percent: int) -> float:
-    """يحسب السعر التقريبي بعد الخصم من بيانات المتجر دون ادعاء أنه سعر نهائي."""
-    return round(original_price * (1 - discount_percent / 100), 2)
 
 
 def tg_escape(text: object) -> str:
@@ -2560,17 +2651,13 @@ def post_deals_to_telegram(new_deals: list[dict], all_deals: list[dict]) -> None
 
 def main() -> int:
     existing_raw = load_existing_deals()
-    existing = []
-    blocked_existing = 0
-    for deal in existing_raw:
-        reason = saudi_product_block_reason(deal.get("title"))
-        if reason:
-            blocked_existing += 1
-            print(f"[compliance] إزالة منتج موجود {_deal_key(deal)}: {reason}")
-            continue
-        existing.append(deal)
+    existing, blocked_existing, recategorized_existing, repaired_titles = normalize_existing_deals(existing_raw)
     if blocked_existing:
         print(f"[compliance] أزيل {blocked_existing} منتج مخالف/عالي الخطورة من الكتالوج")
+    if recategorized_existing:
+        print(f"[catalog] وُحّد تصنيف {recategorized_existing} منتج قديم")
+    if repaired_titles:
+        print(f"[catalog] أصلح {repaired_titles} عنوان منتج عام/ناقص")
 
     # عند توفّر مفاتيح Creators API نستخدم التحديث الحيّ الرسمي، وإلا نعود للجمع من HTML.
     if CREATORS_ENABLED:
@@ -2596,9 +2683,9 @@ def main() -> int:
     # حماية التنسيق اليدوي: إذا رجع الجمع فاضياً وملف العروض موجود أصلاً،
     # لا نلمسه إطلاقاً — حتى لا تُمسح العروض المضافة يدوياً في كل تشغيلة.
     if not updates and OUTPUT_PATH.exists():
-        if blocked_existing:
-            print("[main] لا تحديثات API، لكن سيتم حفظ إزالة المنتجات المحجوبة")
-            write_output(existing, "compliance-filter")
+        if blocked_existing or recategorized_existing or repaired_titles:
+            print("[main] لا تحديثات API، لكن سيتم حفظ تنظيف الكتالوج")
+            write_output(existing, "catalog-cleanup")
         else:
             print("[main] لا عروض جديدة — إبقاء deals.json الحالي كما هو (حماية العروض اليدوية)")
         post_deals_to_telegram([], existing)

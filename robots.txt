@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
-Disallow: /majeeddeals/seo-state.json
-Disallow: /majeeddeals/seo-generated-files.json
-Disallow: /majeeddeals/seo-report.json
+Disallow: /seo-state.json
+Disallow: /seo-generated-files.json
+Disallow: /seo-report.json
 
-Sitemap: https://majeed3575.github.io/majeeddeals/sitemap.xml
+Sitemap: https://overly.live/sitemap.xml

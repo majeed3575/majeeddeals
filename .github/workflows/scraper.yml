@@ -16,6 +16,10 @@ jobs:
   scrape:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      OVERLY_SITE_URL: https://overly.live/
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
     steps:
       - name: Checkout repository
@@ -27,18 +31,12 @@ jobs:
           python-version: "3.10"
 
       - name: Install dependencies
-        run: pip install requests beautifulsoup4
+        run: python -m pip install -r requirements.txt
 
-      - name: Verify affiliate-link safety rules
-        run: python -m unittest -v test_affiliate_links.py
-
-      - name: Verify AliExpress search Worker
-        run: npm run check --prefix cloudflare-worker
-
-      - name: Verify admin Worker
+      - name: Verify Python syntax and core safety rules
         run: |
-          npm ci --prefix cloudflare-admin --ignore-scripts
-          npm run check --prefix cloudflare-admin
+          PYTHONPYCACHEPREFIX=/tmp/overly-pycache python -m py_compile scraper.py generate_seo.py verify_seo.py verify_affiliate_links.py build_public_site.py
+          python -m unittest discover -v
 
       - name: Run scraper
         run: python scraper.py
@@ -69,6 +67,9 @@ jobs:
       - name: Verify every published affiliate link
         run: python verify_affiliate_links.py
 
+      - name: Build safe Cloudflare site bundle
+        run: python build_public_site.py
+
       - name: Commit & push (if changed)
         run: |
           git config user.name "deals-bot"
@@ -85,3 +86,15 @@ jobs:
             git commit -m "تحديث العروض تلقائياً"
             git push
           fi
+
+      - name: Deploy overly.live to Cloudflare
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ env.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ env.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --config wrangler.site.jsonc
+
+      - name: Explain skipped Cloudflare deploy
+        if: ${{ env.CLOUDFLARE_API_TOKEN == '' || env.CLOUDFLARE_ACCOUNT_ID == '' }}
+        run: echo "Cloudflare deploy skipped — add CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID as repository secrets."

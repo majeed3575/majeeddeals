@@ -5,4 +5,10 @@ dist/
 .env.*
 .dev.vars
 .dev.vars.*
+.wrangler/
+__pycache__/
+*.py[cod]
+.coverage
+coverage/
 *.log
+dist-site/
