@@ -311,6 +311,25 @@ def normalize_category(value) -> str:
     return value if value in CATEGORIES else DEFAULT_CATEGORY
 
 
+def normalize_rating(raw: dict) -> tuple[float, float]:
+    """يعيد (التقييم من 5، نسبة التقييم) دون خلط المقياسين."""
+    explicit_rating = max(0.0, number(raw.get("rating")))
+    explicit_percent = max(0.0, number(raw.get("rating_percent")))
+    legacy_evaluate = max(0.0, number(raw.get("evaluate_rate")))
+    if explicit_rating > 0:
+        rating = explicit_rating / 20 if explicit_rating > 5 else explicit_rating
+        rating_percent = explicit_percent or explicit_rating * (1 if explicit_rating > 5 else 20)
+    elif explicit_percent > 0:
+        rating = explicit_percent / 20
+        rating_percent = explicit_percent
+    elif legacy_evaluate > 0:
+        rating = legacy_evaluate / 20 if legacy_evaluate > 5 else legacy_evaluate
+        rating_percent = legacy_evaluate if legacy_evaluate > 5 else legacy_evaluate * 20
+    else:
+        return 0.0, 0.0
+    return round(min(5.0, rating), 1), round(min(100.0, rating_percent), 1)
+
+
 def normalize_deal(raw: dict) -> dict | None:
     store = "aliexpress" if str(raw.get("store", "amazon")).lower() == "aliexpress" else "amazon"
     if store == "amazon":
@@ -357,7 +376,7 @@ def normalize_deal(raw: dict) -> dict | None:
     discount = official_discount or manual_discount
     original_price = max(0.0, number(raw.get("original_price")))
     sales = int_number(raw.get("sales_volume") or raw.get("orders") or raw.get("sales"))
-    rating = max(0.0, number(raw.get("rating") or raw.get("evaluate_rate")))
+    rating, rating_percent = normalize_rating(raw)
     rank_score = number(raw.get("rank_score") or raw.get("score"))
     angle = clean_text(raw.get("angle"), 80)
     slug_id = product_id.lower()
@@ -374,6 +393,7 @@ def normalize_deal(raw: dict) -> dict | None:
         "original_price": round(original_price, 2),
         "sales_volume": sales,
         "rating": rating,
+        "rating_percent": rating_percent,
         "rank_score": rank_score,
         "angle": angle,
         "path": path,

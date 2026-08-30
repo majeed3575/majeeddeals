@@ -92,10 +92,29 @@ class ScraperCoreTests(unittest.TestCase):
             "product_id": "1005000000000001",
             "title": "مصباح LED لاسلكي بمستشعر حركة",
             "category": "المنزل",
+            "auto_discovered": True,
         }]
         normalized, blocked, recategorized, repaired = scraper.normalize_existing_deals(rows)
         self.assertEqual((blocked, recategorized, repaired), (0, 0, 0))
         self.assertEqual(normalized[0]["category"], "المنزل")
+        self.assertEqual(normalized[0]["shipping_country"], "SA")
+
+    def test_aliexpress_sanitizer_records_saudi_shipping_scope(self):
+        deal = scraper.sanitize_aliexpress({
+            "product_id": "1005000000000001",
+            "title": "شاحن متنقل موثوق للاستخدام اليومي",
+            "image": "https://ae01.alicdn.com/kf/test.jpg",
+            "url": "https://s.click.aliexpress.com/e/test",
+            "currency": "SAR",
+            "original_price": 100,
+            "sale_price": 80,
+            "sales_volume": 2500,
+            "rating_percent": 94.5,
+            "category": "الإلكترونيات",
+            "auto_discovered": True,
+        })
+        self.assertIsNotNone(deal)
+        self.assertEqual(deal["shipping_country"], "SA")
 
     def test_seo_accepts_official_amazon_associates_image(self):
         deal = generate_seo.normalize_deal({
@@ -122,6 +141,20 @@ class ScraperCoreTests(unittest.TestCase):
         self.assertIsNotNone(deal)
         self.assertEqual(deal["discount_percent"], 56)
         self.assertEqual(deal["original_price"], 0)
+
+    def test_seo_converts_aliexpress_rating_percent_to_five_stars(self):
+        deal = generate_seo.normalize_deal({
+            "store": "aliexpress",
+            "product_id": "1005000000000001",
+            "title": "شاحن متنقل موثوق للاستخدام اليومي",
+            "image": "https://ae01.alicdn.com/kf/test.jpg",
+            "url": "https://s.click.aliexpress.com/e/test",
+            "rating_percent": 94.5,
+            "category": "الإلكترونيات",
+        })
+        self.assertIsNotNone(deal)
+        self.assertEqual(deal["rating"], 4.7)
+        self.assertEqual(deal["rating_percent"], 94.5)
 
     @patch("scraper.time.sleep")
     @patch("scraper.requests.post")

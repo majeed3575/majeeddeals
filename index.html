@@ -1222,6 +1222,20 @@
       const name = CATEGORY_ALIASES[raw] || raw;
       return CATEGORIES.includes(name) && name !== "الكل" ? name : "تسوق متنوع";
     };
+    const normalizedRating = product => {
+      const rawRating = Number(product?.rating);
+      const rawPercent = Number(product?.rating_percent);
+      const hasRating = Number.isFinite(rawRating) && rawRating > 0;
+      const hasPercent = Number.isFinite(rawPercent) && rawPercent > 0;
+      const rating = hasRating
+        ? Math.min(5, rawRating > 5 ? rawRating / 20 : rawRating)
+        : (hasPercent ? Math.min(5, rawPercent / 20) : 0);
+      const ratingPercent = hasPercent ? Math.min(100, rawPercent) : Math.min(100, rating * 20);
+      return {
+        rating: Math.round(rating * 10) / 10,
+        rating_percent: Math.round(ratingPercent * 10) / 10
+      };
+    };
     const normalizeAliSearchProduct = product => {
       const productId = String(product?.product_id || "").match(/^\d{6,20}$/)?.[0] || "";
       const title = String(product?.title || "").replace(/[\u0000-\u001f\u007f]/g, " ").replace(/\s+/g, " ").trim().slice(0, 180);
@@ -1233,7 +1247,7 @@
       const discount = Number(product.discount_percent);
       const manualDiscount = Number(product.manual_discount_percent);
       const sales = Number(product.sales_volume);
-      const rating = Number(product.rating);
+      const rating = normalizedRating(product);
       return {
         store: "aliexpress",
         product_id: productId,
@@ -1244,7 +1258,7 @@
         discount_percent: Number.isFinite(discount) ? Math.min(95, Math.max(0, Math.round(discount))) : 0,
         manual_discount_percent: Number.isFinite(manualDiscount) ? Math.min(95, Math.max(0, Math.round(manualDiscount))) : 0,
         sales_volume: Number.isFinite(sales) ? Math.min(1000000000, Math.max(0, Math.round(sales))) : 0,
-        rating: Number.isFinite(rating) ? Math.min(100, Math.max(0, rating)) : 0,
+        ...rating,
         category: normalizeCategory(product.category),
         shipping_country: "SA"
       };
@@ -1266,7 +1280,7 @@
       const discount = Number(product.discount_percent);
       const manualDiscount = Number(product.manual_discount_percent);
       const sales = Number(product.sales_volume);
-      const rating = Number(product.rating);
+      const rating = normalizedRating(product);
       return {
         ...candidate,
         title,
@@ -1276,7 +1290,7 @@
         discount_percent: Number.isFinite(discount) ? Math.min(95, Math.max(0, Math.round(discount))) : 0,
         manual_discount_percent: Number.isFinite(manualDiscount) ? Math.min(95, Math.max(0, Math.round(manualDiscount))) : 0,
         sales_volume: Number.isFinite(sales) ? Math.min(1000000000, Math.max(0, Math.round(sales))) : 0,
-        rating: Number.isFinite(rating) ? Math.min(100, Math.max(0, rating)) : 0,
+        ...rating,
         category: normalizeCategory(product.category),
         shipping_country: store === "aliexpress" ? "SA" : product.shipping_country
       };
@@ -1349,9 +1363,12 @@
     const smartSort = (a,b) => dealRank(b) - dealRank(a) || discountPercent(b) - discountPercent(a);
     const hasDiscount = deal => discountPercent(deal) > 0;
     const hasBeforePrice = deal => hasDiscount(deal) && Number(deal.original_price || 0) > 0;
-    const popularityText = deal => Number(deal.sales_volume || 0) >= 1000
-      ? `${formatNumber(deal.sales_volume)} مبيعة`
-      : "منتج رائج";
+    const popularityText = deal => {
+      const parts = [];
+      if (Number(deal.sales_volume || 0) >= 1000) parts.push(`${formatNumber(deal.sales_volume)} مبيعة`);
+      if (Number(deal.rating || 0) > 0) parts.push(`⭐ ${Number(deal.rating).toFixed(1)}`);
+      return parts.join(" · ") || "منتج رائج";
+    };
     const offerText = deal => hasDiscount(deal) ? `خصم ${discountPercent(deal)}٪` : popularityText(deal);
     const priceContext = (deal, shop) => hasBeforePrice(deal)
       ? `${shop.name} قبل الخصم: <s>${formatNumber(deal.original_price)} ر.س</s>`

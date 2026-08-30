@@ -46,6 +46,12 @@ class SiteContractTests(unittest.TestCase):
         self.assertIn("if (aliSearchController === controller)", self.html)
         self.assertIn("استغرق البحث وقتًا أطول من المتوقع", self.html)
 
+    def test_catalog_and_live_search_share_the_same_rating_scale(self):
+        self.assertIn("const normalizedRating = product =>", self.html)
+        self.assertGreaterEqual(self.html.count("const rating = normalizedRating(product);"), 2)
+        self.assertGreaterEqual(self.html.count("...rating,"), 2)
+        self.assertIn("Number(deal.rating).toFixed(1)", self.html)
+
     def test_amazon_manual_discount_never_implies_zero_before_price(self):
         self.assertIn("const discountPercent", self.html)
         self.assertIn("const hasBeforePrice", self.html)

@@ -1615,6 +1615,7 @@ def sanitize_aliexpress(raw: dict) -> dict | None:
         **({"sales_volume": int(raw.get("sales_volume"))} if raw.get("sales_volume") else {}),
         **({"rating_percent": round(float(raw.get("rating_percent")), 1)} if raw.get("rating_percent") else {}),
         "category": normalize_category(category, title),
+        "shipping_country": "SA",
         **({"auto_discovered": True} if raw.get("auto_discovered") else {}),
         **({"angle": str(raw.get("angle"))[:40]} if raw.get("angle") else {}),
         **({"rank_score": int(raw.get("rank_score"))} if raw.get("rank_score") else {}),
@@ -2195,6 +2196,11 @@ def normalize_existing_deals(existing_raw: list[dict]) -> tuple[list[dict], int,
             print(f"[compliance] إزالة منتج موجود {_deal_key(deal)}: {reason}")
             continue
         normalized = dict(deal)
+        if (
+            str(deal.get("store") or "").strip().lower() == "aliexpress"
+            and bool(deal.get("auto_discovered"))
+        ):
+            normalized["shipping_country"] = "SA"
         if title != re.sub(r"\s+", " ", str(deal.get("title") or "")).strip():
             normalized["title"] = title
             repaired_titles += 1
