@@ -137,9 +137,9 @@ def audit_html(path: Path) -> None:
 
 def main() -> int:
     index = (ROOT / "index.html").read_text(encoding="utf-8")
-    expected_h1 = '<h1 id="introTitle">العرض الصح.<br><span>أوفر عليك.</span></h1>'
+    expected_h1 = '<h1 id="introTitle">كل زاوية<br><span>تكشف احتمالًا.</span></h1>'
     if expected_h1 not in index:
-        fail("العنوان الرئيسي المتفق عليه تغير")
+        fail("عنوان مشهد الاكتشاف الرئيسي تغير")
     if "deals-initial.json" not in index or "requestIdleCallback" not in index:
         fail("التحميل الأولي/الخلفي غير مفعّل في الصفحة الرئيسية")
     if "deals.json?v=${Date.now()}" in index or "const dealsEndpoint" in index:

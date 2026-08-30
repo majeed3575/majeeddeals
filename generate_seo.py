@@ -31,8 +31,10 @@ if _site_parts.scheme != "https" or not _site_parts.hostname:
     raise RuntimeError("OVERLY_SITE_URL يجب أن يكون رابط HTTPS كاملاً")
 BASE_URL = _site_url.rstrip("/") + "/"
 BASE_PATH = urlparse(BASE_URL).path or "/"
-# الروابط المطلقة تعمل على النطاق الأساسي وعلى نسخة GitHub Pages الاحتياطية.
-SITE_LINK_ROOT = BASE_URL
+# الأصول والروابط الداخلية تبقى على المضيف الحالي (الحي أو التجريبي)، بينما
+# تبقى canonical وبيانات Sitemap مطلقة على BASE_URL. هذا يمنع نسخة الاختبار
+# من تحميل أصول الموقع الحي ويحافظ على دعم مسار GitHub Pages الفرعي.
+SITE_LINK_ROOT = BASE_PATH
 AFFILIATE_TAG = "faraj733-21"
 PAGE_SIZE = 24
 INITIAL_FEED_SIZE = 72
@@ -465,12 +467,14 @@ def meta_description(value: str) -> str:
 def page_shell(
     *, title: str, description: str, canonical: str, body: str, schema: list[dict] | None = None,
     og_type: str = "website", image: str = BASE_URL + "assets/overly-social.jpg",
-    robots: str = "index,follow,max-image-preview:large", lastmod: str = ""
+    robots: str = "index,follow,max-image-preview:large", lastmod: str = "", body_class: str = ""
 ) -> str:
     schemas = "\n".join(
         f'  <script type="application/ld+json">{json_ld(item)}</script>' for item in (schema or [])
     )
     modified = f'  <meta property="article:modified_time" content="{esc(lastmod)}">\n' if lastmod else ""
+    safe_body_class = body_class if re.fullmatch(r"[a-z0-9_-]{1,80}", body_class) else ""
+    body_attribute = f' class="{safe_body_class}"' if safe_body_class else ""
     return f'''<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
@@ -496,10 +500,10 @@ def page_shell(
   <title>{esc(title)}</title>
   <link rel="icon" type="image/webp" href="{SITE_LINK_ROOT}assets/overly-icon.webp">
   <link rel="apple-touch-icon" sizes="180x180" href="{SITE_LINK_ROOT}assets/overly-icon-180.png">
-  <link rel="stylesheet" href="{SITE_LINK_ROOT}seo.css">
+  <link rel="stylesheet" href="{SITE_LINK_ROOT}seo.css?v=170-mix1">
 {schemas}
 </head>
-<body>
+<body{body_attribute}>
   <a class="skip" href="#content">انتقل إلى المحتوى</a>
   <header class="site-header">
     <div class="shell nav">
@@ -664,12 +668,13 @@ def product_page(deal: dict, related: list[dict], lastmod: str) -> str:
         og_type="product",
         image=deal["image"],
         lastmod=lastmod,
+        body_class=f"visual-{category['slug']}",
     )
 
 
 def collection_page(
     *, title: str, description: str, canonical_path: str, deals: list[dict], page_number: int,
-    path_prefix: str, crumb_items: list[tuple[str, str]], lastmod: str
+    path_prefix: str, crumb_items: list[tuple[str, str]], lastmod: str, visual_slug: str = ""
 ) -> str:
     pages = max(1, math.ceil(len(deals) / PAGE_SIZE))
     start = (page_number - 1) * PAGE_SIZE
@@ -705,6 +710,7 @@ def collection_page(
         schema=[crumb_schema, item_list],
         robots="index,follow,max-image-preview:large" if deals else "noindex,follow",
         lastmod=lastmod,
+        body_class=f"visual-{visual_slug}" if visual_slug else "",
     )
 
 
@@ -727,6 +733,7 @@ def guide_page(guide: dict, matching: list[dict], lastmod: str) -> str:
     return page_shell(
         title=f"{guide['title']} | أوفرلي", description=guide["description"], canonical=canonical,
         body=body, schema=[article_schema, crumb_schema], og_type="article", lastmod=lastmod,
+        body_class=f"visual-{category_slug}",
     )
 
 
@@ -859,6 +866,7 @@ def build() -> dict:
                 title=title, description=info["description"], canonical_path=canonical_path,
                 deals=category_deals, page_number=page_number, path_prefix=prefix,
                 crumb_items=[("الرئيسية", BASE_URL), ("التصنيفات", BASE_URL + "categories/")], lastmod=lastmod,
+                visual_slug=info["slug"],
             )
             changed += write_if_changed(ROOT / canonical_path / "index.html", content, generated)
             sitemap[BASE_URL + canonical_path] = lastmod

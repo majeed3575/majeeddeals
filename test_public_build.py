@@ -17,6 +17,8 @@ class PublicBuildTests(unittest.TestCase):
         for relative in (
             "index.html",
             "404.html",
+            "assets/overly-next.css",
+            "assets/overly-visual-system.js",
             "deals.json",
             "robots.txt",
             "sitemap.xml",

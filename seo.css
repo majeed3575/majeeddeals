@@ -185,3 +185,233 @@ footer { border-top: 1px solid var(--line); background: rgba(9, 17, 15, .7); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
 }
+
+/* OVERLY / CATEGORY WORLDS — curated companions to home model 170 */
+body.visual-electronics { --scene-bg:#dbeaff; --scene-ink:#10213b; --scene-accent:#6a9fff; --scene-accent-2:#b8d8ff; --scene-panel:#f8fbff; }
+body.visual-home { --scene-bg:#eef3f2; --scene-ink:#20302e; --scene-accent:#9fc7bf; --scene-accent-2:#d4e5df; --scene-panel:#fff; }
+body.visual-car { --scene-bg:#7e8b89; --scene-ink:#10201f; --scene-accent:#bee1dc; --scene-accent-2:#4b6663; --scene-panel:#e8f1ef; }
+body.visual-travel { --scene-bg:#dfeaf2; --scene-ink:#152d3b; --scene-accent:#72b4da; --scene-accent-2:#c8e0ed; --scene-panel:#f9fdff; }
+body.visual-fashion { --scene-bg:#251510; --scene-ink:#fff8f1; --scene-accent:#ff9b58; --scene-accent-2:#e86fd1; --scene-panel:#503027; }
+body.visual-cleaning { --scene-bg:#edf3fb; --scene-ink:#142033; --scene-accent:#88aef5; --scene-accent-2:#d1ddff; --scene-panel:#fff; }
+body.visual-kitchen-appliances { --scene-bg:#052d32; --scene-ink:#effffb; --scene-accent:#22b8ad; --scene-accent-2:#69e0d0; --scene-panel:#14575b; }
+body.visual-furniture-decor { --scene-bg:#e4e7f5; --scene-ink:#20213e; --scene-accent:#9399ff; --scene-accent-2:#cbd2ff; --scene-panel:#fff; }
+body.visual-outdoors { --scene-bg:#063743; --scene-ink:#edffff; --scene-accent:#2ec5c5; --scene-accent-2:#4f9eff; --scene-panel:#176573; }
+body.visual-garden { --scene-bg:#e2f2be; --scene-ink:#20330d; --scene-accent:#9edc3c; --scene-accent-2:#52c7a5; --scene-panel:#f7ffe9; }
+body.visual-beauty-care { --scene-bg:#2a0a12; --scene-ink:#fff4f6; --scene-accent:#ff4d6d; --scene-accent-2:#ff9aae; --scene-panel:#591629; }
+body.visual-health-care { --scene-bg:#eff2f7; --scene-ink:#222c3c; --scene-accent:#aabbd6; --scene-accent-2:#dce5f3; --scene-panel:#fff; }
+body.visual-grocery { --scene-bg:#fff0c7; --scene-ink:#3b2508; --scene-accent:#ffb52e; --scene-accent-2:#ff7559; --scene-panel:#fff9e7; }
+body.visual-sports { --scene-bg:#1b1230; --scene-ink:#fff8ff; --scene-accent:#e26dff; --scene-accent-2:#6de4d4; --scene-panel:#351b54; }
+body.visual-kids { --scene-bg:#dcf4c8; --scene-ink:#17361e; --scene-accent:#5fd176; --scene-accent-2:#bddf43; --scene-panel:#f8fff0; }
+body.visual-toys { --scene-bg:#281916; --scene-ink:#fff7ef; --scene-accent:#ff885a; --scene-accent-2:#e269cf; --scene-panel:#58332c; }
+body.visual-pets { --scene-bg:#f5eff1; --scene-ink:#392832; --scene-accent:#d1aabd; --scene-accent-2:#ecd4de; --scene-panel:#fff9fc; }
+body.visual-tools-hobbies { --scene-bg:#8f969e; --scene-ink:#111820; --scene-accent:#d6e1e8; --scene-accent-2:#62717e; --scene-panel:#edf2f5; }
+body.visual-home-entertainment { --scene-bg:#0d2630; --scene-ink:#f0fffb; --scene-accent:#43d3a5; --scene-accent-2:#68a5ff; --scene-panel:#164945; }
+body.visual-school-stationery { --scene-bg:#f1e5ee; --scene-ink:#3d2334; --scene-accent:#dc91b8; --scene-accent-2:#efcfdf; --scene-panel:#fff9fc; }
+body.visual-books-office { --scene-bg:#0e0716; --scene-ink:#fff4ff; --scene-accent:#e45cff; --scene-accent-2:#5de0ce; --scene-panel:#321946; }
+body.visual-watches-jewelry { --scene-bg:#321011; --scene-ink:#fff7ef; --scene-accent:#e95a3f; --scene-accent-2:#f4b16e; --scene-panel:#652820; }
+body.visual-general { --scene-bg:#24110f; --scene-ink:#fff8ee; --scene-accent:#ff7a55; --scene-accent-2:#ffd75b; --scene-panel:#4d2821; }
+
+body[class^="visual-"] {
+  --bg: var(--scene-bg);
+  --ink: var(--scene-ink);
+  --accent: color-mix(in srgb, var(--scene-accent) 64%, var(--scene-ink));
+  --accent-2: color-mix(in srgb, var(--scene-accent-2) 68%, var(--scene-ink));
+  --panel: color-mix(in srgb, var(--scene-panel) 88%, var(--scene-bg));
+  --panel-2: color-mix(in srgb, var(--scene-panel) 72%, var(--scene-bg));
+  --muted: color-mix(in srgb, var(--scene-ink) 68%, var(--scene-bg));
+  --line: color-mix(in srgb, var(--scene-ink) 15%, transparent);
+  --shadow: 0 28px 80px color-mix(in srgb, var(--scene-ink) 18%, transparent);
+  --scene-radius: 34px;
+  --scene-card-radius: 23px;
+  color: var(--scene-ink);
+  background:
+    radial-gradient(circle at 88% 2%, color-mix(in srgb, var(--scene-accent) 30%, transparent), transparent 29rem),
+    radial-gradient(circle at 4% 42%, color-mix(in srgb, var(--scene-accent-2) 22%, transparent), transparent 25rem),
+    var(--scene-bg);
+  background-attachment: fixed;
+}
+
+body.visual-fashion,
+body.visual-kitchen-appliances,
+body.visual-outdoors,
+body.visual-beauty-care,
+body.visual-sports,
+body.visual-toys,
+body.visual-home-entertainment,
+body.visual-books-office,
+body.visual-watches-jewelry,
+body.visual-general { color-scheme: dark; }
+
+body.visual-electronics,
+body.visual-home,
+body.visual-car,
+body.visual-travel,
+body.visual-cleaning,
+body.visual-furniture-decor,
+body.visual-garden,
+body.visual-health-care,
+body.visual-grocery,
+body.visual-kids,
+body.visual-pets,
+body.visual-tools-hobbies,
+body.visual-school-stationery { color-scheme: light; }
+
+body[class^="visual-"] .site-header {
+  border-color: var(--line);
+  background: color-mix(in srgb, var(--scene-bg) 78%, transparent);
+  box-shadow: 0 12px 36px color-mix(in srgb, var(--scene-ink) 8%, transparent);
+}
+body[class^="visual-"] .brand {
+  border-color: var(--line);
+  background: color-mix(in srgb, var(--scene-panel) 84%, transparent);
+  box-shadow: inset 0 1px color-mix(in srgb, #fff 42%, transparent);
+}
+body[class^="visual-"] .brand img { filter: grayscale(1) brightness(.38); }
+body:is(.visual-fashion,.visual-kitchen-appliances,.visual-outdoors,.visual-beauty-care,.visual-sports,.visual-toys,.visual-home-entertainment,.visual-books-office,.visual-watches-jewelry,.visual-general) .brand img { filter: brightness(0) invert(1); }
+body[class^="visual-"] .collection-head,
+body[class^="visual-"] .product-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-color: var(--line);
+  border-radius: var(--scene-radius);
+  background:
+    radial-gradient(circle at 82% 15%, color-mix(in srgb, var(--scene-accent) 27%, transparent), transparent 24rem),
+    linear-gradient(145deg, color-mix(in srgb, var(--scene-panel) 94%, transparent), color-mix(in srgb, var(--scene-bg) 75%, transparent));
+  box-shadow: var(--shadow), inset 0 1px color-mix(in srgb, #fff 35%, transparent);
+}
+body[class^="visual-"] .collection-head::after,
+body[class^="visual-"] .product-hero::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 220px;
+  aspect-ratio: 1;
+  inset: auto auto -110px -45px;
+  border: 1px solid color-mix(in srgb, var(--scene-accent-2) 42%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--scene-accent-2) 13%, transparent);
+  box-shadow: 0 0 72px color-mix(in srgb, var(--scene-accent) 21%, transparent);
+}
+body[class^="visual-"] .collection-head p,
+body[class^="visual-"] .lead { color: var(--muted); }
+body[class^="visual-"] .product-image {
+  border: 1px solid color-mix(in srgb, #fff 48%, transparent);
+  border-radius: calc(var(--scene-card-radius) + 4px);
+  box-shadow: 0 20px 55px color-mix(in srgb, var(--scene-ink) 16%, transparent);
+}
+body[class^="visual-"] .product-card,
+body[class^="visual-"] .content-card,
+body[class^="visual-"] .guide-section,
+body[class^="visual-"] .guide-note,
+body[class^="visual-"] .directory-link {
+  border-color: var(--line);
+  border-radius: var(--scene-card-radius);
+  background: color-mix(in srgb, var(--scene-panel) 88%, transparent);
+  box-shadow: 0 16px 42px color-mix(in srgb, var(--scene-ink) 10%, transparent), inset 0 1px color-mix(in srgb, #fff 32%, transparent);
+  backdrop-filter: blur(18px) saturate(130%);
+}
+body[class^="visual-"] .product-card { transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+body[class^="visual-"] .product-card:hover {
+  transform: translateY(-5px);
+  border-color: color-mix(in srgb, var(--scene-accent) 56%, transparent);
+  box-shadow: 0 24px 58px color-mix(in srgb, var(--scene-ink) 16%, transparent);
+}
+body[class^="visual-"] .card-image { background: color-mix(in srgb, #fff 93%, var(--scene-accent-2)); }
+body[class^="visual-"] .shop-button {
+  color: #081213;
+  background: linear-gradient(120deg, var(--scene-accent-2), var(--scene-accent));
+  box-shadow: 0 15px 38px color-mix(in srgb, var(--scene-accent) 30%, transparent);
+}
+body[class^="visual-"] footer {
+  border-color: var(--line);
+  background: color-mix(in srgb, var(--scene-bg) 84%, transparent);
+}
+
+/* Each family changes material and geometry, not merely hue. */
+body:is(.visual-electronics,.visual-cleaning) {
+  --scene-radius: 38px;
+  --scene-card-radius: 28px;
+  background-image:
+    linear-gradient(90deg, color-mix(in srgb, var(--scene-accent) 8%, transparent) 1px, transparent 1px),
+    linear-gradient(color-mix(in srgb, var(--scene-accent) 8%, transparent) 1px, transparent 1px),
+    radial-gradient(circle at 90% 0, color-mix(in srgb, var(--scene-accent) 32%, transparent), transparent 28rem);
+  background-size: 38px 38px, 38px 38px, auto;
+}
+body:is(.visual-home,.visual-health-care,.visual-pets) {
+  --scene-radius: 44px;
+  --scene-card-radius: 30px;
+}
+body:is(.visual-home,.visual-health-care,.visual-pets) .collection-head::after,
+body:is(.visual-home,.visual-health-care,.visual-pets) .product-hero::after {
+  width: 270px;
+  border-radius: 42% 58% 63% 37% / 54% 42% 58% 46%;
+  filter: blur(1px);
+}
+body:is(.visual-car,.visual-tools-hobbies) {
+  --scene-radius: 12px;
+  --scene-card-radius: 9px;
+  background-image:
+    repeating-linear-gradient(135deg, transparent 0 22px, color-mix(in srgb, var(--scene-ink) 5%, transparent) 22px 23px),
+    radial-gradient(circle at 88% 2%, color-mix(in srgb, var(--scene-accent) 34%, transparent), transparent 28rem);
+}
+body:is(.visual-car,.visual-tools-hobbies) .collection-head,
+body:is(.visual-car,.visual-tools-hobbies) .product-hero { clip-path: polygon(0 0, calc(100% - 26px) 0, 100% 26px, 100% 100%, 26px 100%, 0 calc(100% - 26px)); }
+body:is(.visual-travel,.visual-furniture-decor,.visual-school-stationery) {
+  --scene-radius: 30px;
+  --scene-card-radius: 18px;
+  background-image:
+    radial-gradient(circle, color-mix(in srgb, var(--scene-accent) 18%, transparent) 1.5px, transparent 1.6px),
+    radial-gradient(circle at 86% 0, color-mix(in srgb, var(--scene-accent-2) 30%, transparent), transparent 30rem);
+  background-size: 30px 30px, auto;
+}
+body:is(.visual-fashion,.visual-general) .collection-head,
+body:is(.visual-fashion,.visual-general) .product-hero {
+  background:
+    conic-gradient(from 205deg at 85% 18%, color-mix(in srgb, var(--scene-accent) 48%, transparent), transparent 24%, color-mix(in srgb, var(--scene-accent-2) 28%, transparent), transparent 58%),
+    linear-gradient(145deg, var(--scene-panel), color-mix(in srgb, var(--scene-bg) 82%, transparent));
+}
+body:is(.visual-kitchen-appliances,.visual-outdoors) {
+  --scene-radius: 52px 24px;
+  --scene-card-radius: 26px 12px;
+}
+body:is(.visual-kitchen-appliances,.visual-outdoors) .collection-head::after,
+body:is(.visual-kitchen-appliances,.visual-outdoors) .product-hero::after {
+  width: 330px;
+  border-radius: 46% 54% 67% 33% / 62% 38% 62% 38%;
+}
+body:is(.visual-garden,.visual-grocery,.visual-kids) {
+  --scene-radius: 46px 18px;
+  --scene-card-radius: 26px 14px;
+}
+body:is(.visual-garden,.visual-grocery,.visual-kids) .product-card:nth-child(3n + 2) { transform: translateY(12px); }
+body:is(.visual-garden,.visual-grocery,.visual-kids) .product-card:nth-child(3n + 2):hover { transform: translateY(6px); }
+body:is(.visual-beauty-care,.visual-watches-jewelry) {
+  --scene-radius: 10px 52px;
+  --scene-card-radius: 12px 30px;
+  background-image:
+    radial-gradient(ellipse at 80% 0, color-mix(in srgb, var(--scene-accent) 38%, transparent), transparent 30rem),
+    linear-gradient(115deg, transparent 55%, color-mix(in srgb, var(--scene-accent-2) 10%, transparent));
+}
+body:is(.visual-sports,.visual-toys,.visual-home-entertainment) {
+  --scene-radius: 36px;
+  --scene-card-radius: 20px;
+  background-image:
+    radial-gradient(circle at 86% 6%, color-mix(in srgb, var(--scene-accent) 38%, transparent), transparent 26rem),
+    radial-gradient(circle at 8% 44%, color-mix(in srgb, var(--scene-accent-2) 26%, transparent), transparent 24rem),
+    var(--scene-bg);
+}
+body.visual-books-office {
+  --scene-radius: 4px 44px;
+  --scene-card-radius: 4px 24px;
+  background-image:
+    linear-gradient(90deg, transparent 49.8%, color-mix(in srgb, var(--scene-accent) 11%, transparent) 50%, transparent 50.2%),
+    radial-gradient(circle at 88% 0, color-mix(in srgb, var(--scene-accent) 38%, transparent), transparent 28rem);
+}
+
+@media (max-width: 640px) {
+  body[class^="visual-"] { background-attachment: scroll; }
+  body[class^="visual-"] .collection-head,
+  body[class^="visual-"] .product-hero { border-radius: 24px; }
+  body:is(.visual-garden,.visual-grocery,.visual-kids) .product-card:nth-child(3n + 2) { transform: none; }
+}
