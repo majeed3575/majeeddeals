@@ -1692,6 +1692,7 @@
 
     function clearAliSearchResults(resetStatus = true) {
       if (aliSearchController) aliSearchController.abort();
+      aliSearchController = null;
       aliSearchResults = null;
       aliSearchQuery = "";
       aliSearchPage = 0;
@@ -1717,7 +1718,13 @@
       setAliSearchStatus(append ? "جاري جلب نتائج إضافية قابلة للشحن للسعودية…" : "جاري البحث في AliExpress بالكامل…", "loading");
 
       if (aliSearchController) aliSearchController.abort();
-      aliSearchController = new AbortController();
+      const controller = new AbortController();
+      aliSearchController = controller;
+      let timedOut = false;
+      const timeout = setTimeout(() => {
+        timedOut = true;
+        controller.abort();
+      }, 12_000);
       const requestedPage = append ? aliSearchPage + 1 : 1;
       const params = new URLSearchParams({q: searchText, page: String(requestedPage), page_size: String(DESKTOP_GRID_BATCH_SIZE)});
       try {
@@ -1726,7 +1733,7 @@
           mode: "cors",
           cache: "no-store",
           headers: {"Accept": "application/json"},
-          signal: aliSearchController.signal
+          signal: controller.signal
         });
         if (!response.ok) throw new Error(response.status === 429 ? "RATE_LIMIT" : "SEARCH_FAILED");
         const payload = await response.json();
@@ -1766,15 +1773,23 @@
         );
         if (!append) el("dealsTitle").scrollIntoView({behavior: "smooth", block: "start"});
       } catch (error) {
-        if (error?.name !== "AbortError") {
+        if (error?.name !== "AbortError" || timedOut) {
           setAliSearchStatus(
-            error?.message === "RATE_LIMIT" ? "تمت طلبات كثيرة خلال دقيقة؛ انتظر قليلاً ثم أعد المحاولة." : "تعذر الوصول إلى بحث AliExpress الآن؛ حاول مرة أخرى بعد قليل.",
+            timedOut
+              ? "استغرق البحث وقتًا أطول من المتوقع؛ أعد المحاولة بعد قليل."
+              : error?.message === "RATE_LIMIT"
+                ? "تمت طلبات كثيرة خلال دقيقة؛ انتظر قليلاً ثم أعد المحاولة."
+                : "تعذر الوصول إلى بحث AliExpress الآن؛ حاول مرة أخرى بعد قليل.",
             "error"
           );
         }
       } finally {
-        aliSearchLoading = false;
-        el("aliSearchSubmit").disabled = false;
+        clearTimeout(timeout);
+        if (aliSearchController === controller) {
+          aliSearchController = null;
+          aliSearchLoading = false;
+          el("aliSearchSubmit").disabled = false;
+        }
       }
     }
 

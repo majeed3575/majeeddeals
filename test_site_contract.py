@@ -41,6 +41,11 @@ class SiteContractTests(unittest.TestCase):
         self.assertIn("جاري تحميل العروض الحالية", self.html)
         self.assertNotRegex(self.html, r"let\s+deals\s*=\s*\[\s*\{")
 
+    def test_live_search_has_a_bounded_timeout_and_safe_request_state(self):
+        self.assertIn("}, 12_000);", self.html)
+        self.assertIn("if (aliSearchController === controller)", self.html)
+        self.assertIn("استغرق البحث وقتًا أطول من المتوقع", self.html)
+
     def test_amazon_manual_discount_never_implies_zero_before_price(self):
         self.assertIn("const discountPercent", self.html)
         self.assertIn("const hasBeforePrice", self.html)
