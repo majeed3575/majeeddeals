@@ -1,5 +1,4 @@
 import json
-import re
 import unittest
 from collections import Counter
 from pathlib import Path
@@ -76,39 +75,6 @@ class SiteContractTests(unittest.TestCase):
     def test_custom_domain_is_the_primary_canonical(self):
         self.assertIn('<link rel="canonical" href="https://overly.live/">', self.html)
         self.assertIn('"url":"https://overly.live/"', self.html)
-
-    def test_model_170_drives_the_live_visual_system_without_floating_products(self):
-        visual_path = ROOT / "assets" / "overly-visual-system.js"
-        visual_css_path = ROOT / "assets" / "overly-next.css"
-        self.assertTrue(visual_path.is_file())
-        self.assertTrue(visual_css_path.is_file())
-
-        visual_script = visual_path.read_text(encoding="utf-8")
-        visual_css = visual_css_path.read_text(encoding="utf-8")
-        self.assertIn('scene(170, "prism-portal"', visual_script)
-        self.assertIn("LIQUID / PRISM / 170", self.html)
-        self.assertIn('id="gatewaySearchForm"', self.html)
-        self.assertIn("OVERLY / PRISM MIX 170", visual_css)
-        self.assertIn('assets/overly-visual-system.js', self.html)
-
-        assignments = re.findall(r'^\s+"([^"]+)": scene\((\d+),', visual_script, re.MULTILINE)
-        self.assertEqual({name for name, _ in assignments}, set(generate_seo.CATEGORIES))
-        self.assertEqual(len(assignments), len({model for _, model in assignments}))
-
-        stage = re.search(
-            r"function renderGatewayProductStage\(\) \{(?P<body>.*?)\n    \}\n\n    function renderCategoryCards",
-            self.html,
-            re.DOTALL,
-        )
-        self.assertIsNotNone(stage)
-        self.assertNotIn("gateway-product-tile", stage.group("body"))
-        self.assertIn("prism-orb", stage.group("body"))
-
-        for name, info in generate_seo.CATEGORIES.items():
-            category_path = ROOT / "categories" / info["slug"] / "index.html"
-            if category_path.exists():
-                category_html = category_path.read_text(encoding="utf-8")
-                self.assertIn(f'<body class="visual-{info["slug"]}">', category_html, name)
 
     def test_hourly_workflow_builds_and_deploys_only_the_public_bundle(self):
         workflow = (ROOT / ".github/workflows/scraper.yml").read_text(encoding="utf-8")

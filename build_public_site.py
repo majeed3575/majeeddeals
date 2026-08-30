@@ -37,7 +37,7 @@ PUBLIC_FILES = (
     "_headers",
 )
 PUBLIC_DIRS = ("assets", "products", "categories", "stores", "guides")
-ASSET_SUFFIXES = {".avif", ".css", ".gif", ".ico", ".jpeg", ".jpg", ".js", ".png", ".svg", ".webp"}
+ASSET_SUFFIXES = {".avif", ".gif", ".ico", ".jpeg", ".jpg", ".png", ".svg", ".webp"}
 SOURCE_ONLY_ASSETS = {
     "overly-dark-chroma.png",
     "overly-dark-logo-trimmed.png",

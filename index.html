@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="ar" dir="rtl" data-theme="light">
+<html lang="ar" dir="rtl" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://*.workers.dev; img-src 'self' data: https://overly.live https://majeed3575.github.io https://*.media-amazon.com https://*.ssl-images-amazon.com https://*.amazon-adsystem.com https://*.alicdn.com https://*.aliexpress-media.com https://*.aliexpress.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
-  <meta name="theme-color" content="#f5efe3">
+  <meta name="theme-color" content="#050807">
   <meta name="description" content="أوفرلي يجمع المنتجات الرائجة من مختلف أقسام Amazon السعودية وAliExpress، مرتبة حسب المبيعات والتقييم مع روابط تسويق بالعمولة.">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <link rel="canonical" href="https://overly.live/">
@@ -29,7 +29,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://m.media-amazon.com" crossorigin>
   <link rel="preconnect" href="https://ae01.alicdn.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700;800;900&amp;family=Changa:wght@400;500;600;700;800&amp;family=Marhey:wght@400;500;600;700&amp;family=Tajawal:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
   <script type="application/ld+json">
     {"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://overly.live/#organization","name":"أوفرلي","alternateName":"Overly","url":"https://overly.live/","logo":{"@type":"ImageObject","url":"https://overly.live/assets/overly-icon-180.png"}},{"@type":"WebSite","@id":"https://overly.live/#website","name":"أوفرلي","alternateName":"Overly","url":"https://overly.live/","inLanguage":"ar-SA","description":"منتجات رائجة مختارة من مختلف أقسام Amazon السعودية وAliExpress.","publisher":{"@id":"https://overly.live/#organization"}}]}
   </script>
@@ -227,201 +227,78 @@
     .field input:focus, .field select:focus { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(120,201,193,.13); }
     .filters-mobile-head, .filters-mobile-actions, .filters-backdrop { display: none; }
 
-    main { padding: 30px 0 94px; scroll-margin-top: 96px; }
+    main { padding: 46px 0 94px; scroll-margin-top: 96px; }
     #dealsTitle, #whyOverly { scroll-margin-top: 105px; }
 
-    /* Homepage discovery slider — editorial commerce direction */
-    .home-gateway { position: relative; margin: 18px 0 54px; scroll-margin-top: 94px; isolation: isolate; }
-    .gateway-frame {
+    .intro {
       position: relative;
-      overflow: hidden;
-      overflow: clip;
-      border: 1px solid rgba(255,255,255,.13);
-      border-radius: 44px;
-      background:
-        radial-gradient(circle at 8% 7%, rgba(255,112,82,.24), transparent 24rem),
-        radial-gradient(circle at 92% 10%, rgba(99,226,211,.25), transparent 31rem),
-        radial-gradient(circle at 45% 110%, rgba(255,208,101,.1), transparent 34rem),
-        linear-gradient(128deg, #152724 0%, #07110f 46%, #030605 100%);
-      box-shadow: 0 44px 130px rgba(0,0,0,.44), inset 0 1px rgba(255,255,255,.09);
+      display: grid;
+      grid-template-columns: 1.08fr .92fr;
+      align-items: center;
+      gap: clamp(36px, 7vw, 94px);
+      min-height: 520px;
+      padding: 54px clamp(10px, 3vw, 34px) 68px;
     }
-    .gateway-frame::before {
-      position: absolute;
-      z-index: 0;
-      inset: 0;
-      background-image: radial-gradient(rgba(255,255,255,.13) .7px, transparent .7px);
-      background-size: 19px 19px;
-      content: "";
-      opacity: .18;
-      pointer-events: none;
-      -webkit-mask-image: linear-gradient(115deg, #000, transparent 65%);
-      mask-image: linear-gradient(115deg, #000, transparent 65%);
-    }
-    .gateway-frame::after { position: absolute; z-index: 0; top: -140px; left: 23%; width: 250px; height: 820px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.045), transparent); content: ""; pointer-events: none; transform: rotate(24deg); animation: gateway-sheen 12s ease-in-out infinite; }
-    @keyframes gateway-sheen { 50% { transform: translateX(140%) rotate(24deg); opacity: .35; } }
-    .gateway-track { position: relative; z-index: 1; display: grid; }
-    .gateway-slide {
-      grid-area: 1 / 1;
-      min-width: 0;
-      min-height: 680px;
-      padding: clamp(40px, 5.2vw, 68px) clamp(28px, 5vw, 64px) 112px;
-      visibility: hidden;
-      opacity: 0;
-      pointer-events: none;
-      transform: translateX(-4%) scale(.985);
-      transition: opacity .5s ease, transform .68s cubic-bezier(.16,.84,.24,1), visibility .5s ease;
-    }
-    .gateway-slide.active { z-index: 2; visibility: visible; opacity: 1; pointer-events: auto; transform: translateX(0) scale(1); }
-    .gateway-slide:not(.active) { position: absolute; inset: 0; width: 100%; }
-    .gateway-slide.is-before { transform: translateX(4%) scale(.985); }
-    .gateway-slide.is-after { transform: translateX(-4%) scale(.985); }
-    .gateway-welcome { display: grid; grid-template-columns: minmax(0, .92fr) minmax(500px, 1.08fr); align-items: center; gap: clamp(28px, 5vw, 68px); }
-    .gateway-copy { position: relative; z-index: 5; }
-    .gateway-kicker {
+    .intro-copy { position: relative; z-index: 2; }
+    .intro-pill {
       display: inline-flex;
       align-items: center;
-      gap: 9px;
-      min-height: 38px;
-      padding: 0 14px;
-      border: 1px solid rgba(255,255,255,.14);
+      gap: 8px;
+      padding: 7px 12px;
+      border: 1px solid var(--line);
       border-radius: 999px;
-      color: #eafffb;
-      background: rgba(255,255,255,.065);
-      box-shadow: inset 0 1px rgba(255,255,255,.06);
-      font-size: 11px;
-      font-weight: 800;
-      backdrop-filter: blur(12px);
+      color: var(--muted);
+      background: var(--panel);
+      font-size: 10px;
+      backdrop-filter: var(--glass);
     }
-    .gateway-kicker i { width: 8px; height: 8px; border-radius: 50%; background: #ff765b; box-shadow: 0 0 0 6px rgba(255,118,91,.11), 0 0 24px rgba(255,118,91,.5); }
-    .gateway-copy h1 { max-width: 610px; margin-top: 24px; font-size: clamp(50px, 6.3vw, 82px); font-weight: 900; line-height: .98; letter-spacing: -3.7px; text-wrap: balance; }
-    .gateway-copy h1 span { color: #9df4e9; text-shadow: 0 16px 58px rgba(101,220,207,.22); }
-    .gateway-lead { max-width: 560px; margin-top: 22px; color: #b8c6c3; font-size: clamp(14px, 1.45vw, 17px); line-height: 1.9; }
-    .gateway-lead strong { color: #fff; }
-    .gateway-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
-    .gateway-actions button, .gateway-actions a { min-height: 53px; }
-    .gateway-actions .primary-link { color: #07110f; background: linear-gradient(115deg, #b4fff6, #67d9cc 60%, #57c6b9); box-shadow: 0 17px 40px rgba(72,198,184,.22); }
-    .gateway-proof { display: flex; align-items: stretch; gap: 8px; margin-top: 27px; }
-    .gateway-proof-item { display: flex; align-items: center; gap: 8px; min-height: 49px; padding: 8px 11px; border: 1px solid rgba(255,255,255,.09); border-radius: 15px; color: #98aaa6; background: rgba(255,255,255,.035); font-size: 9px; backdrop-filter: blur(10px); }
-    .gateway-proof-item b { color: #f9fffd; font-size: 13px; }
-    .gateway-proof-icon { display: grid; place-items: center; width: 29px; height: 29px; border-radius: 10px; color: #9df4e9; background: rgba(112,226,213,.1); font-size: 13px; }
-
-    .gateway-product-stage {
+    .brand-stage {
       position: relative;
-      min-height: 510px;
+      display: grid;
+      place-items: center;
+      min-height: 390px;
       overflow: hidden;
-      border: 1px solid rgba(255,255,255,.14);
-      border-radius: 38px;
+      border: 1px solid rgba(120,201,193,.16);
+      border-radius: 42px;
       background:
-        linear-gradient(145deg, rgba(255,255,255,.08), rgba(255,255,255,.015)),
-        radial-gradient(circle at 42% 43%, rgba(112,226,213,.22), transparent 35%),
-        linear-gradient(145deg, rgba(14,34,30,.92), rgba(4,10,9,.94));
-      box-shadow: inset 0 1px rgba(255,255,255,.09), 0 34px 88px rgba(0,0,0,.34);
+        radial-gradient(circle at 64% 28%, rgba(120,201,193,.19), transparent 34%),
+        linear-gradient(150deg, rgba(21,37,34,.88), rgba(4,8,7,.94));
+      box-shadow: inset 0 1px rgba(255,255,255,.07), 0 42px 100px rgba(0,0,0,.34);
       isolation: isolate;
     }
-    .gateway-product-stage::before { position: absolute; z-index: -1; inset: 18px; border: 1px solid rgba(255,255,255,.055); border-radius: 28px; content: ""; }
-    .gateway-product-stage::after { position: absolute; z-index: -1; right: 19%; bottom: -31%; width: 62%; aspect-ratio: 1; border: 1px solid rgba(151,244,232,.14); border-radius: 50%; box-shadow: 0 0 0 52px rgba(151,244,232,.025), 0 0 0 104px rgba(151,244,232,.018); content: ""; }
-    .gateway-stage-label { position: absolute; z-index: 8; top: 24px; right: 24px; display: inline-flex; align-items: center; gap: 8px; min-height: 34px; padding: 0 12px; border: 1px solid rgba(255,255,255,.13); border-radius: 999px; color: #fff; background: rgba(4,12,10,.68); box-shadow: 0 12px 30px rgba(0,0,0,.22); font-size: 10px; font-weight: 800; backdrop-filter: blur(14px); }
-    .gateway-stage-label i { width: 7px; height: 7px; border-radius: 50%; background: #39da76; box-shadow: 0 0 0 5px rgba(57,218,118,.1); }
-    .gateway-stage-mark { position: absolute; z-index: 8; right: 24px; bottom: 21px; display: flex; align-items: center; gap: 10px; color: #c4d0cd; font-size: 9px; }
-    .gateway-stage-mark img { width: 78px; height: auto; filter: drop-shadow(0 10px 20px rgba(76,218,200,.18)); }
-    .gateway-product-stack { position: absolute; inset: 0; direction: ltr; }
-    .gateway-product-tile {
-      position: absolute;
-      z-index: 2;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      border: 1px solid rgba(10,27,24,.11);
-      border-radius: 23px;
-      color: #17201e;
-      background: linear-gradient(160deg, #fff, #f4f1ea);
-      box-shadow: 0 24px 55px rgba(0,0,0,.3), inset 0 1px rgba(255,255,255,.9);
-      transform: rotate(var(--tile-angle, 0deg));
-      transition: z-index .01s linear, transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s ease;
-      animation: gateway-float 6.5s ease-in-out infinite;
-      animation-delay: var(--tile-delay, 0s);
-    }
-    .gateway-product-tile:hover, .gateway-product-tile:focus-visible { z-index: 10; outline: 0; box-shadow: 0 35px 80px rgba(0,0,0,.43), 0 0 0 3px rgba(157,244,233,.3); transform: translateY(-10px) rotate(0deg) scale(1.035); }
-    @keyframes gateway-float { 50% { translate: 0 -8px; } }
-    .gateway-product-tile-0 { top: 75px; left: 25%; width: 43%; height: 330px; --tile-angle: -2deg; --tile-delay: -.8s; z-index: 4; }
-    .gateway-product-tile-1 { top: 47px; left: 3.5%; width: 27%; height: 218px; --tile-angle: 7deg; --tile-delay: -2.4s; }
-    .gateway-product-tile-2 { top: 39px; right: 2.5%; width: 28%; height: 206px; --tile-angle: -7deg; --tile-delay: -1.7s; }
-    .gateway-product-tile-3 { bottom: 29px; left: 3.5%; width: 28%; height: 207px; --tile-angle: -6deg; --tile-delay: -3.8s; }
-    .gateway-product-tile-4 { right: 2.5%; bottom: 38px; width: 28%; height: 216px; --tile-angle: 6deg; --tile-delay: -4.6s; }
-    .gateway-product-image { position: relative; flex: 1; min-height: 0; margin: 7px; overflow: hidden; border-radius: 17px; background: #f7f5f0; }
-    .gateway-product-image img { width: 100%; height: 100%; padding: 9px; object-fit: contain; mix-blend-mode: multiply; transition: transform .45s cubic-bezier(.2,.8,.2,1); }
-    .gateway-product-tile:hover .gateway-product-image img { transform: scale(1.07); }
-    .gateway-product-badge { position: absolute; z-index: 3; top: 14px; right: 14px; min-height: 26px; padding: 5px 8px; border-radius: 999px; color: #fff; background: #ff684e; box-shadow: 0 7px 18px rgba(255,104,78,.28); font-size: 9px; font-weight: 900; }
-    .gateway-product-meta { display: grid; gap: 2px; padding: 5px 12px 12px; direction: rtl; text-align: right; }
-    .gateway-product-meta strong { color: #60706c; font-size: 8px; font-weight: 900; }
-    .gateway-product-meta span { display: -webkit-box; overflow: hidden; color: #17201e; font-size: 10px; font-weight: 800; line-height: 1.42; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
-    .gateway-product-tile:not(.gateway-product-tile-0) .gateway-product-meta span { -webkit-line-clamp: 1; }
-    .gateway-product-skeleton { position: absolute; inset: 90px 20% 70px; border-radius: 28px; background: linear-gradient(100deg, rgba(255,255,255,.04), rgba(255,255,255,.12), rgba(255,255,255,.04)); background-size: 220% 100%; animation: gateway-loading 1.5s linear infinite; }
-    @keyframes gateway-loading { to { background-position: -220% 0; } }
-
-    .category-deck { position: relative; display: block; }
-    .category-deck-head { position: relative; z-index: 1; display: flex; align-items: end; justify-content: space-between; gap: 28px; margin-bottom: 22px; }
-    .category-deck-kicker { color: #ffb078; font-size: 11px; font-weight: 900; }
-    .category-deck h2 { max-width: 700px; margin-top: 6px; font-size: clamp(33px, 4.3vw, 55px); line-height: 1.08; letter-spacing: -1.8px; }
-    .category-deck-head p { max-width: 395px; color: #aebdb9; font-size: 12px; line-height: 1.8; }
-    .category-card-grid { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-flow: dense; grid-auto-rows: 108px; gap: 10px; }
-    .category-card {
+    .brand-stage::before { position: absolute; inset: 22px; border: 1px solid rgba(255,255,255,.055); border-radius: 31px; content: ""; }
+    .brand-stage::after { position: absolute; width: 300px; height: 300px; border: 1px solid rgba(120,201,193,.13); border-radius: 50%; content: ""; animation: stage-ring 8s linear infinite; }
+    @keyframes stage-ring { 50% { transform: scale(1.09) rotate(180deg); opacity: .58; } to { transform: rotate(360deg); } }
+    .intro-logo-plate {
       position: relative;
-      display: flex;
-      grid-column: span 3;
-      grid-row: span 1;
-      align-items: flex-end;
-      min-width: 0;
-      min-height: 0;
-      padding: 15px;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 22px;
-      color: #fff;
-      background: #142522;
-      box-shadow: inset 0 1px rgba(255,255,255,.08);
-      text-align: right;
-      transition: transform .28s cubic-bezier(.2,.8,.2,1), border-color .28s ease, box-shadow .28s ease;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      width: min(390px, 86%);
+      padding: 24px 28px;
     }
-    .category-card:nth-child(1) { grid-column: span 6; grid-row: span 2; }
-    .category-card:nth-child(2) { grid-column: span 3; grid-row: span 2; }
-    .category-card:nth-child(5), .category-card:nth-child(9) { grid-column: span 4; }
-    .category-card:nth-child(6), .category-card:nth-child(10) { grid-column: span 5; }
-    .category-card:nth-child(7), .category-card:nth-child(11) { grid-column: span 3; }
-    .category-card::before { position: absolute; z-index: 1; inset: 0; background: linear-gradient(180deg, rgba(4,10,9,.03) 14%, rgba(4,10,9,.3) 54%, rgba(3,8,7,.94) 100%); content: ""; }
-    .category-card::after { position: absolute; z-index: 1; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(255,255,255,.025); content: ""; pointer-events: none; }
-    .category-card:hover, .category-card:focus-visible { z-index: 4; transform: translateY(-5px); border-color: rgba(157,244,233,.46); box-shadow: 0 22px 55px rgba(0,0,0,.32), 0 0 0 3px rgba(157,244,233,.08); outline: none; }
-    .category-card.active { border-color: rgba(157,244,233,.66); box-shadow: 0 0 0 3px rgba(157,244,233,.11), 0 24px 60px rgba(0,0,0,.32); }
-    .category-card-art { position: absolute; z-index: 0; inset: 0; background: linear-gradient(135deg, rgba(103,217,204,.14), rgba(255,112,82,.08)); }
-    .category-card-art img { width: 100%; height: 100%; object-fit: cover; opacity: .78; filter: saturate(.92) contrast(1.03); transition: transform .48s cubic-bezier(.2,.8,.2,1), opacity .3s ease; }
-    .category-card:hover .category-card-art img { opacity: .92; transform: scale(1.07); }
-    .category-card-icon { position: absolute; z-index: 3; top: 13px; right: 13px; display: grid; place-items: center; width: 38px; height: 38px; border: 1px solid rgba(255,255,255,.17); border-radius: 13px; color: #d9fff9; background: rgba(5,16,14,.55); box-shadow: 0 8px 24px rgba(0,0,0,.2); backdrop-filter: blur(13px); }
-    .category-card-icon svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.65; stroke-linecap: round; stroke-linejoin: round; }
-    .category-card-copy { position: relative; z-index: 3; min-width: 0; padding-inline-end: 1px; }
-    .category-card-copy strong { display: block; overflow: hidden; color: #fff; font-size: 14px; line-height: 1.38; text-shadow: 0 2px 14px rgba(0,0,0,.52); text-overflow: ellipsis; white-space: nowrap; }
-    .category-card:nth-child(1) .category-card-copy strong { font-size: 24px; }
-    .category-card-copy small { display: inline-flex; align-items: center; min-height: 23px; margin-top: 5px; padding: 0 8px; border: 1px solid rgba(255,255,255,.12); border-radius: 999px; color: #d4e2df; background: rgba(3,10,8,.42); font-size: 9px; backdrop-filter: blur(10px); }
-    .category-card-arrow { position: absolute; z-index: 3; bottom: 15px; left: 14px; display: grid; place-items: center; width: 31px; height: 31px; border: 1px solid rgba(255,255,255,.13); border-radius: 50%; color: #fff; background: rgba(5,15,13,.48); font-size: 17px; backdrop-filter: blur(12px); transform: rotate(180deg); }
-    .category-deck-loading { grid-column: 1 / -1; padding: 44px; color: #aebdb9; text-align: center; font-size: 12px; }
-    .category-deck-toggle { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; gap: 8px; min-width: 205px; min-height: 46px; margin: 18px auto 0; padding: 0 18px; border: 1px solid rgba(255,255,255,.12); border-radius: 999px; color: #c0cfcc; background: rgba(255,255,255,.04); font-size: 11px; font-weight: 800; transition: color .2s ease, border-color .2s ease, background .2s ease; }
-    .category-deck-toggle:hover { color: #fff; border-color: rgba(157,244,233,.35); background: rgba(157,244,233,.07); }
-    .category-deck-toggle span { transition: transform .2s ease; }
-    .category-deck-toggle[aria-expanded="true"] span { transform: rotate(180deg); }
-    .gateway-controls { position: absolute; z-index: 12; right: clamp(22px, 4vw, 48px); bottom: 23px; left: clamp(22px, 4vw, 48px); display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 59px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.1); }
-    .gateway-arrow { display: grid; place-items: center; flex: 0 0 42px; width: 42px; height: 42px; border: 1px solid rgba(255,255,255,.12); border-radius: 50%; color: #fff; background: rgba(255,255,255,.045); font-size: 20px; transition: transform .2s ease, border-color .2s ease, background .2s ease; }
-    .gateway-arrow:hover { transform: translateY(-2px); border-color: rgba(157,244,233,.38); background: rgba(157,244,233,.09); }
-    .gateway-pagination { display: flex; align-items: center; gap: 7px; margin-inline: auto; }
-    .gateway-dot { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 12px; border: 1px solid transparent; border-radius: 999px; color: #73827f; background: transparent; font-size: 10px; font-weight: 800; transition: color .25s ease, background .25s ease, border-color .25s ease; }
-    .gateway-dot::before { width: 7px; height: 7px; border-radius: 999px; background: currentColor; content: ""; transition: width .25s ease, background .25s ease; }
-    .gateway-dot.active { color: #fff; border-color: rgba(255,255,255,.1); background: rgba(255,255,255,.04); }
-    .gateway-dot.active::before { width: 22px; background: #8ce9de; }
-    .gateway-status { min-width: 72px; color: #73827f; direction: ltr; font-size: 10px; font-variant-numeric: tabular-nums; text-align: left; }
-    html[data-theme="light"] .gateway-frame { background: radial-gradient(circle at 8% 7%, rgba(255,112,82,.18), transparent 24rem), radial-gradient(circle at 92% 10%, rgba(69,177,165,.2), transparent 31rem), linear-gradient(128deg, #fff9ef 0%, #eff5ef 52%, #e7ece7 100%); }
-    html[data-theme="light"] .gateway-copy h1, html[data-theme="light"] .category-deck h2 { color: #102a25; }
-    html[data-theme="light"] .gateway-lead, html[data-theme="light"] .category-deck-head p { color: #516b65; }
-    html[data-theme="light"] .gateway-kicker { color: #17332d; background: rgba(255,255,255,.55); }
-    html[data-theme="light"] .gateway-proof-item { color: #667b76; background: rgba(255,255,255,.42); }
-    html[data-theme="light"] .gateway-proof-item b { color: #17302c; }
+    .intro-logo { width: 100%; height: auto; filter: drop-shadow(0 18px 40px rgba(76,197,185,.28)); }
+    .stage-chip { position: absolute; z-index: 3; display: inline-flex; align-items: center; gap: 7px; min-height: 34px; padding: 0 12px; border: 1px solid var(--line-strong); border-radius: 999px; color: var(--muted); background: rgba(7,14,13,.72); box-shadow: 0 14px 35px rgba(0,0,0,.24); backdrop-filter: blur(15px); font-size: 9px; }
+    .stage-chip.amazon { top: 28px; right: 28px; }
+    .stage-chip.aliexpress { bottom: 28px; left: 28px; }
+    .stage-chip i { width: 7px; height: 7px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 5px rgba(120,201,193,.09); }
+    .stage-chip.aliexpress i { background: #ff5a43; box-shadow: 0 0 0 5px rgba(255,90,67,.09); }
+    .intro h1 {
+      max-width: 620px;
+      margin-top: 20px;
+      font-size: clamp(46px, 6.8vw, 86px);
+      font-weight: 900;
+      line-height: .98;
+      letter-spacing: -3.8px;
+      text-wrap: balance;
+    }
+    .intro h1 span { color: var(--blue); }
+    .intro p { max-width: 540px; margin-top: 22px; color: var(--muted); font-size: clamp(14px, 1.7vw, 18px); line-height: 1.85; }
+    .intro-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+    .intro-proof { display: flex; align-items: center; gap: 22px; margin-top: 34px; padding-top: 23px; border-top: 1px solid var(--line); }
+    .proof-item strong { display: block; font-size: 20px; }
+    .proof-item small { display: block; margin-top: 2px; color: var(--muted); font-size: 9px; }
+    .proof-line { width: 1px; height: 34px; background: var(--line); }
 
     .market-switch { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin: 0 0 22px; padding: 13px 15px; border: 1px solid var(--line); border-radius: 22px; background: linear-gradient(135deg, var(--panel), transparent); }
     .market-switch-copy strong { display: block; font-size: 12px; }
@@ -730,11 +607,11 @@
     @media (max-width: 920px) {
       .desktop-nav { display: none; }
       .nav-actions { margin-inline-start: auto; }
-      .gateway-slide { min-height: 660px; padding: 42px 34px 106px; }
-      .gateway-welcome { grid-template-columns: minmax(0, .88fr) minmax(360px, 1.12fr); gap: 27px; }
-      .gateway-copy h1 { font-size: clamp(45px, 7vw, 66px); }
-      .gateway-product-stage { min-height: 470px; }
-      .gateway-proof { flex-wrap: wrap; }
+      .intro { grid-template-columns: 1fr; min-height: 0; padding-top: 48px; text-align: center; }
+      .intro-copy { order: 2; }
+      .brand-stage { order: 1; width: min(620px, 100%); min-height: 350px; margin-inline: auto; }
+      .intro h1, .intro p { margin-inline: auto; }
+      .intro-actions, .intro-proof { justify-content: center; }
       .hero-slide { grid-template-columns: 1fr .8fr; padding: 42px; }
       .product-card, .product-card:nth-child(1), .product-card:nth-child(2) { grid-column: span 6; }
       .product-card:nth-child(6) { grid-column: span 12; }
@@ -742,12 +619,6 @@
       .filter-grid .search-field { grid-column: 1 / -1; }
       .story-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; }
       .story-card.large { grid-column: 1 / -1; grid-row: auto; min-height: 380px; }
-      .category-card-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); grid-auto-rows: 112px; }
-      .category-card { grid-column: span 2; }
-      .category-card:nth-child(1) { grid-column: span 4; grid-row: span 2; }
-      .category-card:nth-child(2) { grid-column: span 2; grid-row: span 2; }
-      .category-card:nth-child(5), .category-card:nth-child(6), .category-card:nth-child(9), .category-card:nth-child(10) { grid-column: span 3; }
-      .category-card:nth-child(7), .category-card:nth-child(11) { grid-column: span 2; }
     }
 
     @media (max-width: 640px) {
@@ -803,62 +674,20 @@
       .filters-reset { color: var(--muted); border: 1px solid var(--line); background: var(--panel-strong); }
       .filters-apply { color: #04100e; background: linear-gradient(120deg, var(--cyan), var(--blue)); }
 
-      main { padding: 18px 0 130px; }
-      .home-gateway { margin: 8px 0 28px; }
-      .gateway-frame { border-radius: 28px; }
-      .gateway-frame::after { left: -10%; }
-      .gateway-slide { min-height: 0; padding: 14px 13px 137px; }
-      .gateway-welcome { position: relative; display: flex; min-height: 850px; flex-direction: column; gap: 18px; }
-      .gateway-product-stage { order: 1; width: 100%; min-height: 338px; border-radius: 25px; }
-      .gateway-product-stage::before { inset: 10px; border-radius: 18px; }
-      .gateway-product-stage::after { right: 20%; bottom: -20%; width: 58%; }
-      .gateway-stage-label { top: 13px; right: 13px; min-height: 30px; padding-inline: 9px; font-size: 8px; }
-      .gateway-stage-mark { right: 13px; bottom: 12px; gap: 7px; font-size: 7px; }
-      .gateway-stage-mark img { width: 58px; }
-      .gateway-product-tile { border-radius: 16px; }
-      .gateway-product-tile-0 { top: 54px; left: 25%; width: 46%; height: 222px; }
-      .gateway-product-tile-1 { top: 43px; left: 1%; width: 28%; height: 145px; }
-      .gateway-product-tile-2 { top: 36px; right: 1%; width: 28%; height: 142px; }
-      .gateway-product-tile-3 { bottom: 24px; left: 1%; width: 29%; height: 138px; }
-      .gateway-product-tile-4 { right: 1%; bottom: 25px; width: 29%; height: 145px; }
-      .gateway-product-image { margin: 4px; border-radius: 12px; }
-      .gateway-product-image img { padding: 5px; }
-      .gateway-product-badge { top: 7px; right: 7px; min-height: 20px; padding: 3px 5px; font-size: 7px; }
-      .gateway-product-meta { padding: 2px 7px 7px; }
-      .gateway-product-meta strong { font-size: 6px; }
-      .gateway-product-meta span { font-size: 7px; }
-      .gateway-copy { order: 2; width: 100%; padding: 0 5px; }
-      .gateway-kicker { min-height: 34px; padding-inline: 11px; font-size: 10px; }
-      .gateway-copy h1 { max-width: 430px; margin-top: 14px; font-size: clamp(40px, 12vw, 54px); line-height: .99; letter-spacing: -2.5px; }
-      .gateway-lead { margin-top: 14px; font-size: 13px; line-height: 1.75; }
-      .gateway-actions { display: grid; grid-template-columns: 1.25fr .75fr; gap: 8px; margin-top: 20px; }
-      .gateway-actions button, .gateway-actions a { min-width: 0; min-height: 48px; padding-inline: 10px; font-size: 11px; }
-      .gateway-proof { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 17px; }
-      .gateway-proof-item { display: grid; min-width: 0; min-height: 67px; grid-template-columns: 1fr; place-items: center; gap: 3px; padding: 7px 4px; text-align: center; font-size: 8px; }
-      .gateway-proof-item b { font-size: 11px; }
-      .category-deck { padding-top: 13px; }
-      .category-deck-head { align-items: start; flex-direction: column; gap: 8px; margin-bottom: 16px; }
-      .category-deck h2 { font-size: clamp(32px, 9.5vw, 42px); }
-      .category-deck-head p { font-size: 11px; line-height: 1.65; }
-      .category-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-      .category-card-grid { grid-auto-rows: 126px; }
-      .category-card, .category-card:nth-child(2), .category-card:nth-child(5), .category-card:nth-child(6), .category-card:nth-child(7), .category-card:nth-child(9), .category-card:nth-child(10), .category-card:nth-child(11) { grid-column: span 1; grid-row: span 1; padding: 11px; border-radius: 17px; }
-      .category-card:nth-child(1) { grid-column: span 2; grid-row: span 1; }
-      .category-card:nth-child(4), .category-card:nth-child(9) { grid-column: span 2; }
-      .category-card:nth-child(1) .category-card-copy strong { font-size: 19px; }
-      .category-card-icon { top: 9px; right: 9px; width: 34px; height: 34px; border-radius: 11px; }
-      .category-card-icon svg { width: 18px; height: 18px; }
-      .category-card-copy strong { font-size: 11px; white-space: normal; }
-      .category-card-copy small { font-size: 9px; }
-      .category-card-arrow { bottom: 10px; left: 9px; width: 28px; height: 28px; }
-      .category-deck-toggle { width: 100%; min-height: 46px; margin-top: 13px; }
-      .gateway-controls { right: 14px; bottom: 78px; left: 14px; min-height: 56px; gap: 8px; padding-top: 12px; }
-      .gateway-arrow { flex-basis: 40px; width: 40px; height: 40px; }
-      .gateway-pagination { gap: 3px; }
-      .gateway-dot { min-height: 34px; padding: 0 8px; font-size: 0; }
-      .gateway-dot::before { width: 8px; height: 8px; }
-      .gateway-dot.active::before { width: 25px; }
-      .gateway-status { min-width: 49px; font-size: 9px; }
+      main { padding: 22px 0 130px; }
+      .intro { display: block; min-height: 0; padding: 26px 2px 27px; text-align: right; }
+      .intro-copy { order: initial; }
+      .brand-stage { display: none; }
+      .intro-pill { min-height: 36px; padding-inline: 11px; font-size: 12px; }
+      .intro h1 { max-width: 350px; margin-top: 16px; font-size: clamp(39px, 12.5vw, 54px); line-height: 1.02; letter-spacing: -2px; }
+      .intro p { margin-top: 14px; font-size: 14px; line-height: 1.75; }
+      .intro-actions { margin-top: 19px; }
+      .intro-actions .primary-link, .intro-actions .secondary-link { flex: 1; min-height: 48px; padding-inline: 12px; font-size: 12px; }
+      .intro-proof { justify-content: space-between; gap: 8px; margin-top: 22px; padding-top: 17px; }
+      .proof-item { text-align: center; }
+      .proof-item strong { font-size: 18px; }
+      .proof-item small { font-size: 11px; }
+      .proof-line { height: 30px; }
 
       .mobile-search-hub { display: block; margin: 0 0 14px; padding: 17px; border: 1px solid var(--line); border-radius: 23px; background: linear-gradient(145deg, var(--panel-strong), var(--panel)); box-shadow: 0 15px 42px rgba(0,0,0,.14); }
       html[data-theme="light"] .mobile-search-modes { background: rgba(45,76,70,.06); }
@@ -972,14 +801,7 @@
 
     @media (max-width: 350px) {
       .shell { width: min(100% - 18px, 1180px); }
-      .gateway-slide { padding-inline: 10px; }
-      .gateway-welcome { min-height: 835px; }
-      .gateway-product-stage { min-height: 315px; }
-      .gateway-copy h1 { font-size: 39px; }
-      .gateway-actions { grid-template-columns: 1fr; }
-      .gateway-proof { margin-top: 14px; }
-      .category-card { padding: 8px; }
-      .category-card-icon { width: 35px; height: 35px; }
+      .intro h1 { font-size: 38px; }
       .mobile-search-hub { padding: 14px; }
       .hero-slide, .hero-slide.active { grid-template-columns: minmax(0, 1fr) 96px; gap: 8px; padding-inline: 14px; }
       .hero-image-stage { width: 94px; }
@@ -994,7 +816,6 @@
       *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
     }
   </style>
-  <link rel="stylesheet" href="assets/overly-next.css?v=170-mix1">
 </head>
 <body>
   <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
@@ -1013,7 +834,7 @@
         <nav class="desktop-nav" aria-label="التنقل الرئيسي">
           <a href="#top">الرئيسية</a>
           <a href="#dealsTitle">العروض</a>
-          <a href="#categoryDeck" data-open-categories>التصنيفات</a>
+          <a href="categories/">التصنيفات</a>
           <a href="guides/">الأدلة</a>
           <a href="#whyOverly">لماذا أوفرلي؟</a>
         </nav>
@@ -1086,64 +907,33 @@
   <button class="filters-backdrop" id="filtersBackdrop" type="button" aria-label="إغلاق نافذة الفلاتر"></button>
 
   <main class="shell" id="top">
-    <section class="home-gateway" id="homeGateway" aria-label="اكتشف أوفرلي" aria-roledescription="carousel">
-      <div class="gateway-frame">
-        <div class="gateway-track" id="gatewayTrack">
-          <article class="gateway-slide gateway-welcome active" data-gateway-slide="0" aria-hidden="false" aria-labelledby="introTitle">
-            <div class="gateway-copy">
-              <div class="gateway-kicker"><i></i> أوفرلي · بوابة الاكتشاف</div>
-              <span class="gateway-model-code">LIQUID / PRISM / 170</span>
-              <h1 id="introTitle">كل زاوية<br><span>تكشف احتمالًا.</span></h1>
-              <p class="gateway-lead">دليلك البصري إلى <strong>المنتجات التي تستحق التوقف</strong> من Amazon.sa وAliExpress؛ ابحث بطريقتك واترك لأوفرلي مهمة اختصار الزحام.</p>
-              <form class="gateway-prism-search" id="gatewaySearchForm" role="search">
-                <input id="gatewaySearchInput" type="search" minlength="2" maxlength="80" autocomplete="off" placeholder="وش تدور عليه اليوم؟" aria-label="ابحث في اختيارات أوفرلي" required>
-                <button type="submit">اكتشف <span aria-hidden="true">←</span></button>
-              </form>
-              <div class="gateway-actions">
-                <button class="primary-link" id="gatewayCategories" type="button">استكشف العوالم</button>
-                <a class="secondary-link" id="gatewayDeals" href="#dealsTitle">اختيارات اليوم ↓</a>
-              </div>
-              <div class="gateway-proof" aria-label="ما يقدمه أوفرلي">
-                <div class="gateway-proof-item"><span class="gateway-proof-icon">◇</span><span><b id="introDealCount">٠</b><br>اختيارًا الآن</span></div>
-                <div class="gateway-proof-item"><span class="gateway-proof-icon">⌕</span><span><b>متجران</b><br>في مكان واحد</span></div>
-                <div class="gateway-proof-item"><span class="gateway-proof-icon">↗</span><span><b>قرار أسرع</b><br>والسعر لدى المتجر</span></div>
-              </div>
-            </div>
-            <div class="gateway-product-stage" aria-hidden="true">
-              <div class="gateway-product-stack" id="gatewayProductStage"></div>
-            </div>
-          </article>
-
-          <section class="gateway-slide gateway-categories category-deck is-after" id="categoryDeck" data-gateway-slide="1" aria-hidden="true" inert aria-labelledby="categoryDeckTitle">
-            <div class="category-deck-head">
-              <div>
-                <div class="category-deck-kicker">23 عالمًا · نظام واحد</div>
-                <h2 id="categoryDeckTitle">كل قسم.<br>له مزاجه الخاص.</h2>
-              </div>
-              <p>يتغيّر اللون والمادة والإيقاع حسب ما تبحث عنه، بينما تبقى طريقة الاستخدام والشراء مألوفة وواضحة.</p>
-            </div>
-            <div class="category-card-grid" id="categoryCards" aria-live="polite"></div>
-            <button class="category-deck-toggle hidden" id="categoryDeckToggle" type="button" aria-expanded="false" aria-controls="categoryCards">
-              <b>عرض كل التصنيفات</b><span aria-hidden="true">⌄</span>
-            </button>
-          </section>
+    <section class="intro" aria-labelledby="introTitle">
+      <div class="intro-copy">
+        <div class="intro-pill"><span class="live-dot"></span> اختيارات يومية من متاجر موثوقة</div>
+        <h1 id="introTitle">العرض الصح.<br><span>أوفر عليك.</span></h1>
+        <p>أوفرلي يرتّب لك أبرز العروض من أمازون السعودية ومن علي إكسبريس في واجهة واحدة، واضحة وسريعة وبدون ضجيج.</p>
+        <div class="intro-actions">
+          <a class="primary-link" href="#dealsTitle">اكتشف العروض ↓</a>
+          <button class="secondary-link" type="button" onclick="openPrimarySearch()">ابحث عن منتج ⌕</button>
         </div>
-
-        <div class="gateway-controls" aria-label="التنقل بين شرائح الصفحة الرئيسية">
-          <button class="gateway-arrow" id="gatewayPrev" type="button" aria-label="الشريحة السابقة">›</button>
-          <div class="gateway-pagination" id="gatewayDots">
-            <button class="gateway-dot active" type="button" data-gateway-target="0" aria-label="عرض شريحة الترحيب" aria-current="true">البداية</button>
-            <button class="gateway-dot" type="button" data-gateway-target="1" aria-label="عرض شريحة التصنيفات">التصنيفات</button>
-          </div>
-          <span class="gateway-status" id="gatewaySlideStatus" aria-live="polite">01 / 02</span>
-          <button class="gateway-arrow" id="gatewayNext" type="button" aria-label="الشريحة التالية">‹</button>
+        <div class="intro-proof" aria-label="ملخص المنصة">
+          <div class="proof-item"><strong id="introDealCount">٠</strong><small>عروض مختارة</small></div>
+          <span class="proof-line"></span>
+          <div class="proof-item"><strong>٢</strong><small>منصات تسوق</small></div>
+          <span class="proof-line"></span>
+          <div class="proof-item"><strong>١٠٠٪</strong><small>تحقق عند المتجر</small></div>
         </div>
+      </div>
+      <div class="brand-stage" aria-label="هوية أوفرلي">
+        <span class="stage-chip amazon"><i></i> Amazon.sa</span>
+        <div class="intro-logo-plate"><img class="intro-logo" src="assets/overly-dark-logo-trimmed.webp" width="520" height="213" alt="أوفرلي — overly" decoding="async"></div>
+        <span class="stage-chip aliexpress"><i></i> AliExpress</span>
       </div>
     </section>
 
     <section class="mobile-search-hub" id="mobileSearchHub" aria-labelledby="mobileSearchTitle">
       <div class="mobile-search-head">
-        <div><strong id="mobileSearchTitle">قل لنا وش في بالك.</strong><span>وابحث في اختيارات أوفرلي أو AliExpress مباشرة</span></div>
+        <div><strong id="mobileSearchTitle">وش تدور عليه؟</strong><span>ابحث في أوفرلي أو في AliExpress مباشرة</span></div>
         <span class="mobile-search-icon" aria-hidden="true">⌕</span>
       </div>
       <div class="mobile-search-modes" role="group" aria-label="نطاق البحث">
@@ -1198,11 +988,11 @@
       <div class="ali-search-status" id="aliSearchStatus" role="status" aria-live="polite">النتائج تعتمد على توفر الشحن إلى السعودية وقت البحث.</div>
     </section>
 
-    <section class="deals-section" aria-labelledby="dealsTitle">
+    <section aria-labelledby="dealsTitle">
       <div class="section-head">
         <div>
-          <div class="overline">إصدار أوفرلي الحالي</div>
-          <h2 id="dealsTitle">مرّر. توقّف. اكتشف.</h2>
+          <div class="overline">اختيارات أوفرلي الحالية</div>
+          <h2 id="dealsTitle">ما يستحق نظرتك</h2>
         </div>
         <div class="section-stats"><strong id="resultCount">0</strong> عروض<br><span id="updatedAt"></span></div>
       </div>
@@ -1227,8 +1017,8 @@
     <section class="story" id="whyOverly" aria-labelledby="whyTitle">
       <div class="section-head">
         <div>
-          <div class="overline">لماذا وُجد أوفرلي؟</div>
-          <h2 id="whyTitle">لأن كثرة الخيارات<br>ليست ميزة دائمًا.</h2>
+          <div class="overline">فلسفة أوفرلي</div>
+          <h2 id="whyTitle">أقل ضجيجًا. أوضح قرارًا.</h2>
         </div>
       </div>
       <div class="story-grid">
@@ -1301,7 +1091,7 @@
   <nav class="mobile-dock" id="mobileDock" aria-label="التنقل السريع">
     <a href="#top"><span>⌂</span>الرئيسية</a>
     <a href="#dealsTitle"><span>◇</span>العروض</a>
-    <a href="#categoryDeck" data-open-categories><span>▦</span>الأقسام</a>
+    <a href="categories/"><span>▦</span>الأقسام</a>
     <button id="mobileSearchButton" type="button"><span>⌕</span>بحث</button>
   </nav>
 
@@ -1345,7 +1135,6 @@
   </div>
 
   <script src="search-config.js"></script>
-  <script src="assets/overly-visual-system.js?v=170-mix1"></script>
   <script>
     const AFFILIATE_TAG = "faraj733-21";
     const amazonLink = asin => `https://www.amazon.sa/dp/${asin}/?tag=${AFFILIATE_TAG}`;
@@ -1421,49 +1210,6 @@
       "الترفيه المنزلي":"home-entertainment", "المدرسة والقرطاسية":"school-stationery",
       "الكتب والمكتب":"books-office", "الساعات والمجوهرات":"watches-jewelry", "تسوق متنوع":"general"
     };
-    const VISUAL_SYSTEM = window.OVERLY_VISUAL_SYSTEM || {
-      home:{model:170,key:"prism-portal",label:"الزجاج الطيفي",bg:"#16152a",ink:"#fbf9ff",accent:"#9f76ff",accent2:"#5fcfff",panel:"#34305b"},
-      categories:{}
-    };
-    const CATEGORY_VISUALS = VISUAL_SYSTEM.categories;
-    const categoryVisual = name => CATEGORY_VISUALS[name] || VISUAL_SYSTEM.home;
-    const categoryVisualStyle = visual => [
-      `--cat-bg:${visual.bg}`, `--cat-ink:${visual.ink}`, `--cat-accent:${visual.accent}`,
-      `--cat-accent-2:${visual.accent2}`, `--cat-panel:${visual.panel}`
-    ].join(";");
-    const PRIMARY_CATEGORY_CARDS = [
-      "الإلكترونيات", "المنزل", "السيارة", "الأزياء والأحذية",
-      "التنظيف والمنظفات", "المطبخ والأجهزة المنزلية", "السفر",
-      "الرحلات والبحر والتخييم", "الحدائق والزراعة", "الجمال والعناية",
-      "الرياضة", "الأطفال"
-    ];
-    const CATEGORY_CARD_LIMIT = 12;
-    const CATEGORY_ICONS = {
-      "الإلكترونيات": '<rect x="5" y="3.5" width="14" height="13" rx="2"/><path d="M9 20h6M12 16.5V20"/>',
-      "التنظيف والمنظفات": '<path d="M9 5h6l1 3v11H8V8l1-3Z"/><path d="M10 5V3h5M8 10h8"/>',
-      "الأزياء والأحذية": '<path d="M9 6a3 3 0 1 1 5.5 1.7L20 12l-8 5-8-5 5-4"/>',
-      "المطبخ والأجهزة المنزلية": '<path d="M5 10h14v7a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-7ZM8 6c0-1 1-1 1-2M12 6c0-1 1-1 1-2M16 6c0-1 1-1 1-2"/>',
-      "الأثاث والديكور": '<path d="M7 12h10l2 8H5l2-8ZM9 12V7a3 3 0 0 1 6 0v5M4 20h16"/>',
-      "المنزل": '<path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10M9 20v-6h6v6"/>',
-      "السيارة": '<path d="m5 10 2-4h10l2 4 2 2v5H3v-5l2-2Z"/><path d="M7 17v2M17 17v2M7 13h.01M17 13h.01"/>',
-      "السفر": '<rect x="5" y="7" width="14" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M5 12h14M9 12v2M15 12v2"/>',
-      "الرحلات والبحر والتخييم": '<path d="m3 20 9-16 9 16H3Z"/><path d="m12 4 2 16M8 20l4-6 4 6"/>',
-      "الحدائق والزراعة": '<path d="M19 4C10 4 5 8 5 15c0 3 2 5 5 5 7 0 9-7 9-16Z"/><path d="M6 18c3-4 6-7 11-10"/>',
-      "الجمال والعناية": '<path d="m12 3 1.2 4.2L17 9l-3.8 1.8L12 15l-1.2-4.2L7 9l3.8-1.8L12 3ZM5 15l.8 2.2L8 18l-2.2.8L5 21l-.8-2.2L2 18l2.2-.8L5 15ZM19 13l.6 1.4L21 15l-1.4.6L19 17l-.6-1.4L17 15l1.4-.6L19 13Z"/>',
-      "الصحة والعناية": '<path d="M20 8.5C20 15 12 20 12 20S4 15 4 8.5A4.5 4.5 0 0 1 12 5a4.5 4.5 0 0 1 8 3.5Z"/><path d="M9 12h6M12 9v6"/>',
-      "البقالة والمشروبات": '<path d="M4 9h16l-2 11H6L4 9ZM8 9l4-6 4 6M8 13v3M12 13v3M16 13v3"/>',
-      "الرياضة": '<path d="M3 9v6M6 7v10M18 7v10M21 9v6M6 12h12"/>',
-      "الأطفال": '<circle cx="12" cy="12" r="8"/><path d="M9 10h.01M15 10h.01M9 14c1.5 2 4.5 2 6 0"/>',
-      "الألعاب": '<path d="M8 8h8a5 5 0 0 1 4.7 6.7l-1 2.8a2 2 0 0 1-3.3.8L14 16h-4l-2.4 2.3a2 2 0 0 1-3.3-.8l-1-2.8A5 5 0 0 1 8 8Z"/><path d="M7 12h4M9 10v4M16 11h.01M18 13h.01"/>',
-      "الحيوانات الأليفة": '<circle cx="12" cy="15" r="4"/><circle cx="6" cy="10" r="2"/><circle cx="18" cy="10" r="2"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="6" r="2"/>',
-      "الأدوات والهوايات": '<path d="M14.5 5.5a4 4 0 0 0 4.8 5.9l-8.4 8.4a2 2 0 0 1-2.8-2.8l8.4-8.4a4 4 0 0 0 5.9-4.8l-2.7 2.7-2.2-.3-.3-2.2 2.7-2.7a4 4 0 0 0-5.4 4.2Z"/>',
-      "الترفيه المنزلي": '<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/>',
-      "المدرسة والقرطاسية": '<path d="m4 20 4.5-1L19 8.5 15.5 5 5 15.5 4 20ZM13.5 7l3.5 3.5M5 15.5 8.5 19"/>',
-      "الكتب والمكتب": '<path d="M4 5a3 3 0 0 1 3-1h5v16H7a3 3 0 0 0-3 1V5ZM20 5a3 3 0 0 0-3-1h-5v16h5a3 3 0 0 1 3 1V5Z"/>',
-      "الساعات والمجوهرات": '<path d="M9 2h6l1 4a7 7 0 1 1-8 0l1-4ZM9 22h6l1-4M12 9v4l3 2"/>',
-      "تسوق متنوع": '<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>'
-    };
-    const categoryIcon = name => `<svg viewBox="0 0 24 24" aria-hidden="true">${CATEGORY_ICONS[name] || CATEGORY_ICONS["تسوق متنوع"]}</svg>`;
     const CATEGORY_ALIASES = {
       "الموضة":"الأزياء والأحذية",
       "الحدائق":"الحدائق والزراعة",
@@ -1570,11 +1316,6 @@
     let aliSearchController = null;
     let mobileSearchMode = "local";
     let lastScrollY = 0;
-    let categoriesExpanded = false;
-    let gatewaySlide = 0;
-    let gatewayPointerStartX = null;
-    const GATEWAY_SLIDE_COUNT = 2;
-    const GATEWAY_SESSION_KEY = "overly_gateway_seen_session_v1";
     const DESKTOP_GRID_BATCH_SIZE = 24;
     const MOBILE_GRID_BATCH_SIZE = 12;
     const gridBatchSize = () => window.matchMedia("(max-width: 640px)").matches ? MOBILE_GRID_BATCH_SIZE : DESKTOP_GRID_BATCH_SIZE;
@@ -1620,30 +1361,6 @@
     };
     const dealRank = deal => Number(deal.rank_score || 0) || discountPercent(deal) + 48;
     const smartSort = (a,b) => dealRank(b) - dealRank(a) || discountPercent(b) - discountPercent(a);
-    const DISCOVERY_CATEGORY_ORDER = [
-      ["الإلكترونيات", "amazon"], ["الأزياء والأحذية", "aliexpress"],
-      ["المنزل", "aliexpress"], ["السفر", ""], ["الجمال والعناية", ""],
-      ["الرياضة", ""], ["السيارة", ""], ["المطبخ والأجهزة المنزلية", ""],
-      ["الأثاث والديكور", ""], ["الأطفال", ""], ["الرحلات والبحر والتخييم", ""]
-    ];
-    function diversifyDiscovery(source) {
-      const ranked = [...source].sort(smartSort);
-      const picked = [];
-      const seen = new Set();
-      const add = deal => {
-        if (!deal) return;
-        const key = `${storeOf(deal)}:${dealKey(deal)}`;
-        if (seen.has(key)) return;
-        seen.add(key);
-        picked.push(deal);
-      };
-      DISCOVERY_CATEGORY_ORDER.forEach(([name, preferredStore]) => {
-        add(ranked.find(deal => normalizeCategory(deal.category) === name && (!preferredStore || storeOf(deal) === preferredStore))
-          || ranked.find(deal => normalizeCategory(deal.category) === name));
-      });
-      ranked.forEach(add);
-      return picked;
-    }
     const hasDiscount = deal => discountPercent(deal) > 0;
     const hasBeforePrice = deal => hasDiscount(deal) && Number(deal.original_price || 0) > 0;
     const popularityText = deal => {
@@ -1662,7 +1379,11 @@
     const visibleTopDeals = () => {
       const scoped = [...deals].filter(deal => store === "all" || storeOf(deal) === store).sort(smartSort);
       if (store !== "all") return scoped.slice(0,3);
-      return diversifyDiscovery(scoped).slice(0,3);
+      const firstAmazon = scoped.find(deal => storeOf(deal) === "amazon");
+      const firstAli = scoped.find(deal => storeOf(deal) === "aliexpress");
+      const mixed = [firstAli, firstAmazon].filter(Boolean);
+      scoped.forEach(deal => { if (mixed.length < 3 && !mixed.includes(deal)) mixed.push(deal); });
+      return mixed.slice(0,3);
     };
 
     const storage = {
@@ -1670,104 +1391,12 @@
       set(key, value) { try { localStorage.setItem(key, value); } catch (_) {} }
     };
 
-    function applyCategoryVisual(name = "الكل") {
-      const visual = name === "الكل" ? VISUAL_SYSTEM.home : categoryVisual(name);
-      const root = document.documentElement;
-      root.dataset.categoryScene = visual.key;
-      root.style.setProperty("--scene-bg", visual.bg);
-      root.style.setProperty("--scene-ink", visual.ink);
-      root.style.setProperty("--scene-accent", visual.accent);
-      root.style.setProperty("--scene-accent-2", visual.accent2);
-      root.style.setProperty("--scene-panel", visual.panel);
-      const dealsSection = document.querySelector(".deals-section");
-      if (dealsSection) {
-        dealsSection.dataset.visualLabel = name === "الكل" ? "نخبة أوفرلي" : name;
-        dealsSection.dataset.visualModel = String(visual.model);
-        dealsSection.dataset.visualMaterial = visual.label;
-      }
-      const themeMeta = document.querySelector('meta[name="theme-color"]');
-      if (themeMeta) themeMeta.content = visual.bg;
-    }
-
-    function showGatewaySlide(index, options = {}) {
-      const next = Math.max(0, Math.min(GATEWAY_SLIDE_COUNT - 1, Number(index) || 0));
-      const focusedSlide = document.activeElement?.closest?.("[data-gateway-slide]");
-      if (focusedSlide && Number(focusedSlide.dataset.gatewaySlide) !== next) document.activeElement.blur();
-      gatewaySlide = next;
-      document.querySelectorAll("[data-gateway-slide]").forEach((slide, slideIndex) => {
-        const active = slideIndex === next;
-        slide.classList.toggle("active", active);
-        slide.classList.toggle("is-before", slideIndex < next);
-        slide.classList.toggle("is-after", slideIndex > next);
-        slide.setAttribute("aria-hidden", String(!active));
-        slide.toggleAttribute("inert", !active);
-      });
-      document.querySelectorAll("[data-gateway-target]").forEach(button => {
-        const active = Number(button.dataset.gatewayTarget) === next;
-        button.classList.toggle("active", active);
-        if (active) button.setAttribute("aria-current", "true");
-        else button.removeAttribute("aria-current");
-      });
-      el("gatewaySlideStatus").textContent = `${String(next + 1).padStart(2, "0")} / ${String(GATEWAY_SLIDE_COUNT).padStart(2, "0")}`;
-      el("gatewayPrev").setAttribute("aria-label", next === 0 ? "عرض شريحة التصنيفات" : "عرض شريحة الترحيب");
-      el("gatewayNext").setAttribute("aria-label", next === GATEWAY_SLIDE_COUNT - 1 ? "عرض شريحة الترحيب" : "عرض شريحة التصنيفات");
-      const frame = el("homeGateway").querySelector(".gateway-frame");
-      frame.scrollTop = 0;
-      frame.scrollLeft = 0;
-      if (options.focus) document.querySelector(`[data-gateway-target="${next}"]`)?.focus({preventScroll: true});
-    }
-
-    function stepGateway(direction) {
-      showGatewaySlide((gatewaySlide + direction + GATEWAY_SLIDE_COUNT) % GATEWAY_SLIDE_COUNT);
-    }
-
-    function openCategoryGateway(event = null) {
-      event?.preventDefault();
-      showGatewaySlide(1);
-      el("homeGateway").scrollIntoView({behavior: "smooth", block: "start"});
-    }
-
-    function setupHomeGateway() {
-      el("gatewayCategories").addEventListener("click", openCategoryGateway);
-      el("gatewayPrev").addEventListener("click", () => stepGateway(-1));
-      el("gatewayNext").addEventListener("click", () => stepGateway(1));
-      document.querySelectorAll("[data-gateway-target]").forEach(button => {
-        button.addEventListener("click", () => showGatewaySlide(Number(button.dataset.gatewayTarget)));
-      });
-      document.querySelectorAll("[data-open-categories]").forEach(link => link.addEventListener("click", openCategoryGateway));
-      el("homeGateway").addEventListener("keydown", event => {
-        if (event.key === "ArrowLeft") { event.preventDefault(); stepGateway(1); }
-        if (event.key === "ArrowRight") { event.preventDefault(); stepGateway(-1); }
-      });
-      el("homeGateway").addEventListener("pointerdown", event => {
-        gatewayPointerStartX = event.target.closest("button, a, input, select") ? null : event.clientX;
-      }, {passive: true});
-      el("homeGateway").addEventListener("pointerup", event => {
-        if (gatewayPointerStartX === null) return;
-        const distance = event.clientX - gatewayPointerStartX;
-        gatewayPointerStartX = null;
-        if (Math.abs(distance) > 55) stepGateway(distance < 0 ? 1 : -1);
-      }, {passive: true});
-      let gatewaySeenThisSession = false;
-      const gatewayPreview = new URLSearchParams(location.search).get("preview");
-      try { gatewaySeenThisSession = sessionStorage.getItem(GATEWAY_SESSION_KEY) === "1"; } catch (_) {}
-      if (gatewayPreview === "welcome") {
-        showGatewaySlide(0);
-      } else if (gatewayPreview === "categories" || location.hash === "#categoryDeck" || gatewaySeenThisSession) {
-        showGatewaySlide(1);
-      } else {
-        showGatewaySlide(0);
-        try { sessionStorage.setItem(GATEWAY_SESSION_KEY, "1"); } catch (_) {}
-      }
-    }
-
     function setTheme(theme) {
       document.documentElement.dataset.theme = theme;
       el("themeToggle").textContent = theme === "dark" ? "☀︎" : "◐";
       el("themeToggle").setAttribute("aria-label", theme === "dark" ? "تفعيل الوضع الفاتح" : "تفعيل الوضع الداكن");
-      const sceneColor = getComputedStyle(document.documentElement).getPropertyValue("--scene-bg").trim();
-      document.querySelector('meta[name="theme-color"]').content = sceneColor || (theme === "dark" ? "#16152a" : "#f5efe3");
-      storage.set("site_theme_v3", theme);
+      document.querySelector('meta[name="theme-color"]').content = theme === "dark" ? "#050807" : "#f2efe9";
+      storage.set("site_theme", theme);
     }
 
     function toggleFilters(force) {
@@ -1825,12 +1454,10 @@
       if (Array.isArray(aliSearchResults)) clearAliSearchResults(false);
       store = "all";
       category = CATEGORIES.includes(preferredCategory) ? preferredCategory : "الكل";
-      applyCategoryVisual(category);
       sortBy = "smart";
       query = searchText;
       visibleLimit = gridBatchSize();
       el("searchInput").value = searchText;
-      el("mobileSearchInput").value = searchText;
       el("categorySelect").value = category;
       el("sortSelect").value = "smart";
       document.querySelectorAll(".market-tab").forEach(button => button.classList.toggle("active", button.dataset.store === "all"));
@@ -1859,15 +1486,15 @@
         return `
         <article class="hero-slide ${index === heroIndex ? "active" : ""}">
           <div class="hero-copy">
-            <div class="eyebrow">إشارة أوفرلي · ${shop.name}</div>
+            <div class="eyebrow">أحد أبرز عروض ${shop.name}</div>
             <h2><a href="${page}">${escapeHtml(deal.title)}</a></h2>
             <div class="hero-meta">
               <span class="hero-discount">${offerText(deal)}</span>
               <span class="old-price">${priceContext(deal, shop)}</span>
             </div>
             <div class="hero-actions">
-              <a class="primary-link" href="${link}" target="_blank" rel="sponsored noopener noreferrer" onclick="return go(event,'${key}')">شوفه عند المتجر ↗</a>
-              <button class="secondary-link" type="button" onclick="document.getElementById('dealsTitle').scrollIntoView()">كمّل الاكتشاف</button>
+              <a class="primary-link" href="${link}" target="_blank" rel="sponsored noopener noreferrer" onclick="return go(event,'${key}')">اعرض السعر الحالي ↗</a>
+              <button class="secondary-link" type="button" onclick="document.getElementById('dealsTitle').scrollIntoView()">استعرض كل العروض</button>
             </div>
           </div>
           <div class="hero-visual">
@@ -1891,90 +1518,8 @@
       renderHero();
     }
 
-    function gatewayFeaturedDeals(limit = 5) {
-      return diversifyDiscovery(deals.filter(deal => safeImageUrl(deal))).slice(0, limit);
-    }
-
-    function renderGatewayProductStage() {
-      const stage = el("gatewayProductStage");
-      if (!stage) return;
-      stage.innerHTML = `
-        <span class="prism-orb prism-orb-a"></span>
-        <span class="prism-orb prism-orb-b"></span>
-        <span class="prism-orb prism-orb-c"></span>
-        <span class="prism-ring prism-ring-a"></span>
-        <span class="prism-ring prism-ring-b"></span>
-        <span class="prism-noise"></span>`;
-    }
-
-    function renderCategoryCards() {
-      const counts = new Map();
-      const representatives = new Map();
-      deals.forEach(deal => {
-        const name = normalizeCategory(deal.category);
-        counts.set(name, (counts.get(name) || 0) + 1);
-      });
-      [...deals].sort(smartSort).forEach(deal => {
-        const name = normalizeCategory(deal.category);
-        if (!representatives.has(name) && safeImageUrl(deal)) representatives.set(name, deal);
-      });
-      const ordered = [
-        ...PRIMARY_CATEGORY_CARDS,
-        ...CATEGORIES.filter(name => name !== "الكل" && !PRIMARY_CATEGORY_CARDS.includes(name))
-      ];
-      const available = ordered.filter(name => (counts.get(name) || 0) > 0);
-      let visible = categoriesExpanded ? available : available.slice(0, CATEGORY_CARD_LIMIT);
-      if (!categoriesExpanded && category !== "الكل" && available.includes(category) && !visible.includes(category)) {
-        visible = [...visible.slice(0, Math.max(0, CATEGORY_CARD_LIMIT - 1)), category];
-      }
-      el("categoryCards").innerHTML = visible.length
-        ? visible.map(name => {
-          const representative = representatives.get(name);
-          const visual = categoryVisual(name);
-          const art = representative
-            ? `<img src="${escapeHtml(safeImageUrl(representative))}" alt="" width="640" height="420" loading="lazy" decoding="async" onerror="this.remove()">`
-            : "";
-          return `
-          <button class="category-card ${name === category ? "active" : ""}" type="button" data-visual-model="${visual.model}" data-visual-key="${visual.key}" style="${categoryVisualStyle(visual)}" aria-pressed="${name === category}" onclick="selectCategoryCard('${name}')">
-            <span class="category-card-art" aria-hidden="true">${art}</span>
-            <span class="category-card-icon">${categoryIcon(name)}</span>
-            <span class="category-card-copy"><strong>${name}</strong><small>${formatNumber(counts.get(name) || 0)} منتج · ${visual.label}</small></span>
-            <span class="category-card-arrow" aria-hidden="true">‹</span>
-          </button>
-        `}).join("")
-        : '<p class="category-deck-loading">جاري تجهيز التصنيفات المتاحة…</p>';
-      const toggle = el("categoryDeckToggle");
-      toggle.classList.toggle("hidden", available.length <= CATEGORY_CARD_LIMIT);
-      toggle.setAttribute("aria-expanded", String(categoriesExpanded));
-      toggle.querySelector("b").textContent = categoriesExpanded ? "عرض التصنيفات الرئيسية" : `عرض كل التصنيفات (${formatNumber(available.length)})`;
-    }
-
-    function toggleCategoryDeck() {
-      categoriesExpanded = !categoriesExpanded;
-      renderCategoryCards();
-    }
-
-    function selectCategoryCard(nextCategory) {
-      if (Array.isArray(aliSearchResults)) clearAliSearchResults(false);
-      setMobileSearchMode("local");
-      store = "all";
-      query = "";
-      sortBy = "smart";
-      el("searchInput").value = "";
-      el("mobileSearchInput").value = "";
-      el("sortSelect").value = "smart";
-      document.querySelectorAll(".market-tab").forEach(button => button.classList.toggle("active", button.dataset.store === "all"));
-      setCategory(nextCategory);
-      heroIndex = 0;
-      renderHero();
-      setMobileSearchStatus(`يعرض أوفرلي الآن منتجات قسم ${nextCategory}.`);
-      trackEvent("category_select");
-      setTimeout(() => el("dealsTitle").scrollIntoView({behavior: "smooth", block: "start"}), 80);
-    }
-
     function setCategory(nextCategory) {
       category = CATEGORIES.includes(nextCategory) ? nextCategory : "الكل";
-      applyCategoryVisual(category);
       visibleLimit = gridBatchSize();
       el("categorySelect").value = category;
       renderCategoryChips();
@@ -2008,7 +1553,6 @@
         const href = item === "الكل" ? "categories/" : `categories/${CATEGORY_SLUGS[item] || "electronics"}/`;
         return `<a href="${href}" class="category-chip ${item === category ? "active" : ""}" ${item === category ? 'aria-current="true"' : ""} onclick="event.preventDefault(); setCategory('${item}')">${label}<b>${formatNumber(count)}</b></a>`;
       }).join("");
-      renderCategoryCards();
     }
 
     function filteredDeals() {
@@ -2018,16 +1562,13 @@
         (category === "الكل" || deal.category === category) &&
         (!normalizedQuery || `${deal.title} ${deal.category} ${deal.angle || ""}`.toLowerCase().includes(normalizedQuery))
       );
-      const sorted = list.sort((a,b) => {
+      return list.sort((a,b) => {
         if (sortBy === "price-high") return b.original_price - a.original_price;
         if (sortBy === "price-low") return a.original_price - b.original_price;
         if (sortBy === "name") return a.title.localeCompare(b.title, "ar");
         if (sortBy === "smart") return smartSort(a,b);
         return discountPercent(b) - discountPercent(a);
       });
-      const isDiscoveryView = sortBy === "smart" && store === "all" && category === "الكل"
-        && !normalizedQuery && !Array.isArray(aliSearchResults);
-      return isDiscoveryView ? diversifyDiscovery(sorted) : sorted;
     }
 
     function setupCardReveal() {
@@ -2119,9 +1660,8 @@
         const absoluteIndex = (appendFrom === null ? 0 : appendFrom) + index;
         const mobileCardClass = absoluteIndex < 4 ? "featured-mobile" : "compact-mobile";
         return `
-        <article class="product-card ${mobileCardClass}" data-product-key="${key}" data-store="${shop.key}">
+        <article class="product-card ${mobileCardClass}" data-product-key="${key}">
           <div class="product-media">
-            <span class="product-index" aria-hidden="true">${String(absoluteIndex + 1).padStart(2, "0")}</span>
             <a class="media-product-link" href="${page}" aria-label="تفاصيل ${escapeHtml(deal.title)}">
               <img src="${image}" alt="${escapeHtml(deal.title)}" width="640" height="640" loading="lazy" decoding="async" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🛍️',style:'font-size:52px'}))">
             </a>
@@ -2159,7 +1699,7 @@
       el("updatedAt").textContent = Number.isNaN(date.getTime()) ? "" : `آخر تحديث ${date.toLocaleDateString("ar-SA")}`;
     }
 
-    function renderAll() { renderGatewayProductStage(); renderHero(); renderCategoryChips(); renderGrid(); renderTimestamp(); }
+    function renderAll() { renderHero(); renderCategoryChips(); renderGrid(); renderTimestamp(); }
 
     function setAliSearchStatus(message, type = "") {
       el("aliSearchStatus").textContent = message;
@@ -2329,7 +1869,6 @@
     function resetFilters() {
       if (Array.isArray(aliSearchResults)) clearAliSearchResults();
       category = "الكل";
-      applyCategoryVisual(category);
       store = "all";
       sortBy = "smart";
       query = "";
@@ -2345,12 +1884,6 @@
     }
 
     el("themeToggle").addEventListener("click", () => setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark"));
-    el("gatewaySearchForm").addEventListener("submit", event => {
-      event.preventDefault();
-      setMobileSearchMode("local");
-      el("mobileSearchInput").value = el("gatewaySearchInput").value;
-      runMobileSearch(el("gatewaySearchInput").value);
-    });
     el("filterToggle").addEventListener("click", () => toggleFilters());
     el("filtersClose").addEventListener("click", () => toggleFilters(false));
     el("filtersBackdrop").addEventListener("click", () => toggleFilters(false));
@@ -2392,14 +1925,9 @@
     el("closeQuickView").addEventListener("click", closeQuickView);
     el("quickViewModal").addEventListener("click", event => { if (event.target === el("quickViewModal")) closeQuickView(); });
     el("mobileSearchButton").addEventListener("click", openPrimarySearch);
-    el("categoryDeckToggle").addEventListener("click", toggleCategoryDeck);
 
     document.addEventListener("keydown", event => {
-      if (event.key === "Escape") {
-        closeExitModal();
-        closeQuickView();
-        toggleFilters(false);
-      }
+      if (event.key === "Escape") { closeExitModal(); closeQuickView(); toggleFilters(false); }
     });
 
     window.addEventListener("resize", () => {
@@ -2483,10 +2011,8 @@
       .catch(loadFullCatalog);
 
     el("copyright").textContent = `© ${new Date().getFullYear()} أوفرلي (Overly) — جميع الحقوق محفوظة.`;
-    applyCategoryVisual("الكل");
-    setTheme(storage.get("site_theme_v3") || "light");
+    setTheme(storage.get("site_theme") || "dark");
     setMobileSearchMode("local");
-    setupHomeGateway();
     renderAll();
     updateScrollUI();
     trackEvent("page_view");
