@@ -477,7 +477,7 @@ def page_shell(
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://overly.live https://majeed3575.github.io https://*.media-amazon.com https://*.ssl-images-amazon.com https://*.amazon-adsystem.com https://*.alicdn.com https://*.aliexpress-media.com https://*.aliexpress.com; style-src 'self'; script-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://overly.live https://majeed3575.github.io https://*.media-amazon.com https://*.ssl-images-amazon.com https://*.amazon-adsystem.com https://*.alicdn.com https://*.aliexpress-media.com https://*.aliexpress.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="theme-color" content="#050807">
   <meta name="description" content="{esc(meta_description(description))}">
   <meta name="robots" content="{esc(robots)}">
@@ -497,6 +497,10 @@ def page_shell(
   <link rel="icon" type="image/webp" href="{SITE_LINK_ROOT}assets/overly-icon.webp">
   <link rel="apple-touch-icon" sizes="180x180" href="{SITE_LINK_ROOT}assets/overly-icon-180.png">
   <link rel="stylesheet" href="{SITE_LINK_ROOT}seo.css">
+  <script src="{SITE_LINK_ROOT}site-boot.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=Readex+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{SITE_LINK_ROOT}site-language.css">
+  <link rel="stylesheet" href="{SITE_LINK_ROOT}live-theme.css">
 {schemas}
 </head>
 <body>
@@ -514,6 +518,16 @@ def page_shell(
       <div class="disclosure">إفصاح: قد نحصل على عمولة من عمليات الشراء المؤهلة عبر روابط Amazon وAliExpress دون تكلفة إضافية عليك. السعر والتوفر النهائيان هما الظاهران لدى المتجر لحظة الشراء.<nav><a href="{SITE_LINK_ROOT}about.html">عن أوفرلي</a><a href="{SITE_LINK_ROOT}methodology.html">منهجية الاختيار</a><a href="{SITE_LINK_ROOT}privacy.html">الخصوصية</a><a href="{SITE_LINK_ROOT}terms.html">الشروط</a><a href="{SITE_LINK_ROOT}affiliate-disclosure.html">إفصاح العمولة</a><a href="{SITE_LINK_ROOT}copyright.html">الحقوق</a></nav></div>
     </div>
   </footer>
+  <script src="{SITE_LINK_ROOT}catalog-locale.js"></script>
+  <script src="{SITE_LINK_ROOT}catalog-additions.js"></script>
+  <script src="{SITE_LINK_ROOT}catalog-native-en.js"></script>
+  <script src="{SITE_LINK_ROOT}site-copy-en.js"></script>
+  <script src="{SITE_LINK_ROOT}legal-copy-en.js"></script>
+  <script src="{SITE_LINK_ROOT}site-extra-en.js"></script>
+  <script src="{SITE_LINK_ROOT}site-angles-en.js"></script>
+  <script src="{SITE_LINK_ROOT}site-phrases.js"></script>
+  <script src="{SITE_LINK_ROOT}locale.js"></script>
+  <script src="{SITE_LINK_ROOT}site-language.js"></script>
 </body>
 </html>
 '''
@@ -810,6 +824,8 @@ def build() -> dict:
     if not css:
         raise RuntimeError("seo.css.source غير موجود")
     changed += write_if_changed(ROOT / "seo.css", css, generated)
+    native_titles = {item["title"]: clean_text(item["raw"].get("title_en"), 180) for item in deals if item["raw"].get("title_en")}
+    changed += write_if_changed(ROOT / "catalog-native-en.js", "globalThis.OverlyCatalogNativeEnglish=" + json.dumps(native_titles, ensure_ascii=False) + ";\n", generated)
 
     initial_payload = {
         "updated_at": source.get("updated_at") or datetime.now(timezone.utc).isoformat(),

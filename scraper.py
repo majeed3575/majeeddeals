@@ -2023,6 +2023,45 @@ def discover_aliexpress_products() -> list[dict]:
     return accepted
 
 
+def enrich_english_titles(deals: list[dict]) -> list[dict]:
+    """Keep Arabic source titles; retrieve missing English titles by exact product ID."""
+    previous = {_deal_key(item): item for item in load_existing_deals()}
+    known = {}
+    for name in ("catalog-locale.js", "catalog-additions.js"):
+        try:
+            source = (Path(__file__).resolve().parent / name).read_text(encoding="utf-8")
+            payload = source.partition("Object.freeze(")[2].rsplit(")", 1)[0]
+            known.update(json.loads(payload))
+        except (OSError, ValueError, TypeError):
+            pass
+    missing = []
+    for deal in deals:
+        old = previous.get(_deal_key(deal), {})
+        title = known.get(deal.get("title")) or (old.get("title_en") if old.get("title") == deal.get("title") else "")
+        if title:
+            deal["title_en"] = title
+        else:
+            missing.append(deal)
+    for start in range(0, len(missing), 20):
+        batch = {str(item["product_id"]): item for item in missing[start:start + 20]}
+        try:
+            result = aliexpress_api_call("aliexpress.affiliate.productdetail.get", {
+                "country": ALIEXPRESS_SHIP_TO_COUNTRY, "fields": "product_id,product_title",
+                "product_ids": ",".join(batch), "target_currency": ALIEXPRESS_TARGET_CURRENCY,
+                "target_language": "EN", "tracking_id": ALIEXPRESS_TRACKING_ID,
+            })
+            for product in _ali_list((result or {}).get("products"), "product"):
+                product_id = _ali_product_id(product.get("product_id"))
+                title = re.sub(r"<[^>]*>|[\x00-\x1f\x7f]", " ", str(product.get("product_title") or ""))
+                title = re.sub(r"\s+", " ", title).strip()[:180]
+                if product_id in batch and len(title) >= 4 and not re.search(r"[\u0600-\u06ff]", title):
+                    batch[product_id]["title_en"] = title
+        except Exception:
+            # Optional presentation data must never erase the valid catalogue.
+            print("[locale] English product titles temporarily unavailable; keeping source data")
+    return deals
+
+
 def scrape_aliexpress() -> list[dict]:
     """يحدّث القائمة المختارة أو يكتشف الرائج آلياً، ثم يولّد روابط عمولة."""
     watchlist = load_aliexpress_watchlist()
@@ -2131,7 +2170,7 @@ def scrape_aliexpress() -> list[dict]:
         reverse=True,
     )
     print(f"[aliexpress] {len(clean)} عرض صالح برابط عمولة رسمي")
-    return clean[:ALIEXPRESS_AUTO_LIMIT]
+    return enrich_english_titles(clean[:ALIEXPRESS_AUTO_LIMIT])
 
 
 def _deal_key(deal: dict) -> str:

@@ -38,6 +38,7 @@ jobs:
         run: |
           PYTHONPYCACHEPREFIX=/tmp/overly-pycache python -m py_compile scraper.py generate_seo.py verify_seo.py verify_affiliate_links.py build_public_site.py
           python -m unittest discover -v
+          node --test test_runtime.mjs
 
       - name: Run scraper
         run: python scraper.py
@@ -77,7 +78,7 @@ jobs:
           git config user.name "deals-bot"
           git config user.email "actions@github.com"
           git add deals.json
-          git add -A -- sitemap.xml deals-initial.json seo.css seo-state.json seo-generated-files.json seo-report.json
+          git add -A -- sitemap.xml deals-initial.json seo.css seo-state.json seo-generated-files.json seo-report.json catalog-native-en.js
           git add -A -- products categories stores guides about.html methodology.html 404.html
           if [ -f posted_deals.json ]; then git add posted_deals.json; fi
           if [ -f asins.json ]; then git add asins.json; fi
