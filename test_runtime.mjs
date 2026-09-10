@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import vm from 'node:vm';
+import {createHash} from 'node:crypto';
 
 const files=['catalog-locale.js','catalog-additions.js','catalog-native-en.js','site-copy-en.js','legal-copy-en.js','site-extra-en.js','site-angles-en.js','site-phrases.js','locale.js'];
 const html=readFileSync(new URL('index.html',import.meta.url),'utf8');
@@ -31,7 +32,7 @@ function app(language='ar'){
   return {context,el,elements,listeners,requests,saved,document};
 }
 test('application runs with the current catalogue in Arabic and English',()=>{
-  for(const lang of ['ar','en']){const {context,el}=app(lang);assert.equal(vm.runInContext('deals.length',context),fixture.deals.length);assert.match(el('hero').innerHTML,/live-feature/);assert.match(el('dealsGrid').innerHTML,/product-card/)}
+  for(const lang of ['ar','en']){const {context,el}=app(lang);assert.equal(vm.runInContext('deals.length',context),fixture.deals.length);assert.match(el('hero').innerHTML,/hero-slide active/);assert.match(el('dealsGrid').innerHTML,/product-card/)}
 });
 test('every current product has an English title; switching back preserves all original data',()=>{
   const context=translations(),api=context.createOverlyI18n(),before=JSON.stringify(fixture);api.setLanguage('en');
@@ -48,7 +49,7 @@ test('both Arabic and English searches remain usable in either display language'
 });
 test('theme switching keeps the language and persists the requested pair',()=>{
   const {context,document,saved}=app('en');for(const theme of ['light','dark']){context.nextTheme=theme;vm.runInContext('setTheme(nextTheme)',context);assert.equal(saved.get('site_theme'),theme);assert.equal(document.documentElement.dataset.theme,theme);assert.equal(context.OverlyI18n.language,'en')}
-  const css=readFileSync(new URL('live-theme.css',import.meta.url),'utf8');assert.match(css,/#141619/);assert.match(css,/#f2f6fa/);assert.match(css,/overly-glass-atelier-v1.jpg/);assert.match(css,/prefers-reduced-motion/);
+  const css=readFileSync(new URL('live-theme.css',import.meta.url),'utf8');assert.match(css,/#faf7f1/);assert.match(css,/#354f70/);assert.match(css,/Sand & ink/);assert.match(css,/prefers-reduced-motion/);
 });
 test('translated dynamic product cards, statuses and labels have no untranslated Arabic',()=>{
   const {context,elements,listeners}=app('en');vm.runInContext('visibleLimit=1000;renderAll();openQuickView(dealKey(deals[0]));runMobileSearch("charger");query="";visibleLimit=1000;renderGrid()',context);
@@ -81,6 +82,65 @@ test('pre-paint restoration honours language URLs and works when browser storage
   for(const blocked of [false,true]){
     const context=vm.createContext({URLSearchParams,location:{search:'?lang=en'},document:{documentElement:{dataset:{}}},localStorage:{getItem:k=>{if(blocked)throw Error('blocked');return k==='site_theme'?'light':'ar'},setItem(){if(blocked)throw Error('blocked')}}});
     vm.runInContext(readFileSync(new URL('site-boot.js',import.meta.url),'utf8'),context);
-    assert.equal(context.document.documentElement.lang,'en');assert.equal(context.document.documentElement.dir,'ltr');assert.equal(context.document.documentElement.dataset.theme,blocked?'dark':'light');
+    assert.equal(context.document.documentElement.lang,'en');assert.equal(context.document.documentElement.dir,'ltr');assert.equal(context.document.documentElement.dataset.theme,'light');
   }
+});
+
+test('only the approved Essential edit and Sand & ink are public; no comparison controls or inspiration image',()=>{
+  assert.match(html,/data-direction="30" data-family="quiet" data-variation="5" data-palette="2"/);
+  assert.doesNotMatch(html,/edition-bar|palette-bar|editorial-cover|overly-staging-site|designs\/everyday/);
+  assert.match(html,/<link rel="canonical" href="https:\/\/overly.live\/">/);
+  assert.doesNotMatch(html,/<meta name="robots"[^>]*noindex/);
+  for(const file of ['discovery.css','essential-layout.css','live-theme.css'])assert.match(html,new RegExp(file.replace('.','\\.')));
+});
+
+test('approved logo is byte-identical and color treatment preserves interior details',()=>{
+  const logo=readFileSync(new URL('assets/overly-dark-logo-trimmed.webp',import.meta.url));
+  assert.equal(createHash('sha256').update(logo).digest('hex'),'3e7e61ae49230c6ed9969ec0a3b65c4359ddc2aadbb8f80162bcd8bea5745e10');
+  const css=readFileSync(new URL('live-theme.css',import.meta.url),'utf8');
+  assert.doesNotMatch(css,/brightness\(0\)/);assert.match(css,/hue-rotate\(42deg\) saturate\(\.38\)/);
+  assert.equal((html.match(/src="assets\/overly-dark-logo-trimmed.webp"/g)||[]).length,3);
+});
+
+test('discovery uses real matching-category products when a preferred item disappears',()=>{
+  const {context,el}=app();
+  for(const name of ['الإلكترونيات','المنزل','الأزياء والأحذية','السيارة','الجمال والعناية','الأطفال']){
+    context.categoryName=name;const selected=vm.runInContext('discoverySceneProduct(categoryName)',context);
+    assert.ok(selected);assert.ok(fixture.deals.some(d=>d.category===name&&(d.asin||d.product_id)===selected.key));
+  }
+  vm.runInContext('deals=[{asin:"SAFEPHOTO1",category:"المنزل",image:"https://m.media-amazon.com/home.jpg"}]',context);
+  assert.equal(vm.runInContext('discoverySceneProduct("المنزل").key',context),'SAFEPHOTO1');
+  assert.equal(vm.runInContext('discoverySceneProduct("السيارة")',context),null);
+  assert.equal((el('discoveryCategoryGrid').innerHTML.match(/class="discovery-category /g)||[]).length,6);
+});
+
+test('welcome is once per session and does not intercept product or category deep links',()=>{
+  const source=appSource.slice(appSource.indexOf('    function showSessionWelcome()'),appSource.indexOf('    function setAliSearchStatus('));
+  for(const [search,hash,seen,expected]of [['','',null,1],['','', '1',0],['?v=new','', '1',0],['?deal=ABC','',null,0],['','#dealsTitle',null,0]]){
+    let opened=0;vm.runInNewContext(source+'\nshowSessionWelcome();',{URLSearchParams,location:{search,hash},sessionStorage:{getItem:()=>seen},WELCOME_SESSION_KEY:'test',openWelcome:()=>opened++});assert.equal(opened,expected);
+  }
+});
+
+test('welcome steps preserve accessible state and translate dynamic controls',()=>{
+  const source=appSource.slice(appSource.indexOf('    function setWelcomeSlide('),appSource.indexOf('    function openWelcome('));
+  for(const language of ['ar','en']){
+    const context=translations(),api=context.createOverlyI18n();api.setLanguage(language);
+    const slides=Array.from({length:3},element),steps=Array.from({length:3},element),els=new Map();
+    const el=id=>{if(!els.has(id))els.set(id,element());return els.get(id)};
+    Object.assign(context,{welcomeSlides:slides,welcomeSteps:steps,welcomeDialog:element(),welcomeIndex:0,el,t:(k,p)=>api.t(k,p),formatNumber:String});
+    vm.runInContext(source,context);
+    for(const [requested,index]of [[-2,0],[1,1],[99,2]]){
+      vm.runInContext(`setWelcomeSlide(${requested})`,context);
+      assert.equal(context.welcomeIndex,index);assert.equal(context.welcomeDialog.attrs['aria-labelledby'],`welcomeTitle${index+1}`);
+      assert.deepEqual(slides.map(s=>s.hidden),[0,1,2].map(i=>i!==index));
+      if(language==='en')assert.doesNotMatch(el('welcomeNext').innerHTML+el('welcomeStatus').textContent,/[\u0600-\u06ff]/);
+    }
+  }
+});
+
+test('theme URL selection wins over old saved preferences',()=>{
+  const saved=new Map([['site_theme','dark']]);
+  const context=vm.createContext({URLSearchParams,location:{search:'?lang=en&theme=light'},document:{documentElement:{dataset:{}}},localStorage:{getItem:k=>saved.get(k),setItem:(k,v)=>saved.set(k,v)}});
+  vm.runInContext(readFileSync(new URL('site-boot.js',import.meta.url),'utf8'),context);
+  assert.equal(context.document.documentElement.dataset.theme,'light');assert.equal(saved.get('site_theme'),'light');
 });

@@ -41,6 +41,8 @@ PUBLIC_FILES = (
     "site-language.js",
     "site-language.css",
     "live-theme.css",
+    "discovery.css",
+    "essential-layout.css",
     "legal.css",
     "seo.css",
     "robots.txt",

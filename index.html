@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="ar" dir="rtl" data-theme="dark">
+<html lang="ar" dir="rtl" data-theme="light" data-direction="30" data-family="quiet" data-variation="5" data-palette="2">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://*.workers.dev; img-src 'self' data: https://overly.live https://majeed3575.github.io https://*.media-amazon.com https://*.ssl-images-amazon.com https://*.amazon-adsystem.com https://*.alicdn.com https://*.aliexpress-media.com https://*.aliexpress.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
-  <meta name="theme-color" content="#050807">
+  <meta name="theme-color" content="#faf7f1">
   <meta name="description" content="أوفرلي يجمع المنتجات الرائجة من مختلف أقسام Amazon السعودية وAliExpress، مرتبة حسب المبيعات والتقييم مع روابط تسويق بالعمولة.">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <link rel="canonical" href="https://overly.live/">
@@ -30,7 +30,7 @@
   <link rel="preconnect" href="https://m.media-amazon.com" crossorigin>
   <link rel="preconnect" href="https://ae01.alicdn.com" crossorigin>
   <script src="site-boot.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=Readex+Pro:wght@400;500;600;700&amp;family=Tajawal:wght@400;500;700;800;900&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600;700&amp;family=Tajawal:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
   <script type="application/ld+json">
     {"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://overly.live/#organization","name":"أوفرلي","alternateName":"Overly","url":"https://overly.live/","logo":{"@type":"ImageObject","url":"https://overly.live/assets/overly-icon-180.png"}},{"@type":"WebSite","@id":"https://overly.live/#website","name":"أوفرلي","alternateName":"Overly","url":"https://overly.live/","inLanguage":"ar-SA","description":"منتجات رائجة مختارة من مختلف أقسام Amazon السعودية وAliExpress.","publisher":{"@id":"https://overly.live/#organization"}}]}
   </script>
@@ -818,9 +818,21 @@
     }
   </style>
   <link rel="stylesheet" href="site-language.css">
-  <link rel="stylesheet" href="live-theme.css">
+  <link rel="stylesheet" href="discovery.css?v=essential-1">
+  <link rel="stylesheet" href="essential-layout.css?v=essential-1">
+  <link rel="stylesheet" href="live-theme.css?v=sand-ink-1">
 </head>
 <body>
+  <svg class="discovery-symbols" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+    <symbol id="discover-headphones" viewBox="0 0 64 64"><path d="M12 36v-7a20 20 0 0 1 40 0v7"/><rect x="9" y="31" width="11" height="23" rx="5"/><rect x="44" y="31" width="11" height="23" rx="5"/><path d="M20 27a12 12 0 0 1 24 0"/></symbol>
+    <symbol id="discover-home" viewBox="0 0 64 64"><path d="M17 34V23a8 8 0 0 1 8-8h14a8 8 0 0 1 8 8v11M16 49v6m32-6v6"/><path d="M17 37V33a5 5 0 0 0-10 0v12a5 5 0 0 0 5 5h40a5 5 0 0 0 5-5V33a5 5 0 0 0-10 0v4Z"/><path d="M21 29h22"/></symbol>
+    <symbol id="discover-fashion" viewBox="0 0 64 64"><path d="m23 10-15 8 7 15 8-4v25h26V29l8 4 7-15-15-8" transform="translate(-4 0)"/><path d="M23 10a9 9 0 0 0 18 0"/></symbol>
+    <symbol id="discover-car" viewBox="0 0 64 64"><path d="m12 29 5-15h30l5 15M8 28h48v22H8zM15 50v5m34-5v5M18 36h5m18 0h5M27 43h10"/><path d="M4 25h6m44 0h6"/></symbol>
+    <symbol id="discover-beauty" viewBox="0 0 64 64"><rect x="13" y="28" width="23" height="29" rx="6"/><path d="M19 28V16h11v12M24 16V8h14v5M19 41h11"/><rect x="44" y="34" width="10" height="23" rx="2"/><path d="M46 34V22l6-5v17"/></symbol>
+    <symbol id="discover-kids" viewBox="0 0 64 64"><path d="M20 21a8 8 0 1 1 8-10m16 10a8 8 0 1 0-8-10"/><circle cx="32" cy="29" r="20"/><path d="M24 27v1m16-1v1m-12 8 4 3 4-3M19 46l-4 11m30-11 4 11"/></symbol>
+    <symbol id="discover-search" viewBox="0 0 64 64"><circle cx="27" cy="27" r="17"/><path d="m40 40 15 15"/></symbol>
+    <symbol id="discover-bag" viewBox="0 0 64 64"><path d="M13 23h38l4 34H9zM23 23V15a9 9 0 0 1 18 0v8M23 37a9 9 0 0 0 18 0"/></symbol>
+  </defs></svg>
   <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
   <div class="ambient one"></div>
   <div class="ambient two"></div>
@@ -910,20 +922,47 @@
   <button class="filters-backdrop" id="filtersBackdrop" type="button" aria-label="إغلاق نافذة الفلاتر"></button>
 
   <main class="shell" id="top">
-    <section class="live-intro" aria-labelledby="introTitle">
-      <div class="live-intro-top">
-        <div class="live-intro-copy">
-          <span class="live-eyebrow">OVERLY / <span class="light-copy">LUCENT</span><span class="dark-copy">ARGENT</span></span>
-          <h1 id="introTitle"><span class="light-copy">نافذة لاختيار أجمل.</span><span class="dark-copy">اختيارات لها حضور.</span></h1>
-          <p><span class="light-copy">القليل من البحث. والكثير من الاحتمالات.</span><span class="dark-copy">أشياء تختارها بعناية. وتعود إليها كل يوم.</span></p>
-          <form id="discoverySearchForm" class="live-find" role="search"><label><span class="sr-only">ابحث في منتجات أوفرلي</span><input id="discoverySearchInput" type="search" maxlength="80" placeholder="وش على بالك اليوم؟"></label><button type="submit">اكتشف ↗</button></form>
-          <a class="live-categories-link" href="categories/">اكتشف الأقسام ↓</a>
+    <section class="intro" aria-labelledby="introTitle">
+      <div class="intro-copy">
+        <div class="intro-message">
+        <div class="intro-pill"><span class="live-dot"></span> اختيارات أوفرلي <span class="intro-edition" aria-hidden="true">THE OVERLY EDIT</span></div>
+        <h1 id="introTitle">تفاصيل صغيرة.<br><span>تغيّر يومك.</span></h1>
+        <p>اكتشف منتجات أمازون السعودية وعلي إكسبريس في مكان واحد، واشترِ مباشرة من المتجر.</p>
         </div>
-        <div class="live-carbon-note dark-copy" aria-hidden="true"><span>THE<br>CONSIDERED<br>COLLECTION.</span><span>Amazon.sa + AliExpress</span></div>
+        <div class="intro-controls">
+        <form class="discovery-intro-search" id="discoverySearchForm" role="search" aria-label="ابحث في منتجات أوفرلي">
+          <svg aria-hidden="true"><use href="#discover-search"/></svg>
+          <input id="discoverySearchInput" type="search" aria-label="اسم المنتج الذي تبحث عنه" placeholder="وش على بالك اليوم؟" minlength="2" maxlength="80" required autocomplete="off">
+          <button type="submit">اكتشف <span aria-hidden="true">←</span></button>
+        </form>
+        <div class="intro-actions">
+          <a class="primary-link" href="#discoverCategories">اكتشف ما يناسبك <span aria-hidden="true">↙</span></a>
+          <button class="secondary-link welcome-replay" type="button" aria-haspopup="dialog" aria-controls="welcomeDialog">كيف يعمل أوفرلي؟ <span aria-hidden="true">◉</span></button>
+        </div>
+        </div>
       </div>
-      <section id="hero" class="live-shelf" aria-label="اختيارات أوفرلي"></section>
-      <div class="live-caption"><span>Amazon.sa + AliExpress</span><span><b id="introDealCount">٠</b> منتج للاكتشاف</span></div>
+      <div class="discovery-scene" aria-label="ابدأ من اهتماماتك">
+        <div class="scene-tiles">
+          <a href="categories/electronics/" data-discover-category="الإلكترونيات" class="scene-tile mint"><div class="scene-tile-copy"><span class="scene-tile-index" aria-hidden="true">01 / TECH</span><b>تقنية تحبّها.</b><span class="scene-tile-note">لتفاصيل يومك</span><span class="scene-tile-cta">اكتشف التقنية <i aria-hidden="true">↗</i></span></div><span class="scene-icon-frame" aria-hidden="true"><img class="scene-product-image" width="320" height="320" alt="آيباد من منتجات قسم التقنية" decoding="async" hidden><svg><use href="#discover-headphones"/></svg></span></a>
+          <a href="categories/home/" data-discover-category="المنزل" class="scene-tile sand"><div class="scene-tile-copy"><span class="scene-tile-index" aria-hidden="true">02 / HOME</span><b>بيت يشبهك.</b><span class="scene-tile-note">لمساحتك الخاصة</span><span class="scene-tile-cta">اكتشف المنزل <i aria-hidden="true">↗</i></span></div><span class="scene-icon-frame" aria-hidden="true"><img class="scene-product-image" width="320" height="320" alt="جهاز تنقية الهواء من منتجات قسم المنزل" decoding="async" hidden><svg><use href="#discover-home"/></svg></span></a>
+        </div>
+      </div>
+      <div class="intro-proof" aria-label="ملخص المنصة">
+        <div class="proof-item"><strong id="introDealCount">٠</strong><small>منتج للاكتشاف</small></div>
+        <span class="proof-line"></span>
+        <div class="proof-item"><strong>٢</strong><small>منصات تسوق</small></div>
+        <span class="proof-line"></span>
+        <div class="proof-item"><strong>مباشرة</strong><small>الشراء من المتجر</small></div>
+      </div>
     </section>
+
+    <section class="discovery-categories" id="discoverCategories" aria-labelledby="discoveryTitle">
+      <div class="discovery-section-head"><div><span class="discovery-eyebrow">البداية من اهتمامك</span><h2 id="discoveryTitle" tabindex="-1">وش ودّك تكتشف؟</h2></div><a href="categories/">كل التصنيفات <span aria-hidden="true">↗</span></a></div>
+      <div class="discovery-category-grid" id="discoveryCategoryGrid" role="group" aria-label="تصنيفات التسوق" aria-describedby="discoveryCategoryHint" tabindex="0"></div>
+      <p class="discovery-note" id="discoveryCategoryHint"><span class="discovery-swipe-hint">مرّر لاكتشاف الأقسام ← · </span>اختر قسمًا لعرض منتجاته هنا.</p>
+    </section>
+
+    <section class="hero" id="hero" aria-label="أبرز العروض"></section>
 
     <section class="mobile-search-hub" id="mobileSearchHub" aria-labelledby="mobileSearchTitle">
       <div class="mobile-search-head">
@@ -1127,6 +1166,45 @@
       </div>
     </div>
   </div>
+
+  <dialog class="welcome-dialog" id="welcomeDialog" aria-labelledby="welcomeTitle1" aria-describedby="welcomeText1">
+    <div class="welcome-top"><img src="assets/overly-dark-logo-trimmed.webp" width="104" height="43" alt="أوفرلي"><button id="welcomeSkip" type="button" autofocus>تخطّي الجولة <span aria-hidden="true">×</span></button></div>
+    <div class="welcome-panels">
+      <section class="welcome-slide" data-welcome-slide>
+        <div class="welcome-art art-meet" aria-hidden="true">
+          <span class="art-kicker">وجهاتك المفضلة، أقرب.</span>
+          <div class="welcome-store-row"><span>amazon<span class="store-sa">.sa</span><i></i></span><span>AliExpress<i></i></span></div>
+          <div class="art-connector"></div><div class="welcome-bag"><svg><use href="#discover-bag"/></svg></div>
+          <span class="art-caption">متجران. مساحة واحدة للاكتشاف.</span>
+        </div>
+        <div class="welcome-copy"><span class="discovery-eyebrow">٠١ / أهلًا بك في أوفرلي</span><h2 id="welcomeTitle1">اكتشاف حلو،<br><em>يبدأ من هنا.</em></h2><p id="welcomeText1">نجمع لك منتجات من أمازون السعودية وعلي إكسبريس، عشان تبدأ بحثك من مكان واحد وتكتشف أشياء تناسبك.</p></div>
+      </section>
+      <section class="welcome-slide" data-welcome-slide hidden>
+        <div class="welcome-art art-explore" aria-hidden="true">
+          <span class="art-kicker">اختر طريقك للاكتشاف</span>
+          <div class="art-search"><svg><use href="#discover-search"/></svg><span>وش على بالك اليوم؟</span><b>↵</b></div>
+          <div class="art-category-row"><span><svg><use href="#discover-headphones"/></svg>التقنية</span><span><svg><use href="#discover-home"/></svg>المنزل</span><span><svg><use href="#discover-fashion"/></svg>الأزياء</span></div>
+          <span class="art-caption">ابحث باسم المنتج، أو ابدأ من قسم تحبّه.</span>
+        </div>
+        <div class="welcome-copy"><span class="discovery-eyebrow">٠٢ / على ذوقك أنت</span><h2 id="welcomeTitle2">عارف وش تبي؟<br><em>أو جاي تكتشف؟</em></h2><p id="welcomeText2">ابحث عن احتياجك أو تصفّح التصنيفات. استعرض تفاصيل المنتجات، واختر المتجر ورتّب النتائج بالطريقة المناسبة لك.</p></div>
+      </section>
+      <section class="welcome-slide" data-welcome-slide hidden>
+        <div class="welcome-art art-shop" aria-hidden="true">
+          <span class="art-kicker">من الاكتشاف إلى اختيارك</span>
+          <div class="art-receipt"><span>اختيارك من أوفرلي <svg><use href="#discover-bag"/></svg></span><div><b>المنتج اللي يناسبك</b><small>السعر والتوفر النهائيان لدى المتجر</small></div><strong>أكمل عند المتجر <i>↗</i></strong></div>
+          <span class="art-caption">تصفّح هنا. واشترِ مباشرة من المتجر.</span>
+        </div>
+        <div class="welcome-copy"><span class="discovery-eyebrow">٠٣ / اختر وأنت على بيّنة</span><h2 id="welcomeTitle3">عجبك شيء؟<br><em>باقي خطوة.</em></h2><p id="welcomeText3">افتح رابط المنتج للتحقق من السعر والشحن والتوفر، وأكمل الشراء في المتجر نفسه. أوفرلي دليل تسوّق، وليس جهة البيع.</p><p class="welcome-disclosure">قد نحصل على عمولة عند الشراء عبر روابطنا، دون تكلفة إضافية عليك.</p></div>
+      </section>
+    </div>
+    <div class="welcome-footer">
+      <div class="welcome-footer-main">
+        <div class="welcome-progress" role="group" aria-label="خطوات التعريف بالموقع"><button type="button" data-welcome-step="0" aria-label="الخطوة الأولى: فكرة أوفرلي" aria-current="step"></button><button type="button" data-welcome-step="1" aria-label="الخطوة الثانية: الاكتشاف"></button><button type="button" data-welcome-step="2" aria-label="الخطوة الثالثة: الشراء"></button></div>
+        <div class="welcome-controls"><button type="button" id="welcomeBack" disabled>السابق</button><button type="button" id="welcomeNext">التالي <span aria-hidden="true">←</span></button></div>
+      </div>
+      <div class="welcome-meta"><span>جولة اختيارية، على راحتك.</span><span id="welcomeStatus" role="status" aria-live="polite">الخطوة ١ من ٣</span></div>
+    </div>
+  </dialog>
 
   <script src="catalog-locale.js"></script>
   <script src="catalog-additions.js"></script>
@@ -1356,6 +1434,7 @@
 
     const el = id => document.getElementById(id);
     const i18n = globalThis.OverlyI18n;
+    const t = (key, params) => i18n.t(key, params);
     let quickViewKey = "";
     const formatNumber = value => new Intl.NumberFormat(i18n.locale, {maximumFractionDigits: 0}).format(value);
     const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
@@ -1400,9 +1479,9 @@
     function setTheme(theme) {
       document.documentElement.dataset.theme = theme;
       el("themeToggle").textContent = theme === "dark" ? "☀︎" : "◐";
-      el("themeToggle").setAttribute("aria-label", theme === "dark" ? "تفعيل الوضع الفاتح" : "تفعيل الوضع الداكن");
+      el("themeToggle").setAttribute("aria-label", t(theme === "dark" ? "تفعيل الوضع الفاتح" : "تفعيل الوضع الداكن"));
       storage.set("site_theme", theme);
-      document.querySelector('meta[name="theme-color"]').content = theme === "dark" ? "#141619" : "#f2f6fa";
+      document.querySelector('meta[name="theme-color"]').content = theme === "dark" ? "#13171d" : "#faf7f1";
     }
 
     function toggleFilters(force) {
@@ -1480,14 +1559,39 @@
     function renderHero() {
       const top = visibleTopDeals();
       const hero = el("hero");
-      hero.classList.toggle("hidden", !top.length);
+      if (!top.length) { hero.classList.add("hidden"); return; }
+      if (heroIndex >= top.length) heroIndex = 0;
+      hero.classList.remove("hidden");
       hero.innerHTML = top.map((deal, index) => {
+        const shop = storeMeta(deal);
+        const key = escapeHtml(dealKey(deal));
+        const link = escapeHtml(dealLink(deal));
         const page = escapeHtml(catalogProductPage(deal));
         const image = escapeHtml(safeImageUrl(deal) || "assets/overly-icon.webp");
-        const title = escapeHtml(i18n.productTitle(deal));
-        const shop = storeMeta(deal);
-        return `<article class="live-feature"><a href="${page}" class="live-feature-image"><img src="${image}" alt="${title}" width="600" height="600" loading="${index === 0 ? "eager" : "lazy"}" decoding="async"></a><div class="live-feature-copy"><span>${shop.name}</span><h2><a href="${page}">${title}</a></h2><a href="${page}" class="live-feature-link">التفاصيل والسعر ↗</a></div></article>`;
-      }).join("");
+        return `
+        <article class="hero-slide ${index === heroIndex ? "active" : ""}">
+          <div class="hero-copy">
+            <div class="eyebrow">${t("أحد أبرز عروض {store}", {store: shop.name})}</div>
+            <h2 dir="auto"><a href="${page}">${escapeHtml(i18n.productTitle(deal))}</a></h2>
+            <div class="hero-meta">
+              <span class="hero-discount">${offerText(deal)}</span>
+              <span class="old-price">${priceContext(deal, shop)}</span>
+            </div>
+            <div class="hero-actions">
+              <a class="primary-link" href="${link}" target="_blank" rel="sponsored noopener noreferrer" onclick="return go(event,'${key}')">${t("اعرض السعر الحالي ↗")}</a>
+              <button class="secondary-link" type="button" onclick="document.getElementById('dealsTitle').scrollIntoView()">${t("استعرض كل العروض")}</button>
+            </div>
+          </div>
+          <div class="hero-visual">
+            <div class="hero-orbit"></div>
+            <a class="hero-image-stage" href="${page}" aria-label="${t("تفاصيل {title}", {title: escapeHtml(i18n.productTitle(deal))})}"><img src="${image}" alt="${escapeHtml(i18n.productTitle(deal))}" width="720" height="720" loading="${index === heroIndex ? "eager" : "lazy"}" fetchpriority="${index === heroIndex ? "high" : "low"}" decoding="async" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🛍️',style:'font-size:64px'}))"></a>
+            <div class="hero-caption"><span class="floating-chip discount">${hasDiscount(deal) ? t("وفّر {discount}٪", {discount: discountPercent(deal)}) : popularityText(deal)}</span><span class="floating-chip source">${shop.name} ↗</span></div>
+          </div>
+        </article>
+      `}).join("") + `
+        <button class="hero-arrow prev" type="button" aria-label="${t("العرض السابق")}" onclick="stepHero(-1)">›</button>
+        <button class="hero-arrow next" type="button" aria-label="${t("العرض التالي")}" onclick="stepHero(1)">‹</button>
+        <div class="hero-nav">${top.map((_, index) => `<button type="button" class="${index === heroIndex ? "active" : ""}" aria-label="${t("العرض {count}", {count: index + 1})}" onclick="showHero(${index})"></button>`).join("")}</div>`;
     }
 
     function showHero(index) { heroIndex = index; renderHero(); }
@@ -1594,6 +1698,7 @@
     }
 
     function renderGrid(appendFrom = null) {
+      syncDiscoverySelection();
       const list = filteredDeals();
       const visibleList = list.slice(0, visibleLimit);
       const cardsToRender = appendFrom === null ? visibleList : list.slice(appendFrom, visibleList.length);
@@ -1638,7 +1743,7 @@
         const page = escapeHtml(catalogProductPage(deal));
         const image = escapeHtml(safeImageUrl(deal) || "assets/overly-icon.webp");
         const absoluteIndex = (appendFrom === null ? 0 : appendFrom) + index;
-        const mobileCardClass = absoluteIndex < 4 ? "featured-mobile" : "compact-mobile";
+        const mobileCardClass = absoluteIndex === 0 ? "featured-mobile" : "compact-mobile";
         return `
         <article class="product-card ${mobileCardClass}" data-product-key="${key}">
           <div class="product-media">
@@ -1676,10 +1781,171 @@
 
     function renderTimestamp() {
       const date = new Date(updatedAt);
-      el("updatedAt").textContent = Number.isNaN(date.getTime()) ? "" : `آخر تحديث ${date.toLocaleDateString(i18n.locale)}`;
+      el("updatedAt").textContent = Number.isNaN(date.getTime()) ? "" : t("آخر تحديث {date}", {date: date.toLocaleDateString(i18n.locale)});
     }
 
-    function renderAll() { renderHero(); renderCategoryChips(); renderGrid(); renderTimestamp(); }
+    function renderAll() { renderHero(); renderCategoryChips(); renderGrid(); renderTimestamp(); renderDiscoveryCategories(); renderDiscoveryScene(); }
+
+    function discoverySceneProduct(name, catalog = deals) {
+      const preferred = {
+        "الإلكترونيات": "B0GQW9LGQF", "المنزل": "B08FJ678YK",
+        "الأزياء والأحذية": "1005008660153776", "السيارة": "1005005605683958",
+        "الجمال والعناية": "1005007038045592", "الأطفال": "1005010109655330"
+      };
+      // Keep the approved product when available; otherwise use a real item in the same category.
+      const matching = catalog.filter(deal => deal.category === name && safeImageUrl(deal));
+      const product = matching.find(deal => dealKey(deal) === preferred[name]) || matching[0];
+      return product ? {key: dealKey(product), image: safeImageUrl(product)} : null;
+    }
+
+    function renderDiscoveryScene() {
+      document.querySelectorAll(".scene-tile").forEach(tile => {
+        const frame = tile.querySelector(".scene-icon-frame");
+        const image = frame.querySelector(".scene-product-image");
+        const product = discoverySceneProduct(tile.dataset.discoverCategory);
+        if (!product) {
+          image.onload = image.onerror = null;
+          image.removeAttribute("src");
+          delete image.dataset.catalogSrc;
+          image.hidden = true;
+          frame.classList.remove("has-product");
+          return;
+        }
+        // Keep the same image node during catalog refreshes; no extra requests or flicker.
+        if (image.dataset.catalogSrc === product.image) return;
+        image.hidden = true;
+        frame.classList.remove("has-product");
+        image.dataset.catalogSrc = product.image;
+        image.onload = () => {
+          image.hidden = false;
+          frame.classList.add("has-product");
+        };
+        image.onerror = () => {
+          image.hidden = true;
+          frame.classList.remove("has-product");
+        };
+        image.src = product.image;
+      });
+    }
+
+    // Category entry points use the current catalog, not live-search results or fabricated counts.
+    function renderDiscoveryCategories() {
+      const curated = [
+        ["الإلكترونيات", "التقنية والإلكترونيات", "headphones", "mint"],
+        ["المنزل", "المنزل والمعيشة", "home", "sand"],
+        ["الأزياء والأحذية", "الأزياء والأحذية", "fashion", "lavender"],
+        ["السيارة", "السيارة وإكسسواراتها", "car", "blue"],
+        ["الجمال والعناية", "الجمال والعناية", "beauty", "rose"],
+        ["الأطفال", "عالم الأطفال", "kids", "peach"]
+      ];
+      const cards = curated.map(([name, label, icon, tone], index) => {
+        const count = deals.filter(deal => deal.category === name).length;
+        if (!count) return "";
+        const product = discoverySceneProduct(name);
+        const photo = product ? `<img class="category-photo" src="${escapeHtml(product.image)}" alt="${t("منتج من قسم {category}", {category: t(label)})}" width="360" height="300" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.remove('loaded');this.hidden=true">` : "";
+        return `<a class="discovery-category ${tone}" href="categories/${CATEGORY_SLUGS[name]}/" data-discover-category="${name}"><span class="category-art" aria-hidden="true"><span class="category-index">${formatNumber(index + 1).padStart(2, formatNumber(0))}</span>${photo}<span class="discovery-category-icon"><svg><use href="#discover-${icon}"/></svg></span></span><span class="category-copy"><strong>${t(label)}</strong><span class="category-countline"><small>${t("{count} منتج", {count: formatNumber(count)})}</small><span class="category-link-arrow" aria-hidden="true">↗</span></span></span></a>`;
+      }).join("");
+      el("discoveryCategoryGrid").innerHTML = cards || `<p class="discovery-loading">${catalogLoading ? t("نجهّز لك أبواب الاكتشاف…") : `${t("تصفّح")} <a href="categories/">${t("دليل التصنيفات")}</a> ${t("للبدء.")}`}</p>`;
+      syncDiscoverySelection();
+    }
+
+    function syncDiscoverySelection() {
+      document.querySelectorAll("[data-discover-category]").forEach(link => {
+        if (link.dataset.discoverCategory === category) link.setAttribute("aria-current", "true");
+        else link.removeAttribute("aria-current");
+      });
+    }
+
+    document.querySelector("main").addEventListener("click", event => {
+      const link = event.target.closest("[data-discover-category]");
+      if (!link || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button !== 0 || !deals.length) return;
+      event.preventDefault();
+      setMobileSearchMode("local");
+      el("mobileSearchInput").value = "";
+      runMobileSearch("", link.dataset.discoverCategory);
+      el("dealsTitle").setAttribute("tabindex", "-1");
+      el("dealsTitle").focus({preventScroll: true});
+    });
+
+    el("discoverySearchForm").addEventListener("submit", event => {
+      event.preventDefault();
+      const searchText = el("discoverySearchInput").value.trim();
+      if (searchText.length < 2) return;
+      setMobileSearchMode("local");
+      el("mobileSearchInput").value = searchText;
+      runMobileSearch(searchText);
+      el("dealsTitle").setAttribute("tabindex", "-1");
+      el("dealsTitle").focus({preventScroll: true});
+    });
+
+    const welcomeDialog = el("welcomeDialog");
+    const welcomeSlides = [...document.querySelectorAll("[data-welcome-slide]")];
+    const welcomeSteps = [...document.querySelectorAll("[data-welcome-step]")];
+    const WELCOME_SESSION_KEY = "overly_welcome_session_v1";
+    let welcomeIndex = 0;
+    let welcomeReturnFocus = null;
+    function setWelcomeSlide(index) {
+      welcomeIndex = Math.max(0, Math.min(welcomeSlides.length - 1, index));
+      welcomeSlides.forEach((slide, i) => { slide.hidden = i !== welcomeIndex; });
+      welcomeSteps.forEach((button, i) => {
+        if (i === welcomeIndex) button.setAttribute("aria-current", "step");
+        else button.removeAttribute("aria-current");
+      });
+      welcomeDialog.setAttribute("aria-labelledby", `welcomeTitle${welcomeIndex + 1}`);
+      welcomeDialog.setAttribute("aria-describedby", `welcomeText${welcomeIndex + 1}`);
+      el("welcomeBack").disabled = welcomeIndex === 0;
+      el("welcomeNext").innerHTML = `${t(welcomeIndex === welcomeSlides.length - 1 ? "يلا نكتشف" : "التالي")} <span aria-hidden="true">←</span>`;
+      el("welcomeStatus").textContent = t("الخطوة {count} من {total}", {count: formatNumber(welcomeIndex + 1), total: formatNumber(welcomeSlides.length)});
+      // Keep the top of each new slide visible on short screens without animating the page.
+      welcomeDialog.scrollTop = 0;
+    }
+    function openWelcome() {
+      if (welcomeDialog.open || typeof welcomeDialog.showModal !== "function") return;
+      welcomeReturnFocus = document.activeElement;
+      setWelcomeSlide(0);
+      closeExitModal();
+      closeQuickView();
+      toggleFilters(false);
+      welcomeDialog.showModal();
+      document.body.classList.add("welcome-open");
+      try { sessionStorage.setItem(WELCOME_SESSION_KEY, "1"); } catch (_) { /* Storage can be disabled; browsing still works. */ }
+    }
+    function closeWelcome(explore = false) {
+      if (!welcomeDialog.open) return;
+      welcomeDialog.close();
+      document.body.classList.remove("welcome-open");
+      if (explore) {
+        el("discoverCategories").scrollIntoView({behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start"});
+        el("discoveryTitle").focus({preventScroll: true});
+      } else if (welcomeReturnFocus instanceof HTMLElement && welcomeReturnFocus !== document.body) welcomeReturnFocus.focus({preventScroll: true});
+      else document.querySelector(".welcome-replay").focus({preventScroll: true});
+    }
+    document.querySelectorAll(".welcome-replay").forEach(button => button.addEventListener("click", openWelcome));
+    welcomeSteps.forEach(button => button.addEventListener("click", () => setWelcomeSlide(Number(button.dataset.welcomeStep))));
+    el("welcomeNext").addEventListener("click", () => welcomeIndex === welcomeSlides.length - 1 ? closeWelcome(true) : setWelcomeSlide(welcomeIndex + 1));
+    el("welcomeBack").addEventListener("click", () => setWelcomeSlide(welcomeIndex - 1));
+    el("welcomeSkip").addEventListener("click", () => closeWelcome());
+    welcomeDialog.addEventListener("cancel", event => { event.preventDefault(); closeWelcome(); });
+    welcomeDialog.addEventListener("close", () => document.body.classList.remove("welcome-open"));
+    welcomeDialog.addEventListener("keydown", event => {
+      if (event.key === "Tab") {
+        const controls = [...welcomeDialog.querySelectorAll("button:not(:disabled)")].filter(button => button.getClientRects().length);
+        const first = controls[0], last = controls[controls.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+      }
+      if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+        event.preventDefault();
+        const nextKey = i18n.language === "ar" ? "ArrowLeft" : "ArrowRight";
+        setWelcomeSlide(welcomeIndex + (event.key === nextKey ? 1 : -1));
+      }
+    });
+    function showSessionWelcome() {
+      // Product deep-links retain their intent. Reloading the same tab never restarts the tour.
+      if (new URLSearchParams(location.search).has("deal") || location.hash) return;
+      try { if (sessionStorage.getItem(WELCOME_SESSION_KEY) === "1") return; } catch (_) {}
+      openWelcome();
+    }
 
     function setAliSearchStatus(message, type = "") {
       el("aliSearchStatus").textContent = message;
@@ -1865,15 +2131,12 @@
       setMobileSearchStatus(`يعرض أوفرلي الآن ${formatNumber(filteredDeals().length)} من المنتجات الأكثر رواجًا.`);
     }
 
-    el("discoverySearchForm").addEventListener("submit", event => {
-      event.preventDefault();
-      setMobileSearchMode("local");
-      runMobileSearch(el("discoverySearchInput").value);
-    });
+
     document.addEventListener("overly:languagechange", () => {
       const remoteQuery = aliSearchQuery || (aliSearchLoading ? el("aliSearchInput").value : "");
       if (aliSearchController || remoteQuery) clearAliSearchResults(false);
       renderAll();
+      setWelcomeSlide(welcomeIndex);
       if (quickViewKey) openQuickView(quickViewKey);
       if (remoteQuery) searchAliExpress(remoteQuery);
       globalThis.OverlySiteLanguage?.refresh();
@@ -1946,7 +2209,7 @@
     window.addEventListener("scroll", updateScrollUI, {passive: true});
 
     document.addEventListener("mouseout", event => {
-      if (event.clientY > 0 || exitShown || storage.get("exit_modal_shown") === "1") return;
+      if (event.clientY > 0 || welcomeDialog.open || exitShown || storage.get("exit_modal_shown") === "1") return;
       const best = topDeals()[0];
       if (!best) return;
       exitShown = true;
@@ -1954,7 +2217,7 @@
       el("modalTitle").textContent = hasDiscount(best)
         ? `لا تفوّت أقوى عرض بخصم ${discountPercent(best)}٪`
         : "لا تفوّت هذا المنتج الرائج";
-      el("modalDescription").textContent = best.title;
+      el("modalDescription").textContent = i18n.productTitle(best);
       el("modalLink").textContent = storeMeta(best).cta;
       el("modalLink").href = dealLink(best);
       el("modalLink").onclick = event => { closeExitModal(); return go(event, dealKey(best)); };
@@ -1999,10 +2262,11 @@
       .catch(loadFullCatalog);
 
     el("copyright").textContent = `© ${new Date().getFullYear()} أوفرلي (Overly) — جميع الحقوق محفوظة.`;
-    setTheme(storage.get("site_theme") || "dark");
+    setTheme(document.documentElement.dataset.theme || "light");
     setMobileSearchMode("local");
     renderAll();
     updateScrollUI();
+    showSessionWelcome();
     trackEvent("page_view");
   </script>
 </body>
