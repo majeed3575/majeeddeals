@@ -47,6 +47,35 @@ test('language change re-renders titles and quick view without changing affiliat
 test('both Arabic and English searches remain usable in either display language',()=>{
   const {context}=app();for(const query of ['charger','شاحن']){context.searchTerm=query;vm.runInContext('query=searchTerm',context);const before=vm.runInContext('filteredDeals().map(dealKey).join(",")',context);assert.ok(before);context.OverlyI18n.setLanguage('en');assert.equal(vm.runInContext('filteredDeals().map(dealKey).join(",")',context),before);}
 });
+
+test('site and extension reject empty or whitespace-only affiliate tracking markers',()=>{
+  const {context}=app();
+  const source=readFileSync(new URL('browser-extension/popup.js',import.meta.url),'utf8');
+  const extension=vm.createContext({URL});
+  vm.runInContext(source.slice(source.indexOf('function isAliExpressAffiliateUrl('),source.indexOf('function normalizedItem(')),extension);
+  for(const markers of ['aff_fcid=&aff_trace_key=xyz','aff_fcid=%20&aff_trace_key=xyz','aff_fcid=abc&aff_trace_key=%09','aff_fcid=&aff_fcid=abc&aff_trace_key=xyz']){
+    const url='https://www.aliexpress.com/item/1005001234567890.html?'+markers+'&aff_platform=api';
+    context.candidate=url;extension.candidate=url;
+    assert.equal(vm.runInContext('safeAliExpressAffiliateUrl(candidate)',context),'');
+    assert.equal(vm.runInContext('isAliExpressAffiliateUrl(candidate)',extension),false);
+  }
+});
+
+test('extension reads catalogs over 1 MB and derives the exact Git blob SHA from one response',async()=>{
+  const source=readFileSync(new URL('browser-extension/popup.js',import.meta.url),'utf8');
+  let reads=0,body=new TextEncoder().encode(JSON.stringify(fixture));
+  const ctx=vm.createContext({Uint8Array,TextEncoder,TextDecoder,AbortSignal,crypto:globalThis.crypto,
+    githubApiUrl:()=> 'https://api.github.com/repos/test/test/contents/deals.json',githubHeaders:()=>({}),
+    extractDeals:p=>Array.isArray(p?.deals)?p.deals:null,parseGithubError:async()=> 'UPSTREAM',
+    fetch:async(_url,options)=>{reads++;assert.equal(options.headers.Accept,'application/vnd.github.raw+json');return new Response(body);}});
+  vm.runInContext(source.slice(source.indexOf('async function readGithubCatalog('),source.indexOf('async function publishToGithub(')),ctx);
+  assert.ok(body.byteLength>1_000_000);
+  const result=await vm.runInContext('readGithubCatalog({branch:"main"})',ctx);
+  assert.equal(reads,1);assert.equal(result.parsed.deals.length,fixture.deals.length);
+  assert.equal(result.sha,execFileSync('git',['hash-object','--stdin'],{input:body,encoding:'utf8'}).trim());
+  body=new TextEncoder().encode('not-json');await assert.rejects(()=>vm.runInContext('readGithubCatalog({branch:"main"})',ctx));
+  body=new Uint8Array(8*1024*1024+1);await assert.rejects(()=>vm.runInContext('readGithubCatalog({branch:"main"})',ctx),/الحد الآمن/);
+});
 test('theme switching keeps the language and persists the requested pair',()=>{
   const {context,document,saved}=app('en');for(const theme of ['light','dark']){context.nextTheme=theme;vm.runInContext('setTheme(nextTheme)',context);assert.equal(saved.get('site_theme'),theme);assert.equal(document.documentElement.dataset.theme,theme);assert.equal(context.OverlyI18n.language,'en')}
   const css=readFileSync(new URL('live-theme.css',import.meta.url),'utf8');assert.match(css,/#faf7f1/);assert.match(css,/#354f70/);assert.match(css,/Sand & ink/);assert.match(css,/prefers-reduced-motion/);
@@ -100,6 +129,17 @@ test('approved logo is byte-identical and color treatment preserves interior det
   const css=readFileSync(new URL('live-theme.css',import.meta.url),'utf8');
   assert.doesNotMatch(css,/brightness\(0\)/);assert.match(css,/hue-rotate\(42deg\) saturate\(\.38\)/);
   assert.equal((html.match(/src="assets\/overly-dark-logo-trimmed.webp"/g)||[]).length,3);
+});
+
+test('logo backdrop stays ink in both themes instead of following the night-time silver accent',()=>{
+  const css=readFileSync(new URL('live-theme.css',import.meta.url),'utf8');
+  assert.match(css,/--brand-surface:#203047/);
+  for(const selector of ['.brand-plate','.footer-logo-plate','.welcome-top img','.shell.nav>.brand','.legal-brand img']){
+    assert.ok(css.split('}').some(rule=>rule.includes(selector)&&/background:\s*var\(--brand-surface\)/.test(rule)),selector);
+  }
+  assert.doesNotMatch(css,/(?:brand-plate|footer-logo-plate)[^{]*\{[^}]*background:var\(--blue\)/);
+  const adapter=readFileSync(new URL('site-language.js',import.meta.url),'utf8');
+  assert.match(adapter,/theme==='light'\?'#faf7f1':'#13171d'/);
 });
 
 test('discovery uses real matching-category products when a preferred item disappears',()=>{

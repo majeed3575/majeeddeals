@@ -33,6 +33,19 @@ DIRECT = "https://www.aliexpress.com/item/1005001234567890.html"
 
 
 class AffiliateLinkTests(unittest.TestCase):
+    def test_affiliate_markers_require_nonempty_values_in_every_publisher(self):
+        for query in [
+            "aff_fcid=&aff_trace_key=&aff_platform=api",
+            "aff_fcid=%20&aff_trace_key=xyz&aff_platform=api",
+            "aff_fcid=abc&aff_trace_key=%09&aff_platform=api",
+            "aff_fcid=&aff_fcid=abc&aff_trace_key=xyz&aff_platform=api",
+        ]:
+            url = DIRECT + "?" + query
+            with self.subTest(query=query):
+                self.assertFalse(is_aliexpress_affiliate_url(url))
+                self.assertEqual(scraper._ali_affiliate_url(url), "")
+                self.assertEqual(generate_seo.valid_aliexpress_affiliate_url(url), "")
+
     def test_aliexpress_links_fail_closed(self):
         self.assertTrue(is_aliexpress_affiliate_url(SHORT))
         self.assertTrue(is_aliexpress_affiliate_url(MARKED))

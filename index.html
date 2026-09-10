@@ -820,7 +820,7 @@
   <link rel="stylesheet" href="site-language.css">
   <link rel="stylesheet" href="discovery.css?v=essential-1">
   <link rel="stylesheet" href="essential-layout.css?v=essential-1">
-  <link rel="stylesheet" href="live-theme.css?v=sand-ink-1">
+  <link rel="stylesheet" href="live-theme.css?v=sand-ink-2">
 </head>
 <body>
   <svg class="discovery-symbols" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
@@ -1240,8 +1240,8 @@
       const host = url.hostname.toLowerCase();
       if (host === "s.click.aliexpress.com") return url.href;
       const platform = String(url.searchParams.get("aff_platform") || "").toLowerCase();
-      return url.searchParams.has("aff_fcid")
-        && url.searchParams.has("aff_trace_key")
+      return String(url.searchParams.get("aff_fcid") || "").trim()
+        && String(url.searchParams.get("aff_trace_key") || "").trim()
         && platform.includes("api")
         ? url.href
         : "";

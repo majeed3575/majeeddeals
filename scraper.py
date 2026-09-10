@@ -1560,9 +1560,10 @@ def _ali_affiliate_url(value: object) -> str:
         host == "aliexpress.us" or host.endswith(".aliexpress.us")
     ):
         return ""
-    query = parse_qs(urlsplit(url).query)
+    query = parse_qs(urlsplit(url).query, keep_blank_values=True)
     platform = " ".join(query.get("aff_platform", [])).lower()
-    if query.get("aff_fcid") and query.get("aff_trace_key") and "api" in platform:
+    if ((query.get("aff_fcid") or [""])[0].strip() and
+            (query.get("aff_trace_key") or [""])[0].strip() and "api" in platform):
         return url
     return ""
 

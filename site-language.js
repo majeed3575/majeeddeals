@@ -44,7 +44,7 @@
     const parent=doc.querySelector('.nav-actions,.shell.nav,.legal-nav')||doc.querySelector('main');
     if(parent&&!doc.getElementById('themeToggle')){
       const button=doc.createElement('button');button.id='themeToggle';button.type='button';button.className='site-theme-control';button.textContent='◐';button.setAttribute('aria-label','الوضع الداكن / الفاتح');
-      button.addEventListener('click',()=>{const theme=doc.documentElement.dataset.theme==='light'?'dark':'light';doc.documentElement.dataset.theme=theme;try{root.localStorage.setItem('site_theme',theme);}catch{}const meta=doc.querySelector('meta[name="theme-color"]');if(meta)meta.content=theme==='light'?'#f2f6fa':'#141619';});parent.append(button);
+      button.addEventListener('click',()=>{const theme=doc.documentElement.dataset.theme==='light'?'dark':'light';doc.documentElement.dataset.theme=theme;try{root.localStorage.setItem('site_theme',theme);}catch{}const meta=doc.querySelector('meta[name="theme-color"]');if(meta)meta.content=theme==='light'?'#faf7f1':'#13171d';});parent.append(button);
     }
     if(parent&&!doc.getElementById('languageSelect')){
       const label=doc.createElement('label');label.className='site-language-control';label.dataset.languagePicker='';label.setAttribute('translate','no');

@@ -43,9 +43,10 @@ def is_aliexpress_affiliate_url(value: object) -> bool:
     if not (host == "aliexpress.com" or host.endswith(".aliexpress.com") or
             host == "aliexpress.us" or host.endswith(".aliexpress.us")):
         return False
-    query = parse_qs(parsed.query)
+    query = parse_qs(parsed.query, keep_blank_values=True)
     platform = str((query.get("aff_platform") or [""])[0]).lower()
-    return bool(query.get("aff_fcid") and query.get("aff_trace_key") and "api" in platform)
+    return bool((query.get("aff_fcid") or [""])[0].strip() and
+                (query.get("aff_trace_key") or [""])[0].strip() and "api" in platform)
 
 
 def is_amazon_affiliate_url(value: object, asin: str = "") -> bool:

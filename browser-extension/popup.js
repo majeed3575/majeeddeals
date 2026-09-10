@@ -146,7 +146,7 @@ function isAliExpressAffiliateUrl(value) {
     if (url.protocol !== "https:") return false;
     if (host === "s.click.aliexpress.com") return true;
     if (!(host === "aliexpress.com" || host.endsWith(".aliexpress.com") || host === "aliexpress.us" || host.endsWith(".aliexpress.us"))) return false;
-    return url.searchParams.has("aff_fcid") && url.searchParams.has("aff_trace_key") &&
+    return Boolean(String(url.searchParams.get("aff_fcid") || "").trim()) && Boolean(String(url.searchParams.get("aff_trace_key") || "").trim()) &&
       String(url.searchParams.get("aff_platform") || "").toLowerCase().includes("api");
   } catch (_) { return false; }
 }
@@ -378,6 +378,45 @@ async function testGithubConnection() {
   const repo = await response.json();
   return repo.full_name || `${config.owner}/${config.repo}`;
 }
+async function readGithubCatalog(config) {
+  const response = await fetch(`${githubApiUrl(config)}?ref=${encodeURIComponent(config.branch)}`, {
+    headers: { ...githubHeaders(config.token), Accept: "application/vnd.github.raw+json" },
+    cache: "no-store",
+    signal: AbortSignal.timeout(20_000)
+  });
+  if (!response.ok) throw new Error(await parseGithubError(response));
+  const maxBytes = 8 * 1024 * 1024;
+  if (Number(response.headers.get("Content-Length") || 0) > maxBytes || !response.body) {
+    throw new Error("ملف المنتجات أكبر من الحد الآمن للنشر");
+  }
+  const reader = response.body.getReader(), chunks = [];
+  let length = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      length += value.byteLength;
+      if (length > maxBytes) {
+        await reader.cancel().catch(() => {});
+        throw new Error("ملف المنتجات أكبر من الحد الآمن للنشر");
+      }
+      chunks.push(value);
+    }
+  } finally { reader.releaseLock(); }
+  const bytes = new Uint8Array(length);
+  let offset = 0;
+  for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
+  const parsed = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes));
+  if (!extractDeals(parsed)) throw new Error("ملف deals.json الحالي غير صالح؛ أوقفت النشر لحماية الموقع");
+  // Derive GitHub's write precondition from these same bytes. A second read of
+  // main could pair a newer SHA with older contents and overwrite new products.
+  const header = new TextEncoder().encode(`blob ${length}\0`);
+  const object = new Uint8Array(header.length + length);
+  object.set(header); object.set(bytes, header.length);
+  const hash = new Uint8Array(await crypto.subtle.digest("SHA-1", object));
+  const sha = Array.from(hash, byte => byte.toString(16).padStart(2, "0")).join("");
+  return { parsed, sha };
+}
 async function publishToGithub() {
   const local = await getList();
   const audit = auditList(local, { requireAffiliate: true });
@@ -394,10 +433,7 @@ async function publishToGithub() {
   }
 
   const apiUrl = githubApiUrl(config);
-  const getResponse = await fetch(`${apiUrl}?ref=${encodeURIComponent(config.branch)}`, { headers: githubHeaders(config.token), cache: "no-store" });
-  if (!getResponse.ok) throw new Error(await parseGithubError(getResponse));
-  const currentFile = await getResponse.json();
-  const parsed = JSON.parse(base64ToUtf8(currentFile.content));
+  const { parsed, sha } = await readGithubCatalog(config);
   const remote = extractDeals(parsed);
   if (!remote) throw new Error("ملف deals.json الحالي غير صالح؛ أوقفت النشر لحماية الموقع");
 
@@ -406,7 +442,7 @@ async function publishToGithub() {
   const putResponse = await fetch(apiUrl, {
     method: "PUT",
     headers: { ...githubHeaders(config.token), "Content-Type": "application/json" },
-    body: JSON.stringify({ message: `تحديث ${local.length} منتج عبر Overly Product Studio`, content: utf8ToBase64(content), sha: currentFile.sha, branch: config.branch })
+    body: JSON.stringify({ message: `تحديث ${local.length} منتج عبر Overly Product Studio`, content: utf8ToBase64(content), sha, branch: config.branch })
   });
   if (!putResponse.ok) throw new Error(await parseGithubError(putResponse));
   const result = await putResponse.json();

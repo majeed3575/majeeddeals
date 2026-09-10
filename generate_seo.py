@@ -300,9 +300,10 @@ def valid_aliexpress_affiliate_url(value) -> str:
     host = (parsed.hostname or "").lower()
     if host == "s.click.aliexpress.com":
         return value
-    query = parse_qs(parsed.query)
+    query = parse_qs(parsed.query, keep_blank_values=True)
     platform = str((query.get("aff_platform") or [""])[0]).lower()
-    return value if query.get("aff_fcid") and query.get("aff_trace_key") and "api" in platform else ""
+    return value if ((query.get("aff_fcid") or [""])[0].strip() and
+                     (query.get("aff_trace_key") or [""])[0].strip() and "api" in platform) else ""
 
 
 def normalize_category(value) -> str:

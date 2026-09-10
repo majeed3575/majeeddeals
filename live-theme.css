@@ -11,10 +11,12 @@ html[data-palette] .discovery-intro-search { background:var(--panel-solid); colo
 html[data-palette] .discovery-intro-search button,html[data-palette] .discount-badge,html[data-palette] .scene-tile.sand i { background:var(--edit-accent); color:var(--palette-on-soft); border-color:var(--line); }
 html[data-palette] .scene-tile.sand,html[data-palette] .card-cta,html[data-palette] .card-cta:hover,html[data-palette] .category-chip.active,html[data-palette] .market-tab.active,html[data-palette] .filters-apply,html[data-palette] .scene-tile i { background:var(--blue); color:var(--palette-on-accent); border-color:var(--blue); }
 html[data-palette] .scene-tile-cta { color:inherit; }
-html[data-palette] .brand-plate,html[data-palette] .footer-logo-plate { background:var(--blue); border-color:var(--line); }
+/* The accent turns silver at night; it cannot also be the light logo's backdrop. */
+html { --brand-surface:#203047; }
+html[data-palette] .brand-plate,html[data-palette] .footer-logo-plate { background:var(--brand-surface); border-color:#ffffff30; }
 /* Preserve the bag's white details and original alpha; never flatten the logo. */
 html[data-palette] .brand-plate img,html[data-palette] .footer-logo,html[data-palette] .welcome-top img { filter:hue-rotate(42deg) saturate(.38); }
-html[data-palette] .welcome-top img { background:transparent; }
+html[data-palette] .welcome-top img { background:var(--brand-surface); }
 html[data-palette] .category-art,html[data-palette] .discovery-category-icon,html[data-palette] .category-index { background:var(--edit-stage); color:var(--blue); border-color:var(--line); }
 html[data-palette] .discovery-category { --category-tint:var(--edit-stage); --category-ink:var(--blue); background:var(--panel-solid); border-color:var(--line); }
 html[data-palette] .scene-tile[aria-current="true"],html[data-palette] .discovery-category[aria-current="true"] { border-color:var(--blue); box-shadow:inset 0 0 0 1px var(--blue); }
@@ -36,8 +38,9 @@ html .collection-head p,html .lead,html .notice,html .legal-copyright{color:var(
 html .notice,html footer,html .legal-footer{background:var(--bg-soft);border-color:var(--line)}
 html .shop-button,html .ali-search-submit,html .mobile-search-mode.active{background:var(--accent);color:var(--button-ink)}
 html .legal-nav,html .shell.nav{background:var(--panel);border-color:var(--line);flex-wrap:wrap;gap:12px;padding-block:10px}
-html .shell.nav>.brand,html .legal-brand img{background:var(--accent)}
-html .shell.nav>.brand img,html .legal-brand img{filter:hue-rotate(42deg) saturate(.38);background:transparent}
+html .shell.nav>.brand,html .legal-brand img{background:var(--brand-surface)}
+html .shell.nav>.brand img,html .legal-brand img{filter:hue-rotate(42deg) saturate(.38)}
+html .shell.nav>.brand img{background:transparent}
 .site-theme-control{min-height:44px;min-width:44px;border:1px solid var(--line-strong);background:var(--panel);color:var(--ink);border-radius:50%;font:400 20px system-ui;cursor:pointer}
 .shell.nav>nav{flex:1}.site-language-control{flex-shrink:0}
 html .legal-card a:hover{color:var(--ink)}
