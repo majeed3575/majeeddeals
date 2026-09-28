@@ -33,6 +33,10 @@ html[data-palette] .intro-actions .primary-link,html[data-palette] .intro-action
 html[data-palette] .scene-tile:focus-visible { outline-color:var(--blue); }
 
 html body{background:var(--bg);color:var(--ink)}
+/* Generated category/store/related-product pages have no data-palette attribute.
+   Their card surfaces must follow the active theme just like their text does. */
+html .product-card{background:var(--panel-solid);color:var(--ink);border-color:var(--line)}
+html .site-header{background:var(--panel);border-color:var(--line)}
 html .collection-head,html .product-hero,html .content-card,html .guide-section,html .guide-note,html .directory-link,html .legal-card,html .why-card{background:var(--panel);border-color:var(--line);box-shadow:var(--shadow)}
 html .collection-head p,html .lead,html .notice,html .legal-copyright{color:var(--muted)}
 html .notice,html footer,html .legal-footer{background:var(--bg-soft);border-color:var(--line)}
