@@ -7,7 +7,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-SCRIPTS = ['catalog-locale.js', 'catalog-additions.js', 'catalog-native-en.js', 'site-copy-en.js', 'legal-copy-en.js', 'site-extra-en.js', 'site-angles-en.js', 'site-phrases.js', 'locale.js']
+SCRIPTS = ['catalog-locale.js', 'catalog-additions.js', 'catalog-native-en.js', 'site-copy-en.js', 'legal-copy-en.js', 'site-extra-en.js', 'site-angles-en.js', 'home-copy-en.js', 'site-phrases.js', 'locale.js']
 
 class Copy(HTMLParser):
     def __init__(self):

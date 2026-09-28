@@ -6,7 +6,8 @@ import vm from 'node:vm';
 import {createHash} from 'node:crypto';
 
 const files=['catalog-locale.js','catalog-additions.js','catalog-native-en.js','site-copy-en.js','legal-copy-en.js','site-extra-en.js','site-angles-en.js','site-phrases.js','locale.js'];
-const html=readFileSync(new URL('index.html',import.meta.url),'utf8');
+const html=readFileSync(new URL('browse.html',import.meta.url),'utf8');
+const home=readFileSync(new URL('index.html',import.meta.url),'utf8');
 const appSource=[...html.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g)].filter(([,attrs])=>!attrs.includes('src=')&&!attrs.includes('ld+json')).at(-1)[2];
 const fixture=JSON.parse(readFileSync(new URL('deals.json',import.meta.url),'utf8'));
 function translations(context=vm.createContext({})){for(const file of files)vm.runInContext(readFileSync(new URL(file,import.meta.url),'utf8'),context,{filename:file});return context}
@@ -118,8 +119,9 @@ test('pre-paint restoration honours language URLs and works when browser storage
 test('only the approved Essential edit and Sand & ink are public; no comparison controls or inspiration image',()=>{
   assert.match(html,/data-direction="30" data-family="quiet" data-variation="5" data-palette="2"/);
   assert.doesNotMatch(html,/edition-bar|palette-bar|editorial-cover|overly-staging-site|designs\/everyday/);
-  assert.match(html,/<link rel="canonical" href="https:\/\/overly.live\/">/);
-  assert.doesNotMatch(html,/<meta name="robots"[^>]*noindex/);
+  assert.match(home,/<link rel="canonical" href="https:\/\/overly.live\/">/);
+  assert.doesNotMatch(home,/<meta name="robots"[^>]*noindex/);
+  assert.match(html,/<meta name="robots" content="noindex,follow">/);
   for(const file of ['discovery.css','essential-layout.css','live-theme.css'])assert.match(html,new RegExp(file.replace('.','\\.')));
 });
 
@@ -154,9 +156,9 @@ test('discovery uses real matching-category products when a preferred item disap
   assert.equal((el('discoveryCategoryGrid').innerHTML.match(/class="discovery-category /g)||[]).length,6);
 });
 
-test('welcome is once per session and does not intercept product or category deep links',()=>{
+test('catalog never opens the legacy welcome dialog automatically',()=>{
   const source=appSource.slice(appSource.indexOf('    function showSessionWelcome()'),appSource.indexOf('    function setAliSearchStatus('));
-  for(const [search,hash,seen,expected]of [['','',null,1],['','', '1',0],['?v=new','', '1',0],['?deal=ABC','',null,0],['','#dealsTitle',null,0]]){
+  for(const [search,hash,seen,expected]of [['','',null,0],['','', '1',0],['?v=new','', '1',0],['?deal=ABC','',null,0],['','#dealsTitle',null,0]]){
     let opened=0;vm.runInNewContext(source+'\nshowSessionWelcome();',{URLSearchParams,location:{search,hash},sessionStorage:{getItem:()=>seen},WELCOME_SESSION_KEY:'test',openWelcome:()=>opened++});assert.equal(opened,expected);
   }
 });

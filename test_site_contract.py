@@ -12,7 +12,8 @@ ROOT = Path(__file__).resolve().parent
 class SiteContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.html = (ROOT / "index.html").read_text(encoding="utf-8")
+        cls.html = (ROOT / "browse.html").read_text(encoding="utf-8")
+        cls.home = (ROOT / "index.html").read_text(encoding="utf-8")
         cls.catalog = json.loads((ROOT / "deals.json").read_text(encoding="utf-8"))
         cls.initial = json.loads((ROOT / "deals-initial.json").read_text(encoding="utf-8"))
         cls.categories_index = (ROOT / "categories/index.html").read_text(encoding="utf-8")
@@ -73,7 +74,7 @@ class SiteContractTests(unittest.TestCase):
         self.assertIn('/majeeddeals/assets/amazon-manual/', self.html)
 
     def test_custom_domain_is_the_primary_canonical(self):
-        self.assertIn('<link rel="canonical" href="https://overly.live/">', self.html)
+        self.assertIn('<link rel="canonical" href="https://overly.live/">', self.home)
         self.assertIn('"url":"https://overly.live/"', self.html)
 
     def test_hourly_workflow_builds_and_deploys_only_the_public_bundle(self):

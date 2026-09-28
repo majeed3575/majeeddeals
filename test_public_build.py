@@ -16,6 +16,11 @@ class PublicBuildTests(unittest.TestCase):
         self.assertGreater(self.copied, 800)
         for relative in (
             "index.html",
+            "browse.html",
+            "home.css",
+            "home.js",
+            "home-copy-en.js",
+            "assets/home-icons.svg",
             "404.html",
             "deals.json",
             "robots.txt",

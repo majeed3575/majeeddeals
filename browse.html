@@ -1,0 +1,2273 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="light" data-direction="30" data-family="quiet" data-variation="5" data-palette="2">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://*.workers.dev; img-src 'self' data: https://overly.live https://majeed3575.github.io https://*.media-amazon.com https://*.ssl-images-amazon.com https://*.amazon-adsystem.com https://*.alicdn.com https://*.aliexpress-media.com https://*.aliexpress.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="theme-color" content="#faf7f1">
+  <meta name="description" content="أوفرلي يجمع المنتجات الرائجة من مختلف أقسام Amazon السعودية وAliExpress، مرتبة حسب المبيعات والتقييم مع روابط تسويق بالعمولة.">
+  <meta name="robots" content="noindex,follow">
+  <link rel="canonical" href="https://overly.live/browse">
+  <meta property="og:locale" content="ar_SA">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="أوفرلي | Overly">
+  <meta property="og:title" content="أوفرلي | المنتجات الأكثر رواجاً من Amazon وAliExpress">
+  <meta property="og:description" content="منتجات مفيدة وعروض مختارة من Amazon السعودية وAliExpress، مرتبة لتصل للأفضل بسرعة.">
+  <meta property="og:url" content="https://overly.live/">
+  <meta property="og:image" content="https://overly.live/assets/overly-social.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="أوفرلي | المنتجات الأكثر رواجاً من Amazon وAliExpress">
+  <meta name="twitter:description" content="اختيارات مفيدة من Amazon السعودية وAliExpress، مرتبة حسب الجودة والطلب.">
+  <meta name="twitter:image" content="https://overly.live/assets/overly-social.jpg">
+  <title>أوفرلي | المنتجات الرائجة من Amazon وAliExpress</title>
+  <link rel="icon" type="image/webp" href="assets/overly-icon.webp">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/overly-icon-180.png">
+  <link rel="sitemap" type="application/xml" href="sitemap.xml">
+  <link rel="preload" href="assets/overly-dark-logo-trimmed.webp" as="image" type="image/webp" fetchpriority="high">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://m.media-amazon.com" crossorigin>
+  <link rel="preconnect" href="https://ae01.alicdn.com" crossorigin>
+  <script src="site-boot.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600;700&amp;family=Tajawal:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+  <script type="application/ld+json">
+    {"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://overly.live/#organization","name":"أوفرلي","alternateName":"Overly","url":"https://overly.live/","logo":{"@type":"ImageObject","url":"https://overly.live/assets/overly-icon-180.png"}},{"@type":"WebSite","@id":"https://overly.live/#website","name":"أوفرلي","alternateName":"Overly","url":"https://overly.live/","inLanguage":"ar-SA","description":"منتجات رائجة مختارة من مختلف أقسام Amazon السعودية وAliExpress.","publisher":{"@id":"https://overly.live/#organization"}}]}
+  </script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #040807;
+      --bg-soft: #09110f;
+      --panel: rgba(16, 26, 24, .78);
+      --panel-solid: #0f1716;
+      --panel-strong: #172320;
+      --ink: #f5f5f7;
+      --muted: #a1a1aa;
+      --dim: #707078;
+      --line: rgba(255, 255, 255, .09);
+      --line-strong: rgba(255, 255, 255, .16);
+      --blue: #78c9c1;
+      --blue-strong: #4fa79f;
+      --cyan: #a8efe8;
+      --violet: #8dd8d1;
+      --violet-strong: #367f79;
+      --green: #30d158;
+      --red: #ff375f;
+      --amber: #ff9f0a;
+      --shadow: 0 24px 80px rgba(0, 0, 0, .4);
+      --radius-xl: 32px;
+      --radius-lg: 24px;
+      --radius-md: 18px;
+      --glass: saturate(180%) blur(22px);
+    }
+
+    html[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f2efe9;
+      --bg-soft: #e8e3da;
+      --panel: rgba(255, 252, 247, .82);
+      --panel-solid: #fffdf9;
+      --panel-strong: #f4efe7;
+      --ink: #17302c;
+      --muted: #61716e;
+      --dim: #87938f;
+      --line: rgba(31, 79, 72, .1);
+      --line-strong: rgba(31, 79, 72, .18);
+      --blue: #3f928a;
+      --blue-strong: #2f756f;
+      --cyan: #84d6cd;
+      --violet: #69b9b1;
+      --violet-strong: #2f716b;
+      --green: #208d49;
+      --shadow: 0 22px 65px rgba(38, 58, 53, .12);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 88% -10%, rgba(120, 201, 193, .2), transparent 30rem),
+        radial-gradient(circle at -10% 28%, rgba(79, 167, 159, .12), transparent 27rem),
+        var(--bg);
+      color: var(--ink);
+      font-family: "Tajawal", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color .3s ease, color .3s ease;
+    }
+
+    html[data-theme="light"] body {
+      background:
+        radial-gradient(circle at 88% -10%, rgba(63, 146, 138, .13), transparent 31rem),
+        radial-gradient(circle at -10% 28%, rgba(199, 169, 126, .1), transparent 28rem),
+        var(--bg);
+    }
+    html[data-theme="light"] .site-header > .shell,
+    html[data-theme="light"] .filters-drawer.open,
+    html[data-theme="light"] .mobile-dock { box-shadow: 0 18px 55px rgba(49, 67, 62, .12), inset 0 1px rgba(255,255,255,.8); }
+    html[data-theme="light"] .secondary-link,
+    html[data-theme="light"] .ali-search-chip,
+    html[data-theme="light"] .seo-links a { background: rgba(49, 89, 82, .045); }
+    html[data-theme="light"] .market-tabs,
+    html[data-theme="light"] .ali-search-input { background: rgba(75, 93, 87, .06); }
+    html[data-theme="light"] .product-media,
+    html[data-theme="light"] .quick-view-media { background: #f7f2ea; }
+    html[data-theme="light"] .seo-directory { background: linear-gradient(145deg, rgba(255,253,249,.96), rgba(239,234,225,.86)); }
+
+    a { color: inherit; text-decoration: none; }
+    button, input, select { color: inherit; font: inherit; }
+    button { border: 0; cursor: pointer; }
+    img { display: block; max-width: 100%; }
+    ::selection { color: #04100e; background: rgba(120, 201, 193, .78); }
+    .hidden { display: none !important; }
+    .shell { width: min(1180px, calc(100% - 36px)); margin-inline: auto; }
+    .scroll-progress { position: fixed; z-index: 100; top: 0; right: 0; width: 0; height: 2px; background: linear-gradient(90deg, var(--violet-strong), var(--blue), var(--cyan)); box-shadow: 0 0 18px rgba(120,201,193,.72); pointer-events: none; }
+
+    .ambient {
+      position: fixed;
+      z-index: -1;
+      width: 34rem;
+      height: 34rem;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(110px);
+      opacity: .17;
+    }
+    .ambient.one { top: 10rem; right: -18rem; background: var(--blue); }
+    .ambient.two { top: 45rem; left: -20rem; background: var(--violet); }
+
+    /* Navigation */
+    .site-header {
+      position: sticky;
+      top: 12px;
+      z-index: 40;
+      border: 0;
+      background: transparent;
+    }
+    .site-header > .shell {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 23px;
+      background: color-mix(in srgb, var(--panel-solid) 75%, transparent);
+      box-shadow: 0 18px 55px rgba(0,0,0,.25), inset 0 1px rgba(255,255,255,.06);
+      backdrop-filter: var(--glass);
+      -webkit-backdrop-filter: var(--glass);
+      transition: border-color .25s ease, box-shadow .25s ease, background .25s ease;
+    }
+    .site-header.compact > .shell { border-color: var(--line-strong); background: color-mix(in srgb, var(--panel-solid) 88%, transparent); box-shadow: 0 20px 65px rgba(0,0,0,.35), inset 0 1px rgba(255,255,255,.07); }
+    .nav-row { display: flex; align-items: center; gap: 14px; min-height: 66px; padding: 0 11px; transition: min-height .25s ease; }
+    .site-header.compact .nav-row { min-height: 58px; }
+    .brand { display: flex; align-items: center; min-width: 0; }
+    .brand-plate {
+      display: grid;
+      place-items: center;
+      width: 132px;
+      height: 52px;
+      padding: 4px 9px;
+      overflow: hidden;
+      border: 1px solid rgba(120,201,193,.2);
+      border-radius: 16px;
+      background: radial-gradient(circle at 70% 10%, rgba(120,201,193,.12), transparent 55%), #050a09;
+      box-shadow: inset 0 1px rgba(255,255,255,.06), 0 12px 35px rgba(40,124,116,.14);
+    }
+    .brand-logo { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 5px 13px rgba(53,176,164,.2)); }
+    .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 5px rgba(48,209,88,.1); }
+    .desktop-nav { display: flex; align-items: center; gap: 3px; margin-inline: auto; padding: 4px; border: 1px solid var(--line); border-radius: 999px; background: rgba(255,255,255,.025); }
+    .desktop-nav a { padding: 7px 13px; border-radius: 999px; color: var(--muted); font-size: 10px; font-weight: 600; transition: color .2s ease, background .2s ease; }
+    .desktop-nav a:hover { color: var(--ink); background: rgba(255,255,255,.06); }
+    .nav-actions { display: flex; align-items: center; gap: 8px; }
+    .icon-button, .filter-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--panel);
+      backdrop-filter: var(--glass);
+      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+    }
+    .icon-button { width: 40px; font-size: 16px; }
+    .filter-button { gap: 7px; padding: 0 15px; font-size: 12px; font-weight: 700; }
+    .icon-button:hover, .filter-button:hover { transform: translateY(-1px); border-color: var(--line-strong); background: var(--panel-strong); }
+    .chevron { display: inline-block; color: var(--muted); transition: transform .25s ease; }
+    .filter-button[aria-expanded="true"] .chevron { transform: rotate(180deg); }
+
+    /* Dropdown controls */
+    .filters-drawer {
+      display: grid;
+      grid-template-rows: 0fr;
+      width: min(1180px, calc(100% - 36px));
+      margin: 6px auto 0;
+      overflow: hidden;
+      border: 1px solid transparent;
+      border-radius: 20px;
+      background: transparent;
+      transition: grid-template-rows .35s cubic-bezier(.2,.8,.2,1), border-color .25s ease, background .25s ease, box-shadow .25s ease;
+    }
+    .filters-drawer.open { grid-template-rows: 1fr; border-color: var(--line); background: color-mix(in srgb, var(--panel-solid) 88%, transparent); box-shadow: 0 18px 55px rgba(0,0,0,.24); backdrop-filter: var(--glass); }
+    .filters-inner { overflow: hidden; }
+    .filter-grid { display: grid; grid-template-columns: minmax(240px, 1.7fr) 1fr 1fr; gap: 10px; padding: 14px 11px 17px; }
+    .field { position: relative; }
+    .field .field-icon { position: absolute; top: 50%; right: 15px; z-index: 1; transform: translateY(-50%); color: var(--dim); pointer-events: none; }
+    .field input, .field select {
+      width: 100%;
+      height: 48px;
+      outline: none;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: var(--panel-solid);
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    .field input { padding: 0 43px 0 15px; }
+    .field select { padding: 0 15px; cursor: pointer; appearance: auto; }
+    .field input::placeholder { color: var(--dim); }
+    .field input:focus, .field select:focus { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(120,201,193,.13); }
+    .filters-mobile-head, .filters-mobile-actions, .filters-backdrop { display: none; }
+
+    main { padding: 46px 0 94px; scroll-margin-top: 96px; }
+    #dealsTitle, #whyOverly { scroll-margin-top: 105px; }
+
+    .intro {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.08fr .92fr;
+      align-items: center;
+      gap: clamp(36px, 7vw, 94px);
+      min-height: 520px;
+      padding: 54px clamp(10px, 3vw, 34px) 68px;
+    }
+    .intro-copy { position: relative; z-index: 2; }
+    .intro-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      background: var(--panel);
+      font-size: 10px;
+      backdrop-filter: var(--glass);
+    }
+    .brand-stage {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 390px;
+      overflow: hidden;
+      border: 1px solid rgba(120,201,193,.16);
+      border-radius: 42px;
+      background:
+        radial-gradient(circle at 64% 28%, rgba(120,201,193,.19), transparent 34%),
+        linear-gradient(150deg, rgba(21,37,34,.88), rgba(4,8,7,.94));
+      box-shadow: inset 0 1px rgba(255,255,255,.07), 0 42px 100px rgba(0,0,0,.34);
+      isolation: isolate;
+    }
+    .brand-stage::before { position: absolute; inset: 22px; border: 1px solid rgba(255,255,255,.055); border-radius: 31px; content: ""; }
+    .brand-stage::after { position: absolute; width: 300px; height: 300px; border: 1px solid rgba(120,201,193,.13); border-radius: 50%; content: ""; animation: stage-ring 8s linear infinite; }
+    @keyframes stage-ring { 50% { transform: scale(1.09) rotate(180deg); opacity: .58; } to { transform: rotate(360deg); } }
+    .intro-logo-plate {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      width: min(390px, 86%);
+      padding: 24px 28px;
+    }
+    .intro-logo { width: 100%; height: auto; filter: drop-shadow(0 18px 40px rgba(76,197,185,.28)); }
+    .stage-chip { position: absolute; z-index: 3; display: inline-flex; align-items: center; gap: 7px; min-height: 34px; padding: 0 12px; border: 1px solid var(--line-strong); border-radius: 999px; color: var(--muted); background: rgba(7,14,13,.72); box-shadow: 0 14px 35px rgba(0,0,0,.24); backdrop-filter: blur(15px); font-size: 9px; }
+    .stage-chip.amazon { top: 28px; right: 28px; }
+    .stage-chip.aliexpress { bottom: 28px; left: 28px; }
+    .stage-chip i { width: 7px; height: 7px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 5px rgba(120,201,193,.09); }
+    .stage-chip.aliexpress i { background: #ff5a43; box-shadow: 0 0 0 5px rgba(255,90,67,.09); }
+    .intro h1 {
+      max-width: 620px;
+      margin-top: 20px;
+      font-size: clamp(46px, 6.8vw, 86px);
+      font-weight: 900;
+      line-height: .98;
+      letter-spacing: -3.8px;
+      text-wrap: balance;
+    }
+    .intro h1 span { color: var(--blue); }
+    .intro p { max-width: 540px; margin-top: 22px; color: var(--muted); font-size: clamp(14px, 1.7vw, 18px); line-height: 1.85; }
+    .intro-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+    .intro-proof { display: flex; align-items: center; gap: 22px; margin-top: 34px; padding-top: 23px; border-top: 1px solid var(--line); }
+    .proof-item strong { display: block; font-size: 20px; }
+    .proof-item small { display: block; margin-top: 2px; color: var(--muted); font-size: 9px; }
+    .proof-line { width: 1px; height: 34px; background: var(--line); }
+
+    .market-switch { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin: 0 0 22px; padding: 13px 15px; border: 1px solid var(--line); border-radius: 22px; background: linear-gradient(135deg, var(--panel), transparent); }
+    .market-switch-copy strong { display: block; font-size: 12px; }
+    .market-switch-copy span { display: block; margin-top: 2px; color: var(--muted); font-size: 9px; }
+    .market-tabs { display: flex; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 999px; background: rgba(0,0,0,.12); }
+    .market-tab { min-height: 36px; padding: 0 15px; border-radius: 999px; color: var(--muted); background: transparent; font-size: 10px; font-weight: 700; transition: .2s ease; }
+    .market-tab:hover { color: var(--ink); }
+    .market-tab.active { color: #03100e; background: var(--blue); box-shadow: 0 8px 22px rgba(47,159,149,.18); }
+    .market-tab[data-store="aliexpress"].active { color: #fff; background: #ef533f; box-shadow: 0 8px 22px rgba(239,83,63,.2); }
+    .store-badge { position: absolute; z-index: 2; right: 14px; bottom: 14px; display: inline-flex; align-items: center; gap: 5px; min-height: 28px; padding: 0 9px; border: 1px solid rgba(0,0,0,.07); border-radius: 999px; color: #333; background: rgba(255,255,255,.86); backdrop-filter: blur(12px); font-size: 9px; font-weight: 800; }
+    .store-badge::before { width: 6px; height: 6px; border-radius: 50%; background: #ff9900; content: ""; }
+    .store-badge.aliexpress::before { background: #ef533f; }
+    .empty strong { display: block; margin-bottom: 8px; color: var(--ink); font-size: 18px; }
+    .empty span { display: block; max-width: 520px; margin: auto; line-height: 1.8; }
+
+    /* AliExpress live search */
+    .ali-live-search {
+      position: relative;
+      overflow: hidden;
+      margin: 0 0 48px;
+      padding: 27px;
+      border: 1px solid rgba(239,83,63,.2);
+      border-radius: 30px;
+      background:
+        radial-gradient(circle at 7% 15%, rgba(239,83,63,.13), transparent 30%),
+        linear-gradient(135deg, var(--panel-strong), var(--panel));
+      box-shadow: 0 24px 65px rgba(0,0,0,.2);
+    }
+    .ali-live-search::after { position: absolute; top: -70px; left: -55px; width: 190px; height: 190px; border: 1px solid rgba(239,83,63,.13); border-radius: 50%; content: ""; }
+    .ali-search-head { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .ali-search-title { display: flex; align-items: center; gap: 12px; }
+    .ali-search-mark { display: grid; place-items: center; width: 43px; height: 43px; border-radius: 14px; color: #fff; background: linear-gradient(135deg, #ff7a54, #ef533f); box-shadow: 0 12px 30px rgba(239,83,63,.25); font-size: 19px; font-weight: 900; }
+    .ali-search-title strong { display: block; font-size: 16px; }
+    .ali-search-title span { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; }
+    .saudi-shipping-badge { display: inline-flex; align-items: center; gap: 7px; min-height: 34px; padding: 0 12px; border: 1px solid rgba(120,201,193,.18); border-radius: 999px; color: var(--blue); background: rgba(120,201,193,.07); font-size: 9px; font-weight: 800; }
+    .saudi-shipping-badge::before { width: 7px; height: 7px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 5px rgba(120,201,193,.08); content: ""; }
+    .ali-search-form { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-top: 20px; }
+    .ali-search-input { min-width: 0; min-height: 54px; padding: 0 18px; border: 1px solid var(--line-strong); border-radius: 17px; color: var(--ink); background: rgba(0,0,0,.13); outline: none; font-size: 13px; transition: border-color .2s ease, box-shadow .2s ease; }
+    .ali-search-input:focus { border-color: #ef533f; box-shadow: 0 0 0 4px rgba(239,83,63,.09); }
+    .ali-search-submit { min-height: 54px; padding: 0 25px; border-radius: 17px; color: #fff; background: linear-gradient(135deg, #ff7450, #e94c3a); box-shadow: 0 13px 32px rgba(239,83,63,.24); font-size: 12px; font-weight: 800; transition: transform .2s ease, opacity .2s ease; }
+    .ali-search-submit:hover { transform: translateY(-2px); }
+    .ali-search-submit:disabled { cursor: wait; opacity: .65; transform: none; }
+    .ali-search-suggestions { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 7px; margin-top: 13px; }
+    .ali-search-chip { min-height: 31px; padding: 0 11px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: rgba(255,255,255,.025); font-size: 9px; transition: .2s ease; }
+    .ali-search-chip:hover { color: var(--ink); border-color: rgba(239,83,63,.3); background: rgba(239,83,63,.07); }
+    .ali-search-status { position: relative; z-index: 1; min-height: 18px; margin-top: 12px; color: var(--muted); font-size: 10px; }
+    .ali-search-status.loading { color: var(--blue); }
+    .ali-search-status.error { color: #ff8d80; }
+
+    /* Compact unified search for phones */
+    .mobile-search-hub { display: none; }
+    .mobile-search-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .mobile-search-head strong { display: block; font-size: 18px; }
+    .mobile-search-head span { display: block; margin-top: 2px; color: var(--muted); font-size: 12px; }
+    .mobile-search-icon { display: grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; border: 1px solid var(--line-strong); border-radius: 15px; color: var(--cyan); background: rgba(120,201,193,.08); font-size: 20px; }
+    .mobile-search-modes { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 16px; padding: 4px; border: 1px solid var(--line); border-radius: 15px; background: rgba(0,0,0,.11); }
+    .mobile-search-mode { min-height: 44px; border-radius: 11px; color: var(--muted); background: transparent; font-size: 12px; font-weight: 800; }
+    .mobile-search-mode.active { color: #04100e; background: var(--blue); box-shadow: 0 8px 20px rgba(47,159,149,.2); }
+    .mobile-search-mode[data-mobile-search-mode="ali"].active { color: #fff; background: #ef533f; box-shadow: 0 8px 20px rgba(239,83,63,.2); }
+    .mobile-search-form { display: grid; grid-template-columns: 1fr 52px; gap: 8px; margin-top: 10px; }
+    .mobile-search-input { min-width: 0; min-height: 50px; padding: 0 15px; outline: none; border: 1px solid var(--line-strong); border-radius: 15px; color: var(--ink); background: var(--panel-solid); font-size: 14px; }
+    .mobile-search-input:focus { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(120,201,193,.12); }
+    .mobile-search-submit { display: grid; place-items: center; min-height: 50px; border-radius: 15px; color: #04100e; background: linear-gradient(135deg, var(--cyan), var(--blue)); font-size: 20px; font-weight: 900; }
+    .mobile-search-suggestions { display: flex; gap: 7px; margin-top: 11px; padding-bottom: 2px; overflow-x: auto; scrollbar-width: none; }
+    .mobile-search-suggestions::-webkit-scrollbar { display: none; }
+    .mobile-search-suggestion { flex: 0 0 auto; min-height: 44px; padding: 0 13px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: rgba(255,255,255,.025); font-size: 12px; font-weight: 700; }
+    .mobile-search-status { min-height: 18px; margin-top: 8px; color: var(--muted); font-size: 12px; }
+    .mobile-search-status.loading { color: var(--blue); }
+    .mobile-search-status.error { color: #ff776b; }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      min-height: 490px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      background:
+        radial-gradient(circle at 20% 22%, rgba(120,201,193,.24), transparent 34%),
+        radial-gradient(circle at 88% 94%, rgba(54,127,121,.16), transparent 30%),
+        linear-gradient(145deg, var(--panel-strong), var(--panel-solid));
+      box-shadow: var(--shadow);
+      isolation: isolate;
+    }
+    .hero::before {
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      background: linear-gradient(110deg, rgba(255,255,255,.07), transparent 35%);
+      content: "";
+    }
+    .hero-slide { display: none; min-height: 490px; grid-template-columns: 1.05fr .95fr; align-items: center; gap: 40px; padding: 52px 60px; }
+    .hero-slide.active { display: grid; animation: hero-in .55s cubic-bezier(.2,.8,.2,1); }
+    @keyframes hero-in { from { opacity: 0; transform: translateY(12px) scale(.99); } to { opacity: 1; transform: none; } }
+    .hero-copy { position: relative; z-index: 2; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; color: var(--cyan); font-size: 12px; font-weight: 700; }
+    .eyebrow::before { width: 26px; height: 1px; background: currentColor; content: ""; }
+    .hero h2 { max-width: 650px; margin-top: 16px; font-size: clamp(29px, 4.4vw, 52px); font-weight: 800; line-height: 1.22; letter-spacing: -1.5px; text-wrap: balance; }
+    .hero-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-top: 22px; }
+    .hero-discount { color: var(--green); font-size: 17px; font-weight: 800; }
+    .old-price { color: var(--muted); font-size: 13px; }
+    .old-price s { color: var(--dim); }
+    .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 28px; }
+    .primary-link, .secondary-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      border-radius: 999px;
+      padding: 0 22px;
+      font-size: 13px;
+      font-weight: 700;
+      transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
+    }
+    .primary-link { color: #03100e; background: linear-gradient(120deg, var(--cyan), var(--blue)); box-shadow: 0 12px 34px rgba(47,159,149,.24); }
+    .primary-link:hover { transform: translateY(-2px); background: linear-gradient(120deg, #d1fff9, var(--blue)); box-shadow: 0 16px 42px rgba(67,191,179,.3); }
+    .secondary-link { border: 1px solid var(--line); background: rgba(255,255,255,.04); }
+    .secondary-link:hover { background: rgba(255,255,255,.08); }
+    .hero-visual { position: relative; display: grid; place-items: center; min-width: 0; }
+    .hero-orbit {
+      position: absolute;
+      width: min(32vw, 370px);
+      aspect-ratio: 1;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 50%;
+      box-shadow: inset 0 0 80px rgba(120,201,193,.08), 0 0 90px rgba(120,201,193,.08);
+      animation: breathe 5s ease-in-out infinite;
+    }
+    @keyframes breathe { 50% { transform: scale(1.04); opacity: .7; } }
+    .hero-image-stage {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: min(34vw, 390px);
+      aspect-ratio: 1;
+      padding: 38px;
+      border: 1px solid rgba(255,255,255,.13);
+      border-radius: 50%;
+      background: rgba(255,255,255,.93);
+      box-shadow: 0 40px 90px rgba(0,0,0,.35), inset 0 1px #fff;
+      transition: transform .5s cubic-bezier(.2,.8,.2,1), box-shadow .5s ease;
+    }
+    .hero-slide:hover .hero-image-stage { transform: translateY(-7px) rotate(-1deg); box-shadow: 0 52px 110px rgba(0,0,0,.46), inset 0 1px #fff; }
+    .hero-image-stage img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; filter: drop-shadow(0 24px 28px rgba(0,0,0,.2)); }
+    .hero-nav { position: absolute; bottom: 24px; right: 50%; display: flex; align-items: center; gap: 7px; transform: translateX(50%); }
+    .hero-nav button { width: 7px; height: 7px; border-radius: 999px; background: var(--dim); transition: width .25s ease, background .25s ease; }
+    .hero-nav button.active { width: 28px; background: var(--ink); }
+    .hero-arrow { position: absolute; z-index: 5; top: 50%; display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid var(--line-strong); border-radius: 50%; color: var(--ink); background: color-mix(in srgb, var(--panel-solid) 72%, transparent); box-shadow: 0 10px 35px rgba(0,0,0,.25); backdrop-filter: blur(16px); transform: translateY(-50%); opacity: .25; transition: opacity .2s ease, transform .2s ease, background .2s ease; }
+    .hero:hover .hero-arrow { opacity: 1; }
+    .hero-arrow:hover { background: var(--panel-strong); transform: translateY(-50%) scale(1.06); }
+    .hero-arrow.prev { right: 18px; }
+    .hero-arrow.next { left: 18px; }
+    .floating-chip { position: absolute; z-index: 4; display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 0 12px; border: 1px solid rgba(255,255,255,.35); border-radius: 999px; color: #222; background: rgba(255,255,255,.78); box-shadow: 0 16px 35px rgba(0,0,0,.18); backdrop-filter: blur(18px); font-size: 10px; font-weight: 800; }
+    .floating-chip.discount { top: 12%; right: 1%; color: #fff; border-color: rgba(255,255,255,.16); background: linear-gradient(120deg, var(--red), var(--violet-strong)); }
+    .floating-chip.source { bottom: 12%; left: -2%; }
+
+    .trust-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 14px 0 68px; }
+    .trust-item { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 10px; min-height: 68px; padding: 12px 16px; border: 1px solid var(--line); border-radius: 20px; color: var(--muted); background: linear-gradient(135deg, var(--panel), transparent); backdrop-filter: var(--glass); }
+    .trust-icon { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 12px; color: var(--blue); background: rgba(120,201,193,.08); font-size: 15px; }
+    .trust-copy strong { display: block; color: var(--ink); font-size: 12px; }
+    .trust-copy small { display: block; margin-top: 2px; color: var(--muted); font-size: 9px; }
+
+    /* Deals */
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 24px; }
+    .section-head .overline { color: var(--blue); font-size: 12px; font-weight: 700; }
+    .section-head h2 { margin-top: 5px; font-size: clamp(25px, 4vw, 38px); font-weight: 800; letter-spacing: -.8px; }
+    .section-stats { color: var(--muted); font-size: 12px; text-align: left; }
+    .section-stats strong { color: var(--ink); }
+    .category-chips { display: flex; gap: 8px; overflow-x: auto; margin: -8px 0 22px; padding: 8px 0 2px; scrollbar-width: none; }
+    .category-chips::-webkit-scrollbar { display: none; }
+    .category-chip { display: inline-flex; align-items: center; gap: 7px; min-height: 38px; padding: 0 14px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: var(--panel); white-space: nowrap; text-decoration: none; font-size: 10px; font-weight: 700; transition: transform .2s ease, color .2s ease, border-color .2s ease, background .2s ease; }
+    .category-chip:hover { transform: translateY(-1px); color: var(--ink); border-color: var(--line-strong); }
+    .category-chip.active { color: #03100e; border-color: transparent; background: linear-gradient(120deg, var(--cyan), var(--blue)); box-shadow: 0 8px 24px rgba(47,159,149,.2); }
+    .category-chip b { display: grid; place-items: center; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 999px; background: rgba(255,255,255,.1); font-size: 9px; }
+    .market-switch-copy a { color: var(--blue); text-decoration: none; font-weight: 700; }
+    .grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 18px; }
+    .load-more-wrap { display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 9px; min-height: 72px; margin-top: 26px; }
+    .infinite-spinner { width: 22px; height: 22px; border: 2px solid var(--line-strong); border-top-color: var(--blue); border-radius: 50%; animation: infinite-spin 1s linear infinite; }
+    .load-more-button { min-width: min(100%, 260px); min-height: 48px; padding: 0 24px; border: 1px solid var(--line-strong); border-radius: 16px; color: var(--ink); background: linear-gradient(135deg, var(--panel-solid), var(--panel)); box-shadow: 0 12px 35px rgba(0,0,0,.14); font-size: 12px; font-weight: 800; transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
+    .load-more-button:hover { transform: translateY(-2px); border-color: var(--blue); box-shadow: 0 16px 42px rgba(47,159,149,.16); }
+    .load-more-note { color: var(--muted); font-size: 10px; }
+    @keyframes infinite-spin { to { transform: rotate(360deg); } }
+    .product-card {
+      position: relative;
+      grid-column: span 4;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: var(--panel-solid);
+      opacity: 0;
+      transform: translateY(24px) scale(.985);
+      transition: opacity .55s ease, transform .55s cubic-bezier(.2,.8,.2,1), border-color .3s ease, box-shadow .3s ease;
+      transition-delay: var(--reveal-delay, 0ms);
+    }
+    .product-card:nth-child(1) { grid-column: span 7; }
+    .product-card:nth-child(2) { grid-column: span 5; }
+    .product-card:nth-child(6) { display: grid; grid-column: span 12; grid-template-columns: 1.05fr .95fr; }
+    .product-card::before { position: absolute; z-index: 3; top: 0; left: 13%; width: 74%; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.38), transparent); content: ""; pointer-events: none; }
+    .product-card.revealed { opacity: 1; transform: none; }
+    .product-card.revealed:hover { transform: translateY(-7px); border-color: var(--line-strong); box-shadow: var(--shadow); }
+    .product-media { position: relative; display: grid; place-items: center; height: 245px; padding: 28px; overflow: hidden; background: #f5f5f7; }
+    .product-card:nth-child(1) .product-media, .product-card:nth-child(2) .product-media { height: 325px; }
+    .product-card:nth-child(6) .product-media { height: 100%; min-height: 310px; }
+    .product-card:nth-child(6) .product-body { display: flex; flex-direction: column; justify-content: center; padding: 34px; }
+    .product-card:nth-child(1) .product-body h3, .product-card:nth-child(6) .product-body h3 { font-size: 18px; }
+    .product-media::after { position: absolute; inset: auto 0 0; height: 34%; background: linear-gradient(transparent, rgba(0,0,0,.04)); content: ""; }
+    .media-product-link { position: absolute; inset: 0; display: grid; place-items: center; padding: 28px; }
+    .media-product-link img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; transition: transform .45s cubic-bezier(.2,.8,.2,1); }
+    .product-card:hover .media-product-link img { transform: scale(1.045); }
+    .quick-look { position: absolute; z-index: 4; bottom: 14px; left: 50%; display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 14px; border: 1px solid rgba(0,0,0,.1); border-radius: 999px; color: #1d1d1f; background: rgba(255,255,255,.86); box-shadow: 0 12px 30px rgba(0,0,0,.14); backdrop-filter: blur(16px); font-size: 10px; font-weight: 800; opacity: 0; transform: translate(-50%, 10px); transition: opacity .25s ease, transform .25s ease; }
+    .product-card:hover .quick-look, .quick-look:focus-visible { opacity: 1; transform: translate(-50%, 0); }
+    .discount-badge { position: absolute; z-index: 2; top: 14px; right: 14px; padding: 6px 10px; border-radius: 999px; color: #fff; background: rgba(255,55,95,.94); box-shadow: 0 8px 24px rgba(255,55,95,.2); font-size: 12px; font-weight: 800; }
+    .category-tag { position: absolute; z-index: 2; top: 14px; left: 14px; padding: 6px 10px; border: 1px solid rgba(0,0,0,.07); border-radius: 999px; color: #444; background: rgba(255,255,255,.82); backdrop-filter: blur(12px); font-size: 10px; font-weight: 700; }
+    .hero-copy h2 a, .product-body h3 a { color: inherit; text-decoration: none; }
+    .hero-copy h2 a:hover, .product-body h3 a:hover { color: var(--cyan); }
+    .product-body { padding: 20px; }
+    .product-body h3 { min-height: 3.2em; font-size: 15px; font-weight: 700; line-height: 1.6; display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+    .quick-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 15px; }
+    .quick-meta strong { color: var(--green); font-size: 15px; }
+    .quick-meta span { color: var(--muted); font-size: 11px; }
+    .deal-details { margin-top: 14px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .deal-details summary { display: flex; align-items: center; justify-content: space-between; padding: 11px 0; color: var(--muted); font-size: 11px; list-style: none; cursor: pointer; }
+    .deal-details summary::-webkit-details-marker { display: none; }
+    .deal-details summary::after { color: var(--dim); content: "+"; font-size: 18px; font-weight: 300; transition: transform .2s ease; }
+    .deal-details[open] summary::after { transform: rotate(45deg); }
+    .detail-content { display: grid; gap: 7px; padding: 0 0 12px; animation: detail-in .2s ease; }
+    @keyframes detail-in { from { opacity: 0; transform: translateY(-4px); } }
+    .detail-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 11px; }
+    .detail-row b { color: var(--ink); font-weight: 600; }
+    .card-cta { display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%; min-height: 44px; margin-top: 15px; border-radius: 14px; color: #03100e; background: linear-gradient(120deg, var(--cyan), var(--blue)); font-size: 12px; font-weight: 800; transition: filter .2s ease, transform .2s ease; }
+    .cta-mobile { display: none; }
+    .card-cta:hover { filter: brightness(1.12); transform: translateY(-1px); }
+    .card-actions { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; margin-top: 15px; }
+    .card-actions .card-cta { margin-top: 0; }
+    .share-button { display: inline-flex; align-items: center; justify-content: center; min-width: 48px; min-height: 44px; padding: 0 12px; border: 1px solid var(--line); border-radius: 14px; color: var(--muted); background: var(--panel-strong); font-size: 16px; transition: color .2s ease, border-color .2s ease, transform .2s ease; }
+    .share-button:hover { color: var(--ink); border-color: var(--line-strong); transform: translateY(-1px); }
+    .empty { padding: 80px 20px; border: 1px dashed var(--line-strong); border-radius: var(--radius-lg); color: var(--muted); text-align: center; }
+
+    /* Editorial Bento */
+    .story { margin-top: 94px; }
+    .story-grid { display: grid; grid-template-columns: 1.25fr .75fr; grid-template-rows: repeat(2, minmax(210px, auto)); gap: 16px; }
+    .story-card { position: relative; overflow: hidden; border: 1px solid var(--line); border-radius: 28px; background: var(--panel-solid); opacity: 0; transform: translateY(22px); transition: opacity .55s ease, transform .55s cubic-bezier(.2,.8,.2,1), border-color .25s ease; }
+    .story-card.revealed { opacity: 1; transform: none; }
+    .story-card:hover { border-color: var(--line-strong); }
+    .story-card.large { grid-row: 1 / 3; min-height: 438px; padding: 38px; background: radial-gradient(circle at 20% 15%, rgba(120,201,193,.23), transparent 40%), radial-gradient(circle at 92% 90%, rgba(54,127,121,.2), transparent 35%), var(--panel-solid); }
+    .story-card.small { display: flex; flex-direction: column; justify-content: flex-end; min-height: 210px; padding: 28px; }
+    .story-number { position: absolute; bottom: -38px; left: -10px; color: rgba(255,255,255,.035); font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 190px; font-weight: 900; line-height: 1; letter-spacing: -14px; }
+    .story-kicker { color: var(--blue); font-size: 10px; font-weight: 700; }
+    .story-card h3 { position: relative; z-index: 1; max-width: 570px; margin-top: 12px; font-size: clamp(24px, 3.8vw, 46px); line-height: 1.2; letter-spacing: -1px; }
+    .story-card.small h3 { font-size: 21px; }
+    .story-card p { position: relative; z-index: 1; max-width: 520px; margin-top: 12px; color: var(--muted); font-size: 12px; line-height: 1.8; }
+    .story-orb { position: absolute; left: 8%; bottom: 8%; width: 155px; aspect-ratio: 1; border: 1px solid rgba(255,255,255,.13); border-radius: 42%; background: linear-gradient(145deg, rgba(168,239,232,.86), rgba(54,127,121,.74)); box-shadow: 0 30px 80px rgba(47,159,149,.24); transform: rotate(14deg); }
+    .story-orb::after { position: absolute; inset: 28%; border: 2px solid rgba(255,255,255,.72); border-radius: 50%; content: ""; }
+
+    .mobile-dock { display: none; }
+
+    footer { border-top: 1px solid var(--line); background: color-mix(in srgb, var(--bg-soft) 72%, transparent); }
+    .footer-inner { display: grid; grid-template-columns: .75fr 1.25fr; gap: 50px; padding: 42px 0; }
+    .footer-brand { font-size: 16px; font-weight: 800; }
+    .footer-logo-plate { display: grid; place-items: center; width: 166px; padding: 9px 13px; border: 1px solid rgba(120,201,193,.16); border-radius: 18px; background: #050a09; }
+    .footer-logo { width: 100%; height: auto; }
+    .footer-brand p { margin-top: 8px; color: var(--muted); font-size: 11px; font-weight: 400; }
+    .disclosure { color: var(--muted); font-size: 11px; line-height: 1.9; }
+    .footer-legal-links { display: flex; flex-wrap: wrap; gap: 7px 16px; margin-top: 15px; }
+    .footer-legal-links a { color: var(--muted); text-decoration: none; font-size: 10px; font-weight: 700; transition: color .2s ease; }
+    .footer-legal-links a:hover, .footer-legal-links a:focus-visible { color: var(--blue); }
+    .seo-directory { margin: 54px 0 70px; padding: clamp(24px, 4vw, 42px); border: 1px solid var(--line); border-radius: var(--radius-xl); background: linear-gradient(145deg, rgba(16,26,24,.9), rgba(9,17,15,.72)); }
+    .seo-directory h2 { margin: 4px 0 8px; font-size: clamp(24px, 3.2vw, 38px); }
+    .seo-directory > p { color: var(--muted); font-size: 12px; }
+    .seo-links { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 22px; }
+    .seo-links a { display: grid; gap: 3px; min-height: 76px; padding: 14px; border: 1px solid var(--line); border-radius: 16px; color: var(--ink); background: rgba(255,255,255,.025); text-decoration: none; font-size: 12px; font-weight: 800; }
+    .seo-links a span { color: var(--muted); font-size: 9px; font-weight: 500; }
+    .seo-links a:hover, .seo-links a:focus-visible { border-color: rgba(120,201,193,.42); color: var(--cyan); }
+    .copyright { margin-top: 13px; color: var(--dim); font-size: 10px; }
+
+    /* Modal + redirect */
+    .overlay { position: fixed; z-index: 80; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(0,0,0,.58); backdrop-filter: blur(18px); }
+    .modal-box, .redirect-box { width: min(420px, 100%); border: 1px solid var(--line-strong); border-radius: 28px; background: var(--panel-solid); box-shadow: 0 40px 110px rgba(0,0,0,.55); animation: modal-in .32s cubic-bezier(.2,.8,.2,1); }
+    @keyframes modal-in { from { opacity: 0; transform: translateY(14px) scale(.97); } }
+    .modal-box { position: relative; padding: 30px; text-align: center; }
+    .close-button { position: absolute; top: 14px; left: 14px; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; color: var(--muted); background: var(--panel-strong); }
+    .modal-icon { display: grid; place-items: center; width: 62px; height: 62px; margin: 0 auto; border-radius: 20px; background: rgba(255,55,95,.1); font-size: 25px; }
+    .modal-box h3 { margin-top: 18px; font-size: 22px; }
+    .modal-box p { margin-top: 8px; color: var(--muted); font-size: 13px; }
+    .modal-box .primary-link { width: 100%; margin-top: 22px; }
+    .skip { margin-top: 12px; color: var(--muted); background: transparent; font-size: 11px; }
+    .redirect-box { padding: 34px; text-align: center; }
+    .spinner { width: 52px; height: 52px; margin: 0 auto; border: 3px solid var(--line-strong); border-top-color: var(--blue); border-radius: 50%; animation: spin .8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .redirect-box h3 { margin-top: 18px; font-size: 18px; }
+    .redirect-box p { margin-top: 6px; color: var(--muted); font-size: 12px; }
+    .quick-view-box { position: relative; width: min(880px, 100%); overflow: hidden; border: 1px solid var(--line-strong); border-radius: 30px; background: var(--panel-solid); box-shadow: 0 40px 120px rgba(0,0,0,.6); animation: modal-in .32s cubic-bezier(.2,.8,.2,1); }
+    .quick-view-grid { display: grid; grid-template-columns: 1fr 1fr; min-height: 480px; }
+    .quick-view-media { display: grid; place-items: center; padding: 45px; background: #f5f5f7; }
+    .quick-view-media img { width: 100%; height: 100%; max-height: 390px; object-fit: contain; mix-blend-mode: multiply; }
+    .quick-view-copy { display: flex; flex-direction: column; justify-content: center; padding: 42px; }
+    .quick-view-copy .category { color: var(--blue); font-size: 10px; font-weight: 700; }
+    .quick-view-copy h3 { margin-top: 12px; font-size: 27px; line-height: 1.45; }
+    .quick-view-copy .saving { margin-top: 18px; color: var(--green); font-size: 20px; font-weight: 800; }
+    .quick-view-copy .before { margin-top: 4px; color: var(--muted); font-size: 11px; }
+    .quick-view-meta { display: grid; gap: 9px; margin-top: 22px; padding: 16px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .quick-view-meta div { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 10px; }
+    .quick-view-meta b { color: var(--ink); }
+    .quick-view-copy .primary-link { margin-top: 22px; }
+
+    @media (max-width: 920px) {
+      .desktop-nav { display: none; }
+      .nav-actions { margin-inline-start: auto; }
+      .intro { grid-template-columns: 1fr; min-height: 0; padding-top: 48px; text-align: center; }
+      .intro-copy { order: 2; }
+      .brand-stage { order: 1; width: min(620px, 100%); min-height: 350px; margin-inline: auto; }
+      .intro h1, .intro p { margin-inline: auto; }
+      .intro-actions, .intro-proof { justify-content: center; }
+      .hero-slide { grid-template-columns: 1fr .8fr; padding: 42px; }
+      .product-card, .product-card:nth-child(1), .product-card:nth-child(2) { grid-column: span 6; }
+      .product-card:nth-child(6) { grid-column: span 12; }
+      .filter-grid { grid-template-columns: 1fr 1fr; }
+      .filter-grid .search-field { grid-column: 1 / -1; }
+      .story-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; }
+      .story-card.large { grid-column: 1 / -1; grid-row: auto; min-height: 380px; }
+    }
+
+    @media (max-width: 640px) {
+      :root { --glass: saturate(145%) blur(14px); --radius-xl: 25px; --radius-lg: 19px; }
+      html { scroll-padding-bottom: 100px; }
+      body.filters-open { overflow: hidden; }
+      .shell { width: min(100% - 24px, 1180px); }
+      .ambient { opacity: .1; filter: blur(90px); }
+      .site-header { z-index: 60; top: 8px; }
+      .site-header > .shell { overflow: hidden; border-radius: 19px; }
+      .nav-row { min-height: 60px; padding: 0 8px; }
+      .brand-plate { width: 108px; height: 46px; padding: 4px 7px; border-radius: 14px; }
+      .icon-button, .filter-button { min-height: 44px; }
+      .icon-button { width: 44px; }
+      .filter-button .filter-label, .filter-button .chevron { display: none; }
+      .filter-button { width: 44px; padding: 0; }
+
+      .filters-backdrop { position: fixed; z-index: 58; inset: 0; display: block; visibility: hidden; background: rgba(2,9,8,.6); opacity: 0; pointer-events: none; backdrop-filter: blur(5px); transition: opacity .25s ease, visibility .25s ease; }
+      .filters-backdrop.open { visibility: visible; opacity: 1; pointer-events: auto; }
+      .filters-drawer {
+        position: fixed;
+        z-index: 62;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        display: block;
+        width: 100%;
+        margin: 0;
+        visibility: hidden;
+        overflow: hidden;
+        border: 1px solid var(--line-strong);
+        border-bottom: 0;
+        border-radius: 28px 28px 0 0;
+        background: color-mix(in srgb, var(--panel-solid) 96%, transparent);
+        box-shadow: 0 -25px 75px rgba(0,0,0,.42);
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(105%);
+        transition: transform .32s cubic-bezier(.2,.8,.2,1), opacity .24s ease, visibility .24s ease;
+      }
+      .filters-drawer.open { visibility: visible; border-color: var(--line-strong); background: color-mix(in srgb, var(--panel-solid) 96%, transparent); opacity: 1; pointer-events: auto; transform: translateY(0); }
+      .filters-inner { max-height: min(82dvh, 690px); padding: 8px 16px calc(16px + env(safe-area-inset-bottom)); overflow-y: auto; }
+      .filters-mobile-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 5px 2px 13px; }
+      .filters-mobile-head::before { position: absolute; top: 7px; right: 50%; width: 42px; height: 4px; border-radius: 99px; background: var(--line-strong); transform: translateX(50%); content: ""; }
+      .filters-mobile-head strong { display: block; margin-top: 10px; font-size: 18px; }
+      .filters-mobile-head span { display: block; color: var(--muted); font-size: 12px; }
+      .filters-close { display: grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; margin-top: 8px; border-radius: 50%; color: var(--muted); background: var(--panel-strong); font-size: 20px; }
+      .filter-grid { grid-template-columns: 1fr; gap: 10px; padding: 0; }
+      .filter-grid .search-field { grid-column: auto; }
+      .field input, .field select { height: 52px; font-size: 14px; }
+      .filters-mobile-actions { position: sticky; bottom: -1px; display: grid; grid-template-columns: .7fr 1.3fr; gap: 8px; margin-top: 12px; padding-top: 11px; background: var(--panel-solid); }
+      .filters-mobile-actions button { min-height: 50px; border-radius: 15px; font-size: 13px; font-weight: 800; }
+      .filters-reset { color: var(--muted); border: 1px solid var(--line); background: var(--panel-strong); }
+      .filters-apply { color: #04100e; background: linear-gradient(120deg, var(--cyan), var(--blue)); }
+
+      main { padding: 22px 0 130px; }
+      .intro { display: block; min-height: 0; padding: 26px 2px 27px; text-align: right; }
+      .intro-copy { order: initial; }
+      .brand-stage { display: none; }
+      .intro-pill { min-height: 36px; padding-inline: 11px; font-size: 12px; }
+      .intro h1 { max-width: 350px; margin-top: 16px; font-size: clamp(39px, 12.5vw, 54px); line-height: 1.02; letter-spacing: -2px; }
+      .intro p { margin-top: 14px; font-size: 14px; line-height: 1.75; }
+      .intro-actions { margin-top: 19px; }
+      .intro-actions .primary-link, .intro-actions .secondary-link { flex: 1; min-height: 48px; padding-inline: 12px; font-size: 12px; }
+      .intro-proof { justify-content: space-between; gap: 8px; margin-top: 22px; padding-top: 17px; }
+      .proof-item { text-align: center; }
+      .proof-item strong { font-size: 18px; }
+      .proof-item small { font-size: 11px; }
+      .proof-line { height: 30px; }
+
+      .mobile-search-hub { display: block; margin: 0 0 14px; padding: 17px; border: 1px solid var(--line); border-radius: 23px; background: linear-gradient(145deg, var(--panel-strong), var(--panel)); box-shadow: 0 15px 42px rgba(0,0,0,.14); }
+      html[data-theme="light"] .mobile-search-modes { background: rgba(45,76,70,.06); }
+      .ali-live-search { display: none; }
+
+      .hero { min-height: 300px; border-radius: 24px; }
+      .hero-slide, .hero-slide.active { min-height: 300px; grid-template-columns: minmax(0, 1fr) 112px; gap: 11px; padding: 22px 18px 47px; }
+      .hero-copy { order: 1; text-align: right; }
+      .eyebrow { justify-content: flex-start; font-size: 11px; }
+      .eyebrow::before { width: 18px; }
+      .hero h2 { max-width: 100%; margin: 8px 0 0; font-size: 19px; line-height: 1.4; letter-spacing: -.3px; }
+      .hero-meta { align-items: start; justify-content: flex-start; flex-direction: column; gap: 2px; margin-top: 9px; }
+      .hero-discount { font-size: 14px; }
+      .old-price { font-size: 10px; }
+      .hero-actions { justify-content: flex-start; margin-top: 11px; }
+      .hero-actions .primary-link { width: 100%; min-height: 46px; }
+      .hero-actions .secondary-link { display: none; }
+      .hero-visual { order: 2; min-height: 126px; }
+      .hero-image-stage { width: 108px; padding: 13px; }
+      .hero-orbit { width: 120px; }
+      .hero-arrow { display: none; }
+      .hero-nav { bottom: 0; gap: 0; }
+      .hero-nav button, .hero-nav button.active { position: relative; width: 44px; height: 44px; background: transparent; }
+      .hero-nav button::after { position: absolute; top: 50%; right: 50%; width: 10px; height: 10px; border-radius: 999px; background: var(--dim); transform: translate(50%, -50%); transition: width .25s ease, background .25s ease; content: ""; }
+      .hero-nav button.active::after { width: 28px; background: var(--ink); }
+      .floating-chip { min-height: 32px; padding: 0 10px; font-size: 10px; }
+      .floating-chip.discount { top: 3%; right: -5%; }
+      .floating-chip.source { display: none; }
+
+      .trust-strip { display: flex; gap: 8px; margin: 10px 0 32px; padding-bottom: 2px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; }
+      .trust-strip::-webkit-scrollbar { display: none; }
+      .trust-item { flex: 0 0 82%; min-height: 68px; scroll-snap-align: start; padding: 10px 13px; }
+      .trust-copy strong { font-size: 13px; }
+      .trust-copy small { font-size: 11px; }
+
+      .section-head { align-items: start; margin-bottom: 17px; }
+      .section-head h2 { font-size: 28px; }
+      .section-head .overline, .section-stats { font-size: 12px; }
+      .section-stats { max-width: 120px; }
+      .market-switch { align-items: stretch; flex-direction: column; gap: 10px; padding: 13px; border-radius: 18px; }
+      .market-switch-copy strong { font-size: 14px; }
+      .market-switch-copy span { font-size: 11px; line-height: 1.55; }
+      .market-tabs { display: grid; grid-template-columns: repeat(3, 1fr); }
+      .market-tab { min-height: 44px; padding: 0 5px; font-size: 11px; }
+      .category-chips { gap: 7px; margin-bottom: 16px; }
+      .category-chip { min-height: 44px; padding-inline: 13px; font-size: 12px; }
+
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 10px; }
+      .load-more-button { width: 100%; }
+      .product-card,
+      .product-card:nth-child(1),
+      .product-card:nth-child(2),
+      .product-card:nth-child(6) { display: block !important; grid-column: auto !important; border-radius: 18px; }
+      .product-card.featured-mobile { grid-column: 1 / -1 !important; }
+      .product-card:nth-child(1) .product-media,
+      .product-card:nth-child(2) .product-media,
+      .product-card:nth-child(6) .product-media,
+      .product-card.featured-mobile .product-media { height: 225px; min-height: 0; }
+      .product-card.compact-mobile .product-media { height: 150px; min-height: 0; padding: 13px; }
+      .product-card.compact-mobile .media-product-link { padding: 13px; }
+      .product-card:nth-child(6) .product-body,
+      .product-card.featured-mobile .product-body { display: block; padding: 17px; }
+      .product-card.compact-mobile .product-body { padding: 11px; }
+      .product-card:nth-child(1) .product-body h3,
+      .product-card:nth-child(6) .product-body h3,
+      .product-card.featured-mobile .product-body h3 { min-height: 3.15em; font-size: 15px; }
+      .product-card.compact-mobile .product-body h3 { min-height: 4.65em; font-size: 13px; line-height: 1.55; -webkit-line-clamp: 3; }
+      .product-card.compact-mobile .discount-badge { top: 8px; right: 8px; max-width: calc(100% - 16px); padding: 5px 7px; overflow: hidden; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+      .product-card.compact-mobile .category-tag { display: none; }
+      .product-card.compact-mobile .store-badge { right: 8px; bottom: 8px; min-height: 27px; padding-inline: 7px; font-size: 10px; }
+      .product-card.compact-mobile .quick-meta { align-items: start; flex-direction: column; gap: 1px; margin-top: 9px; }
+      .product-card.compact-mobile .quick-meta strong { font-size: 13px; }
+      .product-card.compact-mobile .quick-meta span { font-size: 10px; }
+      .product-card.compact-mobile .deal-details,
+      .product-card.compact-mobile .quick-look,
+      .product-card.compact-mobile .share-button { display: none; }
+      .product-card.featured-mobile .quick-look { min-height: 44px; opacity: 1; transform: translate(-50%, 0); }
+      .product-card.compact-mobile .card-actions { grid-template-columns: 1fr; gap: 0; margin-top: 10px; }
+      .product-card.compact-mobile .card-cta { min-height: 44px; padding: 0 7px; border-radius: 12px; font-size: 11px; }
+      .product-card.compact-mobile .cta-desktop { display: none; }
+      .product-card.compact-mobile .cta-mobile { display: inline; }
+
+      .story { margin-top: 68px; }
+      .story-grid { grid-template-columns: 1fr; }
+      .story-card.large, .story-card.small { grid-column: 1; min-height: 260px; padding: 25px; }
+      .story-card.large { min-height: 340px; }
+      .story-orb { width: 110px; }
+      .seo-directory { padding: 22px 17px; }
+      .seo-links { grid-template-columns: 1fr; }
+      .seo-links a { min-height: 70px; font-size: 14px; }
+      .seo-links a span { font-size: 11px; }
+
+      #quickViewModal { place-items: end center; padding: 0; }
+      .quick-view-grid { grid-template-columns: 1fr; }
+      .quick-view-box { width: 100%; max-height: 92dvh; overflow-y: auto; border-radius: 27px 27px 0 0; }
+      .quick-view-box::before { position: absolute; z-index: 3; top: 8px; right: 50%; width: 42px; height: 4px; border-radius: 99px; background: var(--line-strong); transform: translateX(50%); content: ""; }
+      .quick-view-media { min-height: 210px; max-height: 245px; padding: 27px; }
+      .quick-view-copy { padding: 24px 20px calc(24px + env(safe-area-inset-bottom)); }
+      .quick-view-copy h3 { font-size: 21px; }
+      .close-button { width: 44px; height: 44px; }
+
+      .mobile-dock { position: fixed; z-index: 55; right: 50%; bottom: max(10px, env(safe-area-inset-bottom)); display: grid; grid-template-columns: repeat(4, 1fr); width: min(360px, calc(100% - 24px)); min-height: 64px; padding: 6px; border: 1px solid var(--line-strong); border-radius: 22px; background: color-mix(in srgb, var(--panel-solid) 88%, transparent); box-shadow: 0 20px 60px rgba(0,0,0,.4); backdrop-filter: var(--glass); transform: translateX(50%); transition: transform .28s cubic-bezier(.2,.8,.2,1), opacity .22s ease; }
+      .mobile-dock.is-hidden { opacity: 0; pointer-events: none; transform: translate(50%, calc(100% + 24px)); }
+      .mobile-dock a, .mobile-dock button { display: grid; min-height: 50px; place-items: center; gap: 1px; border-radius: 15px; color: var(--muted); background: transparent; font-size: 11px; font-weight: 700; }
+      .mobile-dock a span, .mobile-dock button span { color: var(--ink); font-size: 17px; }
+      .mobile-dock a:active, .mobile-dock button:active { background: rgba(120,201,193,.1); }
+      footer { padding-bottom: 92px; }
+      .footer-inner { grid-template-columns: 1fr; gap: 20px; }
+      .disclosure { font-size: 12px; }
+    }
+
+    @media (max-width: 350px) {
+      .shell { width: min(100% - 18px, 1180px); }
+      .intro h1 { font-size: 38px; }
+      .mobile-search-hub { padding: 14px; }
+      .hero-slide, .hero-slide.active { grid-template-columns: minmax(0, 1fr) 96px; gap: 8px; padding-inline: 14px; }
+      .hero-image-stage { width: 94px; }
+      .hero-orbit { width: 104px; }
+      .hero h2 { font-size: 17px; }
+      .product-card.compact-mobile .product-media { height: 138px; }
+      .product-card.compact-mobile .product-body { padding: 9px; }
+      .mobile-dock { width: calc(100% - 16px); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+  <link rel="stylesheet" href="site-language.css">
+  <link rel="stylesheet" href="discovery.css?v=essential-1">
+  <link rel="stylesheet" href="essential-layout.css?v=essential-1">
+  <link rel="stylesheet" href="live-theme.css?v=sand-ink-2">
+</head>
+<body class="catalog-page">
+  <svg class="discovery-symbols" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+    <symbol id="discover-headphones" viewBox="0 0 64 64"><path d="M12 36v-7a20 20 0 0 1 40 0v7"/><rect x="9" y="31" width="11" height="23" rx="5"/><rect x="44" y="31" width="11" height="23" rx="5"/><path d="M20 27a12 12 0 0 1 24 0"/></symbol>
+    <symbol id="discover-home" viewBox="0 0 64 64"><path d="M17 34V23a8 8 0 0 1 8-8h14a8 8 0 0 1 8 8v11M16 49v6m32-6v6"/><path d="M17 37V33a5 5 0 0 0-10 0v12a5 5 0 0 0 5 5h40a5 5 0 0 0 5-5V33a5 5 0 0 0-10 0v4Z"/><path d="M21 29h22"/></symbol>
+    <symbol id="discover-fashion" viewBox="0 0 64 64"><path d="m23 10-15 8 7 15 8-4v25h26V29l8 4 7-15-15-8" transform="translate(-4 0)"/><path d="M23 10a9 9 0 0 0 18 0"/></symbol>
+    <symbol id="discover-car" viewBox="0 0 64 64"><path d="m12 29 5-15h30l5 15M8 28h48v22H8zM15 50v5m34-5v5M18 36h5m18 0h5M27 43h10"/><path d="M4 25h6m44 0h6"/></symbol>
+    <symbol id="discover-beauty" viewBox="0 0 64 64"><rect x="13" y="28" width="23" height="29" rx="6"/><path d="M19 28V16h11v12M24 16V8h14v5M19 41h11"/><rect x="44" y="34" width="10" height="23" rx="2"/><path d="M46 34V22l6-5v17"/></symbol>
+    <symbol id="discover-kids" viewBox="0 0 64 64"><path d="M20 21a8 8 0 1 1 8-10m16 10a8 8 0 1 0-8-10"/><circle cx="32" cy="29" r="20"/><path d="M24 27v1m16-1v1m-12 8 4 3 4-3M19 46l-4 11m30-11 4 11"/></symbol>
+    <symbol id="discover-search" viewBox="0 0 64 64"><circle cx="27" cy="27" r="17"/><path d="m40 40 15 15"/></symbol>
+    <symbol id="discover-bag" viewBox="0 0 64 64"><path d="M13 23h38l4 34H9zM23 23V15a9 9 0 0 1 18 0v8M23 37a9 9 0 0 0 18 0"/></symbol>
+  </defs></svg>
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+  <div class="ambient one"></div>
+  <div class="ambient two"></div>
+
+  <header class="site-header">
+    <div class="shell">
+      <div class="nav-row">
+        <a class="brand" href="./" aria-label="الصفحة الرئيسية">
+          <span class="brand-plate">
+            <img class="brand-logo" src="assets/overly-dark-logo-trimmed.webp" width="520" height="213" alt="أوفرلي" fetchpriority="high" decoding="async">
+          </span>
+        </a>
+
+        <nav class="desktop-nav" aria-label="التنقل الرئيسي">
+          <a href="./">الرئيسية</a>
+          <a href="#dealsTitle">العروض</a>
+          <a href="categories/">التصنيفات</a>
+          <a href="guides/">الأدلة</a>
+          <a href="#whyOverly">لماذا أوفرلي؟</a>
+        </nav>
+
+        <div class="nav-actions">
+          <button class="icon-button" id="themeToggle" type="button" aria-label="تبديل مظهر الموقع">☀︎</button>
+          <button class="filter-button" id="filterToggle" type="button" aria-label="فتح البحث والفلاتر" aria-expanded="false" aria-controls="filtersDrawer">
+            <span>⌕</span><span class="filter-label">بحث وفلاتر</span><span class="chevron">⌄</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="filters-drawer" id="filtersDrawer">
+      <div class="filters-inner">
+        <div class="filters-mobile-head">
+          <div><strong>رتّب النتائج بطريقتك</strong><span>بحث وتصنيف وترتيب في مكان واحد</span></div>
+          <button class="filters-close" id="filtersClose" type="button" aria-label="إغلاق الفلاتر">×</button>
+        </div>
+        <div class="filter-grid">
+          <div class="field search-field">
+            <span class="field-icon">⌕</span>
+            <input id="searchInput" type="search" placeholder="ابحث عن شاحن، منزل، حقيبة…" aria-label="ابحث في العروض">
+          </div>
+          <div class="field">
+            <select id="categorySelect" aria-label="اختر التصنيف">
+              <option value="الكل">كل التصنيفات</option>
+              <option value="الإلكترونيات">الإلكترونيات</option>
+              <option value="التنظيف والمنظفات">التنظيف والمنظفات</option>
+              <option value="الأزياء والأحذية">الأزياء والأحذية</option>
+              <option value="المطبخ والأجهزة المنزلية">المطبخ والأجهزة المنزلية</option>
+              <option value="الأثاث والديكور">الأثاث والديكور</option>
+              <option value="المنزل">المنزل</option>
+              <option value="السيارة">السيارة</option>
+              <option value="السفر">السفر</option>
+              <option value="الرحلات والبحر والتخييم">الرحلات والبحر والتخييم</option>
+              <option value="الحدائق والزراعة">الحدائق والزراعة</option>
+              <option value="الجمال والعناية">الجمال والعناية</option>
+              <option value="الصحة والعناية">الصحة والعناية</option>
+              <option value="البقالة والمشروبات">البقالة والمشروبات</option>
+              <option value="الرياضة">الرياضة</option>
+              <option value="الأطفال">الأطفال</option>
+              <option value="الألعاب">الألعاب</option>
+              <option value="الحيوانات الأليفة">الحيوانات الأليفة</option>
+              <option value="الأدوات والهوايات">الأدوات والهوايات</option>
+              <option value="الترفيه المنزلي">الترفيه المنزلي</option>
+              <option value="المدرسة والقرطاسية">المدرسة والقرطاسية</option>
+              <option value="الكتب والمكتب">الكتب والمكتب</option>
+              <option value="الساعات والمجوهرات">الساعات والمجوهرات</option>
+              <option value="تسوق متنوع">تسوق متنوع</option>
+            </select>
+          </div>
+          <div class="field">
+            <select id="sortSelect" aria-label="ترتيب العروض">
+              <option value="smart">اختيارات أوفرلي</option>
+              <option value="discount">الأعلى خصمًا</option>
+              <option value="price-high">السعر قبل الخصم: الأعلى</option>
+              <option value="price-low">السعر قبل الخصم: الأقل</option>
+              <option value="name">الاسم أبجديًا</option>
+            </select>
+          </div>
+        </div>
+        <div class="filters-mobile-actions">
+          <button class="filters-reset" id="filtersReset" type="button">إعادة تعيين</button>
+          <button class="filters-apply" id="filtersApply" type="button">عرض <b id="filterResultCount">٠</b> نتيجة</button>
+        </div>
+      </div>
+    </div>
+  </header>
+  <button class="filters-backdrop" id="filtersBackdrop" type="button" aria-label="إغلاق نافذة الفلاتر"></button>
+
+  <main class="shell" id="top">
+    <section class="intro" aria-labelledby="introTitle">
+      <div class="intro-copy">
+        <div class="intro-message">
+        <div class="intro-pill"><span class="live-dot"></span> اختيارات أوفرلي <span class="intro-edition" aria-hidden="true">THE OVERLY EDIT</span></div>
+        <h1 id="introTitle">تفاصيل صغيرة.<br><span>تغيّر يومك.</span></h1>
+        <p>اكتشف منتجات أمازون السعودية وعلي إكسبريس في مكان واحد، واشترِ مباشرة من المتجر.</p>
+        </div>
+        <div class="intro-controls">
+        <form class="discovery-intro-search" id="discoverySearchForm" role="search" aria-label="ابحث في منتجات أوفرلي">
+          <svg aria-hidden="true"><use href="#discover-search"/></svg>
+          <input id="discoverySearchInput" type="search" aria-label="اسم المنتج الذي تبحث عنه" placeholder="وش على بالك اليوم؟" minlength="2" maxlength="80" required autocomplete="off">
+          <button type="submit">اكتشف <span aria-hidden="true">←</span></button>
+        </form>
+        <div class="intro-actions">
+          <a class="primary-link" href="#discoverCategories">اكتشف ما يناسبك <span aria-hidden="true">↙</span></a>
+          <button class="secondary-link welcome-replay" type="button" aria-haspopup="dialog" aria-controls="welcomeDialog">كيف يعمل أوفرلي؟ <span aria-hidden="true">◉</span></button>
+        </div>
+        </div>
+      </div>
+      <div class="discovery-scene" aria-label="ابدأ من اهتماماتك">
+        <div class="scene-tiles">
+          <a href="categories/electronics/" data-discover-category="الإلكترونيات" class="scene-tile mint"><div class="scene-tile-copy"><span class="scene-tile-index" aria-hidden="true">01 / TECH</span><b>تقنية تحبّها.</b><span class="scene-tile-note">لتفاصيل يومك</span><span class="scene-tile-cta">اكتشف التقنية <i aria-hidden="true">↗</i></span></div><span class="scene-icon-frame" aria-hidden="true"><img class="scene-product-image" width="320" height="320" alt="آيباد من منتجات قسم التقنية" decoding="async" hidden><svg><use href="#discover-headphones"/></svg></span></a>
+          <a href="categories/home/" data-discover-category="المنزل" class="scene-tile sand"><div class="scene-tile-copy"><span class="scene-tile-index" aria-hidden="true">02 / HOME</span><b>بيت يشبهك.</b><span class="scene-tile-note">لمساحتك الخاصة</span><span class="scene-tile-cta">اكتشف المنزل <i aria-hidden="true">↗</i></span></div><span class="scene-icon-frame" aria-hidden="true"><img class="scene-product-image" width="320" height="320" alt="جهاز تنقية الهواء من منتجات قسم المنزل" decoding="async" hidden><svg><use href="#discover-home"/></svg></span></a>
+        </div>
+      </div>
+      <div class="intro-proof" aria-label="ملخص المنصة">
+        <div class="proof-item"><strong id="introDealCount">٠</strong><small>منتج للاكتشاف</small></div>
+        <span class="proof-line"></span>
+        <div class="proof-item"><strong>٢</strong><small>منصات تسوق</small></div>
+        <span class="proof-line"></span>
+        <div class="proof-item"><strong>مباشرة</strong><small>الشراء من المتجر</small></div>
+      </div>
+    </section>
+
+    <section class="discovery-categories" id="discoverCategories" aria-labelledby="discoveryTitle">
+      <div class="discovery-section-head"><div><span class="discovery-eyebrow">البداية من اهتمامك</span><h2 id="discoveryTitle" tabindex="-1">وش ودّك تكتشف؟</h2></div><a href="categories/">كل التصنيفات <span aria-hidden="true">↗</span></a></div>
+      <div class="discovery-category-grid" id="discoveryCategoryGrid" role="group" aria-label="تصنيفات التسوق" aria-describedby="discoveryCategoryHint" tabindex="0"></div>
+      <p class="discovery-note" id="discoveryCategoryHint"><span class="discovery-swipe-hint">مرّر لاكتشاف الأقسام ← · </span>اختر قسمًا لعرض منتجاته هنا.</p>
+    </section>
+
+    <section class="hero" id="hero" aria-label="أبرز العروض"></section>
+
+    <section class="mobile-search-hub" id="mobileSearchHub" aria-labelledby="mobileSearchTitle">
+      <div class="mobile-search-head">
+        <div><strong id="mobileSearchTitle">وش تدور عليه؟</strong><span>ابحث في أوفرلي أو في AliExpress مباشرة</span></div>
+        <span class="mobile-search-icon" aria-hidden="true">⌕</span>
+      </div>
+      <div class="mobile-search-modes" role="group" aria-label="نطاق البحث">
+        <button class="mobile-search-mode active" type="button" data-mobile-search-mode="local" aria-pressed="true">عروض أوفرلي</button>
+        <button class="mobile-search-mode" type="button" data-mobile-search-mode="ali" aria-pressed="false">AliExpress كامل</button>
+      </div>
+      <form class="mobile-search-form" id="mobileSearchForm">
+        <input class="mobile-search-input" id="mobileSearchInput" type="search" minlength="2" maxlength="80" autocomplete="off" placeholder="ابحث في المنتجات المحفوظة…" aria-label="البحث في المنتجات">
+        <button class="mobile-search-submit" id="mobileSearchSubmit" type="submit" aria-label="تنفيذ البحث">⌕</button>
+      </form>
+      <div class="mobile-search-suggestions" aria-label="تصنيفات وعبارات رائجة">
+        <button class="mobile-search-suggestion" type="button" data-mobile-query="" data-mobile-category="الكل">الأكثر رواجًا</button>
+        <button class="mobile-search-suggestion" type="button" data-mobile-query="منزل ذكي">منزل ذكي</button>
+        <button class="mobile-search-suggestion" type="button" data-mobile-query="ترفيه منزلي" data-mobile-category="الترفيه المنزلي">ترفيه منزلي</button>
+        <button class="mobile-search-suggestion" type="button" data-mobile-query="سيارة" data-mobile-category="السيارة">للسيارة</button>
+        <button class="mobile-search-suggestion" type="button" data-mobile-query="سفر" data-mobile-category="السفر">للسفر</button>
+        <button class="mobile-search-suggestion" type="button" data-mobile-query="حدائق" data-mobile-category="الحدائق والزراعة">للحدائق</button>
+        <button class="mobile-search-suggestion" type="button" data-mobile-query="صيد" data-mobile-category="الرحلات والبحر والتخييم">للبحر والصيد</button>
+        <button class="mobile-search-suggestion" type="button" data-mobile-query="تخييم" data-mobile-category="الرحلات والبحر والتخييم">للتخييم</button>
+        <button class="mobile-search-suggestion" type="button" data-mobile-query="أدوات مدرسية" data-mobile-category="المدرسة والقرطاسية">للمدرسة والقرطاسية</button>
+      </div>
+      <div class="mobile-search-status" id="mobileSearchStatus" role="status" aria-live="polite">اختر النطاق ثم اكتب ما تبحث عنه.</div>
+    </section>
+
+
+
+    <div class="trust-strip" aria-label="مزايا الموقع">
+      <div class="trust-item"><span class="trust-icon">✓</span><span class="trust-copy"><strong>بلا مبالغة</strong><small>نسب الخصم كما رُصدت</small></span></div>
+      <div class="trust-item"><span class="trust-icon">⌁</span><span class="trust-copy"><strong>السعر الحالي</strong><small>يُتحقق مباشرة لدى المتجر</small></span></div>
+      <div class="trust-item"><span class="trust-icon">↗</span><span class="trust-copy"><strong>طريق مختصر</strong><small>رابط مباشر إلى صفحة المنتج</small></span></div>
+    </div>
+
+    <section class="ali-live-search" id="aliSearchSection" aria-labelledby="aliSearchTitle">
+      <div class="ali-search-head">
+        <div class="ali-search-title">
+          <span class="ali-search-mark">A</span>
+          <div><strong id="aliSearchTitle">ابحث في AliExpress بالكامل</strong><span>بحث مباشر عبر الواجهة الرسمية — لا يقتصر على المنتجات المحفوظة</span></div>
+        </div>
+        <span class="saudi-shipping-badge">يشحن إلى السعودية فقط</span>
+      </div>
+      <form class="ali-search-form" id="aliSearchForm">
+        <input class="ali-search-input" id="aliSearchInput" type="search" minlength="2" maxlength="80" autocomplete="off" placeholder="مثال: شاحن سريع، كاميرا سيارة، أداة مطبخ…" aria-label="ابحث في منتجات AliExpress القابلة للشحن للسعودية" required>
+        <button class="ali-search-submit" id="aliSearchSubmit" type="submit">ابحث في AliExpress ⌕</button>
+      </form>
+      <div class="ali-search-suggestions" aria-label="اقتراحات بحث">
+        <button class="ali-search-chip" type="button" data-ali-query="شاحن سريع USB C">شواحن سريعة</button>
+        <button class="ali-search-chip" type="button" data-ali-query="كاميرا سيارة">كاميرات سيارة</button>
+        <button class="ali-search-chip" type="button" data-ali-query="منزل ذكي">منزل ذكي</button>
+        <button class="ali-search-chip" type="button" data-ali-query="أدوات مطبخ ذكية">أدوات مطبخ</button>
+        <button class="ali-search-chip" type="button" data-ali-query="إكسسوارات سفر">إكسسوارات سفر</button>
+      </div>
+      <div class="ali-search-status" id="aliSearchStatus" role="status" aria-live="polite">النتائج تعتمد على توفر الشحن إلى السعودية وقت البحث.</div>
+    </section>
+
+    <section aria-labelledby="dealsTitle">
+      <div class="section-head">
+        <div>
+          <div class="overline">اختيارات أوفرلي الحالية</div>
+          <h2 id="dealsTitle">ما يستحق نظرتك</h2>
+        </div>
+        <div class="section-stats"><strong id="resultCount">0</strong> عروض<br><span id="updatedAt"></span></div>
+      </div>
+      <div class="market-switch" aria-label="اختيار منصة التسوق">
+        <div class="market-switch-copy"><strong>تصفّح حسب المتجر</strong><span>الأسعار والتوفر النهائيان لدى المنصة المختارة · <a href="stores/amazon/">Amazon</a> · <a href="stores/aliexpress/">AliExpress</a></span></div>
+        <div class="market-tabs" id="marketTabs">
+          <button class="market-tab active" type="button" data-store="all" onclick="setStore('all')">كل العروض</button>
+          <button class="market-tab" type="button" data-store="amazon" onclick="setStore('amazon')">Amazon</button>
+          <button class="market-tab" type="button" data-store="aliexpress" onclick="setStore('aliexpress')">AliExpress</button>
+        </div>
+      </div>
+      <div class="category-chips" id="categoryChips" aria-label="تصنيفات المنتجات"></div>
+      <div class="grid" id="dealsGrid"></div>
+      <div class="load-more-wrap hidden" id="loadMoreWrap">
+        <span class="infinite-spinner" id="infiniteSpinner" aria-hidden="true"></span>
+        <span class="load-more-note" id="loadMoreNote" aria-live="polite"></span>
+        <button class="load-more-button" id="loadMoreButton" type="button">تحميل المزيد</button>
+      </div>
+      <div class="empty hidden" id="emptyState"><strong id="emptyTitle">لا توجد نتائج مطابقة</strong><span id="emptyDescription">جرّب كلمة أخرى أو غيّر التصنيف.</span></div>
+    </section>
+
+    <section class="story" id="whyOverly" aria-labelledby="whyTitle">
+      <div class="section-head">
+        <div>
+          <div class="overline">فلسفة أوفرلي</div>
+          <h2 id="whyTitle">أقل ضجيجًا. أوضح قرارًا.</h2>
+        </div>
+      </div>
+      <div class="story-grid">
+        <article class="story-card large">
+          <div class="story-kicker">اختيار واعٍ</div>
+          <h3>لا نعرض كل شيء.<br>نعرض ما يستحق نظرتك.</h3>
+          <p>تجربة مصممة حول الوضوح: منتج، خصم مرصود، ورابط مباشر للتحقق من السعر الحالي لدى المتجر.</p>
+          <div class="story-number">01</div>
+          <div class="story-orb" aria-hidden="true"></div>
+        </article>
+        <article class="story-card small">
+          <div class="story-kicker">وضوح السعر</div>
+          <h3>المتجر هو المرجع النهائي.</h3>
+          <p>السعر والتوفر المعتمدان هما الظاهران على Amazon.sa أو AliExpress لحظة الشراء.</p>
+        </article>
+        <article class="story-card small">
+          <div class="story-kicker">شفافية</div>
+          <h3>الإفصاح جزء من التجربة.</h3>
+          <p>روابط العمولة موضحة، ولا تضيف أي تكلفة على المشتري.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="seo-directory" aria-labelledby="exploreTitle">
+      <div class="overline">روابط واضحة لمحركات البحث والزوار</div>
+      <h2 id="exploreTitle">استكشف أوفرلي حسب احتياجك</h2>
+      <p>صفحات ثابتة تتحدث آليًا مع قائمة المنتجات، وتساعدك على الوصول إلى القسم المناسب بسرعة.</p>
+      <nav class="seo-links" aria-label="دليل أقسام أوفرلي">
+        <a href="categories/electronics/">الإلكترونيات<span>شواحن وأجهزة وملحقات</span></a>
+        <a href="categories/home/">المنزل<span>تنظيم ومطبخ ومنزل ذكي</span></a>
+        <a href="categories/car/">السيارة<span>أدوات وإكسسوارات عملية</span></a>
+        <a href="categories/travel/">السفر<span>راحة وتنظيم أثناء التنقل</span></a>
+        <a href="categories/garden/">الحدائق والزراعة<span>ري وتقليم وأدوات عملية</span></a>
+        <a href="categories/outdoors/">الرحلات والبحر والتخييم<span>صيد وغوص وتجهيزات رحلات</span></a>
+        <a href="categories/fashion/">الأزياء والأحذية<span>ملابس وأحذية وإكسسوارات</span></a>
+        <a href="categories/beauty-care/">الجمال والعناية<span>عناية شخصية وأدوات</span></a>
+        <a href="categories/sports/">الرياضة<span>لياقة ونشاط يومي</span></a>
+        <a href="categories/kids/">الأطفال<span>منتجات عملية للأسرة</span></a>
+        <a href="categories/pets/">الحيوانات الأليفة<span>أدوات للعناية اليومية</span></a>
+        <a href="categories/tools-hobbies/">الأدوات والهوايات<span>مشروعات وهوايات منزلية</span></a>
+        <a href="categories/home-entertainment/">الترفيه المنزلي<span>بروجكترات وتلفزيونات</span></a>
+        <a href="guides/">أدلة الشراء<span>قوائم فحص قبل الطلب</span></a>
+      </nav>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo-plate"><img class="footer-logo" src="assets/overly-dark-logo-trimmed.webp" width="520" height="213" alt="أوفرلي" loading="lazy" decoding="async"></div>
+        <p>العروض أوضح. الاختيار أسرع.</p>
+      </div>
+      <div class="disclosure">
+        إفصاح: بصفتنا مشاركين في برنامج أمازون أسوشيتس (Amazon Associates)، نحصل على عمولة من عمليات الشراء المؤهلة عبر روابط أمازون دون تكلفة إضافية عليك. وقد تتضمن الصفحة روابط تسويق بالعمولة لمتاجر أخرى مثل AliExpress. الأسعار ونسب الخصم كما رُصدت وقت آخر تحديث وقد تتغيّر — السعر النهائي المعتمد هو الظاهر لدى المتجر لحظة الشراء.
+        <nav class="footer-legal-links" aria-label="الصفحات القانونية">
+          <a href="about.html">عن أوفرلي</a>
+          <a href="methodology.html">منهجية الاختيار</a>
+          <a href="categories/">التصنيفات</a>
+          <a href="guides/">أدلة الشراء</a>
+          <a href="privacy.html">سياسة الخصوصية</a>
+          <a href="terms.html">شروط الاستخدام</a>
+          <a href="affiliate-disclosure.html">إفصاح العمولة</a>
+          <a href="copyright.html">حقوق الملكية</a>
+        </nav>
+        <div class="copyright" id="copyright"></div>
+      </div>
+    </div>
+  </footer>
+
+  <nav class="mobile-dock" id="mobileDock" aria-label="التنقل السريع">
+    <a href="./"><span>⌂</span>الرئيسية</a>
+    <a href="#dealsTitle"><span>◇</span>العروض</a>
+    <a href="categories/"><span>▦</span>الأقسام</a>
+    <button id="mobileSearchButton" type="button"><span>⌕</span>بحث</button>
+  </nav>
+
+  <div class="overlay hidden" id="exitModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-box">
+      <button class="close-button" id="closeModal" type="button" aria-label="إغلاق">×</button>
+      <div class="modal-icon">🔥</div>
+      <h3 id="modalTitle"></h3>
+      <p id="modalDescription"></p>
+      <a class="primary-link" id="modalLink" href="#" rel="sponsored noopener noreferrer">اعرض العرض لدى المتجر ↗</a>
+      <button class="skip" id="skipModal" type="button">لا شكرًا، سأكمل التصفح</button>
+    </div>
+  </div>
+
+  <div class="overlay hidden" id="redirect" aria-live="polite">
+    <div class="redirect-box">
+      <div class="spinner"></div>
+      <h3>جاري التحقق من توفر العرض…</h3>
+      <p>سيتم تحويلك بأمان إلى صفحة المنتج لدى المتجر خلال لحظات</p>
+    </div>
+  </div>
+
+  <div class="overlay hidden" id="quickViewModal" role="dialog" aria-modal="true" aria-labelledby="quickTitle">
+    <div class="quick-view-box">
+      <button class="close-button" id="closeQuickView" type="button" aria-label="إغلاق النظرة السريعة">×</button>
+      <div class="quick-view-grid">
+        <div class="quick-view-media"><img id="quickImage" src="assets/overly-icon.webp" alt="صورة المنتج"></div>
+        <div class="quick-view-copy">
+          <div class="category" id="quickCategory"></div>
+          <h3 id="quickTitle"></h3>
+          <div class="saving" id="quickSaving"></div>
+          <div class="before" id="quickBefore"></div>
+          <div class="quick-view-meta">
+            <div><span>رقم المنتج</span><b id="quickAsin" dir="ltr"></b></div>
+            <div><span>السعر والتوفر</span><b id="quickStore">يُتحقق لدى المتجر</b></div>
+          </div>
+          <a class="primary-link" id="quickLink" href="#" rel="sponsored noopener noreferrer">اعرض السعر الحالي ↗</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <dialog class="welcome-dialog" id="welcomeDialog" aria-labelledby="welcomeTitle1" aria-describedby="welcomeText1">
+    <div class="welcome-top"><img src="assets/overly-dark-logo-trimmed.webp" width="104" height="43" alt="أوفرلي"><button id="welcomeSkip" type="button" autofocus>تخطّي الجولة <span aria-hidden="true">×</span></button></div>
+    <div class="welcome-panels">
+      <section class="welcome-slide" data-welcome-slide>
+        <div class="welcome-art art-meet" aria-hidden="true">
+          <span class="art-kicker">وجهاتك المفضلة، أقرب.</span>
+          <div class="welcome-store-row"><span>amazon<span class="store-sa">.sa</span><i></i></span><span>AliExpress<i></i></span></div>
+          <div class="art-connector"></div><div class="welcome-bag"><svg><use href="#discover-bag"/></svg></div>
+          <span class="art-caption">متجران. مساحة واحدة للاكتشاف.</span>
+        </div>
+        <div class="welcome-copy"><span class="discovery-eyebrow">٠١ / أهلًا بك في أوفرلي</span><h2 id="welcomeTitle1">اكتشاف حلو،<br><em>يبدأ من هنا.</em></h2><p id="welcomeText1">نجمع لك منتجات من أمازون السعودية وعلي إكسبريس، عشان تبدأ بحثك من مكان واحد وتكتشف أشياء تناسبك.</p></div>
+      </section>
+      <section class="welcome-slide" data-welcome-slide hidden>
+        <div class="welcome-art art-explore" aria-hidden="true">
+          <span class="art-kicker">اختر طريقك للاكتشاف</span>
+          <div class="art-search"><svg><use href="#discover-search"/></svg><span>وش على بالك اليوم؟</span><b>↵</b></div>
+          <div class="art-category-row"><span><svg><use href="#discover-headphones"/></svg>التقنية</span><span><svg><use href="#discover-home"/></svg>المنزل</span><span><svg><use href="#discover-fashion"/></svg>الأزياء</span></div>
+          <span class="art-caption">ابحث باسم المنتج، أو ابدأ من قسم تحبّه.</span>
+        </div>
+        <div class="welcome-copy"><span class="discovery-eyebrow">٠٢ / على ذوقك أنت</span><h2 id="welcomeTitle2">عارف وش تبي؟<br><em>أو جاي تكتشف؟</em></h2><p id="welcomeText2">ابحث عن احتياجك أو تصفّح التصنيفات. استعرض تفاصيل المنتجات، واختر المتجر ورتّب النتائج بالطريقة المناسبة لك.</p></div>
+      </section>
+      <section class="welcome-slide" data-welcome-slide hidden>
+        <div class="welcome-art art-shop" aria-hidden="true">
+          <span class="art-kicker">من الاكتشاف إلى اختيارك</span>
+          <div class="art-receipt"><span>اختيارك من أوفرلي <svg><use href="#discover-bag"/></svg></span><div><b>المنتج اللي يناسبك</b><small>السعر والتوفر النهائيان لدى المتجر</small></div><strong>أكمل عند المتجر <i>↗</i></strong></div>
+          <span class="art-caption">تصفّح هنا. واشترِ مباشرة من المتجر.</span>
+        </div>
+        <div class="welcome-copy"><span class="discovery-eyebrow">٠٣ / اختر وأنت على بيّنة</span><h2 id="welcomeTitle3">عجبك شيء؟<br><em>باقي خطوة.</em></h2><p id="welcomeText3">افتح رابط المنتج للتحقق من السعر والشحن والتوفر، وأكمل الشراء في المتجر نفسه. أوفرلي دليل تسوّق، وليس جهة البيع.</p><p class="welcome-disclosure">قد نحصل على عمولة عند الشراء عبر روابطنا، دون تكلفة إضافية عليك.</p></div>
+      </section>
+    </div>
+    <div class="welcome-footer">
+      <div class="welcome-footer-main">
+        <div class="welcome-progress" role="group" aria-label="خطوات التعريف بالموقع"><button type="button" data-welcome-step="0" aria-label="الخطوة الأولى: فكرة أوفرلي" aria-current="step"></button><button type="button" data-welcome-step="1" aria-label="الخطوة الثانية: الاكتشاف"></button><button type="button" data-welcome-step="2" aria-label="الخطوة الثالثة: الشراء"></button></div>
+        <div class="welcome-controls"><button type="button" id="welcomeBack" disabled>السابق</button><button type="button" id="welcomeNext">التالي <span aria-hidden="true">←</span></button></div>
+      </div>
+      <div class="welcome-meta"><span>جولة اختيارية، على راحتك.</span><span id="welcomeStatus" role="status" aria-live="polite">الخطوة ١ من ٣</span></div>
+    </div>
+  </dialog>
+
+  <script src="catalog-locale.js"></script>
+  <script src="catalog-additions.js"></script>
+  <script src="catalog-native-en.js"></script>
+  <script src="site-copy-en.js"></script>
+  <script src="legal-copy-en.js"></script>
+  <script src="site-extra-en.js"></script>
+  <script src="site-angles-en.js"></script>
+  <script src="site-phrases.js"></script>
+  <script src="locale.js"></script>
+  <script src="site-language.js"></script>
+  <script src="search-config.js"></script>
+  <script>
+    const AFFILIATE_TAG = "faraj733-21";
+    const amazonLink = asin => `https://www.amazon.sa/dp/${asin}/?tag=${AFFILIATE_TAG}`;
+    const storeOf = deal => String(deal.store || "amazon").toLowerCase() === "aliexpress" ? "aliexpress" : "amazon";
+    const dealKey = deal => String(deal.asin || deal.product_id || deal.id || "");
+    const storeMeta = deal => storeOf(deal) === "aliexpress"
+      ? {key:"aliexpress", name:"AliExpress", host:"AliExpress", cta:"اعرض السعر الحالي على AliExpress ↗"}
+      : {key:"amazon", name:"Amazon.sa", host:"Amazon.sa", cta:"اعرض السعر الحالي على أمازون ↗"};
+    const safeHttpsUrl = (value, allowedDomains) => {
+      try {
+        const url = new URL(String(value || ""));
+        const host = url.hostname.toLowerCase();
+        if (url.protocol !== "https:" || !allowedDomains.some(domain => host === domain || host.endsWith(`.${domain}`))) return "";
+        return url.href;
+      } catch (_) { return ""; }
+    };
+    const safeAliExpressAffiliateUrl = value => {
+      const safe = safeHttpsUrl(value, ["aliexpress.com", "aliexpress.us"]);
+      if (!safe) return "";
+      const url = new URL(safe);
+      const host = url.hostname.toLowerCase();
+      if (host === "s.click.aliexpress.com") return url.href;
+      const platform = String(url.searchParams.get("aff_platform") || "").toLowerCase();
+      return String(url.searchParams.get("aff_fcid") || "").trim()
+        && String(url.searchParams.get("aff_trace_key") || "").trim()
+        && platform.includes("api")
+        ? url.href
+        : "";
+    };
+    const safeOwnerAmazonImage = value => {
+      try {
+        const url = new URL(String(value || ""), location.href);
+        const sameOrigin = url.origin === location.origin || (location.protocol === "file:" && url.protocol === "file:");
+        const localAsset = sameOrigin && url.pathname.includes("/assets/amazon-manual/");
+        const publicHost = url.hostname.toLowerCase();
+        const publicAsset = url.protocol === "https:"
+          && ((publicHost === "overly.live" && url.pathname.startsWith("/assets/amazon-manual/"))
+            || (publicHost === "majeed3575.github.io" && url.pathname.startsWith("/majeeddeals/assets/amazon-manual/")));
+        return localAsset || publicAsset ? url.href : "";
+      } catch (_) { return ""; }
+    };
+    const dealLink = deal => storeOf(deal) === "amazon"
+      ? (/^[A-Z0-9]{10}$/.test(String(deal.asin || "")) ? amazonLink(deal.asin) : "#")
+      : safeAliExpressAffiliateUrl(deal.url) || "#";
+    const safeImageUrl = deal => storeOf(deal) === "aliexpress"
+      ? safeHttpsUrl(deal.image, ["alicdn.com", "aliexpress-media.com", "aliexpress.com"])
+      : safeHttpsUrl(deal.image, ["media-amazon.com", "ssl-images-amazon.com", "amazon-adsystem.com", "amazon.com"])
+        || safeOwnerAmazonImage(deal.image);
+    const dealPage = deal => {
+      const key = dealKey(deal).toLowerCase();
+      const valid = storeOf(deal) === "aliexpress" ? /^\d{6,20}$/.test(key) : /^[a-z0-9]{10}$/.test(key);
+      return valid ? `products/${storeOf(deal)}-${key}/` : "#dealsTitle";
+    };
+    const catalogProductPage = deal => deals.some(item => storeOf(item) === storeOf(deal) && dealKey(item) === dealKey(deal))
+      ? dealPage(deal)
+      : "#dealsTitle";
+    const CATEGORIES = [
+      "الكل", "الإلكترونيات", "التنظيف والمنظفات", "الأزياء والأحذية",
+      "المطبخ والأجهزة المنزلية", "الأثاث والديكور", "المنزل", "السيارة", "السفر",
+      "الرحلات والبحر والتخييم", "الحدائق والزراعة", "الجمال والعناية", "الصحة والعناية",
+      "البقالة والمشروبات", "الرياضة", "الأطفال", "الألعاب", "الحيوانات الأليفة",
+      "الأدوات والهوايات", "الترفيه المنزلي", "المدرسة والقرطاسية", "الكتب والمكتب",
+      "الساعات والمجوهرات", "تسوق متنوع"
+    ];
+    const CATEGORY_SLUGS = {
+      "الإلكترونيات":"electronics", "المنزل":"home", "السيارة":"car", "السفر":"travel",
+      "التنظيف والمنظفات":"cleaning", "الأزياء والأحذية":"fashion",
+      "المطبخ والأجهزة المنزلية":"kitchen-appliances", "الأثاث والديكور":"furniture-decor",
+      "الرحلات والبحر والتخييم":"outdoors", "الحدائق والزراعة":"garden",
+      "الجمال والعناية":"beauty-care", "الصحة والعناية":"health-care",
+      "البقالة والمشروبات":"grocery", "الرياضة":"sports", "الأطفال":"kids", "الألعاب":"toys",
+      "الحيوانات الأليفة":"pets", "الأدوات والهوايات":"tools-hobbies",
+      "الترفيه المنزلي":"home-entertainment", "المدرسة والقرطاسية":"school-stationery",
+      "الكتب والمكتب":"books-office", "الساعات والمجوهرات":"watches-jewelry", "تسوق متنوع":"general"
+    };
+    const CATEGORY_ALIASES = {
+      "الموضة":"الأزياء والأحذية",
+      "الحدائق":"الحدائق والزراعة",
+      "البحر والصيد":"الرحلات والبحر والتخييم",
+      "التخييم":"الرحلات والبحر والتخييم",
+      "المدرسة والتعليم":"المدرسة والقرطاسية"
+    };
+    const normalizeCategory = value => {
+      const raw = String(value || "").trim();
+      const name = CATEGORY_ALIASES[raw] || raw;
+      return CATEGORIES.includes(name) && name !== "الكل" ? name : "تسوق متنوع";
+    };
+    const normalizedRating = product => {
+      const rawRating = Number(product?.rating);
+      const rawPercent = Number(product?.rating_percent);
+      const hasRating = Number.isFinite(rawRating) && rawRating > 0;
+      const hasPercent = Number.isFinite(rawPercent) && rawPercent > 0;
+      const rating = hasRating
+        ? Math.min(5, rawRating > 5 ? rawRating / 20 : rawRating)
+        : (hasPercent ? Math.min(5, rawPercent / 20) : 0);
+      const ratingPercent = hasPercent ? Math.min(100, rawPercent) : Math.min(100, rating * 20);
+      return {
+        rating: Math.round(rating * 10) / 10,
+        rating_percent: Math.round(ratingPercent * 10) / 10
+      };
+    };
+    const normalizeAliSearchProduct = product => {
+      const productId = String(product?.product_id || "").match(/^\d{6,20}$/)?.[0] || "";
+      const title = String(product?.title || "").replace(/[\u0000-\u001f\u007f]/g, " ").replace(/\s+/g, " ").trim().slice(0, 180);
+      const candidate = {...product, store: "aliexpress", product_id: productId};
+      const url = dealLink(candidate);
+      const image = safeImageUrl(candidate);
+      if (!productId || title.length < 4 || url === "#" || !image || product?.shipping_country !== "SA") return null;
+      const originalPrice = Number(product.original_price);
+      const discount = Number(product.discount_percent);
+      const manualDiscount = Number(product.manual_discount_percent);
+      const sales = Number(product.sales_volume);
+      const rating = normalizedRating(product);
+      return {
+        store: "aliexpress",
+        product_id: productId,
+        url,
+        title,
+        image,
+        original_price: Number.isFinite(originalPrice) && originalPrice > 0 ? Math.min(originalPrice, 1000000) : 0,
+        discount_percent: Number.isFinite(discount) ? Math.min(95, Math.max(0, Math.round(discount))) : 0,
+        manual_discount_percent: Number.isFinite(manualDiscount) ? Math.min(95, Math.max(0, Math.round(manualDiscount))) : 0,
+        sales_volume: Number.isFinite(sales) ? Math.min(1000000000, Math.max(0, Math.round(sales))) : 0,
+        ...rating,
+        category: normalizeCategory(product.category),
+        shipping_country: "SA"
+      };
+    };
+    const normalizeCatalogDeal = product => {
+      if (!product || typeof product !== "object") return null;
+      const store = storeOf(product);
+      const title = String(product.title || "").replace(/[\u0000-\u001f\u007f]/g, " ").replace(/\s+/g, " ").trim().slice(0, 180);
+      const key = store === "aliexpress"
+        ? String(product.product_id || product.id || "").match(/^\d{6,20}$/)?.[0] || ""
+        : String(product.asin || "").match(/^[A-Z0-9]{10}$/)?.[0] || "";
+      const candidate = store === "aliexpress"
+        ? {...product, store, product_id:key}
+        : {...product, store, asin:key};
+      const url = dealLink(candidate);
+      const image = safeImageUrl(candidate);
+      if (!key || title.length < 4 || url === "#" || !image) return null;
+      const originalPrice = Number(product.original_price);
+      const discount = Number(product.discount_percent);
+      const manualDiscount = Number(product.manual_discount_percent);
+      const sales = Number(product.sales_volume);
+      const rating = normalizedRating(product);
+      return {
+        ...candidate,
+        title,
+        image,
+        url: store === "aliexpress" ? url : undefined,
+        original_price: Number.isFinite(originalPrice) && originalPrice > 0 ? Math.min(originalPrice, 1000000) : 0,
+        discount_percent: Number.isFinite(discount) ? Math.min(95, Math.max(0, Math.round(discount))) : 0,
+        manual_discount_percent: Number.isFinite(manualDiscount) ? Math.min(95, Math.max(0, Math.round(manualDiscount))) : 0,
+        sales_volume: Number.isFinite(sales) ? Math.min(1000000000, Math.max(0, Math.round(sales))) : 0,
+        ...rating,
+        category: normalizeCategory(product.category),
+        shipping_country: store === "aliexpress" ? "SA" : product.shipping_country
+      };
+    };
+    // لا نعرض أسعارًا أو خصومات قديمة إذا تعذر تحميل ملفات الكتالوج الحالية.
+    let deals = [];
+    let updatedAt = "";
+    let catalogLoading = true;
+    let category = "الكل";
+    let store = "all";
+    let sortBy = "smart";
+    let query = new URLSearchParams(location.search).get("q")?.trim().slice(0, 80) || "";
+    let heroIndex = 0;
+    let exitShown = false;
+    let revealObserver = null;
+    let loadMoreObserver = null;
+    let loadingNextBatch = false;
+    let aliSearchResults = null;
+    let aliSearchQuery = "";
+    let aliSearchPage = 0;
+    let aliSearchHasMore = false;
+    let aliSearchLoading = false;
+    let aliSearchController = null;
+    let mobileSearchMode = "local";
+    let lastScrollY = 0;
+    const DESKTOP_GRID_BATCH_SIZE = 24;
+    const MOBILE_GRID_BATCH_SIZE = 12;
+    const gridBatchSize = () => window.matchMedia("(max-width: 640px)").matches ? MOBILE_GRID_BATCH_SIZE : DESKTOP_GRID_BATCH_SIZE;
+    let visibleLimit = gridBatchSize();
+    const ALIEXPRESS_SEARCH_API = (() => {
+      try {
+        const url = new URL(String(window.OVERLY_CONFIG?.aliexpressSearchApi || ""));
+        const local = /^(localhost|127\.0\.0\.1)$/i.test(url.hostname);
+        if ((url.protocol !== "https:" && !local) || (!url.hostname.endsWith(".workers.dev") && !local && url.origin !== location.origin)) return "";
+        return url.href.replace(/\/$/, "");
+      } catch (_) { return ""; }
+    })();
+
+    function trackEvent(eventType, deal = null) {
+      if (!ALIEXPRESS_SEARCH_API) return;
+      const payload = {
+        event_type: eventType,
+        page_path: location.pathname,
+        product_key: deal ? `${storeOf(deal)}:${dealKey(deal)}` : "",
+        product_title: deal?.title || "",
+        store: deal ? storeOf(deal) : "",
+        category: deal?.category || ""
+      };
+      try {
+        fetch(`${ALIEXPRESS_SEARCH_API}/events`, {
+          method: "POST",
+          mode: "cors",
+          keepalive: true,
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(payload)
+        }).catch(() => {});
+      } catch (_) {}
+    }
+
+    const el = id => document.getElementById(id);
+    const i18n = globalThis.OverlyI18n;
+    const t = (key, params) => i18n.t(key, params);
+    let quickViewKey = "";
+    const formatNumber = value => new Intl.NumberFormat(i18n.locale, {maximumFractionDigits: 0}).format(value);
+    const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
+    const discountPercent = deal => {
+      const official = Number(deal?.discount_percent || 0);
+      const manual = Number(deal?.manual_discount_percent || 0);
+      const value = official > 0 ? official : manual;
+      return Number.isFinite(value) ? Math.min(95, Math.max(0, Math.round(value))) : 0;
+    };
+    const dealRank = deal => Number(deal.rank_score || 0) || discountPercent(deal) + 48;
+    const smartSort = (a,b) => dealRank(b) - dealRank(a) || discountPercent(b) - discountPercent(a);
+    const hasDiscount = deal => discountPercent(deal) > 0;
+    const hasBeforePrice = deal => hasDiscount(deal) && Number(deal.original_price || 0) > 0;
+    const popularityText = deal => {
+      const parts = [];
+      if (Number(deal.sales_volume || 0) >= 1000) parts.push(`${formatNumber(deal.sales_volume)} مبيعة`);
+      if (Number(deal.rating || 0) > 0) parts.push(`⭐ ${Number(deal.rating).toFixed(1)}`);
+      return parts.join(" · ") || "منتج رائج";
+    };
+    const offerText = deal => hasDiscount(deal) ? `خصم ${discountPercent(deal)}٪` : popularityText(deal);
+    const priceContext = (deal, shop) => hasBeforePrice(deal)
+      ? `${shop.name} قبل الخصم: <s>${formatNumber(deal.original_price)} ر.س</s>`
+      : `السعر الحالي والتوفر يُتحقق منهما على ${shop.name}`;
+    const topDeals = () => [...deals].sort(smartSort).slice(0,3);
+    const activeDeals = () => Array.isArray(aliSearchResults) ? aliSearchResults : deals;
+    const findDeal = key => activeDeals().find(item => dealKey(item) === String(key)) || deals.find(item => dealKey(item) === String(key));
+    const visibleTopDeals = () => {
+      const scoped = [...deals].filter(deal => store === "all" || storeOf(deal) === store).sort(smartSort);
+      if (store !== "all") return scoped.slice(0,3);
+      const firstAmazon = scoped.find(deal => storeOf(deal) === "amazon");
+      const firstAli = scoped.find(deal => storeOf(deal) === "aliexpress");
+      const mixed = [firstAli, firstAmazon].filter(Boolean);
+      scoped.forEach(deal => { if (mixed.length < 3 && !mixed.includes(deal)) mixed.push(deal); });
+      return mixed.slice(0,3);
+    };
+
+    const storage = {
+      get(key) { try { return localStorage.getItem(key); } catch (_) { return null; } },
+      set(key, value) { try { localStorage.setItem(key, value); } catch (_) {} }
+    };
+
+    function setTheme(theme) {
+      document.documentElement.dataset.theme = theme;
+      el("themeToggle").textContent = theme === "dark" ? "☀︎" : "◐";
+      el("themeToggle").setAttribute("aria-label", t(theme === "dark" ? "تفعيل الوضع الفاتح" : "تفعيل الوضع الداكن"));
+      storage.set("site_theme", theme);
+      document.querySelector('meta[name="theme-color"]').content = theme === "dark" ? "#13171d" : "#faf7f1";
+    }
+
+    function toggleFilters(force) {
+      const next = typeof force === "boolean" ? force : !el("filtersDrawer").classList.contains("open");
+      const mobile = window.matchMedia("(max-width: 640px)").matches;
+      el("filtersDrawer").classList.toggle("open", next);
+      el("filterToggle").setAttribute("aria-expanded", String(next));
+      el("filtersBackdrop").classList.toggle("open", next && mobile);
+      document.body.classList.toggle("filters-open", next && mobile);
+      if (next && mobile) {
+        el("mobileDock")?.classList.remove("is-hidden");
+        setTimeout(() => el("searchInput").focus(), 320);
+      }
+    }
+
+    function openPrimarySearch() {
+      if (window.matchMedia("(max-width: 640px)").matches) {
+        el("mobileSearchHub").scrollIntoView({behavior: "smooth", block: "center"});
+        setTimeout(() => el("mobileSearchInput").focus(), 420);
+      } else toggleFilters(true);
+    }
+
+    function setMobileSearchStatus(message, type = "") {
+      el("mobileSearchStatus").textContent = message;
+      el("mobileSearchStatus").className = `mobile-search-status ${type}`.trim();
+    }
+
+    function setMobileSearchMode(mode) {
+      mobileSearchMode = mode === "ali" ? "ali" : "local";
+      document.querySelectorAll("[data-mobile-search-mode]").forEach(button => {
+        const active = button.dataset.mobileSearchMode === mobileSearchMode;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+      el("mobileSearchInput").placeholder = mobileSearchMode === "ali"
+        ? "ابحث في AliExpress القابل للشحن للسعودية…"
+        : "ابحث في المنتجات المحفوظة…";
+      setMobileSearchStatus(mobileSearchMode === "ali"
+        ? "ستظهر نتائج AliExpress القابلة للشحن إلى السعودية فقط."
+        : "البحث داخل قائمة أوفرلي الحالية.");
+    }
+
+    function runMobileSearch(rawQuery, preferredCategory = "") {
+      const searchText = String(rawQuery || "").normalize("NFKC").replace(/\s+/g, " ").trim();
+      if (mobileSearchMode === "ali") {
+        if (searchText.length < 2) {
+          setMobileSearchStatus("اكتب حرفين على الأقل للبحث في AliExpress.", "error");
+          return;
+        }
+        el("aliSearchInput").value = searchText;
+        searchAliExpress(searchText);
+        return;
+      }
+
+      if (Array.isArray(aliSearchResults)) clearAliSearchResults(false);
+      store = "all";
+      category = CATEGORIES.includes(preferredCategory) ? preferredCategory : "الكل";
+      sortBy = "smart";
+      query = searchText;
+      visibleLimit = gridBatchSize();
+      el("searchInput").value = searchText;
+      el("categorySelect").value = category;
+      el("sortSelect").value = "smart";
+      document.querySelectorAll(".market-tab").forEach(button => button.classList.toggle("active", button.dataset.store === "all"));
+      renderHero();
+      renderCategoryChips();
+      renderGrid();
+      const count = filteredDeals().length;
+      setMobileSearchStatus(searchText || category !== "الكل"
+        ? `وجدنا ${formatNumber(count)} نتيجة مطابقة في أوفرلي.`
+        : `يعرض أوفرلي الآن ${formatNumber(count)} من المنتجات الأكثر رواجًا.`);
+      el("dealsTitle").scrollIntoView({behavior: "smooth", block: "start"});
+    }
+
+    function renderHero() {
+      const top = visibleTopDeals();
+      const hero = el("hero");
+      if (!top.length) { hero.classList.add("hidden"); return; }
+      if (heroIndex >= top.length) heroIndex = 0;
+      hero.classList.remove("hidden");
+      hero.innerHTML = top.map((deal, index) => {
+        const shop = storeMeta(deal);
+        const key = escapeHtml(dealKey(deal));
+        const link = escapeHtml(dealLink(deal));
+        const page = escapeHtml(catalogProductPage(deal));
+        const image = escapeHtml(safeImageUrl(deal) || "assets/overly-icon.webp");
+        return `
+        <article class="hero-slide ${index === heroIndex ? "active" : ""}">
+          <div class="hero-copy">
+            <div class="eyebrow">${t("أحد أبرز عروض {store}", {store: shop.name})}</div>
+            <h2 dir="auto"><a href="${page}">${escapeHtml(i18n.productTitle(deal))}</a></h2>
+            <div class="hero-meta">
+              <span class="hero-discount">${offerText(deal)}</span>
+              <span class="old-price">${priceContext(deal, shop)}</span>
+            </div>
+            <div class="hero-actions">
+              <a class="primary-link" href="${link}" target="_blank" rel="sponsored noopener noreferrer" onclick="return go(event,'${key}')">${t("اعرض السعر الحالي ↗")}</a>
+              <button class="secondary-link" type="button" onclick="document.getElementById('dealsTitle').scrollIntoView()">${t("استعرض كل العروض")}</button>
+            </div>
+          </div>
+          <div class="hero-visual">
+            <div class="hero-orbit"></div>
+            <a class="hero-image-stage" href="${page}" aria-label="${t("تفاصيل {title}", {title: escapeHtml(i18n.productTitle(deal))})}"><img src="${image}" alt="${escapeHtml(i18n.productTitle(deal))}" width="720" height="720" loading="${index === heroIndex ? "eager" : "lazy"}" fetchpriority="${index === heroIndex ? "high" : "low"}" decoding="async" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🛍️',style:'font-size:64px'}))"></a>
+            <div class="hero-caption"><span class="floating-chip discount">${hasDiscount(deal) ? t("وفّر {discount}٪", {discount: discountPercent(deal)}) : popularityText(deal)}</span><span class="floating-chip source">${shop.name} ↗</span></div>
+          </div>
+        </article>
+      `}).join("") + `
+        <button class="hero-arrow prev" type="button" aria-label="${t("العرض السابق")}" onclick="stepHero(-1)">›</button>
+        <button class="hero-arrow next" type="button" aria-label="${t("العرض التالي")}" onclick="stepHero(1)">‹</button>
+        <div class="hero-nav">${top.map((_, index) => `<button type="button" class="${index === heroIndex ? "active" : ""}" aria-label="${t("العرض {count}", {count: index + 1})}" onclick="showHero(${index})"></button>`).join("")}</div>`;
+    }
+
+    function showHero(index) { heroIndex = index; renderHero(); }
+    function stepHero(direction) {
+      const count = visibleTopDeals().length;
+      if (!count) return;
+      heroIndex = (heroIndex + direction + count) % count;
+      renderHero();
+    }
+
+    function setCategory(nextCategory) {
+      category = CATEGORIES.includes(nextCategory) ? nextCategory : "الكل";
+      visibleLimit = gridBatchSize();
+      el("categorySelect").value = category;
+      renderCategoryChips();
+      renderGrid();
+    }
+
+    function setStore(nextStore) {
+      if (nextStore !== "aliexpress" && Array.isArray(aliSearchResults)) clearAliSearchResults();
+      store = ["all", "amazon", "aliexpress"].includes(nextStore) ? nextStore : "all";
+      visibleLimit = gridBatchSize();
+      heroIndex = 0;
+      document.querySelectorAll(".market-tab").forEach(button => button.classList.toggle("active", button.dataset.store === store));
+      renderHero();
+      renderCategoryChips();
+      renderGrid();
+    }
+
+    function renderCategoryChips() {
+      const scoped = activeDeals().filter(deal => store === "all" || storeOf(deal) === store);
+      const availableCategories = CATEGORIES.filter(item =>
+        item === "الكل" || scoped.some(deal => deal.category === item)
+      );
+      if (!availableCategories.includes(category)) category = "الكل";
+      el("categorySelect").innerHTML = availableCategories.map(item =>
+        `<option value="${item}">${item === "الكل" ? "كل التصنيفات" : item}</option>`
+      ).join("");
+      el("categorySelect").value = category;
+      el("categoryChips").innerHTML = availableCategories.map(item => {
+        const count = item === "الكل" ? scoped.length : scoped.filter(deal => deal.category === item).length;
+        const label = item === "الكل" ? "الكل" : item;
+        const href = item === "الكل" ? "categories/" : `categories/${CATEGORY_SLUGS[item] || "electronics"}/`;
+        return `<a href="${href}" class="category-chip ${item === category ? "active" : ""}" ${item === category ? 'aria-current="true"' : ""} onclick="event.preventDefault(); setCategory('${item}')">${label}<b>${formatNumber(count)}</b></a>`;
+      }).join("");
+    }
+
+    function filteredDeals() {
+      const normalizedQuery = query.trim().toLowerCase();
+      const list = activeDeals().filter(deal =>
+        (store === "all" || storeOf(deal) === store) &&
+        (category === "الكل" || deal.category === category) &&
+        (!normalizedQuery || `${i18n.productSearchText(deal)} ${deal.category} ${i18n.categorySearchText(deal.category)} ${deal.angle || ""}`.toLowerCase().includes(normalizedQuery))
+      );
+      return list.sort((a,b) => {
+        if (sortBy === "price-high") return b.original_price - a.original_price;
+        if (sortBy === "price-low") return a.original_price - b.original_price;
+        if (sortBy === "name") return i18n.productTitle(a).localeCompare(i18n.productTitle(b), i18n.locale);
+        if (sortBy === "smart") return smartSort(a,b);
+        return discountPercent(b) - discountPercent(a);
+      });
+    }
+
+    function setupCardReveal() {
+      if (revealObserver) revealObserver.disconnect();
+      const cards = [...document.querySelectorAll(".product-card, .story-card")];
+      cards.forEach((card, index) => card.style.setProperty("--reveal-delay", `${Math.min(index, 5) * 65}ms`));
+      if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        cards.forEach(card => card.classList.add("revealed"));
+        return;
+      }
+      revealObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("revealed");
+          revealObserver.unobserve(entry.target);
+        });
+      }, {threshold: .12, rootMargin: "0px 0px -30px"});
+      cards.forEach(card => revealObserver.observe(card));
+    }
+
+    function setupInfiniteScroll(hasMore) {
+      if (loadMoreObserver) loadMoreObserver.disconnect();
+      if (!hasMore || !("IntersectionObserver" in window)) return;
+      loadMoreObserver = new IntersectionObserver(entries => {
+        if (entries.some(entry => entry.isIntersecting)) loadNextBatch();
+      }, {threshold: 0, rootMargin: "900px 0px"});
+      loadMoreObserver.observe(el("loadMoreWrap"));
+    }
+
+    async function loadNextBatch() {
+      const total = filteredDeals().length;
+      if (loadingNextBatch) return;
+      if (visibleLimit >= total && Array.isArray(aliSearchResults) && aliSearchHasMore) {
+        await searchAliExpress(aliSearchQuery, true);
+        return;
+      }
+      if (visibleLimit >= total) return;
+      loadingNextBatch = true;
+      const appendFrom = visibleLimit;
+      visibleLimit = Math.min(visibleLimit + gridBatchSize(), total);
+      renderGrid(appendFrom);
+      loadingNextBatch = false;
+    }
+
+    function renderGrid(appendFrom = null) {
+      syncDiscoverySelection();
+      const list = filteredDeals();
+      const visibleList = list.slice(0, visibleLimit);
+      const cardsToRender = appendFrom === null ? visibleList : list.slice(appendFrom, visibleList.length);
+      const remaining = Math.max(0, list.length - visibleList.length);
+      const hasMore = remaining > 0 || (Array.isArray(aliSearchResults) && aliSearchHasMore);
+      const supportsAutoLoad = "IntersectionObserver" in window;
+      el("resultCount").textContent = formatNumber(list.length);
+      el("filterResultCount").textContent = formatNumber(list.length);
+      el("introDealCount").textContent = formatNumber(deals.length);
+      el("emptyState").classList.toggle("hidden", list.length > 0);
+      if (!list.length) {
+        const remoteEmpty = Array.isArray(aliSearchResults);
+        const aliEmpty = store === "aliexpress" && !deals.some(deal => storeOf(deal) === "aliexpress");
+        el("emptyTitle").textContent = catalogLoading
+          ? "جاري تحميل العروض الحالية…"
+          : remoteEmpty ? "لا توجد نتائج قابلة للشحن للسعودية" : aliEmpty ? "عروض AliExpress قيد الإضافة" : "لا توجد نتائج مطابقة";
+        el("emptyDescription").textContent = catalogLoading
+          ? "نتحقق من أحدث نسخة للكتالوج، ولن نعرض بيانات قديمة بدلًا منها."
+          : remoteEmpty
+          ? "جرّب وصفاً أوسع أو كلمة مختلفة؛ النتائج تأتي مباشرة من AliExpress للسعودية."
+          : aliEmpty
+          ? "جهّزنا المنصة والفلترة والروابط؛ ستظهر هنا العروض الموثقة فور إضافتها، دون منتجات أو أسعار تجريبية."
+          : "جرّب كلمة أخرى أو غيّر التصنيف أو المتجر.";
+      }
+      el("loadMoreWrap").classList.toggle("hidden", !hasMore);
+      el("infiniteSpinner").classList.toggle("hidden", !supportsAutoLoad);
+      el("loadMoreButton").classList.toggle("hidden", supportsAutoLoad);
+      el("loadMoreButton").textContent = Array.isArray(aliSearchResults) && !remaining
+        ? "تحميل نتائج أخرى من AliExpress"
+        : `تحميل ${formatNumber(Math.min(gridBatchSize(), remaining))} عرضًا إضافيًا`;
+      el("loadMoreNote").textContent = hasMore
+        ? supportsAutoLoad
+          ? Array.isArray(aliSearchResults)
+            ? `واصل النزول — تُجلب نتائج AliExpress التالية تلقائيًا (${formatNumber(visibleList.length)})`
+            : `واصل النزول — تظهر العروض تلقائيًا (${formatNumber(visibleList.length)} من ${formatNumber(list.length)})`
+          : Array.isArray(aliSearchResults) ? `يظهر الآن ${formatNumber(visibleList.length)} نتيجة` : `يظهر الآن ${formatNumber(visibleList.length)} من أصل ${formatNumber(list.length)}`
+        : "";
+      const cardsMarkup = cardsToRender.map((deal, index) => {
+        const shop = storeMeta(deal);
+        const key = escapeHtml(dealKey(deal));
+        const link = escapeHtml(dealLink(deal));
+        const page = escapeHtml(catalogProductPage(deal));
+        const image = escapeHtml(safeImageUrl(deal) || "assets/overly-icon.webp");
+        const absoluteIndex = (appendFrom === null ? 0 : appendFrom) + index;
+        const mobileCardClass = absoluteIndex === 0 ? "featured-mobile" : "compact-mobile";
+        return `
+        <article class="product-card ${mobileCardClass}" data-product-key="${key}">
+          <div class="product-media">
+            <a class="media-product-link" href="${page}" aria-label="تفاصيل ${escapeHtml(i18n.productTitle(deal))}">
+              <img src="${image}" alt="${escapeHtml(i18n.productTitle(deal))}" width="640" height="640" loading="lazy" decoding="async" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🛍️',style:'font-size:52px'}))">
+            </a>
+            <span class="discount-badge">${hasDiscount(deal) ? `-${discountPercent(deal)}٪` : popularityText(deal)}</span>
+            <span class="category-tag">${escapeHtml(deal.angle || deal.category)}</span>
+            <span class="store-badge ${shop.key}">${shop.name}</span>
+            <button class="quick-look" type="button" onclick="openQuickView('${key}')">⌘ نظرة سريعة</button>
+          </div>
+          <div class="product-body">
+            <h3><a href="${page}">${escapeHtml(i18n.productTitle(deal))}</a></h3>
+            <div class="quick-meta"><strong>${offerText(deal)}</strong><span>السعر على ${shop.name}</span></div>
+            <details class="deal-details">
+              <summary>تفاصيل العرض</summary>
+              <div class="detail-content">
+                <div class="detail-row"><span>${hasBeforePrice(deal) ? `${shop.name} قبل الخصم` : "السعر والتوفر"}</span><b>${hasBeforePrice(deal) ? `<s>${formatNumber(deal.original_price)} ر.س</s>` : `يُتحقق على ${shop.host}`}</b></div>
+                <div class="detail-row"><span>رقم المنتج</span><b dir="ltr">${key}</b></div>
+                <div class="detail-row"><span>التوفر والسعر النهائي</span><b>يُتحقق على ${shop.host}</b></div>
+              </div>
+            </details>
+            <div class="card-actions">
+              <a class="card-cta" href="${link}" target="_blank" rel="sponsored noopener noreferrer" onclick="return go(event,'${key}')"><span class="cta-desktop">${shop.cta}</span><span class="cta-mobile">عرض السعر ↗</span></a>
+              <button class="share-button" type="button" onclick="shareDeal(event,'${key}')" aria-label="مشاركة ${escapeHtml(i18n.productTitle(deal))}" title="مشاركة العرض">↗</button>
+            </div>
+          </div>
+        </article>
+      `}).join("");
+      if (appendFrom === null) el("dealsGrid").innerHTML = cardsMarkup;
+      else el("dealsGrid").insertAdjacentHTML("beforeend", cardsMarkup);
+      setupCardReveal();
+      setupInfiniteScroll(hasMore);
+    }
+
+    function renderTimestamp() {
+      const date = new Date(updatedAt);
+      el("updatedAt").textContent = Number.isNaN(date.getTime()) ? "" : t("آخر تحديث {date}", {date: date.toLocaleDateString(i18n.locale)});
+    }
+
+    function renderAll() { renderHero(); renderCategoryChips(); renderGrid(); renderTimestamp(); renderDiscoveryCategories(); renderDiscoveryScene(); }
+
+    function discoverySceneProduct(name, catalog = deals) {
+      const preferred = {
+        "الإلكترونيات": "B0GQW9LGQF", "المنزل": "B08FJ678YK",
+        "الأزياء والأحذية": "1005008660153776", "السيارة": "1005005605683958",
+        "الجمال والعناية": "1005007038045592", "الأطفال": "1005010109655330"
+      };
+      // Keep the approved product when available; otherwise use a real item in the same category.
+      const matching = catalog.filter(deal => deal.category === name && safeImageUrl(deal));
+      const product = matching.find(deal => dealKey(deal) === preferred[name]) || matching[0];
+      return product ? {key: dealKey(product), image: safeImageUrl(product)} : null;
+    }
+
+    function renderDiscoveryScene() {
+      document.querySelectorAll(".scene-tile").forEach(tile => {
+        const frame = tile.querySelector(".scene-icon-frame");
+        const image = frame.querySelector(".scene-product-image");
+        const product = discoverySceneProduct(tile.dataset.discoverCategory);
+        if (!product) {
+          image.onload = image.onerror = null;
+          image.removeAttribute("src");
+          delete image.dataset.catalogSrc;
+          image.hidden = true;
+          frame.classList.remove("has-product");
+          return;
+        }
+        // Keep the same image node during catalog refreshes; no extra requests or flicker.
+        if (image.dataset.catalogSrc === product.image) return;
+        image.hidden = true;
+        frame.classList.remove("has-product");
+        image.dataset.catalogSrc = product.image;
+        image.onload = () => {
+          image.hidden = false;
+          frame.classList.add("has-product");
+        };
+        image.onerror = () => {
+          image.hidden = true;
+          frame.classList.remove("has-product");
+        };
+        image.src = product.image;
+      });
+    }
+
+    // Category entry points use the current catalog, not live-search results or fabricated counts.
+    function renderDiscoveryCategories() {
+      const curated = [
+        ["الإلكترونيات", "التقنية والإلكترونيات", "headphones", "mint"],
+        ["المنزل", "المنزل والمعيشة", "home", "sand"],
+        ["الأزياء والأحذية", "الأزياء والأحذية", "fashion", "lavender"],
+        ["السيارة", "السيارة وإكسسواراتها", "car", "blue"],
+        ["الجمال والعناية", "الجمال والعناية", "beauty", "rose"],
+        ["الأطفال", "عالم الأطفال", "kids", "peach"]
+      ];
+      const cards = curated.map(([name, label, icon, tone], index) => {
+        const count = deals.filter(deal => deal.category === name).length;
+        if (!count) return "";
+        const product = discoverySceneProduct(name);
+        const photo = product ? `<img class="category-photo" src="${escapeHtml(product.image)}" alt="${t("منتج من قسم {category}", {category: t(label)})}" width="360" height="300" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.remove('loaded');this.hidden=true">` : "";
+        return `<a class="discovery-category ${tone}" href="categories/${CATEGORY_SLUGS[name]}/" data-discover-category="${name}"><span class="category-art" aria-hidden="true"><span class="category-index">${formatNumber(index + 1).padStart(2, formatNumber(0))}</span>${photo}<span class="discovery-category-icon"><svg><use href="#discover-${icon}"/></svg></span></span><span class="category-copy"><strong>${t(label)}</strong><span class="category-countline"><small>${t("{count} منتج", {count: formatNumber(count)})}</small><span class="category-link-arrow" aria-hidden="true">↗</span></span></span></a>`;
+      }).join("");
+      el("discoveryCategoryGrid").innerHTML = cards || `<p class="discovery-loading">${catalogLoading ? t("نجهّز لك أبواب الاكتشاف…") : `${t("تصفّح")} <a href="categories/">${t("دليل التصنيفات")}</a> ${t("للبدء.")}`}</p>`;
+      syncDiscoverySelection();
+    }
+
+    function syncDiscoverySelection() {
+      document.querySelectorAll("[data-discover-category]").forEach(link => {
+        if (link.dataset.discoverCategory === category) link.setAttribute("aria-current", "true");
+        else link.removeAttribute("aria-current");
+      });
+    }
+
+    document.querySelector("main").addEventListener("click", event => {
+      const link = event.target.closest("[data-discover-category]");
+      if (!link || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button !== 0 || !deals.length) return;
+      event.preventDefault();
+      setMobileSearchMode("local");
+      el("mobileSearchInput").value = "";
+      runMobileSearch("", link.dataset.discoverCategory);
+      el("dealsTitle").setAttribute("tabindex", "-1");
+      el("dealsTitle").focus({preventScroll: true});
+    });
+
+    el("discoverySearchForm").addEventListener("submit", event => {
+      event.preventDefault();
+      const searchText = el("discoverySearchInput").value.trim();
+      if (searchText.length < 2) return;
+      setMobileSearchMode("local");
+      el("mobileSearchInput").value = searchText;
+      runMobileSearch(searchText);
+      el("dealsTitle").setAttribute("tabindex", "-1");
+      el("dealsTitle").focus({preventScroll: true});
+    });
+
+    const welcomeDialog = el("welcomeDialog");
+    const welcomeSlides = [...document.querySelectorAll("[data-welcome-slide]")];
+    const welcomeSteps = [...document.querySelectorAll("[data-welcome-step]")];
+    const WELCOME_SESSION_KEY = "overly_welcome_session_v1";
+    let welcomeIndex = 0;
+    let welcomeReturnFocus = null;
+    function setWelcomeSlide(index) {
+      welcomeIndex = Math.max(0, Math.min(welcomeSlides.length - 1, index));
+      welcomeSlides.forEach((slide, i) => { slide.hidden = i !== welcomeIndex; });
+      welcomeSteps.forEach((button, i) => {
+        if (i === welcomeIndex) button.setAttribute("aria-current", "step");
+        else button.removeAttribute("aria-current");
+      });
+      welcomeDialog.setAttribute("aria-labelledby", `welcomeTitle${welcomeIndex + 1}`);
+      welcomeDialog.setAttribute("aria-describedby", `welcomeText${welcomeIndex + 1}`);
+      el("welcomeBack").disabled = welcomeIndex === 0;
+      el("welcomeNext").innerHTML = `${t(welcomeIndex === welcomeSlides.length - 1 ? "يلا نكتشف" : "التالي")} <span aria-hidden="true">←</span>`;
+      el("welcomeStatus").textContent = t("الخطوة {count} من {total}", {count: formatNumber(welcomeIndex + 1), total: formatNumber(welcomeSlides.length)});
+      // Keep the top of each new slide visible on short screens without animating the page.
+      welcomeDialog.scrollTop = 0;
+    }
+    function openWelcome() {
+      if (welcomeDialog.open || typeof welcomeDialog.showModal !== "function") return;
+      welcomeReturnFocus = document.activeElement;
+      setWelcomeSlide(0);
+      closeExitModal();
+      closeQuickView();
+      toggleFilters(false);
+      welcomeDialog.showModal();
+      document.body.classList.add("welcome-open");
+      try { sessionStorage.setItem(WELCOME_SESSION_KEY, "1"); } catch (_) { /* Storage can be disabled; browsing still works. */ }
+    }
+    function closeWelcome(explore = false) {
+      if (!welcomeDialog.open) return;
+      welcomeDialog.close();
+      document.body.classList.remove("welcome-open");
+      if (explore) {
+        el("discoverCategories").scrollIntoView({behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start"});
+        el("discoveryTitle").focus({preventScroll: true});
+      } else if (welcomeReturnFocus instanceof HTMLElement && welcomeReturnFocus !== document.body) welcomeReturnFocus.focus({preventScroll: true});
+      else document.querySelector(".welcome-replay").focus({preventScroll: true});
+    }
+    document.querySelectorAll(".welcome-replay").forEach(button => button.addEventListener("click", openWelcome));
+    welcomeSteps.forEach(button => button.addEventListener("click", () => setWelcomeSlide(Number(button.dataset.welcomeStep))));
+    el("welcomeNext").addEventListener("click", () => welcomeIndex === welcomeSlides.length - 1 ? closeWelcome(true) : setWelcomeSlide(welcomeIndex + 1));
+    el("welcomeBack").addEventListener("click", () => setWelcomeSlide(welcomeIndex - 1));
+    el("welcomeSkip").addEventListener("click", () => closeWelcome());
+    welcomeDialog.addEventListener("cancel", event => { event.preventDefault(); closeWelcome(); });
+    welcomeDialog.addEventListener("close", () => document.body.classList.remove("welcome-open"));
+    welcomeDialog.addEventListener("keydown", event => {
+      if (event.key === "Tab") {
+        const controls = [...welcomeDialog.querySelectorAll("button:not(:disabled)")].filter(button => button.getClientRects().length);
+        const first = controls[0], last = controls[controls.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+      }
+      if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+        event.preventDefault();
+        const nextKey = i18n.language === "ar" ? "ArrowLeft" : "ArrowRight";
+        setWelcomeSlide(welcomeIndex + (event.key === nextKey ? 1 : -1));
+      }
+    });
+    function showSessionWelcome() {
+      // The explanation now lives on the homepage, never over the catalog.
+      return;
+    }
+
+    function setAliSearchStatus(message, type = "") {
+      el("aliSearchStatus").textContent = message;
+      el("aliSearchStatus").className = `ali-search-status ${type}`.trim();
+      if (mobileSearchMode === "ali") setMobileSearchStatus(message, type);
+    }
+
+    function clearAliSearchResults(resetStatus = true) {
+      if (aliSearchController) aliSearchController.abort();
+      aliSearchController = null;
+      aliSearchResults = null;
+      aliSearchQuery = "";
+      aliSearchPage = 0;
+      aliSearchHasMore = false;
+      aliSearchLoading = false;
+      el("aliSearchSubmit").disabled = false;
+      if (resetStatus) setAliSearchStatus("النتائج تعتمد على توفر الشحن إلى السعودية وقت البحث.");
+    }
+
+    async function searchAliExpress(rawQuery, append = false) {
+      const searchText = String(rawQuery || "").normalize("NFKC").replace(/\s+/g, " ").trim();
+      if (searchText.length < 2 || searchText.length > 80) {
+        setAliSearchStatus("اكتب حرفين على الأقل، وبحد أقصى 80 حرفاً.", "error");
+        return;
+      }
+      if (!ALIEXPRESS_SEARCH_API) {
+        setAliSearchStatus("بوابة البحث الآمنة بانتظار ربط عنوان Cloudflare.", "error");
+        return;
+      }
+      if (aliSearchLoading) return;
+      aliSearchLoading = true;
+      el("aliSearchSubmit").disabled = true;
+      setAliSearchStatus(append ? "جاري جلب نتائج إضافية قابلة للشحن للسعودية…" : "جاري البحث في AliExpress بالكامل…", "loading");
+
+      if (aliSearchController) aliSearchController.abort();
+      const controller = new AbortController();
+      aliSearchController = controller;
+      let timedOut = false;
+      const timeout = setTimeout(() => {
+        timedOut = true;
+        controller.abort();
+      }, 12_000);
+      const requestedPage = append ? aliSearchPage + 1 : 1;
+      const params = new URLSearchParams({q: searchText, page: String(requestedPage), page_size: String(DESKTOP_GRID_BATCH_SIZE), lang: i18n.language});
+      try {
+        const response = await fetch(`${ALIEXPRESS_SEARCH_API}/search?${params}`, {
+          method: "GET",
+          mode: "cors",
+          cache: "no-store",
+          headers: {"Accept": "application/json"},
+          signal: controller.signal
+        });
+        if (!response.ok) throw new Error(response.status === 429 ? "RATE_LIMIT" : "SEARCH_FAILED");
+        const payload = await response.json();
+        if (controller.signal.aborted || aliSearchController !== controller) return;
+        if (!payload?.ok || payload.shipping_country !== "SA" || !Array.isArray(payload.products)) throw new Error("INVALID_RESPONSE");
+        const safeProducts = payload.products.map(normalizeAliSearchProduct).filter(Boolean);
+        const previous = append && Array.isArray(aliSearchResults) ? aliSearchResults : [];
+        const merged = [...previous];
+        const seen = new Set(merged.map(product => String(product.product_id)));
+        safeProducts.forEach(product => {
+          if (!seen.has(String(product.product_id))) {
+            seen.add(String(product.product_id));
+            merged.push(product);
+          }
+        });
+
+        aliSearchResults = merged;
+        aliSearchQuery = searchText;
+        aliSearchPage = requestedPage;
+        aliSearchHasMore = Boolean(payload.has_more);
+        store = "aliexpress";
+        category = "الكل";
+        query = "";
+        visibleLimit = append
+          ? Math.min(merged.length, visibleLimit + gridBatchSize())
+          : Math.min(merged.length, gridBatchSize());
+        el("searchInput").value = "";
+        el("categorySelect").value = "الكل";
+        document.querySelectorAll(".market-tab").forEach(button => button.classList.toggle("active", button.dataset.store === "aliexpress"));
+        renderHero();
+        renderCategoryChips();
+        renderGrid();
+        setAliSearchStatus(
+          merged.length
+            ? `ظهرت ${formatNumber(merged.length)} نتيجة من AliExpress قابلة للشحن للسعودية${aliSearchHasMore ? " — واصل النزول للمزيد" : ""}.`
+            : "لم تظهر نتائج قابلة للشحن للسعودية لهذه العبارة؛ جرّب كلمة أخرى.",
+          merged.length ? "" : "error"
+        );
+        if (!append) el("dealsTitle").scrollIntoView({behavior: "smooth", block: "start"});
+      } catch (error) {
+        if (error?.name !== "AbortError" || timedOut) {
+          setAliSearchStatus(
+            timedOut
+              ? "استغرق البحث وقتًا أطول من المتوقع؛ أعد المحاولة بعد قليل."
+              : error?.message === "RATE_LIMIT"
+                ? "تمت طلبات كثيرة خلال دقيقة؛ انتظر قليلاً ثم أعد المحاولة."
+                : "تعذر الوصول إلى بحث AliExpress الآن؛ حاول مرة أخرى بعد قليل.",
+            "error"
+          );
+        }
+      } finally {
+        clearTimeout(timeout);
+        if (aliSearchController === controller) {
+          aliSearchController = null;
+          aliSearchLoading = false;
+          el("aliSearchSubmit").disabled = false;
+        }
+      }
+    }
+
+    function go(event, key) {
+      event.preventDefault();
+      const deal = findDeal(key);
+      if (!deal) return false;
+      const url = dealLink(deal);
+      if (url === "#") return false;
+      trackEvent("product_click", deal);
+      let newWindow = null;
+      try { newWindow = window.open("about:blank", "_blank"); if (newWindow) newWindow.opener = null; } catch (_) {}
+      el("redirect").classList.remove("hidden");
+      setTimeout(() => {
+        if (newWindow && !newWindow.closed) newWindow.location.replace(url);
+        else window.location.href = url;
+        el("redirect").classList.add("hidden");
+      }, 850);
+      return false;
+    }
+
+    function closeExitModal() { el("exitModal").classList.add("hidden"); }
+    function closeQuickView() { el("quickViewModal").classList.add("hidden"); quickViewKey = ""; }
+
+    async function shareDeal(event, key) {
+      const deal = findDeal(key);
+      if (!deal) return;
+      const button = event.currentTarget;
+      const page = catalogProductPage(deal);
+      const shareUrl = page.startsWith("products/") ? new URL(page, location.href).href : dealLink(deal);
+      const payload = {title: `Overly | ${i18n.productTitle(deal)}`, text: `${i18n.productTitle(deal)} — ${i18n.t(offerText(deal))}`, url: shareUrl};
+      try {
+        if (navigator.share) await navigator.share(payload);
+        else {
+          await navigator.clipboard.writeText(payload.url);
+          button.textContent = "✓";
+          setTimeout(() => { button.textContent = "↗"; }, 1500);
+        }
+      } catch (_) {}
+    }
+
+    function openQuickView(key) {
+      const deal = findDeal(key);
+      if (!deal) return;
+      const shop = storeMeta(deal);
+      el("quickImage").src = safeImageUrl(deal) || "assets/overly-icon.webp";
+      el("quickImage").alt = i18n.productTitle(deal);
+      el("quickCategory").textContent = deal.angle || deal.category;
+      el("quickTitle").textContent = i18n.productTitle(deal);
+      quickViewKey = key;
+      el("quickSaving").textContent = offerText(deal);
+      el("quickBefore").innerHTML = priceContext(deal, shop);
+      el("quickAsin").textContent = dealKey(deal);
+      el("quickStore").textContent = `يُتحقق على ${shop.host}`;
+      el("quickLink").textContent = shop.cta;
+      el("quickLink").href = dealLink(deal);
+      el("quickLink").onclick = event => { closeQuickView(); return go(event, dealKey(deal)); };
+      el("quickViewModal").classList.remove("hidden");
+    }
+
+    function resetFilters() {
+      if (Array.isArray(aliSearchResults)) clearAliSearchResults();
+      category = "الكل";
+      store = "all";
+      sortBy = "smart";
+      query = "";
+      heroIndex = 0;
+      visibleLimit = gridBatchSize();
+      el("searchInput").value = "";
+      el("mobileSearchInput").value = "";
+      el("categorySelect").value = "الكل";
+      el("sortSelect").value = "smart";
+      document.querySelectorAll(".market-tab").forEach(button => button.classList.toggle("active", button.dataset.store === "all"));
+      renderAll();
+      setMobileSearchStatus(`يعرض أوفرلي الآن ${formatNumber(filteredDeals().length)} من المنتجات الأكثر رواجًا.`);
+    }
+
+
+    document.addEventListener("overly:languagechange", () => {
+      const remoteQuery = aliSearchQuery || (aliSearchLoading ? el("aliSearchInput").value : "");
+      if (aliSearchController || remoteQuery) clearAliSearchResults(false);
+      renderAll();
+      setWelcomeSlide(welcomeIndex);
+      if (quickViewKey) openQuickView(quickViewKey);
+      if (remoteQuery) searchAliExpress(remoteQuery);
+      globalThis.OverlySiteLanguage?.refresh();
+    });
+    el("themeToggle").addEventListener("click", () => setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark"));
+    el("filterToggle").addEventListener("click", () => toggleFilters());
+    el("filtersClose").addEventListener("click", () => toggleFilters(false));
+    el("filtersBackdrop").addEventListener("click", () => toggleFilters(false));
+    el("filtersApply").addEventListener("click", () => toggleFilters(false));
+    el("filtersReset").addEventListener("click", resetFilters);
+    el("searchInput").addEventListener("input", event => {
+      if (Array.isArray(aliSearchResults)) clearAliSearchResults(false);
+      if (mobileSearchMode !== "local") setMobileSearchMode("local");
+      query = event.target.value;
+      if (mobileSearchMode === "local") el("mobileSearchInput").value = query;
+      visibleLimit = gridBatchSize();
+      renderCategoryChips();
+      renderGrid();
+    });
+    el("categorySelect").addEventListener("change", event => setCategory(event.target.value));
+    el("sortSelect").addEventListener("change", event => { sortBy = event.target.value; visibleLimit = gridBatchSize(); renderGrid(); });
+    el("loadMoreButton").addEventListener("click", loadNextBatch);
+    el("aliSearchForm").addEventListener("submit", event => { event.preventDefault(); searchAliExpress(el("aliSearchInput").value); });
+    document.querySelectorAll("[data-ali-query]").forEach(button => button.addEventListener("click", () => {
+      el("aliSearchInput").value = button.dataset.aliQuery || "";
+      searchAliExpress(el("aliSearchInput").value);
+    }));
+    document.querySelectorAll("[data-mobile-search-mode]").forEach(button => button.addEventListener("click", () => setMobileSearchMode(button.dataset.mobileSearchMode)));
+    el("mobileSearchForm").addEventListener("submit", event => {
+      event.preventDefault();
+      runMobileSearch(el("mobileSearchInput").value);
+    });
+    document.querySelectorAll("[data-mobile-query]").forEach(button => button.addEventListener("click", () => {
+      const preferredCategory = button.dataset.mobileCategory || "";
+      const searchText = mobileSearchMode === "ali"
+        ? (button.dataset.mobileQuery || "منتجات رائجة")
+        : (preferredCategory ? "" : (button.dataset.mobileQuery || ""));
+      el("mobileSearchInput").value = searchText;
+      runMobileSearch(searchText, preferredCategory);
+    }));
+    el("closeModal").addEventListener("click", closeExitModal);
+    el("skipModal").addEventListener("click", closeExitModal);
+    el("exitModal").addEventListener("click", event => { if (event.target === el("exitModal")) closeExitModal(); });
+    el("closeQuickView").addEventListener("click", closeQuickView);
+    el("quickViewModal").addEventListener("click", event => { if (event.target === el("quickViewModal")) closeQuickView(); });
+    el("mobileSearchButton").addEventListener("click", openPrimarySearch);
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") { closeExitModal(); closeQuickView(); toggleFilters(false); }
+    });
+
+    window.addEventListener("resize", () => {
+      if (!window.matchMedia("(max-width: 640px)").matches) toggleFilters(false);
+    }, {passive: true});
+
+    function updateScrollUI() {
+      const currentScrollY = Math.max(0, window.scrollY);
+      const available = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = available > 0 ? Math.min(100, Math.max(0, currentScrollY / available * 100)) : 0;
+      el("scrollProgress").style.width = `${progress}%`;
+      document.querySelector(".site-header").classList.toggle("compact", currentScrollY > 80);
+      if (window.matchMedia("(max-width: 640px)").matches) {
+        const dock = el("mobileDock");
+        const delta = currentScrollY - lastScrollY;
+        if (currentScrollY < 120 || el("filtersDrawer").classList.contains("open")) dock.classList.remove("is-hidden");
+        else if (Math.abs(delta) > 7) dock.classList.toggle("is-hidden", delta > 0);
+      }
+      lastScrollY = currentScrollY;
+    }
+    window.addEventListener("scroll", updateScrollUI, {passive: true});
+
+    document.addEventListener("mouseout", event => {
+      if (event.clientY > 0 || welcomeDialog.open || exitShown || storage.get("exit_modal_shown") === "1") return;
+      const best = topDeals()[0];
+      if (!best) return;
+      exitShown = true;
+      storage.set("exit_modal_shown", "1");
+      el("modalTitle").textContent = hasDiscount(best)
+        ? `لا تفوّت أقوى عرض بخصم ${discountPercent(best)}٪`
+        : "لا تفوّت هذا المنتج الرائج";
+      el("modalDescription").textContent = i18n.productTitle(best);
+      el("modalLink").textContent = storeMeta(best).cta;
+      el("modalLink").href = dealLink(best);
+      el("modalLink").onclick = event => { closeExitModal(); return go(event, dealKey(best)); };
+      el("exitModal").classList.remove("hidden");
+    });
+
+    const requestedDeal = new URLSearchParams(location.search).get("deal");
+    let requestedDealOpened = false;
+    const applyDealPayload = data => {
+      if (!Array.isArray(data?.deals) || !data.deals.length) return false;
+      const safeDeals = data.deals.map(normalizeCatalogDeal).filter(Boolean);
+      if (!safeDeals.length) return false;
+      deals = safeDeals;
+      updatedAt = data.updated_at || updatedAt;
+      catalogLoading = false;
+      renderAll();
+      if (!requestedDealOpened && requestedDeal && deals.some(item => dealKey(item) === requestedDeal)) {
+        requestedDealOpened = true;
+        setTimeout(() => openQuickView(requestedDeal), 180);
+      }
+      return true;
+    };
+    const loadFullCatalog = () => fetch("deals.json", {cache: "no-cache"})
+      .then(response => response.ok ? response.json() : Promise.reject(new Error("تعذر تحميل القائمة الكاملة")))
+      .then(applyDealPayload)
+      .catch(() => {
+        catalogLoading = false;
+        renderAll();
+        return false;
+      });
+    const scheduleFullCatalog = () => {
+      const run = () => loadFullCatalog();
+      if ("requestIdleCallback" in window) requestIdleCallback(run, {timeout: 2500});
+      else setTimeout(run, 1400);
+    };
+    fetch("deals-initial.json", {cache: "no-cache"})
+      .then(response => response.ok ? response.json() : Promise.reject(new Error("تعذر تحميل القائمة الأولية")))
+      .then(data => {
+        const applied = applyDealPayload(data);
+        if (!applied || Number(data.total_count || 0) > data.deals.length) scheduleFullCatalog();
+      })
+      .catch(loadFullCatalog);
+
+    el("copyright").textContent = `© ${new Date().getFullYear()} أوفرلي (Overly) — جميع الحقوق محفوظة.`;
+    setTheme(document.documentElement.dataset.theme || "light");
+    setMobileSearchMode("local");
+    el("searchInput").value = query;
+    el("mobileSearchInput").value = query;
+    renderAll();
+    updateScrollUI();
+    showSessionWelcome();
+    trackEvent("page_view");
+  </script>
+</body>
+</html>

@@ -810,6 +810,35 @@ def cleanup_stale(previous: set[str], current: set[str]) -> int:
     return removed
 
 
+def refresh_home_categories(deals, generated: set[str]) -> bool:
+    """Only category links live on home; never copy products or merchant URLs."""
+    path = ROOT / "index.html"
+    source = path.read_text(encoding="utf-8")
+    start, end = "<!-- HOME_CATEGORIES_START -->", "<!-- HOME_CATEGORIES_END -->"
+    if start not in source or end not in source:
+        return False
+    available = {item["category"] for item in deals}
+    icons = {"electronics", "home", "car", "travel", "fashion", "beauty-care",
+             "sports", "kids", "pets", "tools-hobbies", "home-entertainment",
+             "cleaning", "outdoors", "garden", "school-stationery"}
+    cards = []
+    for name, info in CATEGORIES.items():
+        if name not in available:
+            continue
+        slug = info["slug"]
+        icon = slug if slug in icons else "compass"
+        cards.append(
+            f'        <a class="home-category-card" href="categories/{esc(slug)}/">'
+            f'<span class="home-category-icon" aria-hidden="true"><svg>'
+            f'<use href="assets/home-icons.svg#{icon}"></use></svg></span>'
+            f'<strong>{esc(name)}</strong></a>'
+        )
+    before, remainder = source.split(start, 1)
+    _, after = remainder.split(end, 1)
+    updated = before + start + "\n" + "\n".join(cards) + "\n        " + end + after
+    return write_if_changed(path, updated, generated)
+
+
 def build() -> dict:
     deals, source = load_deals()
     state = load_json(STATE_PATH, {"pages": {}})
@@ -820,6 +849,7 @@ def build() -> dict:
     generated: set[str] = set()
     sitemap: dict[str, str] = {}
     changed = 0
+    changed += refresh_home_categories(deals, generated)
 
     css = (ROOT / "seo.css.source").read_text(encoding="utf-8") if (ROOT / "seo.css.source").exists() else ""
     if not css:

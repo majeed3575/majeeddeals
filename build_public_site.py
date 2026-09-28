@@ -19,6 +19,10 @@ OUTPUT = ROOT / "dist-site"
 PUBLIC_FILES = (
     ".nojekyll",
     "index.html",
+    "browse.html",
+    "home.css",
+    "home.js",
+    "home-copy-en.js",
     "404.html",
     "about.html",
     "methodology.html",

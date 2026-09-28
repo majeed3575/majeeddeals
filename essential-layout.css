@@ -1,4 +1,5 @@
 /* Approved Essential edit (30), unchanged composition. */
+.catalog-page .intro,.catalog-page .discovery-categories,.catalog-page .hero{display:none!important}
 html[data-direction] { --v-radius:26px; --v-gap:32px; }
 html[data-direction] body { font-size:1rem; }
 html[data-direction] .site-header { position:relative; top:auto; }

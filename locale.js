@@ -284,6 +284,7 @@
     "دليل التصنيفات": "the category directory",
     "للبدء.": "to get started.",
     "الخطوة {count} من {total}": "Step {count} of {total}",
+    "خيام التخييم": "Camping tents",
     "اكتب حرفين على الأقل، وبحد أقصى 80 حرفاً.": "Enter between 2 and 80 characters.",
     "بوابة البحث الآمنة بانتظار ربط عنوان Cloudflare.": "Live search is not configured yet.",
     "جاري جلب نتائج إضافية قابلة للشحن للسعودية…": "Loading more results shipping to Saudi Arabia…",

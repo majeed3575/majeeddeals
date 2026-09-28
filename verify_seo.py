@@ -137,12 +137,15 @@ def audit_html(path: Path) -> None:
 
 def main() -> int:
     index = (ROOT / "index.html").read_text(encoding="utf-8")
-    expected_h1 = '<h1 id="introTitle">تفاصيل صغيرة.<br><span>تغيّر يومك.</span></h1>'
+    expected_h1 = '<h1>كل اهتماماتك.<br><em>بداية واحدة.</em></h1>'
     if expected_h1 not in index:
         fail("العنوان الرئيسي المتفق عليه تغير")
-    if "deals-initial.json" not in index or "requestIdleCallback" not in index:
-        fail("التحميل الأولي/الخلفي غير مفعّل في الصفحة الرئيسية")
-    if "deals.json?v=${Date.now()}" in index or "const dealsEndpoint" in index:
+    browse = (ROOT / "browse.html").read_text(encoding="utf-8")
+    if "deals-initial.json" not in browse or "requestIdleCallback" not in browse:
+        fail("التحميل الأولي/الخلفي غير مفعّل في صفحة التصفح")
+    if "deals-initial.json" in index or 'id="dealsGrid"' in index:
+        fail("يجب أن تبقى الرئيسية تعريفية بلا منتجات")
+    if "deals.json?v=${Date.now()}" in browse or "const dealsEndpoint" in browse:
         fail("ما زال تحميل deals.json القديم المعطل للكاش موجوداً")
     if 'rel="noopener noreferrer"' in index:
         fail("يوجد رابط عمولة في index.html بلا وسم sponsored")
