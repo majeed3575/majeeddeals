@@ -34,11 +34,16 @@ jobs:
       - name: Install dependencies
         run: python -m pip install -r requirements.txt
 
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: "22"
+
       - name: Verify Python syntax and core safety rules
         run: |
           PYTHONPYCACHEPREFIX=/tmp/overly-pycache python -m py_compile scraper.py generate_seo.py verify_seo.py verify_affiliate_links.py build_public_site.py
-          python -m unittest discover -v
-          node --test test_runtime.mjs test_home.mjs
+          python -m unittest -v test_scraper_core test_english_titles test_affiliate_links test_extension_contract test_theme_contract test_public_build test_public_contract
+          node --test test_home.mjs test_extension_runtime.mjs test_analytics.mjs
 
       - name: Run scraper
         run: python scraper.py
@@ -66,6 +71,15 @@ jobs:
 
       - name: Verify SEO output
         run: python verify_seo.py
+
+      # Catalog-dependent checks belong AFTER refresh/generation. Admin/extension
+      # edits intentionally leave derived HTML and initial-feed metadata stale;
+      # testing those first prevents the updater from ever repairing them.
+      # This gate still rejects missing English copy before GitHub/site publish.
+      - name: Verify refreshed catalog and generated runtime
+        run: |
+          python -m unittest discover -v
+          node --test test_runtime.mjs test_home.mjs test_extension_runtime.mjs test_analytics.mjs
 
       - name: Verify every published affiliate link
         run: python verify_affiliate_links.py

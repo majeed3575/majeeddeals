@@ -244,7 +244,7 @@
         <div class="grid-3">
           <div><label for="dealPrice">السعر الحالي</label><input id="dealPrice" type="number" min="0" step="0.01" inputmode="decimal"></div>
           <div><label for="originalPrice">قبل الخصم</label><input id="originalPrice" type="number" min="0" step="0.01" inputmode="decimal"></div>
-          <div><label for="discount">الخصم ٪</label><input id="discount" type="number" min="5" max="95" inputmode="numeric"></div>
+          <div><label for="discount">الخصم ٪ (0 إن لم يُرصد)</label><input id="discount" type="number" min="0" max="95" inputmode="numeric"></div>
         </div>
         <div class="hint">السعر الحالي لحساب الخصم فقط ولا يُنشر. لا تحفظ المنتج قبل مراجعة السعر والخصم الظاهرين في المتجر.</div>
         <button id="saveProduct" class="primary">＋ إضافة المنتج إلى القائمة</button>
@@ -266,7 +266,7 @@
           <strong>الموقع المباشر</strong>
           <span id="syncTime" class="sync-time">لم تتم المزامنة</span>
         </div>
-        <div class="hint">المزامنة تجلب الموجود في الموقع. النشر يدمج قائمتك معه ولا يمسح المنتجات القديمة.</div>
+        <div class="hint">المزامنة تحفظ مسوداتك دون طمس التعديلات الأحدث. يُنشر المعدل فقط مع حفظ بيانات المنتج. عند التعارض يتوقف النشر للمراجعة.</div>
         <div class="publish-grid">
           <button id="syncGithub" class="secondary">↻ مزامنة الموقع</button>
           <button id="testGithub" class="ghost">✓ اختبار الاتصال</button>
@@ -280,7 +280,7 @@
         <input id="importFile" class="hidden" type="file" accept="application/json,.json">
         <button id="downloadAsins" class="ghost">تنزيل ASINs</button>
         <button id="downloadAli" class="ghost">تنزيل قائمة AliExpress</button>
-        <button id="publishGithub" class="secondary wide">الطريقة اليدوية عبر GitHub</button>
+        <button id="publishGithub" class="secondary wide">فتح GitHub للمراجعة فقط</button>
       </div>
       <textarea id="jsonOutput" class="hidden" readonly></textarea>
     </section>

@@ -3,6 +3,7 @@ const LEGACY_STORE_KEYS = ["collected_deals_v3", "collected_deals"];
 const SETTINGS_KEY = "overly_github_settings_v5";
 const TOKEN_KEY = "overly_github_token_v5";
 const REMOTE_HASHES_KEY = "overly_remote_hashes_v5";
+const REMOTE_CONTEXT_KEY = "overly_remote_context_v1";
 const LAST_SYNC_KEY = "overly_last_sync_v5";
 const ALLOWED_CATEGORIES = [
   "الإلكترونيات", "التنظيف والمنظفات", "الأزياء والأحذية", "المطبخ والأجهزة المنزلية",
@@ -78,7 +79,7 @@ function extractFromProductPage() {
     return "تسوق متنوع";
   }
 
-  if (/aliexpress\.(com|us)$/i.test(location.hostname)) {
+  if (/(^|\.)aliexpress\.(com|us)$/i.test(location.hostname)) {
     const productMatch = location.pathname.match(/\/item\/(\d+)\.html/i) || location.href.match(/[?&](?:productId|itemId)=(\d+)/i);
     const productId = productMatch ? productMatch[1] : "";
     const title = String(firstText(["h1[data-pl=product-title]", ".product-title-text", "h1"]) || document.querySelector('meta[property="og:title"]')?.content || "").replace(/\s+/g, " ").trim().slice(0, 140);
@@ -130,8 +131,8 @@ function showStatus(message, type = "") {
   status.className = `notice${type ? ` ${type}` : ""}`;
   status.textContent = message;
 }
-function normalizeAsin(value) { const match = String(value || "").toUpperCase().match(/[A-Z0-9]{10}/); return match ? match[0] : ""; }
-function normalizeProductId(value) { const match = String(value || "").match(/\d{6,20}/); return match ? match[0] : ""; }
+function normalizeAsin(value) { const id = String(value || "").trim().toUpperCase(); return /^[A-Z0-9]{10}$/.test(id) ? id : ""; }
+function normalizeProductId(value) { const id = String(value || "").trim(); return /^\d{6,20}$/.test(id) ? id : ""; }
 function itemStore(raw) { return String(raw?.store || "amazon").toLowerCase() === "aliexpress" ? "aliexpress" : "amazon"; }
 function roundPrice(value) { const number = Number(value); return Number.isFinite(number) ? Math.round(number * 100) / 100 : 0; }
 function normalizeCategory(value) {
@@ -143,7 +144,7 @@ function isAliExpressAffiliateUrl(value) {
   try {
     const url = new URL(String(value || "").replace(/^http:\/\//i, "https://"));
     const host = url.hostname.toLowerCase();
-    if (url.protocol !== "https:") return false;
+    if (url.protocol !== "https:" || url.username || url.password || url.port) return false;
     if (host === "s.click.aliexpress.com") return true;
     if (!(host === "aliexpress.com" || host.endsWith(".aliexpress.com") || host === "aliexpress.us" || host.endsWith(".aliexpress.us"))) return false;
     return Boolean(String(url.searchParams.get("aff_fcid") || "").trim()) && Boolean(String(url.searchParams.get("aff_trace_key") || "").trim()) &&
@@ -154,9 +155,9 @@ function normalizedItem(raw) {
   const store = itemStore(raw);
   const item = {
     store,
-    title: String(raw?.title || "").replace(/\s+/g, " ").trim().slice(0, 140),
+    title: String(raw?.title || "").replace(/\s+/g, " ").trim().slice(0, 140).trim(),
     image: String(raw?.image || "").trim(),
-    discount_percent: Math.round(Number(raw?.discount_percent || raw?.discount || 0)),
+    discount_percent: Math.round(Number(raw?.discount_percent || raw?.manual_discount_percent || raw?.discount || 0)),
     original_price: roundPrice(raw?.original_price || raw?.originalPrice),
     category: normalizeCategory(raw?.category)
   };
@@ -169,6 +170,17 @@ function normalizedItem(raw) {
 function itemIdentity(item) { return itemStore(item) === "aliexpress" ? normalizeProductId(item?.product_id) : normalizeAsin(item?.asin); }
 function itemKey(item) { return `${itemStore(item)}:${itemIdentity(item)}`; }
 function itemHash(item) { return JSON.stringify(normalizedItem(item)); }
+function isSupportedImageUrl(value, store) {
+  const domains = store === "aliexpress" ? ["alicdn.com", "aliexpress-media.com", "aliexpress.com"]
+    : ["media-amazon.com", "ssl-images-amazon.com", "amazon-adsystem.com", "amazon.com"];
+  try {
+    const url = new URL(value), host = url.hostname.toLowerCase();
+    if (url.protocol !== "https:" || url.username || url.password || url.port) return false;
+    if (domains.some(domain => host === domain || host.endsWith(`.${domain}`))) return true;
+    return store === "amazon" && ((host === "overly.live" && url.pathname.startsWith("/assets/amazon-manual/")) ||
+      (host === "majeed3575.github.io" && url.pathname.startsWith("/majeeddeals/assets/amazon-manual/")));
+  } catch { return false; }
+}
 function validateItem(item, { requireAffiliate = false } = {}) {
   const errors = [];
   if (itemStore(item) === "amazon" && !/^[A-Z0-9]{10}$/.test(item.asin)) errors.push("رقم ASIN غير صحيح");
@@ -176,9 +188,9 @@ function validateItem(item, { requireAffiliate = false } = {}) {
   if (itemStore(item) === "aliexpress" && !/^https:\/\/([a-z0-9-]+\.)*(aliexpress\.com|aliexpress\.us)\//i.test(item.url)) errors.push("رابط AliExpress غير صحيح");
   if (requireAffiliate && itemStore(item) === "aliexpress" && !isAliExpressAffiliateUrl(item.url)) errors.push("رابط AliExpress ليس رابط عمولة رسميًا؛ نزّل قائمة ASINs ليحوّله الروبوت قبل النشر");
   if (item.title.length < 8) errors.push("اسم المنتج قصير");
-  if (!item.image.startsWith("https://")) errors.push("رابط الصورة غير صحيح");
-  if (!(item.original_price > 0)) errors.push("سعر ما قبل الخصم غير صحيح");
-  if (!(item.discount_percent >= 5 && item.discount_percent <= 95)) errors.push("الخصم يجب أن يكون 5٪–95٪");
+  if (!isSupportedImageUrl(item.image, itemStore(item))) errors.push("رابط الصورة ليس من مصادر الصور المدعومة في الموقع");
+  if (!(Number.isFinite(item.original_price) && item.original_price >= 0)) errors.push("سعر ما قبل الخصم غير صحيح");
+  if (!(item.discount_percent >= 0 && item.discount_percent <= 95)) errors.push("الخصم يجب أن يكون 0٪–95٪");
   if (!ALLOWED_CATEGORIES.includes(item.category)) errors.push("التصنيف غير مسموح");
   return errors;
 }
@@ -311,25 +323,49 @@ function mergeNormalized(remote, local) {
   }
   return merged;
 }
-function mergeForPublish(remoteRaw, local) {
-  const merged = Array.isArray(remoteRaw) ? remoteRaw.map((item) => ({ ...item })) : [];
+function mergeForPublish(remoteRaw, local, baseline = {}) {
+  const merged = Array.isArray(remoteRaw) ? remoteRaw.map(item => ({ ...item })) : [];
   const indexes = new Map();
-  merged.forEach((raw, index) => {
-    const normalized = normalizedItem(raw);
-    if (itemIdentity(normalized)) indexes.set(itemKey(normalized), index);
-  });
-  for (const item of local) {
-    const key = itemKey(item);
-    if (indexes.has(key)) merged[indexes.get(key)] = item;
-    else { indexes.set(key, merged.length); merged.push(item); }
+  merged.forEach((item, index) => { if (itemIdentity(item)) indexes.set(itemKey(item), index); });
+  const conflicts = [];
+  for (const raw of local) {
+    const item = normalizedItem(raw), key = itemKey(item), hash = itemHash(item);
+    const hasBase = Object.prototype.hasOwnProperty.call(baseline, key);
+    // An untouched local copy is not a write, even if the remote item changed
+    // or was removed. In particular, it must not resurrect deleted products.
+    if (hasBase && hash === baseline[key]) continue;
+    const index = indexes.get(key), remote = index === undefined ? null : merged[index];
+    if (remote && itemHash(remote) === hash) continue;
+    if ((remote && (!hasBase || itemHash(remote) !== baseline[key])) || (!remote && hasBase)) {
+      conflicts.push(key);
+      continue;
+    }
+    const next = { ...remote, ...item, owner_pinned: true, auto_discovered: false, rank_score: 99 };
+    if (remote && normalizedItem(remote).title === item.title) next.title = remote.title;
+    // These are the only derived fields invalidated by controls in this editor.
+    if (remote?.title !== next.title) delete next.title_en;
+    delete next.manual_discount_percent;
+    if (remote) merged[index] = next;
+    else { indexes.set(key, merged.length); merged.push(next); }
+  }
+  if (conflicts.length) {
+    throw new Error(`تعارض مع تعديل أحدث أو نسخة غير متزامنة: ${conflicts.slice(0, 5).join("، ")}. لم يُنشر شيء. صدّر قائمتك احتياطيًا، ثم احذف النسخة المحلية للمنتج المتعارض وأعد المزامنة قبل تعديلها.`);
   }
   return merged;
 }
+function mergeForSync(remote, local, baseline = {}) {
+  return normalizedValidList(mergeForPublish(remote, local, baseline));
+}
 function remoteHashes(list) { return Object.fromEntries(normalizedValidList(list).map((item) => [itemKey(item), itemHash(item)])); }
 
-async function saveRemoteState(remoteList) {
+function remoteContext(config) { return JSON.stringify([config.owner, config.repo, config.branch, config.path]); }
+async function baselineFor(config) {
+  const saved = await storageGet([REMOTE_HASHES_KEY, REMOTE_CONTEXT_KEY]);
+  return saved[REMOTE_CONTEXT_KEY] === remoteContext(config) ? saved[REMOTE_HASHES_KEY] || {} : {};
+}
+async function saveRemoteState(remoteList, config) {
   const now = new Date().toISOString();
-  await storageSet({ [REMOTE_HASHES_KEY]: remoteHashes(remoteList), [LAST_SYNC_KEY]: now });
+  await storageSet({ [REMOTE_HASHES_KEY]: remoteHashes(remoteList), [REMOTE_CONTEXT_KEY]: remoteContext(config), [LAST_SYNC_KEY]: now });
   return now;
 }
 async function loadGithubSettings() {
@@ -356,15 +392,13 @@ async function saveGithubSettings() {
 async function syncFromGithub() {
   const config = { ...(await getGithubConfig()), ...configFromForm() };
   validateGithubConfig(config);
-  const response = await fetch(`${rawGithubUrl(config)}?overly=${Date.now()}`, { cache: "no-store" });
-  if (!response.ok) throw new Error(`تعذر قراءة deals.json من الموقع (${response.status})`);
-  const parsed = await response.json();
+  const { parsed } = await readGithubCatalog(config);
   const remote = extractDeals(parsed);
   if (!remote) throw new Error("ملف الموقع لا يحتوي على قائمة deals صحيحة");
   const local = await getList();
-  const merged = mergeNormalized(remote, local);
+  const merged = mergeForSync(remote, local, await baselineFor(config));
   await saveList(merged);
-  const now = await saveRemoteState(remote);
+  const now = await saveRemoteState(remote, config);
   $("syncTime").textContent = `آخر مزامنة: ${new Date(now).toLocaleString("ar-SA")}`;
   await renderList();
   return { remoteCount: remote.length, localCount: merged.length };
@@ -437,10 +471,17 @@ async function publishToGithub() {
   const remote = extractDeals(parsed);
   if (!remote) throw new Error("ملف deals.json الحالي غير صالح؛ أوقفت النشر لحماية الموقع");
 
-  const merged = mergeForPublish(remote, audit.map((entry) => entry.item));
-  const content = JSON.stringify(payloadFromList(merged, "overly-extension-v5"), null, 2) + "\n";
+  const merged = mergeForPublish(remote, audit.map((entry) => entry.item), await baselineFor(config));
+  if (JSON.stringify(merged) === JSON.stringify(remote)) {
+    await saveList(normalizedValidList(remote));
+    await saveRemoteState(remote, config);
+    await renderList();
+    return { count: remote.length, changed: false, url: "" };
+  }
+  const content = JSON.stringify({ ...(Array.isArray(parsed) ? {} : parsed), ...payloadFromList(merged, "overly-extension-v5") }, null, 2) + "\n";
   const putResponse = await fetch(apiUrl, {
     method: "PUT",
+    signal: AbortSignal.timeout(20_000),
     headers: { ...githubHeaders(config.token), "Content-Type": "application/json" },
     body: JSON.stringify({ message: `تحديث ${local.length} منتج عبر Overly Product Studio`, content: utf8ToBase64(content), sha, branch: config.branch })
   });
@@ -448,16 +489,15 @@ async function publishToGithub() {
   const result = await putResponse.json();
   const normalizedMerged = normalizedValidList(merged);
   await saveList(normalizedMerged);
-  const now = await saveRemoteState(merged);
+  const now = await saveRemoteState(merged, config);
   $("syncTime").textContent = `نُشر: ${new Date(now).toLocaleString("ar-SA")}`;
   await renderList();
-  return { count: merged.length, url: result.commit?.html_url || result.content?.html_url || "" };
+  return { count: merged.length, changed: true, url: result.commit?.html_url || result.content?.html_url || "" };
 }
 
 async function renderList() {
   const list = await getList();
-  const stored = await storageGet([REMOTE_HASHES_KEY]);
-  const hashes = stored[REMOTE_HASHES_KEY] || {};
+  const hashes = await baselineFor({ ...(await getGithubConfig()), ...configFromForm() });
   const audit = auditList(list);
   $("count").textContent = list.length;
   $("amazonCount").textContent = list.filter((item) => itemStore(item) === "amazon").length;
@@ -551,7 +591,7 @@ async function initialize() {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const tab = tabs[0];
     const pageUrl = String(tab?.url || "");
-    if (!tab || !/amazon\.sa|aliexpress\.(com|us)/i.test(pageUrl)) {
+    if (!tab || !productPageStore(pageUrl)) {
       showStatus("افتح صفحة منتج لإضافته، أو اضغط «مزامنة الموقع» لجلب المنتجات المنشورة.", "warn");
       return;
     }
@@ -570,6 +610,15 @@ async function initialize() {
       showStatus(missing.length ? `راجع يدويًا: ${missing.join("، ")}.` : "✓ استخرجت البيانات. راجعها ثم أضف المنتج.", missing.length ? "warn" : "ok");
     });
   });
+}
+
+function productPageStore(value) {
+  try {
+    const url = new URL(value);
+    if (!/^https?:$/.test(url.protocol) || url.username || url.password) return "";
+    if (/(^|\.)amazon\.sa$/i.test(url.hostname)) return "amazon";
+    return /(^|\.)aliexpress\.(com|us)$/i.test(url.hostname) ? "aliexpress" : "";
+  } catch { return ""; }
 }
 
 $("dealPrice").addEventListener("input", calculateDiscount);
@@ -642,12 +691,10 @@ $("copyJson").addEventListener("click", async () => {
   showStatus("✓ نُسخ محتوى deals.json.", "ok");
 });
 $("publishGithub").addEventListener("click", async () => {
-  const list = await getList();
-  if (!list.length) return showStatus("لا توجد منتجات للنشر.", "error");
-  await copyText(jsonFromList(list));
   const config = { ...(await getGithubConfig()), ...configFromForm() };
-  chrome.tabs.create({ url: `https://github.com/${encodeURIComponent(config.owner)}/${encodeURIComponent(config.repo)}/edit/${encodeURIComponent(config.branch)}/${config.path.split("/").map(encodeURIComponent).join("/")}` });
-  showStatus("نُسخ الملف وفُتح GitHub للطريقة اليدوية.", "ok");
+  try { validateGithubConfig(config); } catch (error) { return showStatus(error.message, "error"); }
+  chrome.tabs.create({ url: `https://github.com/${encodeURIComponent(config.owner)}/${encodeURIComponent(config.repo)}/blob/${encodeURIComponent(config.branch)}/${config.path.split("/").map(encodeURIComponent).join("/")}` });
+  showStatus("فُتح الملف للمراجعة فقط. استخدم النشر الآمن لدمج التعديلات؛ النسخة المحلية ليست بديلًا كاملًا لكتالوج الموقع.", "warn");
 });
 $("saveGithub").addEventListener("click", (event) => withBusy(event.currentTarget, saveGithubSettings));
 $("forgetToken").addEventListener("click", async () => {
@@ -666,7 +713,7 @@ $("testGithub").addEventListener("click", (event) => withBusy(event.currentTarge
 }));
 $("publishDirect").addEventListener("click", (event) => withBusy(event.currentTarget, async () => {
   const result = await publishToGithub();
-  showStatus(`✓ تم نشر ${result.count} منتج بأمان. سيظهر التحديث في الموقع خلال دقيقة.`, "ok");
+  showStatus(result.changed ? `✓ حُفظت التعديلات في GitHub مع ${result.count} منتج. تظهر في الموقع بعد نجاح دورة النشر التالية.` : "✓ لا توجد تعديلات محلية جديدة للنشر. تم تحديث القائمة من GitHub.", "ok");
   if (result.url) chrome.tabs.create({ url: result.url });
 }));
 

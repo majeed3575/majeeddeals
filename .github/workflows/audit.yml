@@ -1,0 +1,35 @@
+name: Verify Overly Site
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.10"
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: "22"
+      - run: python -m pip install -r requirements.txt
+      - name: Test without scraping, Telegram messages or deployment
+        run: |
+          python generate_seo.py
+          python verify_seo.py
+          python verify_affiliate_links.py
+          python build_public_site.py
+          python -m unittest discover -v
+          node --test test_runtime.mjs test_home.mjs test_extension_runtime.mjs test_analytics.mjs

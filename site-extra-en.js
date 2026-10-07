@@ -1,5 +1,6 @@
 /* Additional site interface and template translations. */
 Object.assign(globalThis.OverlySiteEnglish,{
+  "ستظهر المنتجات القريبة هنا عند توفرها.": "Related products will appear here when available.",
   "نافذة لاختيار أجمل.":"A clearer view of your next find.",
   "اختيارات لها حضور.":"Finds with presence.",
   "القليل من البحث. والكثير من الاحتمالات.":"A little searching. A world of possibilities.",

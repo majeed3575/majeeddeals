@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://*.workers.dev; img-src 'self' data: https://overly.live https://majeed3575.github.io https://*.media-amazon.com https://*.ssl-images-amazon.com https://*.amazon-adsystem.com https://*.alicdn.com https://*.aliexpress-media.com https://*.aliexpress.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://overly-aliexpress-search.overly-sa.workers.dev; img-src 'self' data: https://overly.live https://majeed3575.github.io https://media-amazon.com https://ssl-images-amazon.com https://amazon-adsystem.com https://alicdn.com https://aliexpress-media.com https://aliexpress.com https://amazon.com https://*.amazon.com https://*.media-amazon.com https://*.ssl-images-amazon.com https://*.amazon-adsystem.com https://*.alicdn.com https://*.aliexpress-media.com https://*.aliexpress.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="theme-color" content="#faf7f1">
   <meta name="description" content="أوفرلي يجمع المنتجات الرائجة من مختلف أقسام Amazon السعودية وAliExpress، مرتبة حسب المبيعات والتقييم مع روابط تسويق بالعمولة.">
   <meta name="robots" content="noindex,follow">
@@ -1217,6 +1217,7 @@
   <script src="locale.js"></script>
   <script src="site-language.js"></script>
   <script src="search-config.js"></script>
+  <script src="analytics.js"></script>
   <script>
     const AFFILIATE_TAG = "faraj733-21";
     const amazonLink = asin => `https://www.amazon.sa/dp/${asin}/?tag=${AFFILIATE_TAG}`;
@@ -1229,7 +1230,7 @@
       try {
         const url = new URL(String(value || ""));
         const host = url.hostname.toLowerCase();
-        if (url.protocol !== "https:" || !allowedDomains.some(domain => host === domain || host.endsWith(`.${domain}`))) return "";
+        if (url.protocol !== "https:" || url.username || url.password || url.port || !allowedDomains.some(domain => host === domain || host.endsWith(`.${domain}`))) return "";
         return url.href;
       } catch (_) { return ""; }
     };
@@ -1412,24 +1413,8 @@
     })();
 
     function trackEvent(eventType, deal = null) {
-      if (!ALIEXPRESS_SEARCH_API) return;
-      const payload = {
-        event_type: eventType,
-        page_path: location.pathname,
-        product_key: deal ? `${storeOf(deal)}:${dealKey(deal)}` : "",
-        product_title: deal?.title || "",
-        store: deal ? storeOf(deal) : "",
-        category: deal?.category || ""
-      };
-      try {
-        fetch(`${ALIEXPRESS_SEARCH_API}/events`, {
-          method: "POST",
-          mode: "cors",
-          keepalive: true,
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify(payload)
-        }).catch(() => {});
-      } catch (_) {}
+      if (eventType === "page_view") globalThis.OverlyAnalytics?.pageView();
+      else if (eventType === "product_click" && deal) globalThis.OverlyAnalytics?.productClick({...deal, store:storeOf(deal)});
     }
 
     const el = id => document.getElementById(id);

@@ -1,26 +1,7 @@
-import sys
-import types
 import unittest
 
-
-# تسمح بتشغيل اختبارات الدوال النقية محلياً حتى لو لم تكن تبعيات الجمع مثبتة.
-# في GitHub Actions تُستخدم requests وBeautifulSoup الحقيقيتان لأن الـ workflow يثبتهما أولاً.
-try:
-    import requests  # noqa: F401
-except ModuleNotFoundError:
-    requests_stub = types.ModuleType("requests")
-    requests_stub.RequestException = Exception
-    requests_stub.Session = object
-    requests_stub.get = lambda *args, **kwargs: None
-    requests_stub.post = lambda *args, **kwargs: None
-    sys.modules["requests"] = requests_stub
-
-try:
-    import bs4  # noqa: F401
-except ModuleNotFoundError:
-    bs4_stub = types.ModuleType("bs4")
-    bs4_stub.BeautifulSoup = object
-    sys.modules["bs4"] = bs4_stub
+# Install requirements.txt before testing. Missing dependencies must fail clearly;
+# silently stubbing sys.modules hid environment problems and made test order matter.
 
 import generate_seo
 import scraper

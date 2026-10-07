@@ -281,6 +281,8 @@ def valid_https(value, domains: tuple[str, ...]) -> str:
     value = clean_text(value, 2000)
     try:
         parsed = urlparse(value)
+        if parsed.username or parsed.password or parsed.port not in (None, 443):
+            return ""
     except ValueError:
         return ""
     host = (parsed.hostname or "").lower()
@@ -478,7 +480,7 @@ def page_shell(
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://overly.live https://majeed3575.github.io https://*.media-amazon.com https://*.ssl-images-amazon.com https://*.amazon-adsystem.com https://*.alicdn.com https://*.aliexpress-media.com https://*.aliexpress.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://overly-aliexpress-search.overly-sa.workers.dev; img-src 'self' data: https://overly.live https://majeed3575.github.io https://media-amazon.com https://ssl-images-amazon.com https://amazon-adsystem.com https://alicdn.com https://aliexpress-media.com https://aliexpress.com https://amazon.com https://*.amazon.com https://*.media-amazon.com https://*.ssl-images-amazon.com https://*.amazon-adsystem.com https://*.alicdn.com https://*.aliexpress-media.com https://*.aliexpress.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="theme-color" content="#050807">
   <meta name="description" content="{esc(meta_description(description))}">
   <meta name="robots" content="{esc(robots)}">
@@ -529,6 +531,8 @@ def page_shell(
   <script src="{SITE_LINK_ROOT}site-phrases.js"></script>
   <script src="{SITE_LINK_ROOT}locale.js"></script>
   <script src="{SITE_LINK_ROOT}site-language.js"></script>
+  <script src="{SITE_LINK_ROOT}search-config.js"></script>
+  <script src="{SITE_LINK_ROOT}analytics.js"></script>
 </body>
 </html>
 '''
@@ -646,7 +650,7 @@ def product_page(deal: dict, related: list[dict], lastmod: str) -> str:
       <h1>{esc(deal['title'])}</h1>
       <p class="lead">منتج مختار وفق مؤشرات الرواج المتاحة. راجع المواصفات والسعر والتوفر والشحن إلى السعودية لدى المتجر قبل الشراء.</p>
       <div class="facts">{discount}{before}<div class="fact"><span>مؤشر الرواج</span><strong>{esc(popularity)}</strong></div><div class="fact"><span>رقم المنتج</span><strong dir="ltr">{esc(deal['id'])}</strong></div></div>
-      <a class="shop-button" href="{esc(deal['affiliate_url'])}" target="_blank" rel="sponsored noopener noreferrer">تحقق من السعر الحالي على {esc(deal['store_name'])} ↗</a>
+      <a class="shop-button" href="{esc(deal['affiliate_url'])}" target="_blank" rel="sponsored noopener noreferrer" data-overly-product="{esc(deal['id'])}" data-overly-store="{esc(deal['store'])}" data-overly-title="{esc(deal['title'])}" data-overly-category="{esc(deal['category'])}">تحقق من السعر الحالي على {esc(deal['store_name'])} ↗</a>
       <small class="affiliate-note">رابط تسويق بالعمولة؛ قد نحصل على عمولة من الشراء المؤهل دون تكلفة إضافية عليك.</small>
     </div>
   </article>

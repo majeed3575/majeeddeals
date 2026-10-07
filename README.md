@@ -298,6 +298,25 @@ Cloudflare Access لبريد المالك فقط، ثم يعيد الخادم ا
 في GitHub ثم يفشل التشغيل برسالة صريحة بدل إظهار نجاح مضلل بينما يبقى الموقع قديماً. لا تُكتب
 قيمة الرمز السرية في ملفات المشروع.
 
+## التحقق المحلي قبل النشر
+
+استخدم Python 3.10 أو أحدث وNode.js 22. ثبّت التبعيات الحقيقية داخل بيئة معزولة؛ الاختبارات لا تستبدل الحزم المفقودة ببدائل صامتة.
+
+```sh
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python generate_seo.py
+.venv/bin/python -m unittest discover -v
+node --test test_runtime.mjs test_home.mjs test_extension_runtime.mjs test_analytics.mjs
+.venv/bin/python verify_seo.py
+.venv/bin/python verify_affiliate_links.py
+.venv/bin/python build_public_site.py
+```
+
+هذا التسلسل لا يشغّل جمع المنتجات ولا يرسل رسائل Telegram ولا ينشر الموقع. فحوص اللغة وتطابق الكتالوج مع الصفحات تُجرى **بعد** التوليد حتى لا تمنع إصلاح الملفات المشتقة بعد الإضافات اليدوية.
+
+يمكن تشغيل `verify_audit_browser.mjs` و`verify_theme_browser.mjs` بعد البناء عند توفر Playwright وChrome. الأول يعترض كل طلبات الشبكة ويختبر الإضافة والتحليلات ببيانات تجريبية فقط. ملف `saudi-deals-product-tool.zip` يجب أن يطابق ملفات الإضافة المصدرية؛ يوجد اختبار تلقائي يمنع إصدار أرشيف قديم.
+
 ## تيليجرام
 
 يدعم `scraper.py` النشر لقناة تيليجرام من Amazon وAliExpress بصورتين:

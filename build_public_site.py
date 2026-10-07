@@ -32,6 +32,7 @@ PUBLIC_FILES = (
     "copyright.html",
     "aliexpress-callback.html",
     "search-config.js",
+    "analytics.js",
     "site-boot.js",
     "locale.js",
     "catalog-locale.js",
