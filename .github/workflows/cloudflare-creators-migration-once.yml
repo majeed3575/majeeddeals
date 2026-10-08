@@ -1,0 +1,56 @@
+name: One-time approved Amazon credential migration
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/cloudflare-creators-migration-once.yml]
+permissions:
+  contents: read
+concurrency:
+  group: overly-creators-secret-migration
+  cancel-in-progress: false
+jobs:
+  transfer:
+    if: github.repository == 'majeed3575/majeeddeals'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Transfer only the two approved Amazon credentials to Cloudflare
+        env:
+          CF_MIGRATION_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CREATORS_CLIENT_ID: ${{ secrets.CREATORS_CLIENT_ID }}
+          CREATORS_CLIENT_SECRET: ${{ secrets.CREATORS_CLIENT_SECRET }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json, os, sys, urllib.request
+          names = ("CREATORS_CLIENT_ID", "CREATORS_CLIENT_SECRET")
+          if not os.environ.get("CF_MIGRATION_TOKEN") or any(not os.environ.get(n) for n in names):
+              sys.exit("Required migration credentials are not configured; nothing was sent.")
+          endpoint = "https://api.cloudflare.com/client/v4/accounts/d26b52952fcfee76d94f522a322ffa9b/workers/scripts/overly-amazon-bot/secrets"
+          class NoRedirect(urllib.request.HTTPRedirectHandler):
+              def redirect_request(self, *args, **kwargs):
+                  return None
+          opener = urllib.request.build_opener(NoRedirect())
+          def call(method, document=None):
+              headers = {"Authorization": "Bearer " + os.environ["CF_MIGRATION_TOKEN"], "Content-Type": "application/json"}
+              body = None if document is None else json.dumps(document).encode()
+              req = urllib.request.Request(endpoint, data=body, headers=headers, method=method)
+              try:
+                  with opener.open(req, timeout=25) as response:
+                      result = json.loads(response.read(65536))
+              except Exception:
+                  sys.exit("Cloudflare transfer request failed. No credential values are logged.")
+              if not result.get("success"):
+                  sys.exit("Cloudflare rejected the transfer. No credential values are logged.")
+              return result
+          existing = {item.get("name") for item in call("GET").get("result", [])}
+          if any(n in existing for n in names):
+              sys.exit("Destination credentials already exist; stopped to avoid overwriting them.")
+          for name in names:
+              call("PUT", {"name": name, "text": os.environ[name], "type": "secret_text"})
+              print("Stored approved credential: " + name)
+          verified = {item.get("name") for item in call("GET").get("result", [])}
+          if not set(names).issubset(verified):
+              sys.exit("Destination credential-name verification failed.")
+          print("Both approved Amazon credentials are stored in overly-amazon-bot. Values were never printed.")
+          PY
