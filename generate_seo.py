@@ -610,10 +610,21 @@ def popularity_text(deal: dict) -> str:
     return " · ".join(parts) or "منتج مختار وفق بيانات الرواج المتاحة"
 
 
+def card_image(deal: dict) -> str:
+    """نسخة 480px من صورة AliExpress للكروت؛ صفحة المنتج وJSON-LD تبقى بالأصل."""
+    image = deal["image"]
+    url = urlparse(image)
+    host = url.hostname or ""
+    own_host = host.endswith(("aliexpress-media.com", "alicdn.com"))
+    if deal.get("store") == "aliexpress" and own_host and not url.query and re.fullmatch(r"/kf/[^_]+\.(?:jpe?g|png|webp)", url.path, re.I):
+        return image + "_480x480.jpg"
+    return image
+
+
 def product_card(deal: dict) -> str:
     badge = f"خصم مرصود {deal['discount_percent']}٪" if deal["discount_percent"] else "رائج"
     return f'''<article class="product-card">
-  <a class="card-image" href="{SITE_LINK_ROOT}{esc(deal['path'])}"><img src="{esc(deal['image'])}" alt="{esc(deal['title'])}" loading="lazy" decoding="async" width="520" height="520"></a>
+  <a class="card-image" href="{SITE_LINK_ROOT}{esc(deal['path'])}"><img src="{esc(card_image(deal))}" alt="{esc(deal['title'])}" loading="lazy" decoding="async" width="520" height="520"></a>
   <div class="card-copy"><span class="badge">{esc(deal['store_name'])} · {esc(badge)}</span><h2><a href="{SITE_LINK_ROOT}{esc(deal['path'])}">{esc(deal['title'])}</a></h2><p>{esc(popularity_text(deal))}</p><a class="text-link" href="{SITE_LINK_ROOT}{esc(deal['path'])}">عرض التفاصيل ←</a></div>
 </article>'''
 
@@ -686,9 +697,18 @@ def product_page(deal: dict, related: list[dict], lastmod: str) -> str:
     )
 
 
+def category_meta(info: dict) -> str:
+    parts = [info["description"]]
+    if info.get("audience"):
+        parts.append(f"مناسب ل{info['audience']}.")
+    if info.get("checks"):
+        parts.append(f"قبل الشراء راجع {info['checks']}.")
+    return " ".join(parts)
+
+
 def collection_page(
     *, title: str, description: str, canonical_path: str, deals: list[dict], page_number: int,
-    path_prefix: str, crumb_items: list[tuple[str, str]], lastmod: str
+    path_prefix: str, crumb_items: list[tuple[str, str]], lastmod: str, meta: str = ""
 ) -> str:
     pages = max(1, math.ceil(len(deals) / PAGE_SIZE))
     start = (page_number - 1) * PAGE_SIZE
@@ -716,9 +736,13 @@ def collection_page(
         ],
     }
     body = f'''<main id="content" class="shell page-main">{crumb_html}<header class="collection-head"><span class="eyebrow">دليل تصفح قابل للتحديث</span><h1>{esc(title)}</h1><p>{esc(description)}</p><strong>{len(deals):,} منتجاً في هذا القسم</strong></header><div class="cards">{cards}</div><nav class="pagination" aria-label="صفحات النتائج">{''.join(pagination)}</nav></main>'''
+    # وصف نتائج البحث أطول من النص الظاهر، ويُميَّز لكل صفحة ترقيم.
+    meta = meta or description
+    if page_number > 1:
+        meta = f"الصفحة {page_number} من {pages}: {meta}"
     return page_shell(
         title=f"{title} | أوفرلي",
-        description=description,
+        description=meta,
         canonical=canonical,
         body=body,
         schema=[crumb_schema, item_list],
@@ -734,7 +758,11 @@ def guide_page(guide: dict, matching: list[dict], lastmod: str) -> str:
     ])
     sections = "".join(f'<section class="guide-section"><h2>{esc(title)}</h2><p>{esc(text)}</p></section>' for title, text in guide["sections"])
     related = "".join(product_card(item) for item in matching[:4])
-    category_slug = CATEGORIES[guide["category"]]["slug"]
+    # صفحة التصنيف لا تُبنى وهو فارغ، فنحيل إلى دليل التصنيفات بدل رابط مكسور.
+    if matching:
+        category_link = f'<a href="{SITE_LINK_ROOT}categories/{CATEGORIES[guide["category"]]["slug"]}/">كل منتجات {esc(guide["category"])} ←</a>'
+    else:
+        category_link = f'<a href="{SITE_LINK_ROOT}categories/">تصفح كل التصنيفات ←</a>'
     article_schema = {
         "@context": "https://schema.org", "@type": "Article", "headline": guide["title"],
         "description": guide["description"], "inLanguage": "ar-SA", "dateModified": lastmod,
@@ -742,9 +770,9 @@ def guide_page(guide: dict, matching: list[dict], lastmod: str) -> str:
         "publisher": {"@type": "Organization", "name": "أوفرلي", "url": BASE_URL},
         "mainEntityOfPage": canonical,
     }
-    body = f'''<main id="content" class="shell page-main">{crumb_html}<article class="guide"><header><span class="eyebrow">دليل مستقل · فريق أوفرلي</span><h1>{esc(guide['title'])}</h1><p class="lead">{esc(guide['intro'])}</p><div class="byline">آخر مراجعة: {esc(lastmod)} · لا يتضمن ادعاء اختبار شخصي</div></header>{sections}<aside class="guide-note"><strong>قاعدة أوفرلي</strong><p>استخدم هذا الدليل لتكوين قائمة فحص، ثم اعتمد المواصفات والسعر والتوفر والضمان الظاهرة لدى المتجر وقت الشراء.</p></aside></article><section class="related"><div class="section-head"><div><span>تطبيق الدليل</span><h2>منتجات مرتبطة</h2></div><a href="{SITE_LINK_ROOT}categories/{category_slug}/">كل منتجات {esc(guide['category'])} ←</a></div><div class="cards">{related or '<p class="empty">لا توجد منتجات مرتبطة حالياً.</p>'}</div></section></main>'''
+    body = f'''<main id="content" class="shell page-main">{crumb_html}<article class="guide"><header><span class="eyebrow">دليل مستقل · فريق أوفرلي</span><h1>{esc(guide['title'])}</h1><p class="lead">{esc(guide['intro'])}</p><div class="byline">آخر مراجعة: {esc(lastmod)} · لا يتضمن ادعاء اختبار شخصي</div></header>{sections}<aside class="guide-note"><strong>قاعدة أوفرلي</strong><p>استخدم هذا الدليل لتكوين قائمة فحص، ثم اعتمد المواصفات والسعر والتوفر والضمان الظاهرة لدى المتجر وقت الشراء.</p></aside></article><section class="related"><div class="section-head"><div><span>تطبيق الدليل</span><h2>منتجات مرتبطة</h2></div>{category_link}</div><div class="cards">{related or '<p class="empty">لا توجد منتجات مرتبطة حالياً.</p>'}</div></section></main>'''
     return page_shell(
-        title=f"{guide['title']} | أوفرلي", description=guide["description"], canonical=canonical,
+        title=f"{guide['title']} | أوفرلي", description=f"{guide['description']} {guide['intro']}", canonical=canonical,
         body=body, schema=[article_schema, crumb_schema], og_type="article", lastmod=lastmod,
     )
 
@@ -765,22 +793,22 @@ def static_pages(deals: list[dict], state: dict, generated: set[str], sitemap: d
     pages = {
         "about.html": (
             "عن أوفرلي | Overly",
-            "تعرف على أوفرلي، موقع سعودي يساعد على اكتشاف المنتجات الرائجة والتحقق منها لدى المتجر.",
+            "تعرف على أوفرلي، موقع سعودي يساعد على اكتشاف المنتجات الرائجة من Amazon السعودية وAliExpress، ويشرح ما نفعله وما لا نفعله وكيف نموّل الموقع.",
             f'''<main id="content" class="shell page-main"><header class="collection-head"><span class="eyebrow">من نحن</span><h1>عن أوفرلي</h1><p>أوفرلي موقع سعودي لاكتشاف المنتجات الرائجة من Amazon السعودية وAliExpress. نحن لا نبيع المنتجات؛ ننظم البيانات العامة التي توفرها المنصات ونربطك بصفحة المتجر للتحقق والشراء.</p></header><section class="content-grid"><article class="content-card"><h2>ماذا نفعل؟</h2><p>نرتب المنتجات وفق مؤشرات مثل الطلب والتقييم والتصنيف عندما تتوفر، ونبني صفحات واضحة تساعدك على المقارنة الأولية.</p></article><article class="content-card"><h2>ماذا لا نفعل؟</h2><p>لا نخترع سعراً أو خصماً أو مراجعة، ولا ندّعي اختبار منتج لم نختبره. المتجر هو المرجع النهائي للسعر والتوفر والضمان.</p></article><article class="content-card"><h2>كيف نمول الموقع؟</h2><p>قد نحصل على عمولة من عمليات الشراء المؤهلة عبر روابط التسويق بالعمولة دون زيادة السعر على المشتري.</p></article><article class="content-card"><h2>كيف تختار؟</h2><p>اقرأ <a href="{SITE_LINK_ROOT}methodology.html">منهجية الاختيار</a> وأدلة الشراء، ثم راجع مواصفات المنتج لدى البائع.</p></article></section></main>''',
         ),
         "methodology.html": (
             "منهجية اختيار المنتجات | أوفرلي",
-            "كيف يجمع أوفرلي المنتجات ويرتبها، وما الذي تعنيه مؤشرات الطلب والتقييم والخصم.",
+            "كيف يجمع أوفرلي المنتجات ويرتبها: مصدر البيانات، ومؤشرات الرواج، وقواعد عرض السعر والخصم، والشحن إلى السعودية، والتحرير وروابط العمولة.",
             f'''<main id="content" class="shell page-main"><header class="collection-head"><span class="eyebrow">الشفافية أولاً</span><h1>كيف يختار أوفرلي المنتجات؟</h1><p>هذه الصفحة تشرح ما نستخدمه وما لا نستخدمه، حتى تعرف حدود البيانات قبل أن تضغط رابط المتجر.</p></header><section class="guide"><section class="guide-section"><h2>1. المصدر</h2><p>نستخدم بيانات المنتجات العامة من الواجهات الرسمية أو القوائم التي يراجعها مالك الموقع. لا نطلب بيانات عملاء أو بائعين خاصة.</p></section><section class="guide-section"><h2>2. مؤشرات الرواج</h2><p>قد تشمل عدد الطلبات أو نسبة التقييم أو ترتيباً داخلياً مشتقاً من البيانات المتاحة. غياب أحد المؤشرات لا يُستبدل بقيمة مختلقة.</p></section><section class="guide-section"><h2>3. السعر والخصم</h2><p>نسبة الخصم والسعر السابق لا يظهران إلا إذا وردا في المصدر. السعر الحالي لا يُثبت داخل أوفرلي؛ يجب التحقق منه لدى المتجر لأنه قد يتغير سريعاً.</p></section><section class="guide-section"><h2>4. الشحن إلى السعودية</h2><p>بحث AliExpress يطلب نتائج قابلة للشحن إلى السعودية، لكن الوجهة والتوفر قد يتغيران حسب العنوان والوقت؛ صفحة الدفع هي المرجع النهائي.</p></section><section class="guide-section"><h2>5. التحرير والمراجعة</h2><p>الأدلة نصوص تعليمية من فريق أوفرلي وليست ادعاءات اختبار. صفحات المنتجات تضيف سياقاً وقوائم فحص ولا تعيد نشر وصف البائع بوصفه مراجعة مستقلة.</p></section><section class="guide-section"><h2>6. روابط العمولة</h2><p>كل انتقال تجاري موسوم كرابط تسويق بالعمولة. قد نحصل على عمولة من شراء مؤهل دون تكلفة إضافية عليك.</p></section></section><div class="directory">{category_links}</div></main>''',
         ),
         "guides/index.html": (
             "أدلة الشراء العملية | أوفرلي",
-            "أدلة عربية عملية لفحص المواصفات والتوافق قبل شراء الإلكترونيات والمنزل والسيارة والترفيه المنزلي.",
+            "أدلة شراء عربية عملية من أوفرلي لفحص المواصفات والتوافق قبل شراء الشواحن والمنزل الذكي وإكسسوارات السيارة والبروجكتر والتلفزيون.",
             f'''<main id="content" class="shell page-main"><header class="collection-head"><span class="eyebrow">قرار أوضح</span><h1>أدلة الشراء</h1><p>محتوى مستقل يساعدك على معرفة الأسئلة الصحيحة قبل الانتقال إلى المتجر. لا تتضمن الأدلة ادعاء اختبار المنتجات.</p></header><div class="directory">{guide_links}</div></main>''',
         ),
         "categories/index.html": (
             "تصنيفات المنتجات | أوفرلي",
-            "تصفح منتجات أوفرلي حسب الإلكترونيات والمنزل والسيارة والسفر والترفيه المنزلي وغيرها.",
+            "تصفح منتجات أوفرلي حسب التصنيف: الإلكترونيات والمنزل والسيارة والسفر والأزياء والجمال والرياضة والأطفال وغيرها، مع روابط مباشرة للتحقق لدى المتجر.",
             f'''<main id="content" class="shell page-main"><header class="collection-head"><span class="eyebrow">اكتشف حسب احتياجك</span><h1>كل التصنيفات</h1><p>روابط ثابتة وقابلة للتصفح إلى الأقسام التي تتحدث آلياً مع قائمة المنتجات.</p></header><div class="directory">{category_links}</div></main>''',
         ),
     }
@@ -908,6 +936,7 @@ def build() -> dict:
             title = category_name if page_number == 1 else f"{category_name} — الصفحة {page_number}"
             content = collection_page(
                 title=title, description=info["description"], canonical_path=canonical_path,
+                meta=category_meta(info),
                 deals=category_deals, page_number=page_number, path_prefix=prefix,
                 crumb_items=[("الرئيسية", BASE_URL), ("التصنيفات", BASE_URL + "categories/")], lastmod=lastmod,
             )
@@ -931,6 +960,7 @@ def build() -> dict:
             description = f"تصفح {store_name} المختارة وفق بيانات الرواج، ثم تحقق من السعر والتوفر لدى المتجر."
             content = collection_page(
                 title=title, description=description, canonical_path=canonical_path, deals=store_deals,
+                meta=f"{description} {len(store_deals):,} منتجاً مع روابط مباشرة إلى صفحة المنتج في {store_name}.",
                 page_number=page_number, path_prefix=prefix, crumb_items=[("الرئيسية", BASE_URL)], lastmod=lastmod,
             )
             changed += write_if_changed(ROOT / canonical_path / "index.html", content, generated)

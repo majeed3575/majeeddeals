@@ -2063,6 +2063,26 @@ def enrich_english_titles(deals: list[dict]) -> list[dict]:
     return deals
 
 
+def defer_untranslated(deals: list[dict]) -> list[dict]:
+    """Hold back titles without English until a later run instead of failing the publish gate."""
+    # بوابة الترجمة ترفض أي عنوان بلا إنجليزي وتوقف التحديث كله، فنؤجل المنتج
+    # الجديد إلى تشغيل لاحق ونبقي المنتج الموجود بعنوانه المترجم السابق.
+    previous = {_deal_key(item): item for item in load_existing_deals()}
+    ready = []
+    deferred = 0
+    for deal in deals:
+        if not deal.get("title_en"):
+            old = previous.get(_deal_key(deal), {})
+            if not old.get("title_en"):
+                deferred += 1
+                continue
+            deal["title"], deal["title_en"] = old["title"], old["title_en"]
+        ready.append(deal)
+    if deferred:
+        print(f"[locale] {deferred} new product(s) deferred until an English title is available")
+    return ready
+
+
 def scrape_aliexpress() -> list[dict]:
     """يحدّث القائمة المختارة أو يكتشف الرائج آلياً، ثم يولّد روابط عمولة."""
     watchlist = load_aliexpress_watchlist()
@@ -2171,7 +2191,7 @@ def scrape_aliexpress() -> list[dict]:
         reverse=True,
     )
     print(f"[aliexpress] {len(clean)} عرض صالح برابط عمولة رسمي")
-    return enrich_english_titles(clean[:ALIEXPRESS_AUTO_LIMIT])
+    return defer_untranslated(enrich_english_titles(clean[:ALIEXPRESS_AUTO_LIMIT]))
 
 
 def _deal_key(deal: dict) -> str:

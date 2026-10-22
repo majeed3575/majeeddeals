@@ -142,6 +142,40 @@ class ScraperCoreTests(unittest.TestCase):
         self.assertEqual(deal["discount_percent"], 56)
         self.assertEqual(deal["original_price"], 0)
 
+    def test_english_title_outage_defers_new_products_and_keeps_existing(self):
+        existing = {"store": "aliexpress", "product_id": "1005000000000001",
+                    "title": "شاحن متنقل قديم", "title_en": "Old power bank"}
+        deals = [
+            {"store": "aliexpress", "product_id": "1005000000000001", "title": "شاحن متنقل بعنوان جديد"},
+            {"store": "aliexpress", "product_id": "1005000000000002", "title": "سلة تخييم قابلة للطي"},
+        ]
+        with patch("scraper.load_existing_deals", return_value=[existing]), \
+             patch("scraper.aliexpress_api_call", side_effect=RuntimeError("down")):
+            ready = scraper.defer_untranslated(scraper.enrich_english_titles(deals))
+        self.assertEqual([item["product_id"] for item in ready], ["1005000000000001"])
+        self.assertEqual(ready[0]["title"], "شاحن متنقل قديم")
+        self.assertEqual(ready[0]["title_en"], "Old power bank")
+
+    def test_seo_cards_use_aliexpress_thumbnail_but_keep_amazon_original(self):
+        ali = generate_seo.normalize_deal({
+            "store": "aliexpress", "product_id": "1005000000000001",
+            "title": "شاحن متنقل موثوق للاستخدام اليومي",
+            "image": "https://ae-pic-a1.aliexpress-media.com/kf/Stest.png",
+            "url": "https://s.click.aliexpress.com/e/test", "category": "الإلكترونيات",
+        })
+        amazon = generate_seo.normalize_deal({
+            "asin": "B08D22WD2W", "title": "مسحوق تنظيف منزلي للاستخدام اليومي",
+            "image": "https://m.media-amazon.com/images/I/test.jpg", "category": "التنظيف والمنظفات",
+        })
+        self.assertEqual(generate_seo.card_image(ali), "https://ae-pic-a1.aliexpress-media.com/kf/Stest.png_480x480.jpg")
+        self.assertEqual(generate_seo.card_image(amazon), "https://m.media-amazon.com/images/I/test.jpg")
+
+    def test_seo_guide_without_products_does_not_link_missing_category(self):
+        guide = next(item for item in generate_seo.GUIDES if item["category"] == "الترفيه المنزلي")
+        html = generate_seo.guide_page(guide, [], "2026-10-22")
+        self.assertNotIn("categories/home-entertainment/", html)
+        self.assertIn(generate_seo.SITE_LINK_ROOT + "categories/", html)
+
     def test_seo_converts_aliexpress_rating_percent_to_five_stars(self):
         deal = generate_seo.normalize_deal({
             "store": "aliexpress",

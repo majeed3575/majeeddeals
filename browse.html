@@ -1266,6 +1266,17 @@
       ? safeHttpsUrl(deal.image, ["alicdn.com", "aliexpress-media.com", "aliexpress.com"])
       : safeHttpsUrl(deal.image, ["media-amazon.com", "ssl-images-amazon.com", "amazon-adsystem.com", "amazon.com"])
         || safeOwnerAmazonImage(deal.image);
+    // صور AliExpress الأصلية تصل إلى 2000px بينما الكرت يعرض نحو 300px؛
+    // الـ CDN يقدّم نسخة 480px عند إضافة اللاحقة. النظرة السريعة تبقى بالأصل.
+    const cardImageUrl = deal => {
+      const image = safeImageUrl(deal);
+      if (storeOf(deal) !== "aliexpress" || !image) return image;
+      try {
+        const url = new URL(image);
+        const ownHost = /(^|\.)(aliexpress-media|alicdn)\.com$/.test(url.hostname);
+        return ownHost && /^\/kf\/[^_]+\.(jpe?g|png|webp)$/i.test(url.pathname) && !url.search ? `${image}_480x480.jpg` : image;
+      } catch (_) { return image; }
+    };
     const dealPage = deal => {
       const key = dealKey(deal).toLowerCase();
       const valid = storeOf(deal) === "aliexpress" ? /^\d{6,20}$/.test(key) : /^[a-z0-9]{10}$/.test(key);
@@ -1552,7 +1563,7 @@
         const key = escapeHtml(dealKey(deal));
         const link = escapeHtml(dealLink(deal));
         const page = escapeHtml(catalogProductPage(deal));
-        const image = escapeHtml(safeImageUrl(deal) || "assets/overly-icon.webp");
+        const image = escapeHtml(cardImageUrl(deal) || "assets/overly-icon.webp");
         return `
         <article class="hero-slide ${index === heroIndex ? "active" : ""}">
           <div class="hero-copy">
@@ -1726,7 +1737,7 @@
         const key = escapeHtml(dealKey(deal));
         const link = escapeHtml(dealLink(deal));
         const page = escapeHtml(catalogProductPage(deal));
-        const image = escapeHtml(safeImageUrl(deal) || "assets/overly-icon.webp");
+        const image = escapeHtml(cardImageUrl(deal) || "assets/overly-icon.webp");
         const absoluteIndex = (appendFrom === null ? 0 : appendFrom) + index;
         const mobileCardClass = absoluteIndex === 0 ? "featured-mobile" : "compact-mobile";
         return `
@@ -1780,7 +1791,7 @@
       // Keep the approved product when available; otherwise use a real item in the same category.
       const matching = catalog.filter(deal => deal.category === name && safeImageUrl(deal));
       const product = matching.find(deal => dealKey(deal) === preferred[name]) || matching[0];
-      return product ? {key: dealKey(product), image: safeImageUrl(product)} : null;
+      return product ? {key: dealKey(product), image: cardImageUrl(product)} : null;
     }
 
     function renderDiscoveryScene() {
